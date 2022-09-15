@@ -8,11 +8,13 @@ const TopBar = createMaterialTopTabNavigator()
 
 export default function LoginScreen() {
         const { height } = useWindowDimensions()
-       
+
         return (
                 <>
                         <ImageBackground style={styles.container} source={require('../../../assets/images/g52.png')}>
+                                <View style={{ backgroundColor:"#fff" }}>
                                         <Image source={require('../../../assets/images/chapchap_logo.png')} style={styles.image} />
+                                </View>
                                 <TopBar.Navigator
                                         screenOptions={{
                                                 tabBarStyle: styles.tabBar,
@@ -46,9 +48,9 @@ const styles = StyleSheet.create({
                 alignSelf: "center",
         },
         tabBar: {
-                marginHorizontal: 20,
-                shadowColor: '#fff',
+                //marginHorizontal: 20,
+                shadowColor: '#000',
                 overflow: 'hidden',
-                
+
         }
 })

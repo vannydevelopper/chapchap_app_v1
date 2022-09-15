@@ -2,8 +2,13 @@ import React from "react";
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { FontAwesome, Fontisto, EvilIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
 export default function ConnexionScreen() {
+        const navigation = useNavigation()
+        const handleLogin = () => {
+                navigation.navigate("Home")
+        }
         return (
                 <>
                         <ImageBackground style={styles.container} source={require('../../../assets/images/g52.png')}>
@@ -50,9 +55,9 @@ export default function ConnexionScreen() {
 
                                                 </View>
 
-                                                <TouchableOpacity>
+                                                <TouchableOpacity onPress={handleLogin}>
                                                         <View style={styles.button}>
-                                                                <Text style={styles.buttonText}>S'inscrire</Text>
+                                                                <Text style={styles.buttonText}>Se connecter</Text>
                                                         </View>
                                                 </TouchableOpacity>
 
@@ -60,10 +65,10 @@ export default function ConnexionScreen() {
 
                                                         <View style={styles.button2}>
                                                                 <View style={{ marginLeft: 20 }}>
-                                                                        <AntDesign name="checkcircleo" size={24} color="white" />
+                                                                <AntDesign name="closecircleo" size={24} color="white" />
                                                                 </View>
                                                                 <View style={{ marginLeft: 10 }}>
-                                                                        <Text style={styles.buttonText}>Connexion reussi</Text>
+                                                                        <Text style={styles.buttonText}>Mot de passe incorrect</Text>
                                                                 </View>
 
                                                         </View>
@@ -123,7 +128,7 @@ const styles = StyleSheet.create({
                 borderRadius: 8,
                 paddingVertical: 14,
                 paddingHorizontal: 10,
-                backgroundColor: "#30B252",
+                backgroundColor: "#D24646",
                 marginHorizontal: 60,
                 marginTop: 15,
                 alignItems: "center",
