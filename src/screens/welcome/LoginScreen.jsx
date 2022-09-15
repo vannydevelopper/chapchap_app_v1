@@ -1,13 +1,16 @@
 import React from "react";
 import { Text, View, useWindowDimensions } from "react-native";
-// import { TextField } from "react-native-material-textfield";
+import { TextField, FilledTextField, OutlinedTextField } from 'rn-material-ui-textfield'
 
-export default function LoginScreen(){
-        const { height } = useWindowDimensions()
-        return(
-                <View style={{marginTop:50}}>
-                        <Text>Login</Text>
-                        // <TextField/>
-                </View>
-        )
+export default function LoginScreen() {
+          const { height } = useWindowDimensions()
+          return (
+                    <View style={{ marginTop: 50 }}>
+                              <Text style={{}}>Login</Text>
+                              <OutlinedTextField
+                                        label="Phone number"
+                                        keyboardType="phone-pad"
+                              />
+                    </View>
+          )
 }
