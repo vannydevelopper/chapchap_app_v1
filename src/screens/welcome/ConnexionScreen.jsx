@@ -1,13 +1,38 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from 'react'
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { FontAwesome, Fontisto, EvilIcons, AntDesign, Feather } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
+import fetchApi from "../../helpers/fetchApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
+import { setUserAction } from "../../store/actions/userActions"
+
 
 export default function ConnexionScreen() {
         const navigation = useNavigation()
-        const handleLogin = () => {
-                navigation.navigate("Home")
+        const dispatch = useDispatch()
+        const [email, setEmail] = useState("");
+        const [password, setPassword] = useState("");
+        const handleLogin = async () => {
+                const user = {
+                        email,
+                        password
+                }
+                console.log(user)
+                try {
+                        const userData = await fetchApi("/users/login", {
+                                method: "POST",
+                                body: JSON.stringify(user),
+                                headers: { "Content-Type": "application/json" },
+                        });
+                        await AsyncStorage.setItem("user", JSON.stringify(userData));
+                        dispatch(setUserAction(userData))
+                }
+
+                catch (error) {
+                        console.log(error)
+                }
         }
         return (
                 <>
@@ -31,6 +56,8 @@ export default function ConnexionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setEmail(em)}
+                                                                        value={email}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -47,6 +74,8 @@ export default function ConnexionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em)=>setPassword(em)}
+                                                                        value={password}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -65,7 +94,7 @@ export default function ConnexionScreen() {
 
                                                         <View style={styles.button2}>
                                                                 <View style={{ marginLeft: 20 }}>
-                                                                <AntDesign name="closecircleo" size={24} color="white" />
+                                                                        <AntDesign name="closecircleo" size={24} color="white" />
                                                                 </View>
                                                                 <View style={{ marginLeft: 10 }}>
                                                                         <Text style={styles.buttonText}>Mot de passe incorrect</Text>
