@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View, ActivityIndicator } from "react-native";
 import LoginScreen from "./screens/welcome/LoginScreen";
+import HomeScreen from "./screens/Home/HomeScreen";
+import DrawerScreen from "./screens/homeDrawer/DrawerScreen";
+import DetailAchatScreen from "./screens/homeDrawer/DetailsAchatScreen";
 import HomeScreen from "./screens/home/HomeScreen";
 import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../src/store/selectors/userSelector"
@@ -11,7 +14,7 @@ import { setUserAction } from "./store/actions/userActions"
 
 const Stack = createStackNavigator()
 
-export default function AppContainer() {
+export default function AppContainer() {          
         const dispatch = useDispatch()
         const user = useSelector(userSelector)
         const [userLoading, setUserLoading] = useState(true)
