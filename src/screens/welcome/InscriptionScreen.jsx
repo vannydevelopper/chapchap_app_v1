@@ -1,9 +1,60 @@
-import React from "react";
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, ImageBackground } from "react-native";
+import React, { useRef, useState, useEffect } from 'react'
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, ImageBackground, ActivityIndicator } from "react-native";
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { FontAwesome, Fontisto, EvilIcons, Feather, Ionicons } from '@expo/vector-icons';
+import fetchApi from '../../helpers/fetchApi';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setUserAction } from "../../store/actions/userActions"
 
 export default function InscriptionScreen() {
+        const [nom, setNom] = useState("");
+        const [prenom, setPrenom] = useState("");
+        const [email, setEmail] = useState("");
+        const [password, setPassword] = useState("");
+        const [confrimPassword, setConfrimPassword] = useState("");
+        const [telephone, setTelephone] = useState("");
+        const [adressePhysique, setAdressePhysique] = useState("");
+        const [errors, setErrors] = useState(null);
+        const dispatch = useDispatch()
+        const navigation = useNavigation()
+        const [loading, setLoading] = useState(false);
+
+        const enregistrement = async () => {
+                setErrors(null)
+                // if (password != confrimPassword) {
+                //         setErrors(t => {
+                //                   return {
+                //                             ...t,
+                //                             confrimPassword: "le mot de passe ne corespond pas"
+                //                   }
+                //         })
+                //         return false
+                //  }
+                setLoading(true)
+                try {
+                        const res = await fetchApi("/users", {
+                                method: 'POST',
+                                body: JSON.stringify({
+                                        NOM: nom,
+                                        PRENOM: prenom,
+                                        EMAIL: email,
+                                        PASSWORD: password,
+                                        TELEPHONE_1: telephone,
+                                }),
+                                headers: { "Content-Type": "application/json" },
+                        })
+                        await AsyncStorage.setItem("user", JSON.stringify(res));
+                        dispatch(setUserAction(res));
+                }
+                catch (error) {
+                        console.log(error)
+                        setErrors(error.result)
+                }
+                setLoading(false);
+        }
+
         return (
                 <>
                         <ImageBackground style={styles.container} source={require('../../../assets/images/g52.png')}>
@@ -22,11 +73,31 @@ export default function InscriptionScreen() {
                                                 <View style={styles.inputCard}>
                                                         <View>
                                                                 <OutlinedTextField
-                                                                        label="Nom Complet"
+                                                                        label="Nom"
                                                                         fontWeight="Bold"
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setNom(em)}
+                                                                        value={nom}
+                                                                />
+                                                        </View>
+                                                        <View style={styles.InputIcon}>
+                                                                <FontAwesome name="user-o" size={20} color="black" />
+                                                        </View>
+
+                                                </View>
+
+                                                <View style={styles.inputCard}>
+                                                        <View>
+                                                                <OutlinedTextField
+                                                                        label="Prénom"
+                                                                        fontWeight="Bold"
+                                                                        inputContainerStyle={{ paddingRight: 40 }}
+                                                                        baseColor="#777"
+                                                                        tintColor="#1D8585"
+                                                                        onChangeText={(em) => setPrenom(em)}
+                                                                        value={prenom}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -43,6 +114,8 @@ export default function InscriptionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setEmail(em)}
+                                                                        value={email}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -59,6 +132,8 @@ export default function InscriptionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setPassword(em)}
+                                                                        value={password}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -75,6 +150,8 @@ export default function InscriptionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setConfrimPassword(em)}
+                                                                        value={confrimPassword}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -86,12 +163,14 @@ export default function InscriptionScreen() {
                                                 <View style={styles.inputCard}>
                                                         <View>
                                                                 <OutlinedTextField
-                                                                        label="Numero de telephone"
+                                                                        label="Numéro de téléphone"
                                                                         fontWeight="Bold"
                                                                         keyboardType="phone-pad"
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setTelephone(em)}
+                                                                        value={telephone}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -108,6 +187,8 @@ export default function InscriptionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
+                                                                        onChangeText={(em) => setAdressePhysique(em)}
+                                                                        value={adressePhysique}
                                                                 />
                                                         </View>
                                                         <View style={styles.InputIcon}>
@@ -116,15 +197,22 @@ export default function InscriptionScreen() {
 
                                                 </View>
 
-                                                <TouchableOpacity>
-                                                        <View style={styles.button}>
-                                                                <Text style={styles.buttonText}>S'inscrire</Text>
-                                                        </View>
-                                                </TouchableOpacity>
+                                                        {loading && <View style={{ flex: 1, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <ActivityIndicator color="#007BFF" animating={loading} size='large' />
+                                                        </View>}
 
-                                                <TouchableOpacity>
+                                                        <TouchableOpacity
+                                                                disabled={nom == '' || prenom == '' || email == '' || password == '' || confrimPassword == '' || telephone == '' || adressePhysique == ''}
+                                                                onPress={enregistrement}>
+                                                                <View style={[styles.button, (nom == '' || prenom == '' || email == '' || password == '' || confrimPassword == '' || telephone == '' || adressePhysique == '') && { opacity: 0.5 }]}>
+                                                                        <Text style={styles.buttonText}>S'inscrire</Text>
+                                                                </View>
+                                                        </TouchableOpacity>
+
+
+                                                <TouchableOpacity onPress={() => navigation.navigate("Connexion")}>
                                                         <View style={styles.cardButton}>
-                                                                <Text style={{ fontSize: 17, fontWeight: "bold", color: "#1D8585" }}> S'inscrire plus tard</Text>
+                                                                <Text style={{ fontSize: 13, fontWeight: "bold", color: "#1D8585" }}> S'inscrire plus tard</Text>
                                                         </View>
                                                 </TouchableOpacity>
 
@@ -183,9 +271,13 @@ const styles = StyleSheet.create({
                 alignItems: "center",
                 borderBottomWidth: 1,
                 borderBottomColor: "#1D8585",
-                marginHorizontal: 105
+                marginHorizontal: 118
         },
         container: {
                 flex: 1,
         },
+        errorss: {
+                fontSize: 12,
+                color: "red"
+        }
 })
