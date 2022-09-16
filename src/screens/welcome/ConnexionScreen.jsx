@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
-import { FontAwesome, Fontisto, EvilIcons, AntDesign, Feather } from '@expo/vector-icons';
+import { FontAwesome, Fontisto, EvilIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import fetchApi from "../../helpers/fetchApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,12 +14,14 @@ export default function ConnexionScreen() {
         const dispatch = useDispatch()
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
+        const [showPassword, setShowPassword] = useState(false)
+        const [errors, setErrors] = useState(null);
         const handleLogin = async () => {
                 const user = {
                         email,
                         password
                 }
-                console.log(user)
+                setErrors(null)
                 try {
                         const userData = await fetchApi("/users/login", {
                                 method: "POST",
@@ -32,6 +34,7 @@ export default function ConnexionScreen() {
 
                 catch (error) {
                         console.log(error)
+                        setErrors(error.result)
                 }
         }
         return (
@@ -76,32 +79,34 @@ export default function ConnexionScreen() {
                                                                         tintColor="#1D8585"
                                                                         onChangeText={(em)=>setPassword(em)}
                                                                         value={password}
+                                                                        secureTextEntry={!showPassword}
                                                                 />
                                                         </View>
-                                                        <View style={styles.InputIcon}>
-                                                                <EvilIcons name="lock" size={30} color="black" />
-                                                        </View>
+                                                        <TouchableOpacity style={styles.InputIcon} onPress={() => setShowPassword(t => !t)}>
+                                                                <Ionicons name={!showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#777" />
+                                                               
+                                                        </TouchableOpacity>
 
                                                 </View>
 
-                                                <TouchableOpacity onPress={handleLogin}>
-                                                        <View style={styles.button}>
+                                                <TouchableOpacity disabled={email == '' || password == ''} onPress={handleLogin} >
+                                                        <View style={[styles.button, (email == '' || password == '') && { opacity: 0.5 }]}>
                                                                 <Text style={styles.buttonText}>Se connecter</Text>
                                                         </View>
                                                 </TouchableOpacity>
 
-                                                <View>
+                                                { errors && <View>
 
                                                         <View style={styles.button2}>
                                                                 <View style={{ marginLeft: 20 }}>
                                                                         <AntDesign name="closecircleo" size={24} color="white" />
                                                                 </View>
                                                                 <View style={{ marginLeft: 10 }}>
-                                                                        <Text style={styles.buttonText}>Mot de passe incorrect</Text>
+                                                                        {errors && <Text style={styles.buttonText}>{errors.main ? errors.main[0] : errors.email[0]} </Text>}
                                                                 </View>
 
                                                         </View>
-                                                </View>
+                                                </View>}
 
 
 

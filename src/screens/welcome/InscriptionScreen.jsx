@@ -124,7 +124,7 @@ export default function InscriptionScreen() {
 
                                                 <TouchableOpacity>
                                                         <View style={styles.cardButton}>
-                                                                <Text style={{ fontSize: 17, fontWeight: "bold", color: "#1D8585" }}> S'inscrire plus tard</Text>
+                                                                <Text style={{ fontSize: 13, fontWeight: "bold", color: "#1D8585" }}> S'inscrire plus tard</Text>
                                                         </View>
                                                 </TouchableOpacity>
 
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
                 alignItems: "center",
                 borderBottomWidth: 1,
                 borderBottomColor: "#1D8585",
-                marginHorizontal: 105
+                marginHorizontal: 118
         },
         container: {
                 flex: 1,
