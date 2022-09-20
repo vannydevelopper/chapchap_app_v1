@@ -4,10 +4,10 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View, ActivityIndicator } from "react-native";
 import LoginScreen from "./screens/welcome/LoginScreen";
-import HomeScreen from "./screens/Home/HomeScreen";
+import HomeScreen from "./screens/home/HomeScreen";
 import DrawerScreen from "./screens/homeDrawer/DrawerScreen";
 import DetailAchatScreen from "./screens/homeDrawer/DetailsAchatScreen";
-import HomeScreen from "./screens/home/HomeScreen";
+
 import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../src/store/selectors/userSelector"
 import { setUserAction } from "./store/actions/userActions"
@@ -27,7 +27,8 @@ export default function AppContainer() {
                 })()
         }, [dispatch])
 
-        return ( userLoading ?
+        return ( 
+                userLoading ?
                 <View style={{ flex: 1, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
                                         <ActivityIndicator color="#007BFF" animating={userLoading} size='large' />
                               </View> :
@@ -35,10 +36,13 @@ export default function AppContainer() {
                 <NavigationContainer>
                         <Stack.Navigator>
                                 {!user ?
-                                        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/> :
-                                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>}
+                           
+
+                                 <Stack.Screen name="Login" component={DetailAchatScreen} options={{ headerShown: false }}/> :
+                                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+                                } 
                         </Stack.Navigator>
                 </NavigationContainer>
-                </>
+                 </>
         )
 }
