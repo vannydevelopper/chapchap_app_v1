@@ -24,7 +24,8 @@ export default function AppContainer() {
                 })()
         }, [dispatch])
 
-        return ( userLoading ?
+        return ( 
+                userLoading ?
                 <View style={{ flex: 1, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
                                         <ActivityIndicator color="#007BFF" animating={userLoading} size='large' />
                               </View> :
@@ -38,6 +39,6 @@ export default function AppContainer() {
                                 }
                         </Stack.Navigator>
                 </NavigationContainer>
-                </>
+                 </>
         )
 }
