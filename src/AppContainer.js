@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View, ActivityIndicator } from "react-native";
 import LoginScreen from "./screens/welcome/LoginScreen";
-// import HomeScreen from "./screens/Home/HomeScreen";
-import HomeScreen from "./screens/Home/HomeScreen";
 import AchatProduitsScreens from "./screens/e-commerce/AchatProduitsScreens";
 import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../src/store/selectors/userSelector"

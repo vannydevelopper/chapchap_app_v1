@@ -6,7 +6,8 @@ import { useFocusEffect } from "@react-navigation/native";
 
 export default function AchatProduitsScreens() {
         const { height } = useWindowDimensions()
-        const [produits, setproduits] = useState([])
+        const [categories, setCategories] = useState([])
+        const [selectedCategorie, setSelectedCategorie] = useState(null)
         const fecthProduits = async () => {
                 try {
 
@@ -14,7 +15,7 @@ export default function AchatProduitsScreens() {
                                 method: "GET",
                                 headers: { "Content-Type": "application/json" },
                         })
-                        setproduits(response)
+                        setCategories(response.result)
                         console.log(response)
                 }
                 catch (error) {
@@ -24,6 +25,10 @@ export default function AchatProduitsScreens() {
         useFocusEffect(useCallback(() => {
                 fecthProduits()
         }, []))
+
+        const selectedItemCategories = (categorie) => {
+                setSelectedCategorie(categorie)
+        }
         return (
                 <View style={styles.container}>
                         <View style={{ backgroundColor: "#fff", marginBottom: 15 }}>
@@ -54,14 +59,14 @@ export default function AchatProduitsScreens() {
                                         <Text style={{ fontSize: 12, fontWeight: "bold" }}>Voir plus</Text>
                                 </View>
                                 <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                                {produits.result.map((prod, index) => {
+                                {categories.map((categorie, index) => {
                                         return (
-                                                <TouchableOpacity key={index}>
+                                                <TouchableOpacity key={index} onPress={()=>selectedItemCategories(categorie)}>
                                                         <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                                <View style={styles.cardPhoto}>
+                                                                <View style={[styles.cardPhoto, {backgroundColor:categorie.ID_CATEGORIE_PRODUIT==selectedCategorie?.ID_CATEGORIE_PRODUIT ? "#242F68" : "#DFE1E9"} ]}>
                                                                         <Ionicons name="shirt-sharp" size={24} color="white" />
                                                                 </View>
-                                                                <Text style={{ fontSize: 12, fontWeight: "bold" }}>{prod.NOM}</Text>
+                                                                <Text style={{ fontSize: 12, fontWeight: "bold" }}>{categorie.NOM}</Text>
                                                         </View>
                                                 </TouchableOpacity>
                                         )
@@ -198,7 +203,8 @@ const styles = StyleSheet.create({
                 marginTop: 10,
                 width: 50,
                 height: 50,
-                backgroundColor: "#242F68",
+                //backgroundColor: "#242F68",
+                backgroundColor: "#DFE1E9",
                 borderRadius: 10,
                 justifyContent: "center",
                 alignItems: "center",
