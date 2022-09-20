@@ -5,7 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View, ActivityIndicator } from "react-native";
 import LoginScreen from "./screens/welcome/LoginScreen";
 // import HomeScreen from "./screens/Home/HomeScreen";
-import HomeScreen from "./screens/home/HomeScreen";
+import HomeScreen from "./screens/Home/HomeScreen";
+import AchatProduitsScreens from "./screens/e-commerce/AchatProduitsScreens";
 import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../src/store/selectors/userSelector"
 import { setUserAction } from "./store/actions/userActions"
@@ -34,7 +35,9 @@ export default function AppContainer() {
                         <Stack.Navigator>
                                 {!user ?
                                         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }}/> :
-                                <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>}
+                                        <Stack.Screen name="Achat" component={AchatProduitsScreens} options={{ headerShown: false }}/>
+                                // <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+                                }
                         </Stack.Navigator>
                 </NavigationContainer>
                 </>
