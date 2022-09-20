@@ -10,7 +10,8 @@ import AchatProduitsScreens from './src/screens/e-commerce/AchatProduitsScreens'
 export default function App() {
   return (
     <Provider store={store}>
-    <AchatProduitsScreens/>
+    {/* <AchatProduitsScreens/> */}
+    <AppContainer/>
     </Provider>
 
   )
