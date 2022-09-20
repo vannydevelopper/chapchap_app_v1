@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Image } from "react-native";
 import { Text, StyleSheet, View, ScrollView, ImageBackground } from "react-native";
 import { Feather } from '@expo/vector-icons';
+
 export default function HomeScreen() {
+    
     return (
         <ImageBackground style={styles.imgBackground} source={require('../../../assets/images/g52.png')}>
             <View style={styles.cardHeader}>

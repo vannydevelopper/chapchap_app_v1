@@ -5,10 +5,12 @@ import LoginScreen from './src/screens/welcome/LoginScreen';
 import AppContainer from './src/AppContainer';
 import { Provider } from 'react-redux';
 import {store} from './src/store'
+import AchatProduitsScreens from './src/screens/e-commerce/AchatProduitsScreens';
 
 export default function App() {
   return (
     <Provider store={store}>
+    {/* <AchatProduitsScreens/> */}
     <AppContainer/>
     </Provider>
 
