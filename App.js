@@ -8,6 +8,7 @@ import { store } from './src/store'
 import AchatProduitsScreens from './src/screens/e-commerce/AchatProduitsScreens';
 import ServicePersonneScreen from './src/screens/e-commerce/ServicePersonneScreen';
 import { Host } from 'react-native-portalize';
+import CommandeEmiseScreen from './src/screens/e-commerce/CommandeEmiseScreen';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         {/* <AppContainer/> */}
         <ServicePersonneScreen />
       </Host>
+    {/* <AppContainer/> */}
     </Provider>
 
   )
