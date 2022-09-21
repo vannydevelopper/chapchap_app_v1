@@ -13,7 +13,7 @@ export default function ServicePersonneScreen() {
                                 <View style={styles.modalList}>
                                         <View style={styles.modalItem}>
                                                 <View style={{ justifyContent: "center", alignItems: "center", alignContent: "center", flex: 1 }}>
-                                                        {/* <Text style={{fontSize:20}}>------------</Text> */}
+                                                        
                                                         <Text style={{ fontSize: 15, fontWeight: "bold" }}>Profil du plombier</Text>
                                                 </View>
                                                 <View style={{ marginBottom: 20, marginTop: 20 }}>
