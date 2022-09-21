@@ -10,9 +10,12 @@ import ServicePersonneScreen from './src/screens/e-commerce/ServicePersonneScree
 import { Host } from 'react-native-portalize';
 import CommandeEmiseScreen from './src/screens/e-commerce/CommandeEmiseScreen';
 
+
 export default function App() {
   return (
     <Provider store={store}>
+   
+    {/* // <AppContainer/> */}
       <Host>
         {/* <AchatProduitsScreens/> */}
         {/* <AppContainer/> */}

@@ -1,10 +1,14 @@
 import React, { useCallback, useState } from "react";
-import { Image } from "react-native";
-import { Text, StyleSheet, View, ScrollView, ImageBackground } from "react-native";
+import {
+    Text, StyleSheet, View, ScrollView, ImageBackground, Dimensions,
+    Image
+} from "react-native";
 import { Feather } from '@expo/vector-icons';
+import ViewSlider from 'react-native-view-slider'
 
+const { width, height } = Dimensions.get('window');
 export default function HomeScreen() {
-    
+
     return (
         <ImageBackground style={styles.imgBackground} source={require('../../../assets/images/g52.png')}>
             <View style={styles.cardHeader}>
@@ -13,10 +17,38 @@ export default function HomeScreen() {
                     <Feather name="menu" size={35} color="#1D8585" />
                 </View>
             </View>
+
             <ScrollView style={{ marginTop: 10, marginBottom: 50 }}>
-                <View style={{ width: '100%', marginTop: 10 }}>
-                    <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
+               <View>
+                <ViewSlider
+                    renderSlides={
+                        <>
+                            <View style={styles.viewBox}>
+                                <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
+                            </View>
+                            <View style={styles.viewBox}>
+                                <Image source={require('../../../assets/images/zane-persaud-gOCpvLq2OzY-unsplash.jpg')} style={{ ...styles.imagePrincipal }} />
+                            </View>
+                            <View style={styles.viewBox}>
+                                <Image source={require('../../../assets/images/pexels-emmanuel-ikwuegbu-8005397.jpg')} style={styles.imagePrincipal} />
+                            </View>
+                            <View style={styles.viewBox}>
+                                <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={styles.imagePrincipal} />
+                            </View>
+                        </>
+                    }
+                    style={styles.slider}     //Main slider container style
+                    height={240}    //Height of your slider
+                    slideCount={4}    //How many views you are adding to slide
+                    dots={true}     // Pagination dots visibility true for visibile 
+                    dotActiveColor='#399595'     //Pagination dot active color
+                    dotInactiveColor='#D2E9E9'    // Pagination do inactive color
+                    dotsContainerStyle={styles.dotContainer}     // Container style of the pagination dots
+                    autoSlide={true}    //The views will slide automatically
+                    slideInterval={2000}    //In Miliseconds
+                />
                 </View>
+<View>
                 <View style={styles.cardPrincipal}>
                     <Text style={styles.text}>Catégories de service</Text>
                     <View style={styles.container}>
@@ -80,6 +112,7 @@ export default function HomeScreen() {
                         </View>
                     </View>
                 </View>
+                </View>
             </ScrollView>
         </ImageBackground>
     )
@@ -94,7 +127,7 @@ const styles = StyleSheet.create({
         elevation: 8,
         borderWidth: 2,
         borderColor: '#fff',
-        marginTop: 20,
+        marginTop: 0,
         marginBottom: 150
     },
     cardHeader: {
@@ -129,10 +162,11 @@ const styles = StyleSheet.create({
     },
     imagePrincipal:
     {
-        width: '80%',
-        height: 100,
+        width: '90%',
+        height: 150,
         alignSelf: 'center',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop:70
     },
     icon: {
         width: 50,
@@ -166,6 +200,25 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignContent: "center",
         alignItems: "center"
+    },
+    viewBox: {
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        width: width,
+        padding: 10,
+        alignItems: 'center',
+        height: 150
+    },
+    slider: {
+        alignSelf: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // backgroundColor: 'pink'
+    },
+    dotContainer: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        bottom: 15
     }
 
 })
