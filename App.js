@@ -16,7 +16,15 @@ export default function App() {
   return (
     <Provider store={store}>
 
-    <MenuDetailScreen/>
+   
+    {/* // <AppContainer/> */}
+      <Host>
+        {/* <AchatProduitsScreens/> */}
+        {/* <AppContainer/> */}
+        {/* <ServicePersonneScreen />
+       */}
+        <AppContainer />
+      </Host>
     </Provider>
 
   )

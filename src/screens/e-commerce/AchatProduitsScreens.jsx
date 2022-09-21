@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
@@ -9,6 +9,8 @@ export default function AchatProduitsScreens() {
         const [categories, setCategories] = useState([])
         const [sousCategories, SetSousCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
+        const [selectedsousCategories, setSelectedsousCategories] = useState(null)
+        // fetch des Categories
         const fecthProduits = async () => {
                 try {
 
@@ -17,7 +19,7 @@ export default function AchatProduitsScreens() {
                                 headers: { "Content-Type": "application/json" },
                         })
                         setCategories(response.result)
-                        // console.log(response)
+                        console.log(response)
                 }
                 catch (error) {
                         console.log(error)
@@ -30,27 +32,28 @@ export default function AchatProduitsScreens() {
         const selectedItemCategories = (categorie) => {
                 setSelectedCategorie(categorie)
         }
-        const fecthSouscategories = async () => {
-                try {
-                        const subCategories = await fetchApi("/products/all_sub_categories", {
-                                method: "GET",
-                                headers: { "Content-Type": "application/json" },
 
-
-                        })
-                        SetSousCategories(subCategories.result)
-                        console.log(subCategories.result)
-                }
-                catch (error) {
-                        console.log(error)
-                }
-
-
+        const selectedItemSousCategories = (souscategorie) => {
+                setSelectedsousCategories(souscategorie)
         }
-        useFocusEffect(useCallback(() => {
-                fecthSouscategories()
 
-        }, []))
+        //fetch des sous  categories
+        useEffect(() => {
+                (async () => {
+                        if (selectedCategorie?.ID_CATEGORIE_PRODUIT) {
+                                const subCategories = await fetchApi(`/products/sub_categories/${selectedCategorie?.ID_CATEGORIE_PRODUIT}`, {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+
+
+                                })
+                                SetSousCategories(subCategories.result)
+                                console.log(subCategories.result)
+                        }
+
+                })()
+        }, [selectedCategorie])
+
         return (
                 <View style={styles.container}>
                         <View style={{ backgroundColor: "#fff", marginBottom: 15 }}>
@@ -95,22 +98,22 @@ export default function AchatProduitsScreens() {
                                         })}
                                 </View>
 
-                                {/* <ScrollView horizontal >
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-
-                                                {sousCategories.map((sousCategorie, index) => {
-
+                                <ScrollView horizontal >
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                {sousCategories.map((souscategorie, index) => {
                                                         return (
-                                                                <TouchableOpacity key={index} style={styles.tireCard}>
-                                                                        <Text style={{ fontWeight: "bold", fontSize: 16 }}>{sousCategorie.NOM}<Text>{"   "}</Text></Text>
+                                                                <TouchableOpacity key={index} onPress={() => selectedItemSousCategories(souscategorie)} style={{ marginTop: 20 }}>
+                                                                        <TouchableOpacity>
+                                                                                <View style={[styles.tireCard, {backgroundColor: souscategorie.ID_CATEGORIE_PRODUIT == selectedsousCategories?.ID_CATEGORIE_PRODUIT ? "#DFE1E9" : "#242F68"}]}>
+                                                                                        <Text style={{ fontWeight: "bold", fontSize: 16 }}>{souscategorie.NOM_SOUS_CATEGORIE}</Text>
+                                                                                </View>
+                                                                        </TouchableOpacity>
+
                                                                 </TouchableOpacity>
                                                         )
-
                                                 })}
-
-
                                         </View>
-                                </ScrollView> */}
+                                </ScrollView>
                         </View>
                         <ScrollView>
                                 <View style={{ flexDirection: "row", marginHorizontal: 20, justifyContent: "space-between", marginBottom: 10 }}>
@@ -247,9 +250,9 @@ const styles = StyleSheet.create({
         tireCard: {
                 borderBottomWidth: 3,
                 borderBottomColor: "#F04A5C",
-
-
-
+                padding: 5,
+                margin: 5
+                // backgroundColor:"red",
 
         },
         cardAchat: {
