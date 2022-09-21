@@ -16,7 +16,7 @@ export default function AchatProduitsScreens() {
                                 headers: { "Content-Type": "application/json" },
                         })
                         setCategories(response.result)
-                        console.log(response)
+                        // console.log(response)
                 }
                 catch (error) {
                         console.log(error)
