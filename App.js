@@ -6,11 +6,11 @@ import AppContainer from './src/AppContainer';
 import { Provider } from 'react-redux';
 import {store} from './src/store'
 import AchatProduitsScreens from './src/screens/e-commerce/AchatProduitsScreens';
+import CommandeEmiseScreen from './src/screens/e-commerce/CommandeEmiseScreen';
 
 export default function App() {
   return (
     <Provider store={store}>
-    {/* <AchatProduitsScreens/> */}
     <AppContainer/>
     </Provider>
 
