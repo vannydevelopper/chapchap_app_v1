@@ -16,9 +16,10 @@ export default function App() {
       <Host>
         {/* <AchatProduitsScreens/> */}
         {/* <AppContainer/> */}
-        <ServicePersonneScreen />
+        {/* <ServicePersonneScreen />
+       */}
+        <AppContainer />
       </Host>
-    {/* <AppContainer/> */}
     </Provider>
 
   )
