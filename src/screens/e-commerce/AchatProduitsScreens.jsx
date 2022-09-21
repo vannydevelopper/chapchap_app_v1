@@ -7,6 +7,7 @@ import { useFocusEffect } from "@react-navigation/native";
 export default function AchatProduitsScreens() {
         const { height } = useWindowDimensions()
         const [categories, setCategories] = useState([])
+        const [sousCategories, SetSousCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
         const fecthProduits = async () => {
                 try {
@@ -16,7 +17,7 @@ export default function AchatProduitsScreens() {
                                 headers: { "Content-Type": "application/json" },
                         })
                         setCategories(response.result)
-                        console.log(response)
+                        // console.log(response)
                 }
                 catch (error) {
                         console.log(error)
@@ -29,6 +30,27 @@ export default function AchatProduitsScreens() {
         const selectedItemCategories = (categorie) => {
                 setSelectedCategorie(categorie)
         }
+        const fecthSouscategories = async () => {
+                try {
+                        const subCategories = await fetchApi("/products/all_sub_categories", {
+                                method: "GET",
+                                headers: { "Content-Type": "application/json" },
+
+
+                        })
+                        SetSousCategories(subCategories.result)
+                        console.log(subCategories.result)
+                }
+                catch (error) {
+                        console.log(error)
+                }
+
+
+        }
+        useFocusEffect(useCallback(() => {
+                fecthSouscategories()
+
+        }, []))
         return (
                 <View style={styles.container}>
                         <View style={{ backgroundColor: "#fff", marginBottom: 15 }}>
@@ -58,33 +80,37 @@ export default function AchatProduitsScreens() {
                                         </View>
                                         <Text style={{ fontSize: 12, fontWeight: "bold" }}>Voir plus</Text>
                                 </View>
-                                <View style={{flexDirection:"row", justifyContent:"space-between"}}>
-                                {categories.map((categorie, index) => {
-                                        return (
-                                                <TouchableOpacity key={index} onPress={()=>selectedItemCategories(categorie)}>
-                                                        <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                                <View style={[styles.cardPhoto, {backgroundColor:categorie.ID_CATEGORIE_PRODUIT==selectedCategorie?.ID_CATEGORIE_PRODUIT ? "#242F68" : "#DFE1E9"} ]}>
-                                                                        <Ionicons name="shirt-sharp" size={24} color="white" />
+                                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                        {categories.map((categorie, index) => {
+                                                return (
+                                                        <TouchableOpacity key={index} onPress={() => selectedItemCategories(categorie)}>
+                                                                <View style={{ alignContent: "center", alignItems: "center" }}>
+                                                                        <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? "#242F68" : "#DFE1E9" }]}>
+                                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
+                                                                        </View>
+                                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{categorie.NOM}</Text>
                                                                 </View>
-                                                                <Text style={{ fontSize: 12, fontWeight: "bold" }}>{categorie.NOM}</Text>
-                                                        </View>
-                                                </TouchableOpacity>
-                                        )
-                                })}
+                                                        </TouchableOpacity>
+                                                )
+                                        })}
                                 </View>
 
+                                {/* <ScrollView horizontal >
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
 
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-                                        <TouchableOpacity style={styles.tireCard}>
-                                                <Text style={{ fontWeight: "bold", fontSize: 17 }}>Chemises</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                                <Text style={{ fontWeight: "bold", color: "#ddd", fontSize: 17 }}>Pantalons</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                                <Text style={{ fontWeight: "bold", color: "#ddd", fontSize: 17 }}>Sous-vetements</Text>
-                                        </TouchableOpacity>
-                                </View>
+                                                {sousCategories.map((sousCategorie, index) => {
+
+                                                        return (
+                                                                <TouchableOpacity key={index} style={styles.tireCard}>
+                                                                        <Text style={{ fontWeight: "bold", fontSize: 16 }}>{sousCategorie.NOM}<Text>{"   "}</Text></Text>
+                                                                </TouchableOpacity>
+                                                        )
+
+                                                })}
+
+
+                                        </View>
+                                </ScrollView> */}
                         </View>
                         <ScrollView>
                                 <View style={{ flexDirection: "row", marginHorizontal: 20, justifyContent: "space-between", marginBottom: 10 }}>
@@ -220,7 +246,11 @@ const styles = StyleSheet.create({
         },
         tireCard: {
                 borderBottomWidth: 3,
-                borderBottomColor: "#F04A5C"
+                borderBottomColor: "#F04A5C",
+
+
+
+
         },
         cardAchat: {
                 marginTop: 20,
