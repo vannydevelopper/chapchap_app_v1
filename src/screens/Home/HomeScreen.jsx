@@ -19,99 +19,99 @@ export default function HomeScreen() {
             </View>
 
             <ScrollView style={{ marginTop: 10, marginBottom: 50 }}>
-               <View>
-                <ViewSlider
-                    renderSlides={
-                        <>
-                            <View style={styles.viewBox}>
-                                <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
-                            </View>
-                            <View style={styles.viewBox}>
-                                <Image source={require('../../../assets/images/zane-persaud-gOCpvLq2OzY-unsplash.jpg')} style={{ ...styles.imagePrincipal }} />
-                            </View>
-                            <View style={styles.viewBox}>
-                                <Image source={require('../../../assets/images/pexels-emmanuel-ikwuegbu-8005397.jpg')} style={styles.imagePrincipal} />
-                            </View>
-                            <View style={styles.viewBox}>
-                                <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={styles.imagePrincipal} />
-                            </View>
-                        </>
-                    }
-                    style={styles.slider}     //Main slider container style
-                    height={240}    //Height of your slider
-                    slideCount={4}    //How many views you are adding to slide
-                    dots={true}     // Pagination dots visibility true for visibile 
-                    dotActiveColor='#399595'     //Pagination dot active color
-                    dotInactiveColor='#D2E9E9'    // Pagination do inactive color
-                    dotsContainerStyle={styles.dotContainer}     // Container style of the pagination dots
-                    autoSlide={true}    //The views will slide automatically
-                    slideInterval={2000}    //In Miliseconds
-                />
+                <View>
+                    <ViewSlider
+                        renderSlides={
+                            <>
+                                <View style={styles.viewBox}>
+                                    <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
+                                </View>
+                                <View style={styles.viewBox}>
+                                    <Image source={require('../../../assets/images/zane-persaud-gOCpvLq2OzY-unsplash.jpg')} style={{ ...styles.imagePrincipal }} />
+                                </View>
+                                <View style={styles.viewBox}>
+                                    <Image source={require('../../../assets/images/pexels-emmanuel-ikwuegbu-8005397.jpg')} style={styles.imagePrincipal} />
+                                </View>
+                                <View style={styles.viewBox}>
+                                    <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={styles.imagePrincipal} />
+                                </View>
+                            </>
+                        }
+                        style={styles.slider}     //Main slider container style
+                        height={240}    //Height of your slider
+                        slideCount={4}    //How many views you are adding to slide
+                        dots={true}     // Pagination dots visibility true for visibile 
+                        dotActiveColor='#399595'     //Pagination dot active color
+                        dotInactiveColor='#D2E9E9'    // Pagination do inactive color
+                        dotsContainerStyle={styles.dotContainer}     // Container style of the pagination dots
+                        autoSlide={true}    //The views will slide automatically
+                        slideInterval={2000}    //In Miliseconds
+                    />
                 </View>
-<View>
-                <View style={styles.cardPrincipal}>
-                    <Text style={styles.text}>Catégories de service</Text>
-                    <View style={styles.container}>
-                        <View>
-                            <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={{ ...styles.imageContainer, marginRight: 10 }} />
-                            <View style={styles.icon}>
-                                <Image source={require('../../../assets/images/fireworks-on-event-day-reminder-calendar-page-of-interface-svgrepo-com.png')} style={styles.imageIcon} />
+                <View>
+                    <View style={styles.cardPrincipal}>
+                        <Text style={styles.text}>Catégories de service</Text>
+                        <View style={styles.container}>
+                            <View>
+                                <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={{ ...styles.imageContainer, marginRight: 10 }} />
+                                <View style={styles.icon}>
+                                    <Image source={require('../../../assets/images/fireworks-on-event-day-reminder-calendar-page-of-interface-svgrepo-com.png')} style={styles.imageIcon} />
+                                </View>
+                                <View style={styles.Txt}>
+                                    <Text style={styles.DisplayText}>Achats de produits</Text>
+                                </View>
                             </View>
-                            <View style={styles.Txt}>
-                                <Text style={styles.DisplayText}>Achats de produits</Text>
+                            <View>
+                                <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={styles.imageContainer} />
+                                <View style={styles.icon}>
+                                    <Image source={require('../../../assets/images/food-svgrepo-com.png')} style={styles.imageIcon} />
+                                </View>
+                                <View style={styles.Txt}>
+                                    <Text style={styles.DisplayText}>Restauration</Text>
+                                </View>
                             </View>
                         </View>
-                        <View>
-                            <Image source={require('../../../assets/images/front-view-packed-food-prepared-takeaway.jpg')} style={styles.imageContainer} />
-                            <View style={styles.icon}>
-                                <Image source={require('../../../assets/images/food-svgrepo-com.png')} style={styles.imageIcon} />
+                        <View style={styles.container}>
+                            <View>
+                                <Image source={require('../../../assets/images/zane-persaud-gOCpvLq2OzY-unsplash.jpg')} style={{ ...styles.imageContainer, marginRight: 10 }} />
+                                <View style={styles.icon}>
+                                    <Image source={require('../../../assets/images/fireworks-on-event-day-reminder-calendar-page-of-interface-svgrepo-com.png')} style={styles.imageIcon} />
+                                </View>
+                                <View style={styles.Txt}>
+                                    <Text style={styles.DisplayText}>Evénement</Text>
+                                </View>
                             </View>
-                            <View style={styles.Txt}>
-                                <Text style={styles.DisplayText}>Restauration</Text>
+                            <View>
+                                <Image source={require('../../../assets/images/pexels-emmanuel-ikwuegbu-8005397.jpg')} style={styles.imageContainer} />
+                                <View style={styles.icon}>
+                                    <Image source={require('../../../assets/images/plumber-svgrepo-com.png')} style={styles.imageIcon} />
+                                </View>
+                                <View style={styles.Txt}>
+                                    <Text style={styles.DisplayText}>Service à la personne</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.container}>
+                            <View>
+                                <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imageContainer, marginRight: 10 }} />
+                                <View style={styles.icon}>
+                                    <Image source={require('../../../assets/images/hotel-svgrepo-com.png')} style={styles.imageIcon} />
+                                </View>
+                                <View style={styles.Txt}>
+                                    <Text style={styles.DisplayText}>Hotel</Text>
+                                </View>
+                            </View>
+                            <View>
+                                <Image source={require('../../../assets/images/sms222.jpg')} style={styles.imageContainer} />
+                                <View style={styles.icon}>
+                                    <Image source={require('../../../assets/images/marketing-mail-svgrepo-com.png')} style={styles.imageIcon} />
+                                </View>
+                                <View style={styles.Txt}>
+                                    <Text style={styles.DisplayText} numberOfLines={2}>Publicité et Campagne</Text>
+                                </View>
                             </View>
                         </View>
                     </View>
-                    <View style={styles.container}>
-                        <View>
-                            <Image source={require('../../../assets/images/zane-persaud-gOCpvLq2OzY-unsplash.jpg')} style={{ ...styles.imageContainer, marginRight: 10 }} />
-                            <View style={styles.icon}>
-                                <Image source={require('../../../assets/images/fireworks-on-event-day-reminder-calendar-page-of-interface-svgrepo-com.png')} style={styles.imageIcon} />
-                            </View>
-                            <View style={styles.Txt}>
-                                <Text style={styles.DisplayText}>Evénement</Text>
-                            </View>
-                        </View>
-                        <View>
-                            <Image source={require('../../../assets/images/pexels-emmanuel-ikwuegbu-8005397.jpg')} style={styles.imageContainer} />
-                            <View style={styles.icon}>
-                                <Image source={require('../../../assets/images/plumber-svgrepo-com.png')} style={styles.imageIcon} />
-                            </View>
-                            <View style={styles.Txt}>
-                                <Text style={styles.DisplayText}>Service à la personne</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.container}>
-                        <View>
-                            <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imageContainer, marginRight: 10 }} />
-                            <View style={styles.icon}>
-                                <Image source={require('../../../assets/images/hotel-svgrepo-com.png')} style={styles.imageIcon} />
-                            </View>
-                            <View style={styles.Txt}>
-                                <Text style={styles.DisplayText}>Hotel</Text>
-                            </View>
-                        </View>
-                        <View>
-                            <Image source={require('../../../assets/images/sms222.jpg')} style={styles.imageContainer} />
-                            <View style={styles.icon}>
-                                <Image source={require('../../../assets/images/marketing-mail-svgrepo-com.png')} style={styles.imageIcon} />
-                            </View>
-                            <View style={styles.Txt}>
-                                <Text style={styles.DisplayText} numberOfLines={2}>Publicité et Campagne</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
                 </View>
             </ScrollView>
         </ImageBackground>
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
         height: 150,
         alignSelf: 'center',
         borderRadius: 10,
-        marginTop:70
+        marginTop: 70
     },
     icon: {
         width: 50,
