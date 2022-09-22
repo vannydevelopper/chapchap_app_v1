@@ -238,7 +238,7 @@ export default function RestaurantHomeScreen() {
                                                 </View>
                                         </TouchableOpacity>
                                 </View>
-                                <ScrollView keyboardShouldPersistTaps="handled">
+                                <ScrollView showsVerticalScrollIndicator={false}>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                                                 <TouchableOpacity onPress={() => restaurantRef.current.open()}>
                                                         <View style={styles.cardAchatDescription}>
