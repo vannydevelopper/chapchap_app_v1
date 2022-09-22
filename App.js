@@ -26,8 +26,8 @@ export default function App() {
         {/* <ServicePersonneScreen />
        */}
         {/* <AppContainer /> */}
-        {/* <RestaurantHomeScreen/> */}
-        <PanierScreen/>
+        <RestaurantHomeScreen/>
+        {/* <PanierScreen/> */}
       </Host>
     </Provider>
 

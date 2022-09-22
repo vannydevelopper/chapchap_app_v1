@@ -6,11 +6,11 @@ import { Modalize } from "react-native-modalize";
 
 
 export default function RestaurantHomeScreen() {
-        const restaurantRef = useRef(null)
+        const ajoutPanierRef = useRef(null)
         const filtreRef = useRef(null)
-        const DetailRestaurantModalize = () => {
+        const AjoutPanierModalize = () => {
                 return (
-                        <TouchableNativeFeedback style={styles.modalContent} onPress={() => restaurantRef.current.close()}>
+                        <TouchableNativeFeedback style={styles.modalContent} onPress={() => ajoutPanierRef.current.close()}>
                                 <View style={styles.modalList}>
                                         <View style={styles.modalItem}>
                                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -143,14 +143,15 @@ export default function RestaurantHomeScreen() {
                                                                 </View>
                                                         </View>
                                                 </View>
-                                                <TouchableOpacity style={{...styles.cardBouton, marginTop:20}}>
-                                                        <Text style={{ textAlign: 'center', color: 'white', fontWeight:"bold" }}>Ajouter le filtre</Text>
+                                                <TouchableOpacity style={{ ...styles.cardBouton, marginTop: 20 }}>
+                                                        <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter le filtre</Text>
                                                 </TouchableOpacity>
                                         </View>
                                 </View>
                         </TouchableNativeFeedback>
                 )
         }
+
         return (
                 <>
                         <View style={styles.container}>
@@ -240,85 +241,85 @@ export default function RestaurantHomeScreen() {
                                 </View>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
-                                                        <View style={styles.cardAchatDescription}>
+                                                <View >
+                                                        <TouchableOpacity style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/chickenBurger.png')} style={styles.imageDescription} />
-                                                        </View>
+                                                        </TouchableOpacity>
                                                         <View style={{ flexDirection: "row" }}>
-                                                                <View style={styles.cardLike}>
+                                                                <TouchableOpacity style={styles.cardLike}>
                                                                         <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </View>
-                                                                <View style={styles.cardLike2}>
+                                                                </TouchableOpacity>
+                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
                                                                         <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </View>
+                                                                </TouchableOpacity>
                                                         </View>
                                                         <View style={styles.titleName}>
                                                                 <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Riz Tropitel</Text>
                                                         </View>
                                                         <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
 
-                                                </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
-                                                        <View style={styles.cardAchatDescription}>
+                                                </View>
+                                                <View>
+                                                        <TouchableOpacity style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.imageDescription} />
-                                                        </View>
+                                                        </TouchableOpacity>
                                                         <View style={{ flexDirection: "row" }}>
-                                                                <View style={styles.cardLike}>
+                                                                <TouchableOpacity style={styles.cardLike}>
                                                                         <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </View>
-                                                                <View style={styles.cardLike2}>
+                                                                </TouchableOpacity>
+                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
                                                                         <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </View>
+                                                                </TouchableOpacity>
                                                         </View>
                                                         <View style={styles.titleName}>
                                                                 <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Poulet grille</Text>
                                                         </View>
                                                         <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
 
-                                                </TouchableOpacity>
+                                                </View>
                                         </View>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
-                                                        <View style={styles.cardAchatDescription}>
+                                                <View>
+                                                        <TouchableOpacity style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/chickenBurger.png')} style={styles.imageDescription} />
-                                                        </View>
+                                                        </TouchableOpacity>
                                                         <View style={{ flexDirection: "row" }}>
-                                                                <View style={styles.cardLike}>
+                                                                <TouchableOpacity style={styles.cardLike}>
                                                                         <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </View>
-                                                                <View style={styles.cardLike2}>
+                                                                </TouchableOpacity>
+                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
                                                                         <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </View>
+                                                                </TouchableOpacity>
                                                         </View>
                                                         <View style={styles.titleName}>
                                                                 <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Riz Tropitel</Text>
                                                         </View>
                                                         <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
 
-                                                </TouchableOpacity>
-                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
-                                                        <View style={styles.cardAchatDescription}>
+                                                </View>
+                                                <View>
+                                                        <TouchableOpacity style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.imageDescription} />
-                                                        </View>
+                                                        </TouchableOpacity>
                                                         <View style={{ flexDirection: "row" }}>
-                                                                <View style={styles.cardLike}>
+                                                                <TouchableOpacity style={styles.cardLike}>
                                                                         <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </View>
-                                                                <View style={styles.cardLike2}>
+                                                                </TouchableOpacity>
+                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
                                                                         <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </View>
+                                                                </TouchableOpacity>
                                                         </View>
                                                         <View style={styles.titleName}>
                                                                 <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Poulet grille</Text>
                                                         </View>
                                                         <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
 
-                                                </TouchableOpacity>
+                                                </View>
                                         </View>
                                 </ScrollView>
                                 <Portal>
-                                        <Modalize ref={restaurantRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                <DetailRestaurantModalize />
+                                        <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
+                                                <AjoutPanierModalize />
                                         </Modalize>
                                 </Portal>
 
@@ -327,6 +328,7 @@ export default function RestaurantHomeScreen() {
                                                 <FiltreModal />
                                         </Modalize>
                                 </Portal>
+
                         </View>
                 </>
 
@@ -511,6 +513,10 @@ const styles = StyleSheet.create({
                 alignContent: "center",
                 alignItems: "center",
                 justifyContent: "center"
+        },
+        imageModalPanier: {
+                width: 70,
+                height: 70,
         }
 
 
