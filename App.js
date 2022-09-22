@@ -9,6 +9,7 @@ import AchatProduitsScreens from './src/screens/e-commerce/AchatProduitsScreens'
 import ServicePersonneScreen from './src/screens/e-commerce/ServicePersonneScreen';
 import { Host } from 'react-native-portalize';
 import CommandeEmiseScreen from './src/screens/e-commerce/CommandeEmiseScreen';
+import OnBoardingScreen from './src/screens/welcome/OnBoardingScreen';
 
 
 export default function App() {
@@ -21,7 +22,8 @@ export default function App() {
         {/* <AppContainer/> */}
         {/* <ServicePersonneScreen />
        */}
-        <AppContainer />
+        {/* <AppContainer /> */}
+        <OnBoardingScreen />
       </Host>
     </Provider>
 
