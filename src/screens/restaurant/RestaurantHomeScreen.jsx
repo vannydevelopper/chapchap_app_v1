@@ -4,94 +4,10 @@ import { AntDesign, SimpleLineIcons, EvilIcons, Ionicons, Entypo } from '@expo/v
 import { Host, Portal } from 'react-native-portalize';
 import { Modalize } from "react-native-modalize";
 
-const DetailRestaurantModal = ({ onClose }) => {
-        const [scale] = useState(new Animated.Value(1.1))
-        useEffect(() => {
-                const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-                        onClose()
-                        return true
-                })
-                Animated.spring(scale, {
-                        toValue: 1,
-                        useNativeDriver: true
-                }).start()
-                return () => {
-                        backHandler.remove()
-                }
-        }, [])
-        return (
-                <Portal>
-                        <TouchableNativeFeedback onPress={onClose}>
-                                <View style={styles.modalContainer}>
-                                        <TouchableNativeFeedback>
-                                                <Animated.View style={{ ...styles.modalContent, transform: [{ scale }] }}>
-                                                        <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                                                <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.imageModal} />
-
-                                                        </View>
-                                                        <ScrollView keyboardShouldPersistTaps="handled">
-                                                                <View style={styles.modalItem}>
-                                                                        <View >
-                                                                                <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: "bold" }} >Riz Tropical</Text>
-                                                                        </View>
-                                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
-                                                                                <View>
-                                                                                        <Entypo name="star-outlined" size={24} color="black" />
-                                                                                </View>
-                                                                                <View style={{ flexDirection: "row", alignContent: "center", alignItems: "center" }}>
-                                                                                        <View>
-                                                                                                <Ionicons name="ios-time-outline" size={24} color="black" />
-                                                                                        </View>
-                                                                                        <Text>30 min</Text>
-                                                                                </View>
-                                                                                <View>
-                                                                                        <Text style={{ fontSize: 15, fontWeight: "bold", color: "red" }}>12 000 Fbu</Text>
-                                                                                </View>
-                                                                        </View>
-                                                                        <View style={{ marginTop: 15 }}>
-                                                                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>Riz frit avec pomme de terre</Text>
-                                                                        </View>
-                                                                        <View style={{ marginTop: 20 }}>
-                                                                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de piat</Text>
-                                                                        </View>
-                                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-                                                                                <TouchableOpacity style={styles.cardSigne}>
-                                                                                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
-
-                                                                                </TouchableOpacity>
-                                                                                <View style={styles.cardInput}>
-                                                                                        <TextInput style={{ textAlign: 'center' }}></TextInput>
-
-                                                                                </View>
-                                                                                <TouchableOpacity style={styles.cardSigne}>
-                                                                                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
-
-                                                                                </TouchableOpacity>
-                                                                        </View>
-                                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", alignContent: "center", marginTop: 20 }}>
-                                                                                <View style={styles.cardIcon}>
-                                                                                        <AntDesign name="sharealt" size={20} color="black" />
-                                                                                </View>
-                                                                                <View style={styles.cardIcon}>
-                                                                                        <AntDesign name="shoppingcart" size={20} color="black" />
-                                                                                </View>
-                                                                                <TouchableOpacity style={styles.cardBouton}>
-                                                                                        <Text style={{ textAlign: 'center', color: 'white', }}>Ajouter au panier</Text>
-                                                                                </TouchableOpacity>
-                                                                        </View>
-                                                                </View>
-                                                        </ScrollView>
-                                                </Animated.View>
-                                        </TouchableNativeFeedback>
-                                </View>
-                        </TouchableNativeFeedback>
-                </Portal>
-        )
-}
 
 export default function RestaurantHomeScreen() {
-        // const [showRestaurantDetail, setshowRestaurantDetail] = useState(false)
         const restaurantRef = useRef(null)
+        const filtreRef = useRef(null)
         const DetailRestaurantModalize = () => {
                 return (
                         <TouchableNativeFeedback style={styles.modalContent} onPress={() => restaurantRef.current.close()}>
@@ -104,7 +20,7 @@ export default function RestaurantHomeScreen() {
                                                 <ScrollView keyboardShouldPersistTaps="handled">
                                                         <View>
                                                                 <View >
-                                                                        <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: "bold" }} >Riz Tropical</Text>
+                                                                        <Text numberOfLines={1} style={{ fontSize: 25, fontWeight: "bold", color: "#777" }} >Riz Tropical</Text>
                                                                 </View>
                                                                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
                                                                         <View>
@@ -159,6 +75,82 @@ export default function RestaurantHomeScreen() {
                         </TouchableNativeFeedback>
                 )
         }
+
+        const FiltreModal = () => {
+                return (
+                        <TouchableNativeFeedback onPress={() => filtreRef.current.close()} style={styles.modalContent}>
+                                <View style={styles.modalList}>
+                                        <View style={styles.modalItem}>
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                        <View></View>
+                                                        <Ionicons name="ios-close-circle" size={24} color="#EF4255" />
+                                                </View>
+                                                <View>
+                                                        <Text style={{ fontSize: 20, fontWeight: "bold" }}>Filtre de recherche</Text>
+                                                </View>
+                                                <View style={{ marginTop: 15 }}>
+                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Distance</Text>
+                                                </View>
+                                                <View style={{ marginTop: 15 }}>
+                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Temps de livraison</Text>
+                                                </View>
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                                                        <View style={styles.cardMinute}>
+                                                                <Text style={styles.TextMinute}>10 Min</Text>
+                                                        </View>
+                                                        <View style={styles.cardMinute2}>
+                                                                <Text style={styles.TextMinute}>20 Min</Text>
+                                                        </View>
+                                                        <View style={styles.cardMinute}>
+                                                                <Text style={styles.TextMinute}>30 Min</Text>
+                                                        </View>
+                                                </View>
+                                                <View style={{ marginTop: 15 }}>
+                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Prix</Text>
+                                                </View>
+                                                <View style={{ marginTop: 15 }}>
+                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Notez</Text>
+                                                </View>
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                                                        <View style={styles.cardNote}>
+                                                                <View style={{ flexDirection: "row" }}>
+                                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>1</Text>
+                                                                        <AntDesign name="star" size={17} color="black" />
+                                                                </View>
+                                                        </View>
+                                                        <View style={styles.cardNote}>
+                                                                <View style={{ flexDirection: "row" }}>
+                                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>2</Text>
+                                                                        <AntDesign name="star" size={17} color="black" />
+                                                                </View>
+                                                        </View>
+                                                        <View style={styles.cardNote}>
+                                                                <View style={{ flexDirection: "row" }}>
+                                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>3</Text>
+                                                                        <AntDesign name="star" size={17} color="black" />
+                                                                </View>
+                                                        </View>
+                                                        <View style={styles.cardNote4}>
+                                                                <View style={{ flexDirection: "row" }}>
+                                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>4</Text>
+                                                                        <AntDesign name="star" size={17} color="black" />
+                                                                </View>
+                                                        </View>
+                                                        <View style={styles.cardNote}>
+                                                                <View style={{ flexDirection: "row" }}>
+                                                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>5</Text>
+                                                                        <AntDesign name="star" size={17} color="black" />
+                                                                </View>
+                                                        </View>
+                                                </View>
+                                                <TouchableOpacity style={{...styles.cardBouton, marginTop:20}}>
+                                                        <Text style={{ textAlign: 'center', color: 'white', fontWeight:"bold" }}>Ajouter le filtre</Text>
+                                                </TouchableOpacity>
+                                        </View>
+                                </View>
+                        </TouchableNativeFeedback>
+                )
+        }
         return (
                 <>
                         <View style={styles.container}>
@@ -183,9 +175,9 @@ export default function RestaurantHomeScreen() {
 
                                                         />
                                                 </View>
-                                                <View style={styles.cardRecherche}>
+                                                <TouchableOpacity onPress={() => filtreRef.current.open()} style={styles.cardRecherche}>
                                                         <AntDesign name="menuunfold" size={24} color="white" />
-                                                </View>
+                                                </TouchableOpacity>
                                         </View>
 
                                 </View>
@@ -246,7 +238,7 @@ export default function RestaurantHomeScreen() {
                                                 </View>
                                         </TouchableOpacity>
                                 </View>
-                                <ScrollView>
+                                <ScrollView keyboardShouldPersistTaps="handled">
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
                                                 <TouchableOpacity onPress={() => restaurantRef.current.open()}>
                                                         <View style={styles.cardAchatDescription}>
@@ -266,7 +258,7 @@ export default function RestaurantHomeScreen() {
                                                         <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
 
                                                 </TouchableOpacity>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
                                                         <View style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.imageDescription} />
                                                         </View>
@@ -286,7 +278,7 @@ export default function RestaurantHomeScreen() {
                                                 </TouchableOpacity>
                                         </View>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
                                                         <View style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/chickenBurger.png')} style={styles.imageDescription} />
                                                         </View>
@@ -304,7 +296,7 @@ export default function RestaurantHomeScreen() {
                                                         <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
 
                                                 </TouchableOpacity>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity onPress={() => restaurantRef.current.open()}>
                                                         <View style={styles.cardAchatDescription}>
                                                                 <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.imageDescription} />
                                                         </View>
@@ -329,8 +321,13 @@ export default function RestaurantHomeScreen() {
                                                 <DetailRestaurantModalize />
                                         </Modalize>
                                 </Portal>
+
+                                <Portal>
+                                        <Modalize ref={filtreRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
+                                                <FiltreModal />
+                                        </Modalize>
+                                </Portal>
                         </View>
-                        {/* {showRestaurantDetail && <DetailRestaurantModal onClose={() => setshowRestaurantDetail(false)} />} */}
                 </>
 
         )
@@ -475,5 +472,46 @@ const styles = StyleSheet.create({
                 paddingHorizontal: 25,
                 backgroundColor: "#EE7526",
         },
+        cardMinute: {
+                height: 30,
+                width: 100,
+                borderRadius: 10,
+                backgroundColor: '#D7D9E4',
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center"
+        },
+        TextMinute: {
+                position: "absolute",
+                fontWeight: "bold"
+        },
+        cardMinute2: {
+                height: 30,
+                width: 100,
+                borderRadius: 10,
+                backgroundColor: '#EF4255',
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center"
+        },
+        cardNote: {
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                backgroundColor: '#D7D9E4',
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center"
+        },
+        cardNote4: {
+                height: 30,
+                width: 50,
+                borderRadius: 10,
+                backgroundColor: '#EF4255',
+                alignContent: "center",
+                alignItems: "center",
+                justifyContent: "center"
+        }
+
 
 })
