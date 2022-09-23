@@ -5,7 +5,7 @@ export default function MenuDetailScreen() {
     return (
         <View style={{ marginLeft: 30, marginTop: 50, marginHorizontal: 20 }}>
             <View style={{ width: '100%', marginTop: 10 }}>
-                <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
+                <Image source={require('../../../assets/images/event.jpg')} style={{ ...styles.imagePrincipal }} />
             </View>
 
             <Ionicons name="ios-arrow-back-outline" size={24} color="white" style={{ ...styles.icon, marginTop: 0 }} />
