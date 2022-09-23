@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { FontAwesome, Fontisto, EvilIcons, AntDesign, Feather, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -7,21 +7,51 @@ import fetchApi from "../../helpers/fetchApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { setUserAction } from "../../store/actions/userActions"
+import { COLORS } from '../../styles/COLORS';
+import { useForm } from '../../hooks/useForm';
+import { useFormErrorsHandle } from '../../hooks/useFormErrorsHandle';
+import Loading from '../../components/app/Loading';
 
 
 export default function ConnexionScreen() {
         const navigation = useNavigation()
         const dispatch = useDispatch()
-        const [email, setEmail] = useState("");
-        const [password, setPassword] = useState("");
         const [showPassword, setShowPassword] = useState(false)
-        const [errors, setErrors] = useState(null);
+        const [loading, setLoading] = useState(false);
+        const passwordInputRef = useRef(null)
+
+        const [data, handleChange, setValue] = useForm({
+                email: "",
+                password: "",
+        })
+        const { errors, setError, getErrors, setErrors, checkFieldData, isValidate, getError, hasError } = useFormErrorsHandle(data, {
+                email: {
+                        required: true,
+                        email: true
+                },
+                password: {
+                        required: true,
+                        length: [8]
+                }
+        }, {
+                email: {
+                        required: "L'email est obligatoire",
+                        email: "Email invalide"
+                },
+                password: {
+                        required: "Le mot de passe est obligatoire",
+                        length: "Mot de passe trop court"
+                }
+        })
+
         const handleLogin = async () => {
                 const user = {
-                        email,
-                        password
+                        // email,
+                        // password
+                        email: data.email,
+                        password: data.password
                 }
-                setErrors(null)
+                setLoading(true)
                 try {
                         const userData = await fetchApi("/users/login", {
                                 method: "POST",
@@ -34,38 +64,48 @@ export default function ConnexionScreen() {
 
                 catch (error) {
                         console.log(error)
-                        setErrors(error.result)
+                }
+                finally {
+                        setLoading(false);
                 }
         }
         return (
                 <>
+                        {loading && <Loading />}
                         <ImageBackground style={styles.container} source={require('../../../assets/images/g52.png')}>
                                 <ScrollView keyboardShouldPersistTaps="handled">
                                         <View>
                                                 <View style={styles.cardTitle}>
-                                                        <View>
-                                                                <Text style={styles.Title}>Compte client</Text>
-                                                        </View>
-                                                        <View>
-                                                                <Text style={styles.description}> Chap Chap</Text>
-                                                        </View>
+                                                        <Text style={styles.Title}>Compte client</Text>
+                                                        <Text style={styles.description}> Chap Chap</Text>
                                                 </View>
 
                                                 <View style={styles.inputCard}>
                                                         <View>
                                                                 <OutlinedTextField
                                                                         label="Adresse email"
-                                                                        fontWeight="Bold"
-                                                                        inputContainerStyle={{ paddingRight: 40 }}
-                                                                        baseColor="#777"
-                                                                        tintColor="#1D8585"
-                                                                        onChangeText={(em) => setEmail(em)}
-                                                                        value={email}
+                                                                        fontSize={14}
+                                                                        baseColor={COLORS.smallBrown}
+                                                                        tintColor={COLORS.primary}
+                                                                        containerStyle={{ borderRadius: 20 }}
+                                                                        lineWidth={1}
+                                                                        activeLineWidth={1}
+                                                                        errorColor={COLORS.error}
+                                                                        renderRightAccessory={() => <Fontisto name="email" size={20} color={hasError('email') ? COLORS.error : "#a2a2a2"} />}
+                                                                        value={data.email}
+                                                                        onChangeText={(newValue) => handleChange('email', newValue)}
+                                                                        onBlur={() => checkFieldData('email')}
+                                                                        error={hasError('email') ? getError('email') : ''}
+                                                                        onSubmitEditing={() => {
+                                                                                passwordInputRef.current.focus()
+                                                                        }}
+                                                                        returnKeyType="next"
+                                                                        blurOnSubmit={false}
                                                                 />
                                                         </View>
-                                                        <View style={styles.InputIcon}>
+                                                        {/* <View style={styles.InputIcon}>
                                                                 <Fontisto name="email" size={20} color="black" />
-                                                        </View>
+                                                        </View> */}
 
                                                 </View>
 
@@ -73,43 +113,36 @@ export default function ConnexionScreen() {
                                                         <View>
                                                                 <OutlinedTextField
                                                                         label="Mot de passe"
-                                                                        fontWeight="Bold"
-                                                                        inputContainerStyle={{ paddingRight: 40 }}
-                                                                        baseColor="#777"
-                                                                        tintColor="#1D8585"
-                                                                        onChangeText={(em)=>setPassword(em)}
-                                                                        value={password}
-                                                                        secureTextEntry={!showPassword}
+                                                                        fontSize={14}
+                                                                        baseColor={COLORS.smallBrown}
+                                                                        tintColor={COLORS.primary}
+                                                                        containerStyle={{ borderRadius: 20 }}
+                                                                        lineWidth={1}
+                                                                        activeLineWidth={1}
+                                                                        errorColor={COLORS.error}
+                                                                        renderRightAccessory={() => <EvilIcons name="lock" size={30} color={hasError('password') ? COLORS.error : "#a2a2a2"} />}
+                                                                        value={data.password}
+                                                                        onChangeText={(newValue) => handleChange('password', newValue)}
+                                                                        onBlur={() => checkFieldData('password')}
+                                                                        error={hasError('password') ? getError('password') : ''}
+                                                                        ref={passwordInputRef}
+                                                                // secureTextEntry={!showPassword}
                                                                 />
                                                         </View>
-                                                        <TouchableOpacity style={styles.InputIcon} onPress={() => setShowPassword(t => !t)}>
+                                                        {/* <TouchableOpacity style={styles.InputIcon} onPress={() => setShowPassword(t => !t)}>
                                                                 <Ionicons name={!showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#777" />
-                                                               
-                                                        </TouchableOpacity>
+
+                                                        </TouchableOpacity> */}
 
                                                 </View>
 
-                                                <TouchableOpacity disabled={email == '' || password == ''} onPress={handleLogin} >
-                                                        <View style={[styles.button, (email == '' || password == '') && { opacity: 0.5 }]}>
+                                                <TouchableWithoutFeedback
+                                                        disabled={!isValidate()}
+                                                        onPress={handleLogin} >
+                                                        <View style={[styles.button, !isValidate() && { opacity: 0.5 }]}>
                                                                 <Text style={styles.buttonText}>Se connecter</Text>
                                                         </View>
-                                                </TouchableOpacity>
-
-                                                { errors && <View>
-
-                                                        <View style={styles.button2}>
-                                                                <View style={{ marginLeft: 20 }}>
-                                                                        <AntDesign name="closecircleo" size={24} color="white" />
-                                                                </View>
-                                                                <View style={{ marginLeft: 10 }}>
-                                                                        {errors && <Text style={styles.buttonText}>{errors.main ? errors.main[0] : errors.email[0]} </Text>}
-                                                                </View>
-
-                                                        </View>
-                                                </View>}
-
-
-
+                                                </TouchableWithoutFeedback>
                                         </View>
                                 </ScrollView>
                         </ImageBackground>
@@ -129,8 +162,8 @@ const styles = StyleSheet.create({
         },
         cardTitle: {
                 flexDirection: "row",
-                marginTop: 20,
-                marginBottom: 10,
+                marginTop: 30,
+                marginVertical: 20,
                 justifyContent: "center",
                 alignItems: "center"
         },
