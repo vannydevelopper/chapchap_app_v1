@@ -9,12 +9,16 @@ import AchatProduitsScreens from './src/screens/e-commerce/AchatProduitsScreens'
 import ServicePersonneScreen from './src/screens/e-commerce/ServicePersonneScreen';
 import { Host } from 'react-native-portalize';
 import CommandeEmiseScreen from './src/screens/e-commerce/CommandeEmiseScreen';
+import MenuDetailScreen from './src/screens/restaurant/MenuDetailScreen';
+import RestaurantHomeScreen from './src/screens/restaurant/RestaurantHomeScreen';
+import PanierScreen from './src/screens/restaurant/PanierScreen';
 import OnBoardingScreen from './src/screens/welcome/OnBoardingScreen';
 
 
 export default function App() {
   return (
     <Provider store={store}>
+
    
     {/* // <AppContainer/> */}
       <Host>
