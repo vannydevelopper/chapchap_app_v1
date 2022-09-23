@@ -1,7 +1,33 @@
-import React from "react"
+import React ,{useState}from "react"
 import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput } from "react-native"
 import { Ionicons,AntDesign } from '@expo/vector-icons';
 export default function DetailAchatScreen() {
+    const [nombre, setNombre] = useState(0);
+    const addNumber = async () => {
+
+        if (nombre != '') 
+        { 
+            setNombre(nbr => parseInt(nbr) + 1)
+
+        }
+        else {
+            setNombre(1) 
+
+        }
+    }
+   
+    const mouveNumber = async () => {
+
+        if (nombre != '') 
+        { 
+            setNombre(nbr => parseInt(nbr) - 1)
+
+        }
+        else {
+            setNombre(0) 
+
+        }
+    }
     return (
         <View style={{ marginLeft: 30,marginTop:50 , marginHorizontal:20}}>
             <Ionicons name="ios-arrow-back-outline" size={35} color="black" style={{ marginTop: 0 }} />
@@ -47,24 +73,33 @@ export default function DetailAchatScreen() {
                 <Text style={styles.txtDispla}>Nombres des pieces</Text>
             </View>
             <View>
-                <View style={{ flexDirection: "row", justifyContent: 'space-around', }}>
-                    
-                    <TouchableOpacity style={styles.carre1}>
-                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
+                    <View style={{ flexDirection: "row", justifyContent: 'space-around', }}>
 
-                    </TouchableOpacity>
-                    <View style={styles.carre2}>
-                        <TextInput  style={{textAlign:'center'}}></TextInput>
-                        
+                        <TouchableOpacity 
+                        onPress={mouveNumber}
+                        style={styles.carre1}>
+                            <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
+
+                        </TouchableOpacity>
+                        <View style={styles.carre2}>
+                            <TextInput
+                                disabled={nombre == ''}
+
+                                keyboardType="phone-pad"
+                                defaultValue="0"
+                                onChangeText={(nb) => setNombre(nb)}
+                                value={nombre.toString()}
+                                style={{ textAlign: 'center' }}></TextInput>
+
+                        </View>
+
+                        <TouchableOpacity onPress={addNumber} style={styles.carre1}>
+                            <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
+
+                        </TouchableOpacity>
+
                     </View>
-                    
-                    <TouchableOpacity style={styles.carre1}>
-                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
-
-                    </TouchableOpacity>
-                   
                 </View>
-            </View>
             <View>
                 <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop:40}}>
                     

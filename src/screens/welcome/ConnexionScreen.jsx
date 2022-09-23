@@ -103,9 +103,6 @@ export default function ConnexionScreen() {
                                                                         blurOnSubmit={false}
                                                                 />
                                                         </View>
-                                                        {/* <View style={styles.InputIcon}>
-                                                                <Fontisto name="email" size={20} color="black" />
-                                                        </View> */}
 
                                                 </View>
 
@@ -126,13 +123,8 @@ export default function ConnexionScreen() {
                                                                         onBlur={() => checkFieldData('password')}
                                                                         error={hasError('password') ? getError('password') : ''}
                                                                         ref={passwordInputRef}
-                                                                // secureTextEntry={!showPassword}
                                                                 />
                                                         </View>
-                                                        {/* <TouchableOpacity style={styles.InputIcon} onPress={() => setShowPassword(t => !t)}>
-                                                                <Ionicons name={!showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#777" />
-
-                                                        </TouchableOpacity> */}
 
                                                 </View>
 
@@ -143,6 +135,11 @@ export default function ConnexionScreen() {
                                                                 <Text style={styles.buttonText}>Se connecter</Text>
                                                         </View>
                                                 </TouchableWithoutFeedback>
+
+
+
+
+
                                         </View>
                                 </ScrollView>
                         </ImageBackground>
