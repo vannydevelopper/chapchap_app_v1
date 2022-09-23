@@ -1,6 +1,6 @@
-import React from 'react'
-import { FlatList, StyleSheet, useWindowDimensions, View, Image } from 'react-native'
-import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated'
+import React, { useEffect, useState } from 'react'
+import { FlatList, StyleSheet, useWindowDimensions, View, Image, Text } from 'react-native'
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 
 const IMAGES = [{
           uri: require('../../../assets/images/family.jpg'),
@@ -17,6 +17,10 @@ export default function Carousel() {
           const animatedDotStyles = useAnimatedStyle(() => ({
                     transform: [{ translateX: dotTranslateX.value }]
           }))
+          const [activendex, setActiveIndex] = useState(0)
+          useEffect(() => {
+                    dotTranslateX.value = withSpring((activendex * 80) / IMAGES.length)
+          }, [activendex])
           return (
                     <View style={styles.carouselCotnainer}>
                               <FlatList
@@ -32,6 +36,7 @@ export default function Carousel() {
                                                   )
                                         }}
                                         style={styles.carousel}
+                                        onScroll={(e) => setActiveIndex(parseInt(e.nativeEvent.contentOffset.x / (width - 40)))}
                               />
                               <View style={styles.pagination}>
                                         <Animated.View style={[styles.pageDot, animatedDotStyles, { width: PAGINATION_WIDTH / IMAGES.length }]} />
@@ -77,5 +82,6 @@ const styles = StyleSheet.create({
                     borderRadius: 10,
                     height: '100%',
                     width: '100%',
+                    resizeMode: "contain"
           },
 })
