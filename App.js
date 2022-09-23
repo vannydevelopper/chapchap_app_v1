@@ -16,20 +16,12 @@ import OnBoardingScreen from './src/screens/welcome/OnBoardingScreen';
 
 
 export default function App() {
-  return (
-    <Provider store={store}>
+          return (
+                    <Provider store={store}>
+                              <Host>
+                                        <AppContainer />
+                              </Host>
+                    </Provider>
 
-   
-    {/* // <AppContainer/> */}
-      <Host>
-        {/* <AchatProduitsScreens/> */}
-        {/* <AppContainer/> */}
-        {/* <ServicePersonneScreen />
-       */}
-        {/* <AppContainer /> */}
-        <OnBoardingScreen />
-      </Host>
-    </Provider>
-
-  )
+          )
 }

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Image, Text, FlatList, Modal, useWindowDimensions, TouchableWithoutFeedback } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { StyleSheet, View, Image, Text, FlatList, Modal, useWindowDimensions, TouchableWithoutFeedback, BackHandler } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { AntDesign } from '@expo/vector-icons';
 import Animated, { runOnJS, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 
 const PAGINATION_WIDTH  = 80
 export default function OnBoardingScreen() {
@@ -16,6 +17,9 @@ export default function OnBoardingScreen() {
           }]
           const [selectedIndex, setSelectedIndex] = useState(0)
           const { width, height } = useWindowDimensions()
+
+          const navigation = useNavigation()
+          const backHandler = useRef(null)
 
           const imageTranslateX = useSharedValue(0)
           const translateImageStyles = useAnimatedStyle(() => ({
@@ -48,6 +52,9 @@ export default function OnBoardingScreen() {
                               setSelectedIndex(lastIndex => lastIndex < IMAGES.length - 1 ? + 1 : IMAGES.length - 1)
                               imageTranslateX.value = withSpring(-width * IMAGES.length, SPRING_CONFIG)
                               textTranslateX.value = withDelay(10, withSpring(-width * IMAGES.length, SPRING_CONFIG))
+                              if(selectedIndex == IMAGES.length-1) {
+                                        navigation.navigate("LoginScreen")
+                              }
                     } else {
                               setSelectedIndex(lastIndex => lastIndex > 0 ? lastIndex - 1 : 0)
                               imageTranslateX.value = withSpring(0, SPRING_CONFIG)
@@ -81,6 +88,15 @@ export default function OnBoardingScreen() {
                               imageTranslateX.value = withSpring(-width * IMAGES.length, SPRING_CONFIG)
                               textTranslateX.value = withDelay(10, withSpring(-width * IMAGES.length, SPRING_CONFIG))
                     } else {
+                              navigation.navigate("LoginScreen")
+                    }
+          }
+          const onBackPress = () => {
+                    if (selectedIndex > 0) {
+                              setSelectedIndex(lastIndex => lastIndex > 0 ? lastIndex - 1 : 0)
+                              imageTranslateX.value = withSpring(0, SPRING_CONFIG)
+                              textTranslateX.value = withDelay(10, withSpring(0, SPRING_CONFIG))
+                    } else {
                     }
           }
           return (
@@ -98,7 +114,7 @@ export default function OnBoardingScreen() {
                                         <View style={[styles.section, { opacity: 0.9 }]} />
                                         <View style={[styles.section, { opacity: 0.6 }]} />
                               </View>
-                              <Modal transparent>
+                              <Modal transparent onRequestClose={onBackPress}>
                                         <GestureHandlerRootView style={{ flex: 1 }}>
                                                   <PanGestureHandler onGestureEvent={gestureHandler}>
                                                             <Animated.View style={styles.content}>
