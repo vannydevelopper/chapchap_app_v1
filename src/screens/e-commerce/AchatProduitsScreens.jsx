@@ -10,6 +10,8 @@ export default function AchatProduitsScreens() {
         const [sousCategories, SetSousCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
         const [selectedsousCategories, setSelectedsousCategories] = useState(null)
+        const [produits, setProduits] = useState([])
+        
         // fetch des Categories
         const fecthProduits = async () => {
                 try {
@@ -19,7 +21,7 @@ export default function AchatProduitsScreens() {
                                 headers: { "Content-Type": "application/json" },
                         })
                         setCategories(response.result)
-                        console.log(response)
+                        //console.log(response)
                 }
                 catch (error) {
                         console.log(error)
@@ -48,11 +50,30 @@ export default function AchatProduitsScreens() {
 
                                 })
                                 SetSousCategories(subCategories.result)
-                                console.log(subCategories.result)
+                                // console.log(subCategories.result)
                         }
 
                 })()
         }, [selectedCategorie])
+        //fetch des produits
+        
+        useEffect(() => {
+
+                (async () => {
+                        if (selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE) {
+                                const produits = await fetchApi(`/products?category=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`, {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+
+                                })
+                                setProduits(produits.result)
+                                console.log(produits)
+                        }
+
+                })()
+
+        }, [selectedsousCategories])
+       
 
         return (
                 <View style={styles.container}>
@@ -97,18 +118,14 @@ export default function AchatProduitsScreens() {
                                                 )
                                         })}
                                 </View>
-
                                 <ScrollView horizontal >
                                         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                                 {sousCategories.map((souscategorie, index) => {
                                                         return (
                                                                 <TouchableOpacity key={index} onPress={() => selectedItemSousCategories(souscategorie)} style={{ marginTop: 20 }}>
-                                                                        <TouchableOpacity>
-                                                                                <View style={[styles.tireCard, {backgroundColor: souscategorie.ID_CATEGORIE_PRODUIT == selectedsousCategories?.ID_CATEGORIE_PRODUIT ? "#DFE1E9" : "#242F68"}]}>
-                                                                                        <Text style={{ fontWeight: "bold", fontSize: 16 }}>{souscategorie.NOM_SOUS_CATEGORIE}</Text>
-                                                                                </View>
-                                                                        </TouchableOpacity>
-
+                                                                        <View style={[styles.tireCard, { backgroundColor: souscategorie.ID_PRODUIT_SOUS_CATEGORIE == selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE ? "#242F68" : "#DFE1E9" }]}>
+                                                                                <Text style={{ fontWeight: "bold", fontSize: 16, color: "white" }}>{souscategorie.NOM_SOUS_CATEGORIE}</Text>
+                                                                        </View>
                                                                 </TouchableOpacity>
                                                         )
                                                 })}
@@ -117,80 +134,36 @@ export default function AchatProduitsScreens() {
                         </View>
                         <ScrollView>
                                 <View style={{ flexDirection: "row", marginHorizontal: 20, justifyContent: "space-between", marginBottom: 10 }}>
-                                        <View>
-                                                <View style={styles.cardAchat}>
-                                                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                                                </View>
-                                                <View style={{ flexDirection: "row" }}>
-                                                        <View style={styles.cardLike}>
-                                                                <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
+                                        {produits.map((produit, index) => {
+                                                return (
+                                                        <View key={index}>
+                                                                <View style={styles.cardAchat}>
+                                                                        <Image source={{uri:produit.IMAGE_1}} style={styles.DataImage}/>
+                                                                </View>
+                                                                <View style={{ flexDirection: "row" }}>
+                                                                        <View style={styles.cardLike}>
+                                                                                <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
+                                                                        </View>
+                                                                        <View style={styles.cardLike2}>
+                                                                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
+                                                                        </View>
+                                                                </View>
+                                                                <View >
+                                                                        <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 15}}>{produit.NOM_PRODUIT}</Text>
+                                                                        <Text style={{ color: "#F29558", fontWeight: "bold" }}>{produit.PRIX} Fbu</Text>
+                                                                </View>
                                                         </View>
-                                                        <View style={styles.cardLike2}>
-                                                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                        </View>
-                                                </View>
-                                                <View>
-                                                        <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 12 }}>Chemise jean a manches courtes</Text>
-                                                        <Text style={{ color: "#F29558", fontWeight: "bold" }}>FBu 45.000</Text>
-                                                </View>
-                                        </View>
+                                                )
 
-                                        <View>
-                                                <View style={styles.cardAchat}>
-                                                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                                                </View>
-                                                <View style={{ flexDirection: "row" }}>
-                                                        <View style={styles.cardLike}>
-                                                                <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                        </View>
-                                                        <View style={styles.cardLike2}>
-                                                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                        </View>
-                                                </View>
-                                                <View>
-                                                        <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 12 }}>Chemise jean a manches courtes</Text>
-                                                        <Text style={{ color: "#F29558", fontWeight: "bold" }}>FBu 45.000</Text>
-                                                </View>
-                                        </View>
+
+
+
+                                        })}
+
+
+
                                 </View>
 
-                                <View style={{ flexDirection: "row", marginHorizontal: 20, justifyContent: "space-between", marginBottom: 10 }}>
-                                        <View>
-                                                <View style={styles.cardAchat}>
-                                                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                                                </View>
-                                                <View style={{ flexDirection: "row" }}>
-                                                        <View style={styles.cardLike}>
-                                                                <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                        </View>
-                                                        <View style={styles.cardLike2}>
-                                                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                        </View>
-                                                </View>
-                                                <View>
-                                                        <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 12 }}>Chemise jean a manches courtes</Text>
-                                                        <Text style={{ color: "#F29558", fontWeight: "bold" }}>FBu 45.000</Text>
-                                                </View>
-                                        </View>
-
-                                        <View>
-                                                <View style={styles.cardAchat}>
-                                                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                                                </View>
-                                                <View style={{ flexDirection: "row" }}>
-                                                        <View style={styles.cardLike}>
-                                                                <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                        </View>
-                                                        <View style={styles.cardLike2}>
-                                                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                        </View>
-                                                </View>
-                                                <View>
-                                                        <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 12 }}>Chemise jean a manches courtes</Text>
-                                                        <Text style={{ color: "#F29558", fontWeight: "bold" }}>FBu 45.000</Text>
-                                                </View>
-                                        </View>
-                                </View>
                         </ScrollView>
                 </View>
         )
@@ -249,7 +222,6 @@ const styles = StyleSheet.create({
         },
         tireCard: {
                 borderBottomWidth: 3,
-                borderBottomColor: "#F04A5C",
                 padding: 5,
                 margin: 5
                 // backgroundColor:"red",
@@ -295,5 +267,12 @@ const styles = StyleSheet.create({
                 alignContent: "center",
                 alignItems: "center"
 
+        },
+        DataImage:{
+                minWidth:160,
+                minHeight:120,
+                borderRadius:20,
+                borderWidth:1,
+                borderColor:"#777"
         }
 })
