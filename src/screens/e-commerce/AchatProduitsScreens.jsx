@@ -33,6 +33,8 @@ export default function AchatProduitsScreens() {
 
         const selectedItemCategories = (categorie) => {
                 setSelectedCategorie(categorie)
+                setSelectedsousCategories(null)
+                setProduits([])
         }
 
         const selectedItemSousCategories = (souscategorie) => {
@@ -110,7 +112,7 @@ export default function AchatProduitsScreens() {
                                                         <TouchableOpacity key={index} onPress={() => selectedItemCategories(categorie)}>
                                                                 <View style={{ alignContent: "center", alignItems: "center" }}>
                                                                         <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? "#242F68" : "#DFE1E9" }]}>
-                                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
+                                                                        <Image source={{uri:categorie.IMAGE}} style={styles.DataImageCategorie}/>
                                                                         </View>
                                                                         <Text style={{ fontSize: 12, fontWeight: "bold" }}>{categorie.NOM}</Text>
                                                                 </View>
@@ -274,5 +276,12 @@ const styles = StyleSheet.create({
                 borderRadius:20,
                 borderWidth:1,
                 borderColor:"#777"
+        },
+        DataImageCategorie:{
+                minWidth:40,
+                minHeight:40,
+                borderRadius:10,
+                // borderWidth:1,
+                // borderColor:"#777"
         }
 })
