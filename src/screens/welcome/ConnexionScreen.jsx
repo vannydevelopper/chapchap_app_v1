@@ -77,14 +77,14 @@ export default function ConnexionScreen() {
                                                                         inputContainerStyle={{ paddingRight: 40 }}
                                                                         baseColor="#777"
                                                                         tintColor="#1D8585"
-                                                                        onChangeText={(em)=>setPassword(em)}
+                                                                        onChangeText={(em) => setPassword(em)}
                                                                         value={password}
                                                                         secureTextEntry={!showPassword}
                                                                 />
                                                         </View>
                                                         <TouchableOpacity style={styles.InputIcon} onPress={() => setShowPassword(t => !t)}>
                                                                 <Ionicons name={!showPassword ? "eye-off-outline" : "eye-outline"} size={24} color="#777" />
-                                                               
+
                                                         </TouchableOpacity>
 
                                                 </View>
@@ -95,7 +95,7 @@ export default function ConnexionScreen() {
                                                         </View>
                                                 </TouchableOpacity>
 
-                                                { errors && <View>
+                                                {errors && <View>
 
                                                         <View style={styles.button2}>
                                                                 <View style={{ marginLeft: 20 }}>
