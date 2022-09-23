@@ -1,89 +1,130 @@
-import React from "react"
-import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput } from "react-native"
+import React, { useState } from "react"
+import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation } from '@expo/vector-icons';
 export default function MenuDetailScreen() {
+    const [nombre, setNombre] = useState(0);
+    const addNumber = async () => {
+
+        if (nombre != '') 
+        { 
+            setNombre(nbr => parseInt(nbr) + 1)
+
+        }
+        else {
+            setNombre(1) 
+
+        }
+    }
+   
+    const mouveNumber = async () => {
+
+        if (nombre != '') 
+        { 
+            setNombre(nbr => parseInt(nbr) - 1)
+
+        }
+        else {
+            setNombre(0) 
+
+        }
+    }
+
     return (
-        <View style={{ marginLeft: 30, marginTop: 50, marginHorizontal: 20 }}>
-            <View style={{ width: '100%', marginTop: 10 }}>
-                <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
-            </View>
+        <ScrollView>
+            <View style={{ marginLeft: 30, marginTop: 50, marginHorizontal: 20 }}>
+                <View style={{ width: '100%', marginTop: 10 }}>
+                    <Image source={require('../../../assets/images/pexels-pixabay-271624.jpg')} style={{ ...styles.imagePrincipal }} />
+                </View>
 
-            <Ionicons name="ios-arrow-back-outline" size={24} color="white" style={{ ...styles.icon, marginTop: 0 }} />
-            <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
-            <View style={styles.cardOK}>
-                <Text style={{ color: "white", fontSize: 5 }}>5</Text>
-            </View>
+                <Ionicons name="ios-arrow-back-outline" size={24} color="white" style={{ ...styles.icon, marginTop: 0 }} />
+                <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
+                <View style={styles.cardOK}>
+                    <Text style={{ color: "white", fontSize: 5 }}>5</Text>
+                </View>
 
-            <View style={{ marginTop: 50 }} >
-                <Text style={styles.text} numberOfLines={2}>Riz Tropical</Text>
-            </View>
-        <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:20}}>
+                <View style={{ marginTop: 50 }} >
+                    <Text style={styles.text} numberOfLines={2}>Riz Tropical</Text>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
 
-       
-        <View style={{flexDirection:"row"}}>
-                <AntDesign name="star" size={15} color="#EFC519" />
-                <AntDesign name="star" size={15} color="#EFC519" />
-                <AntDesign name="star" size={15} color="#EFC519" />
-                <AntDesign name="staro" size={15} color="#EFC519" />
-            </View>
-            <View style={{flexDirection:"row"}}>
-                <AntDesign name="clockcircleo" size={15} color="#797E9A" />
-                <Text style={{fontSize:10,marginLeft:10,color:"#797E9A"}}>30 Min</Text>
-            </View>
-            <View style={{marginTop:-5}}>
-                <Text style={styles.textFbu}>12.000 Fbu</Text>
-            </View>
-            </View>
-            <View style={{ marginTop: 50 }} >
-                <Text style={styles.text1} numberOfLines={2}>Riz frit avec pomme de terre</Text>
-            </View>
-            <View style={{marginTop:15}} >
-                <Text style={styles.txtDisplay}>
-                    Les pommes de terre relevent la tradictionnelle recette de riz frit
-                    et lui ajoutent de la valeur nutritive;
-                    Ce plat se cuisine en 30minutes au moins
+
+                    <View style={{ flexDirection: "row" }}>
+                        <AntDesign name="star" size={15} color="#EFC519" />
+                        <AntDesign name="star" size={15} color="#EFC519" />
+                        <AntDesign name="star" size={15} color="#EFC519" />
+                        <AntDesign name="staro" size={15} color="#EFC519" />
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <AntDesign name="clockcircleo" size={15} color="#797E9A" />
+                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
+                    </View>
+                    <View style={{ marginTop: -5 }}>
+                        <Text style={styles.textFbu}>12.000 Fbu</Text>
+                    </View>
+                </View>
+                <View style={{ marginTop: 50 }} >
+                    <Text style={styles.text1} numberOfLines={2}>Riz frit avec pomme de terre</Text>
+                </View>
+                <View style={{ marginTop: 15 }} >
+                    <Text style={styles.txtDisplay}>
+                        Les pommes de terre relevent la tradictionnelle recette de riz frit
+                        et lui ajoutent de la valeur nutritive;
+                        Ce plat se cuisine en 30minutes au moins
                     </Text>
-            </View>
-            <View >
-                <Text style={styles.txtDispla}>Nombres de plat</Text>
-            </View>
-            <View>
-                <View style={{ flexDirection: "row", justifyContent: 'space-around', }}>
+                </View>
+                <View >
+                    <Text style={styles.txtDispla}>Nombres de plat</Text>
+                </View>
+                <View>
+                    <View style={{ flexDirection: "row", justifyContent: 'space-around', }}>
 
-                    <TouchableOpacity style={styles.carre1}>
-                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
+                        <TouchableOpacity 
+                        onPress={mouveNumber}
+                        style={styles.carre1}>
+                            <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
 
-                    </TouchableOpacity>
-                    <View style={styles.carre2}>
-                        <TextInput style={{ textAlign: 'center' }}></TextInput>
+                        </TouchableOpacity>
+                        <View style={styles.carre2}>
+                            <TextInput
+                                disabled={nombre == ''}
+
+                                keyboardType="phone-pad"
+                                defaultValue="0"
+                                onChangeText={(nb) => setNombre(nb)}
+                                value={nombre.toString()}
+                                style={{ textAlign: 'center' }}></TextInput>
+
+                        </View>
+
+                        <TouchableOpacity onPress={addNumber} style={styles.carre1}>
+                            <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
+
+                        </TouchableOpacity>
 
                     </View>
+                </View>
+                <View>
+                    <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
 
-                    <TouchableOpacity style={styles.carre1}>
-                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
+                        <View style={styles.carre}>
+                            <AntDesign name="sharealt" size={20} color="black" />
+                        </View>
+                        <View style={styles.carre}>
+                            <AntDesign name="shoppingcart" size={20} color="black" />
 
-                    </TouchableOpacity>
+                        </View>
 
+
+                        <TouchableOpacity >
+                            <View style={styles.carre3}>
+                                <Text style={{ textAlign: 'center', color: 'white', }}>Ajouter au panier</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>
                 </View>
             </View>
-            <View>
-                <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
-
-                    <View style={styles.carre}>
-                        <AntDesign name="sharealt" size={20} color="black" />
-                    </View>
-                    <View style={styles.carre}>
-                        <AntDesign name="shoppingcart" size={20} color="black" />
-
-                    </View>
-                    <View style={styles.carre3}>
-                        <Text style={{ textAlign: 'center', color: 'white', }}>Ajouter au panier</Text>
-                    </View>
-
-
-                </View>
-            </View>
-        </View>
+        </ScrollView>
 
     )
 }
@@ -111,7 +152,7 @@ const styles = StyleSheet.create({
     },
     textFbu: {
         color: 'red',
-        fontWeight: "bold", 
+        fontWeight: "bold",
         fontSize: 15
     },
     carre1: {
