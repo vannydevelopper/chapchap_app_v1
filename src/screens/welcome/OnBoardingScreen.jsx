@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, Image, Text, FlatList, Modal, useWindowDimensions } from 'react-native'
+import { StyleSheet, View, Image, Text, FlatList, Modal, useWindowDimensions, TouchableWithoutFeedback } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { AntDesign } from '@expo/vector-icons';
 import Animated, { runOnJS, useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withDelay, withSpring, withTiming } from 'react-native-reanimated';
 import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
-
 
 const PAGINATION_WIDTH  = 80
 export default function OnBoardingScreen() {
@@ -31,6 +30,11 @@ export default function OnBoardingScreen() {
           const dotTranslateX = useSharedValue(0)
           const animatedDotStyles = useAnimatedStyle(() => ({
                     transform: [{ translateX: dotTranslateX.value }]
+          }))
+
+          const rotateY = useSharedValue(0)
+          const rotateYStyles = useAnimatedStyle(() => ({
+                    transform: [{ rotateY: `${rotateY.value}deg` }]
           }))
           const SPRING_CONFIG = {
                     damping: 80,
@@ -70,6 +74,15 @@ export default function OnBoardingScreen() {
                               }
                     }
           })
+
+          const onNextPress = () => {
+                    if (selectedIndex == 0) {
+                              setSelectedIndex(lastIndex => lastIndex < IMAGES.length - 1 ? + 1 : IMAGES.length - 1)
+                              imageTranslateX.value = withSpring(-width * IMAGES.length, SPRING_CONFIG)
+                              textTranslateX.value = withDelay(10, withSpring(-width * IMAGES.length, SPRING_CONFIG))
+                    } else {
+                    }
+          }
           return (
                     <View style={styles.container}>
                               <Animated.View style={[styles.images, translateImageStyles, { width: width * IMAGES.length }]}>
@@ -90,7 +103,7 @@ export default function OnBoardingScreen() {
                                                   <PanGestureHandler onGestureEvent={gestureHandler}>
                                                             <Animated.View style={styles.content}>
                                                                       <View style={styles.logo}>
-                                                                                <Image source={require('../../../assets/images/chapchap_logo.png')} style={styles.logoImage} />
+                                                                                <Image source={require('../../../assets/chapchap_logo.png')} style={styles.logoImage} />
                                                                       </View>
                                                                       <View style={styles.centerSection}>
                                                                                 <View style={[styles.descriptions, { width: width * IMAGES.length }]}>
@@ -106,9 +119,11 @@ export default function OnBoardingScreen() {
                                                                                                     )
                                                                                           })}
                                                                                 </View>
-                                                                                <View style={styles.nextBtn}>
-                                                                                          <AntDesign name="arrowright" size={24} color="#fff" />
-                                                                                </View>
+                                                                                <TouchableWithoutFeedback onPress={onNextPress}>
+                                                                                          <View style={[styles.nextBtn]}>
+                                                                                                    <AntDesign name="arrowright" size={24} color="#fff" />
+                                                                                          </View>
+                                                                                </TouchableWithoutFeedback>
                                                                       </View>
                                                                       <View style={styles.bottomSection}>
                                                                                 <Text style={styles.developCompany}>Conçu par Mediabox Burundi</Text>
@@ -161,6 +176,14 @@ const styles = StyleSheet.create({
                     paddingVertical: 50,
                     paddingHorizontal: 40
           },
+          logo: {
+          },
+          logoImage: {
+                    width: 150,
+                    height: 90,
+                    resizeMode: 'contain',
+                    marginLeft: -10
+          },
           title: {
                     color: '#fff',
                     fontWeight: 'bold',
@@ -174,7 +197,7 @@ const styles = StyleSheet.create({
           nextBtn: {
                     width: 60,
                     height: 60,
-                    backgroundColor: '#2A8E8E',
+                    backgroundColor: '#458d8d',
                     borderRadius: 100,
                     justifyContent: 'center',
                     alignItems: 'center',
