@@ -12,24 +12,15 @@ import CommandeEmiseScreen from './src/screens/e-commerce/CommandeEmiseScreen';
 import MenuDetailScreen from './src/screens/restaurant/MenuDetailScreen';
 import RestaurantHomeScreen from './src/screens/restaurant/RestaurantHomeScreen';
 import PanierScreen from './src/screens/restaurant/PanierScreen';
+import OnBoardingScreen from './src/screens/welcome/OnBoardingScreen';
 
 
 export default function App() {
-  return (
-    <Provider store={store}>
-
-   
-    {/* // <AppContainer/> */}
-      <Host>
-        {/* <AchatProduitsScreens/> */}
-        {/* <AppContainer/> */}
-        {/* <ServicePersonneScreen />
-       */}
-        <AppContainer />
-        {/* <RestaurantHomeScreen/> */}
-        {/* <PanierScreen/> */}
-      </Host>
-    </Provider>
-
-  )
+          return (
+                    <Provider store={store}>
+                              <Host>
+                                        <AppContainer />
+                              </Host>
+                    </Provider>
+          )
 }
