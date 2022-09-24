@@ -5,11 +5,12 @@ import {
           FlatList,
           useWindowDimensions
 } from "react-native";
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { StatusBar } from "expo-status-bar";
 import Animated from "react-native-reanimated";
 import Carousel from "../../components/app/Carousel";
 import ServicesCategories from "../../components/app/ServicesCategories";
+import { COLORS } from "../../styles/COLORS";
 
 export default function HomeScreen() {
           return (
@@ -17,10 +18,16 @@ export default function HomeScreen() {
                     <StatusBar backgroundColor='#fff' barStyle='dark-content' />
                     <View style={styles.imgBackground}>
                               <View style={styles.cardHeader}>
-                                        <View />
-                                        <Image source={require('../../../assets/images/chapchap_logo.png')} style={styles.logo} />
                                         <View style={styles.menuOpener}>
-                                                  <Feather name="menu" size={35} color="#1D8585" />
+                                                  <View style={styles.menuOpenerLine} />
+                                                  <View style={[styles.menuOpenerLine, { width: 15 }]} />
+                                                  <View style={[styles.menuOpenerLine, { width: 25 }]} />
+                                        </View>
+                                        <View style={styles.imageContainer}>
+                                                  <Image source={require('../../../assets/images/chapchap.png')} style={styles.logo} />
+                                        </View>
+                                        <View style={{ marginTop: 25 }}>
+                                                  <FontAwesome name="bell-o" size={24} color={COLORS.primary} />
                                         </View>
                               </View>
                               <Carousel />
@@ -31,17 +38,32 @@ export default function HomeScreen() {
 }
 const styles = StyleSheet.create({
           cardHeader: {
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    height: 100,
-                    paddingHorizontal: 20
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: 20,
+                    height: 88
+          },
+          imageContainer: {
+                    height: "100%",
+                    width: 100,
+                    justifyContent: 'center',
+                    alignItems: 'center'
           },
           logo: {
+                    resizeMode: 'center',
+                    height: "50%",
+                    width: "50%",
                     marginTop: 25
           },
           menuOpener: {
                     marginTop: 25
+          },
+          menuOpenerLine: {
+                    height: 3,
+                    width: 30,
+                    backgroundColor: COLORS.primary,
+                    marginTop: 5
           },
           imgBackground: {
                     flex: 1,

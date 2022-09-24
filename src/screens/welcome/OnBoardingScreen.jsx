@@ -119,7 +119,7 @@ export default function OnBoardingScreen() {
                                                   <PanGestureHandler onGestureEvent={gestureHandler}>
                                                             <Animated.View style={styles.content}>
                                                                       <View style={styles.logo}>
-                                                                                <Image source={require('../../../assets/chapchap_logo.png')} style={styles.logoImage} />
+                                                                                <Image source={require('../../../assets/images/chapchap_logo.png')} style={styles.logoImage} />
                                                                       </View>
                                                                       <View style={styles.centerSection}>
                                                                                 <View style={[styles.descriptions, { width: width * IMAGES.length }]}>

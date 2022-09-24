@@ -33,6 +33,9 @@ export default function EcommerceHomeScreen() {
           }, []))
 
           const selectedItemCategories = (categorie) => {
+                    if(categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
+                              return setSelectedCategorie(null)
+                    }
                     setSelectedCategorie(categorie)
                     setSelectedsousCategories(null)
           }
