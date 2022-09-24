@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { StyleSheet, View, Text, Image, useWindowDimensions, ImageBackground, Vibration, TouchableNativeFeedback } from 'react-native'
 import { COLORS } from '../../styles/COLORS'
@@ -5,7 +6,8 @@ import { COLORS } from '../../styles/COLORS'
 const SERVICES = [{
           title: "Achat de produits",
           imageBg: require('../../../assets/images/ecommerce.png'),
-          icon:  require('../../../assets/images/ecommerce-icon.png')
+          icon:  require('../../../assets/images/ecommerce-icon.png'),
+          route: "EcommerceHomeScreen"
 },{
           title: "Restauration",
           imageBg: require('../../../assets/images/resto.jpg'),
@@ -31,6 +33,8 @@ export default function ServicesCategories() {
           const { width } = useWindowDimensions()
           const SERVICE_MARGIN = 40
           const SERVICE_WIDTH = (width / 2)
+
+          const navigation = useNavigation()
           return (
                     <View style={styles.servicesContainer}>
                               <View style={styles.handle} />
@@ -39,7 +43,7 @@ export default function ServicesCategories() {
                                         {SERVICES.map((service, index) => {
                                                   return (
                                                             <View style={[styles.serviceContainer, { width: SERVICE_WIDTH, height: SERVICE_WIDTH }]} key={index.toString()}>
-                                                                      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("#C4C4C4")} useForeground>
+                                                                      <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("#C4C4C4")} useForeground onPress={() => navigation.navigate(service.route)}>
                                                                       <View style={[styles.service]}>
                                                                                 <ImageBackground source={service.imageBg} style={[styles.serviceBackgound]} borderRadius={10} resizeMode='cover' imageStyle={{ opacity: 0.8 }}>
                                                                                           <View style={{ position: 'absolute', width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, 0.3)", borderRadius: 10}} />
