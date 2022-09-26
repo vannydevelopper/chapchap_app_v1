@@ -238,13 +238,12 @@ const styles = StyleSheet.create({
                     width: 50,
                     height: 50,
                     borderRadius: 10,
-                    backgroundColor: "#EF4255",
+                    backgroundColor: COLORS.ecommerceRed,
                     marginTop: 8,
                     justifyContent: "center",
                     alignContent: "center",
                     alignItems: "center"
           },
-
           DataImageCategorie: {
                     minWidth: 40,
                     minHeight: 40,
