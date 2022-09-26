@@ -149,7 +149,7 @@ export default function EcommerceHomeScreen() {
                                         />)}
                                         
                                         {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories ) ? <HomeProductsSkeletons /> : 
-                                                  <HomeProducts products={products} />}
+                                                  <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
                                         <Shops products={products} />
                                         

@@ -117,7 +117,7 @@ export default function ConnexionScreen() {
                                                                         lineWidth={1}
                                                                         activeLineWidth={1}
                                                                         errorColor={COLORS.error}
-                                                                        renderRightAccessory={() => <Ionicons name={!showPassword ?"eye-off-outline":"eye-outline"} size={30} color={hasError('password') ? COLORS.error : "#a2a2a2"} />}
+                                                                        renderRightAccessory={() => <EvilIcons name="lock" size={30} color={hasError('password') ? COLORS.error : "#a2a2a2"} />}
                                                                         value={data.password}
                                                                         onChangeText={(newValue) => handleChange('password', newValue)}
                                                                         onBlur={() => checkFieldData('password')}
