@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, TouchableNativeFeedback, View, Text, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
-import Product from '../main/Product';
+import ProduitParPartenaire from '../main/ProduitParPartenaire';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 
-export default function ProduitPartenaire({productPartenaire}) {
+export default function ProduitPartenaire({productPartenaires}) {
         return (
                 <View style={styles.homeProducts}>
                         <TouchableNativeFeedback
@@ -13,7 +13,7 @@ export default function ProduitPartenaire({productPartenaire}) {
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                         >
                                 <View style={styles.productsHeader}>
-                                        <Text style={styles.title}>Les plus achetés</Text>
+                                        <Text style={styles.title}>Autres produits</Text>
                                         <MaterialIcons name="navigate-next" size={24} color="black" />
                                 </View>
                         </TouchableNativeFeedback>
@@ -22,16 +22,16 @@ export default function ProduitPartenaire({productPartenaire}) {
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
                         >
-                                {/* {products.map((product, index) => {
+                                {productPartenaires.map((product, index) => {
                                         return (
-                                                <Product
+                                                <ProduitParPartenaire
                                                         product={product}
                                                         index={index}
-                                                        totalLength={products.length}
+                                                        totalLength={productPartenaires.length}
                                                         key={index}
                                                 />
                                         )
-                                })} */}
+                                })}
 
                         </ScrollView>
                 </View>

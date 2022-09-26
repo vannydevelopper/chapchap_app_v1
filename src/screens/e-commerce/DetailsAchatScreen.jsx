@@ -5,10 +5,14 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import ProduitPartenaire from "../../components/ecommerce/home/ProduitPartenaire";
 import fetchApi from "../../helpers/fetchApi";
+import { useSelector } from "react-redux";
+import {userSelector} from "../../store/selectors/userSelector"
 export default function DetailAchatScreen() {
         const navigation = useNavigation()
+        const user = useSelector(userSelector)
+        // console.log(user)
         const route = useRoute()
-        const [productPartenaire, setProductPartenaire] = useState([])
+        const [productPartenaires, setProductPartenaire] = useState([])
         const { product } = route.params
         // console.log(product)
         const [nombre, setNombre] = useState(0);
@@ -37,7 +41,7 @@ export default function DetailAchatScreen() {
         }
         const fecthProduits = async () => {
                 try {
-                        const response = await fetchApi("/products/categories", {
+                        const response = await fetchApi(`/partenaire/ecommerce/${product.produit_partenaire.ID_PRODUIT_PARTENAIRE}`, {
                                 method: "GET",
                                 headers: { "Content-Type": "application/json" },
                         })
@@ -76,7 +80,7 @@ export default function DetailAchatScreen() {
                                 </View>
                                 <View style={{ flexDirection: "row", alignContent: "center", alignItems: "center", marginTop: 20 }}>
                                         <Text style={styles.txtDispla}>Vendu par:</Text>
-                                        <Text style={{ color: '#F19152', marginLeft: 5 }}>Arakaza Fashion Shop</Text>
+                                        <Text style={{ color: '#F19152', marginLeft: 5 }}>{user.result.NOM} {user.result.PRENOM}</Text>
                                 </View>
                                 <View>
                                         <Text style={{ fontSize: 14, color: '#191970', opacity: 0.4 }}>Taille</Text>
@@ -117,7 +121,7 @@ export default function DetailAchatScreen() {
 
                                         </View>
                                 </View>
-                                <ProduitPartenaire productPartenaire={productPartenaire}/>
+                                <ProduitPartenaire productPartenaires={productPartenaires}/>
                                 <View>
                                         <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
 
