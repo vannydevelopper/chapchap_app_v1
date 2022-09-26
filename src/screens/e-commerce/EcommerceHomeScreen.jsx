@@ -25,6 +25,8 @@ export default function EcommerceHomeScreen() {
           const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
           const [loadingProducts, setLoadingProducts] = useState(false)
           const [products, setProducts] = useState([])
+          const [shops, setShops] = useState([])
+
 
           const fecthProduits = async () => {
                     try {
@@ -97,6 +99,33 @@ export default function EcommerceHomeScreen() {
                               }
                     })()
           }, [selectedCategorie, selectedsousCategories])
+        
+          useEffect(() => {
+            (async () => {
+                      try {
+                                if(firstLoadingProducts == false) {
+                                          setLoadingProducts(true)
+                                }
+                                var url = "/partenaire/ecommerce"
+                                if(selectedCategorie) {
+                                          url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                                        
+                                }
+                                if(selectedsousCategories) {
+                                    url = `/partenaire/ecommerce?subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+            
+                          }
+                                const shops = await fetchApi(url)
+                                setShops(shops.result)
+                                console.log(shops)
+                      } catch (error) {
+                                console.log(error)
+                      } finally {
+                                setFirstLoadingProducts(false)
+                                setLoadingProducts(false)
+                      }
+            })()
+  }, [selectedCategorie, selectedsousCategories])
 
           return (
                     <View style={styles.container}>
@@ -151,7 +180,7 @@ export default function EcommerceHomeScreen() {
                                         {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories ) ? <HomeProductsSkeletons /> : 
                                                   <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
-                                        <Shops products={products} />
+                                        <Shops shops={shops} />
                                         
                                         <TouchableNativeFeedback
                                                   accessibilityRole="button"
