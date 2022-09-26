@@ -1,9 +1,11 @@
 import React from 'react'
-import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Product({ product, index, totalLength, fixMargins = false }) {
+        const navigation = useNavigation()
           const { width } = useWindowDimensions()
           const MAX_WIDTH = 200
           const PRODUCT_MARGIN = 10
@@ -17,9 +19,9 @@ export default function Product({ product, index, totalLength, fixMargins = fals
           }
           return (
                     <View key={index} style={[styles.product, additionStyles]}>
-                              <View style={styles.imageCard}>
+                              <TouchableOpacity onPress={()=>navigation.navigate('DetailAchatScreen', {product:product})} style={styles.imageCard}>
                                         <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
-                              </View>
+                              </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
                                         <View style={styles.cardLike}>
                                                   <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />

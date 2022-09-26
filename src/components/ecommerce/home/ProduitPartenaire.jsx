@@ -5,16 +5,12 @@ import Product from '../main/Product';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 
-export default function HomeProducts({ products, selectedCategorie, selectedsousCategories }) {
-        const navigation = useNavigation()
+export default function ProduitPartenaire({productPartenaire}) {
         return (
                 <View style={styles.homeProducts}>
                         <TouchableNativeFeedback
                                 accessibilityRole="button"
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-                                onPress={() => navigation.navigate('PlusAchCommandeScreen', {
-                                        selectedCategorie: selectedCategorie, selectedsousCategories: selectedsousCategories
-                                })}
                         >
                                 <View style={styles.productsHeader}>
                                         <Text style={styles.title}>Les plus achetés</Text>
@@ -26,7 +22,7 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
                         >
-                                {products.map((product, index) => {
+                                {/* {products.map((product, index) => {
                                         return (
                                                 <Product
                                                         product={product}
@@ -35,7 +31,7 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
                                                         key={index}
                                                 />
                                         )
-                                })}
+                                })} */}
 
                         </ScrollView>
                 </View>
