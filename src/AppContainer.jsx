@@ -12,22 +12,6 @@ import RootNavigator from "./routes/RootNavigator";
 const Stack = createStackNavigator()
 
 export default function AppContainer() {
-<<<<<<< HEAD
-        const dispatch = useDispatch()
-        const user = useSelector(userSelector)
-        const [userLoading, setUserLoading] = useState(true)
-        const [showOnBoarding, setShowOnBoarding] = useState(false)
-        useEffect(() => {
-                (async function () {
-                        const user = await AsyncStorage.getItem("user")
-                        // await AsyncStorage.removeItem('user')
-                        const onboarding = JSON.parse(await AsyncStorage.getItem('onboarding'))
-                        setShowOnBoarding(!onboarding || !onboarding.finished)
-                        dispatch(setUserAction(JSON.parse(user)))
-                        setUserLoading(false)
-                })()
-        }, [dispatch])
-=======
           const dispatch = useDispatch()
           const user = useSelector(userSelector)
           const [userLoading, setUserLoading] = useState(true)
@@ -42,7 +26,6 @@ export default function AppContainer() {
                               setUserLoading(false)
                     })()
           }, [dispatch])
->>>>>>> 356833998e0a87a572c28bf2e61073e478e6b86d
 
         return (
                 userLoading ?
