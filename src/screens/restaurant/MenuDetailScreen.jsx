@@ -7,11 +7,9 @@ export default function MenuDetailScreen() {
 
                     if (nombre != '') {
                               setNombre(nbr => parseInt(nbr) + 1)
-
                     }
                     else {
                               setNombre(1)
-
                     }
           }
 

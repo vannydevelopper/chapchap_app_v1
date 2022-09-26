@@ -3,7 +3,7 @@ import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 
-export default function Shop({ product, index, totalLength }) {
+export default function Shop({ shop, index, totalLength }) {
           const { width } = useWindowDimensions()
           const MAX_WIDTH = 200
           const PRODUCT_MARGIN = 10
@@ -18,12 +18,19 @@ export default function Shop({ product, index, totalLength }) {
           return (
                     <View key={index} style={[styles.shop, additionStyles]}>
                               <View style={styles.imageCard}>
-                                        <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+                                        <Image source={{ uri: shop.IMAGE }} style={styles.image} />
                               </View>
                                         <Text numberOfLines={2} style={styles.shopName}>
-                                        {product.produit.NOM}
+                                        {shop.NOM_ORGANISATION}
                               </Text>
-                              <Text numberOfLines={2} style={styles.shopCategory}> {product.produit_partenaire.NOM}</Text>
+                              {shop.categories.map((categorie,index)=>{
+                                return(
+                                    <View key={index}>
+                                    <Text numberOfLines={2} style={styles.shopCategory}> {categorie.NOM}</Text>
+                                    </View>
+
+                                )
+                              })}
                     </View>
           )
 }
