@@ -74,11 +74,7 @@ export default function SubCategories({ sousCategories, selectedItemSousCategori
                                                                       </TouchableWithoutFeedback>
                                                             )
                                                   })}
-                                                  <View style={{ width: selectedWidth }} />
                                         </ScrollView>
-                              {selectedsousCategories && <View style={styles.selectedSubCategoryUnderline} />}
-                              {/* <Text>{ JSON.stringify({ activendex })}</Text>
-                              <Text>{ JSON.stringify({ activeLayout })}</Text> */}
                     </View>
           )
 }

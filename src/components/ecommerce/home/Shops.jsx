@@ -2,9 +2,9 @@ import React from 'react'
 import { StyleSheet, TouchableNativeFeedback, View, Text, Image, FlatList, ScrollView } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import Product from '../main/Product';
-import { HomeProductsSkeletons } from '../skeletons/Skeletons';
+import Shop from '../main/Shop';
 
-export default function HomeProducts({ products }) {
+export default function Shops({ products }) {
           return (
                     <View style={styles.homeProducts}>
                               <TouchableNativeFeedback
@@ -12,7 +12,7 @@ export default function HomeProducts({ products }) {
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                               >
                                         <View style={styles.productsHeader}>
-                                                  <Text style={styles.title}>Les plus achetés</Text>
+                                                  <Text style={styles.title}>Les boutiques</Text>
                                                   <MaterialIcons name="navigate-next" size={24} color="black" />
                                         </View>
                               </TouchableNativeFeedback>
@@ -23,7 +23,7 @@ export default function HomeProducts({ products }) {
                               >
                                         {products.map((product, index) => {
                                                   return (
-                                                            <Product
+                                                            <Shop
                                                                       product={product}
                                                                       index={index}
                                                                       totalLength={products.length}

@@ -3,17 +3,17 @@ import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 
-export default function Product({ product, index, totalLength }) {
+export default function Product({ product, index, totalLength, fixMargins = false }) {
           const { width } = useWindowDimensions()
           const MAX_WIDTH = 200
-          const PRODUCT_MARGIN = 20
+          const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
-          const PRODUCT_HEIGHT = 250
+          const PRODUCT_HEIGHT = 270
           const additionStyles = {
                     width: PRODUCT_WIDTH,
                     height: PRODUCT_HEIGHT,
-                    marginLeft: index > 0 ? PRODUCT_MARGIN : 0,
-                    marginRight: index == totalLength-1 ? PRODUCT_MARGIN : 0
+                    marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
+                    marginRight: index == totalLength-1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
           }
           return (
                     <View key={index} style={[styles.product, additionStyles]}>

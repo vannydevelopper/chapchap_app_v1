@@ -5,7 +5,7 @@ import {
           FlatList,
           useWindowDimensions
 } from "react-native";
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import { Feather, FontAwesome, EvilIcons, AntDesign } from '@expo/vector-icons';
 import { StatusBar } from "expo-status-bar";
 import Animated from "react-native-reanimated";
 import Carousel from "../../components/app/Carousel";
@@ -27,7 +27,7 @@ export default function HomeScreen() {
                                                   <Image source={require('../../../assets/images/chapchap.png')} style={styles.logo} />
                                         </View>
                                         <View style={{ marginTop: 25 }}>
-                                                  <FontAwesome name="bell-o" size={24} color={COLORS.primary} />
+                                                  <AntDesign name="search1" size={24} color={COLORS.primary}  />
                                         </View>
                               </View>
                               <Carousel />
