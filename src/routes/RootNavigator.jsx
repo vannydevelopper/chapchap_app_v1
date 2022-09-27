@@ -3,7 +3,9 @@ import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/
 import React from 'react'
 import EcommerceCartScreen from '../screens/e-commerce/EcommerceCartScreen'
 import EcommerceHomeScreen from '../screens/e-commerce/EcommerceHomeScreen'
+import PlusAchCommandeScreen from '../screens/e-commerce/PlusAchCommandeScreen'
 import HomeScreen from '../screens/home/HomeScreen'
+import RestaurantHomeScreen from '../screens/restaurant/RestaurantHomeScreen'
 
 export default function RootNavigator() {
           const Stack = createStackNavigator()

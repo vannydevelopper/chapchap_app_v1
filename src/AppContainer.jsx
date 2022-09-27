@@ -27,15 +27,15 @@ export default function AppContainer() {
                     })()
           }, [dispatch])
 
-          return (
-                    userLoading ?
-                              <View style={{ flex: 1, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
-                                        <ActivityIndicator color="#007BFF" animating={userLoading} size='large' />
-                              </View> :
-                              <>
-                                        {!user ? <WelcomeNavigator showOnBoarding={showOnBoarding} /> :
-                                                  <RootNavigator />
-                                        }
-                              </>
-          )
+        return (
+                userLoading ?
+                        <View style={{ flex: 1, alignContent: 'center', alignItems: 'center', justifyContent: 'center' }}>
+                                <ActivityIndicator color="#007BFF" animating={userLoading} size='large' />
+                        </View> :
+                        <>
+                                {!user ? <WelcomeNavigator showOnBoarding={showOnBoarding} /> :
+                                        <RootNavigator />
+                                }
+                        </>
+        )
 }

@@ -9,10 +9,6 @@ import HomeProducts from "../../components/ecommerce/home/HomeProducts";
 import Shops from "../../components/ecommerce/home/Shops";
 import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-import { useNavigation } from '@react-navigation/native'
-import Animated from "react-native-reanimated";
-import { useSelector } from "react-redux";
-import { ecommerceCartSelector } from "../../store/selectors/ecommerceCartSelectors";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
 export default function EcommerceHomeScreen() {
@@ -30,8 +26,8 @@ export default function EcommerceHomeScreen() {
           const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
           const [loadingProducts, setLoadingProducts] = useState(false)
           const [products, setProducts] = useState([])
+          const [shops, setShops] = useState([])
 
-          const navigation = useNavigation()
 
           const fecthProduits = async () => {
                     try {
@@ -104,6 +100,33 @@ export default function EcommerceHomeScreen() {
                               }
                     })()
           }, [selectedCategorie, selectedsousCategories])
+        
+          useEffect(() => {
+            (async () => {
+                      try {
+                                if(firstLoadingProducts == false) {
+                                          setLoadingProducts(true)
+                                }
+                                var url = "/partenaire/ecommerce"
+                                if(selectedCategorie) {
+                                          url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                                        
+                                }
+                                if(selectedsousCategories) {
+                                    url = `/partenaire/ecommerce?subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+            
+                          }
+                                const shops = await fetchApi(url)
+                                setShops(shops.result)
+                                console.log(shops)
+                      } catch (error) {
+                                console.log(error)
+                      } finally {
+                                setFirstLoadingProducts(false)
+                                setLoadingProducts(false)
+                      }
+            })()
+  }, [selectedCategorie, selectedsousCategories])
 
           return (
                     <View style={styles.container}>
@@ -154,9 +177,9 @@ export default function EcommerceHomeScreen() {
                                         />)}
                                         
                                         {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories ) ? <HomeProductsSkeletons /> : 
-                                                  <HomeProducts products={products} />}
+                                                  <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
-                                        <Shops products={products} />
+                                        <Shops shops={shops} />
                                         
                                         <TouchableNativeFeedback
                                                   accessibilityRole="button"

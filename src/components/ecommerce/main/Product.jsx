@@ -10,8 +10,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Product({ product, index, totalLength, fixMargins = false }) {
+        const navigation = useNavigation()
           const { width } = useWindowDimensions()
           const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
@@ -51,9 +53,9 @@ export default function Product({ product, index, totalLength, fixMargins = fals
 
           return (
                     <View key={index} style={[styles.product, additionStyles]}>
-                              <View style={styles.imageCard}>
+                              <TouchableOpacity onPress={()=>navigation.navigate('DetailAchatScreen', {product:product})} style={styles.imageCard}>
                                         <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
-                              </View>
+                              </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
                                         <View style={styles.cardLike}>
                                                   <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />

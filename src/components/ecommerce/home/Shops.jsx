@@ -4,29 +4,29 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import Product from '../main/Product';
 import Shop from '../main/Shop';
 
-export default function Shops({ products }) {
+export default function Shops({ shops }) {
           return (
-                    <View style={styles.homeProducts}>
+                    <View style={styles.homeshops}>
                               <TouchableNativeFeedback
                                         accessibilityRole="button"
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                               >
-                                        <View style={styles.productsHeader}>
+                                        <View style={styles.shopsHeader}>
                                                   <Text style={styles.title}>Les boutiques</Text>
                                                   <MaterialIcons name="navigate-next" size={24} color="black" />
                                         </View>
                               </TouchableNativeFeedback>
                               <ScrollView
-                                        style={styles.products}
+                                        style={styles.shops}
                                         horizontal
                                         showsHorizontalScrollIndicator={false}
                               >
-                                        {products.map((product, index) => {
+                                        {shops.map((shop, index) => {
                                                   return (
                                                             <Shop
-                                                                      product={product}
+                                                                      shop={shop}
                                                                       index={index}
-                                                                      totalLength={products.length}
+                                                                      totalLength={shops.length}
                                                                       key={index}
                                                             />
                                                   )
@@ -37,9 +37,9 @@ export default function Shops({ products }) {
 }
 
 const styles = StyleSheet.create({
-          homeProducts: {
+          homeshops: {
           },
-          productsHeader: {
+          shopsHeader: {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
           title: {
                     fontWeight: 'bold'
           },
-          products: {
+          shops: {
                     paddingHorizontal: 10,
           }
 })
