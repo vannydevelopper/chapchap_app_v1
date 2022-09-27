@@ -1,7 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableNativeFeedback, View, Text, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
-import ProduitParPartenaire from '../main/ProduitParPartenaire';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -22,16 +21,7 @@ export default function ProduitPartenaire({productPartenaires}) {
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
                         >
-                                {productPartenaires.map((product, index) => {
-                                        return (
-                                                <ProduitParPartenaire
-                                                        product={product}
-                                                        index={index}
-                                                        totalLength={productPartenaires.length}
-                                                        key={index}
-                                                />
-                                        )
-                                })}
+                                
 
                         </ScrollView>
                 </View>
