@@ -15,7 +15,6 @@ import { COLORS } from "../../styles/COLORS";
 export default function HomeScreen() {
           return (
                     <>
-                    <StatusBar backgroundColor='#fff' barStyle='dark-content' />
                     <View style={styles.imgBackground}>
                               <View style={styles.cardHeader}>
                                         <View style={styles.menuOpener}>
@@ -63,7 +62,8 @@ const styles = StyleSheet.create({
                     height: 3,
                     width: 30,
                     backgroundColor: COLORS.primary,
-                    marginTop: 5
+                    marginTop: 5,
+                    borderRadius: 10
           },
           imgBackground: {
                     flex: 1,

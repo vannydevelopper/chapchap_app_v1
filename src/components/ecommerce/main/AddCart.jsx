@@ -2,7 +2,9 @@ import { useState } from "react"
 import { ActivityIndicator, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import { COLORS } from "../../../styles/COLORS"
-export default function AddCart({ product, loadingForm }) {
+import { useDispatch } from "react-redux";
+import { addProductAction } from "../../../store/actions/ecommerceCartActions";
+export default function AddCart({ product, loadingForm, onClose }) {
           const SIZES = [{
                     name: 'XL',
                     id: 1
@@ -25,10 +27,14 @@ export default function AddCart({ product, loadingForm }) {
           const [selectedSize, setSelectedSize] = useState(null)
           const [amount, setAmount] = useState(1)
           const [isFocused, setIsFocused] = useState(false)
+          const dispatch = useDispatch()
 
           const onDecrement = () => {
-                    if(amount == 1) {
+                    if(parseInt(amount) == 1) {
                               return false
+                    }
+                    if(parseInt(amount) <= 0) {
+                              return 1
                     }
                     setAmount(l => parseInt(l) - 1)
           }
@@ -46,6 +52,17 @@ export default function AddCart({ product, loadingForm }) {
           const checkAmount = () => {
                     setAmount(parseInt(amount) ? (parseInt(amount) >= product.stock.QUANTITE_RESTANTE ? product.stock.QUANTITE_RESTANTE : parseInt(amount)) : 1)
           }
+
+          const onAddToCart = () => {
+                    onClose()
+                    dispatch(addProductAction(product, amount))
+          }
+
+          let isnum = /^\d+$/.test(amount);
+          const isValid = () => {
+                    return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= product.stock.QUANTITE_RESTANTE) : false
+          }
+
           return (
                     loadingForm ? <ActivityIndicator
                               animating
@@ -85,7 +102,7 @@ export default function AddCart({ product, loadingForm }) {
                                                   Disponible: { product.stock.QUANTITE_RESTANTE }
                                         </Text>
                                         <View style={styles.amountContainer}>
-                                                  <TouchableOpacity style={[styles.amountChanger, amount == 1 && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount == 1}>
+                                                  <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
                                                             <Text style={styles.amountChangerText}>-</Text>
                                                   </TouchableOpacity>
                                                   <TextInput
@@ -99,11 +116,11 @@ export default function AddCart({ product, loadingForm }) {
                                                             }}
                                                             keyboardType="decimal-pad"
                                                   />
-                                                  <TouchableOpacity style={[styles.amountChanger, amount == product.stock.QUANTITE_RESTANTE && { opacity: 0.5 }]} onPress={onIncrement}>
+                                                  <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= product.stock.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= product.stock.QUANTITE_RESTANTE)}>
                                                             <Text style={styles.amountChangerText}>+</Text>
                                                   </TouchableOpacity>
                                         </View>
-                                        <TouchableOpacity style={styles.addCartBtn}>
+                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
                                                   <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
                                         </TouchableOpacity>
                               </View>
@@ -205,7 +222,7 @@ const styles = StyleSheet.create({
                     width: 50,
                     height: 50,
                     backgroundColor: COLORS.ecommercePrimaryColor,
-                    borderRadius: 10,
+                    borderRadius: 5,
                     justifyContent: 'center',
                     alignItems: 'center'
           },

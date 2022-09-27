@@ -8,10 +8,11 @@ import AddCart from './AddCart';
 import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 
 export default function Product({ product, index, totalLength, fixMargins = false }) {
           const { width } = useWindowDimensions()
-          const MAX_WIDTH = 200
           const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
           const PRODUCT_HEIGHT = 270
@@ -30,6 +31,12 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                     setIsOpen(true)
                     modalizeRef.current?.open()
           }
+
+          const onCloseAddToCart = () => {
+                    modalizeRef.current?.close()
+          }
+
+          const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
 
           useEffect(() => {
                     if(isOpen) {
@@ -51,8 +58,13 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                                         <View style={styles.cardLike}>
                                                   <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
                                         </View>
-                                        <TouchableOpacity style={styles.cardLike2} onPress={onCartPress}>
+                                        <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
+                                                  <>
                                                   <AntDesign name="shoppingcart" size={24} color="#F29558" />
+                                                  {productInCart ? <View style={styles.badge}>
+                                                            <Text style={styles.badgeText} numberOfLines={1}>{ productInCart.QUANTITE }</Text>
+                                                  </View> : null}
+                                                  </>
                                         </TouchableOpacity>
                               </View>
                               <View style={styles.productNames}>
@@ -82,7 +94,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                                                                       setLoadingForm(true)
                                                             }}
                                                   >
-                                                            <AddCart product={product} loadingForm={loadingForm} />
+                                                            <AddCart product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
                                                   </Modalize>
                                         </GestureHandlerRootView>
                               </Portal>
@@ -114,7 +126,7 @@ const styles = StyleSheet.create({
                     justifyContent: "center",
                     alignItems: "center"
           },
-          cardLike2: {
+          cartBtn: {
                     marginTop: 10,
                     width: 35,
                     height: 35,
@@ -123,6 +135,24 @@ const styles = StyleSheet.create({
                     justifyContent: "center",
                     alignItems: "center",
                     marginLeft: 8
+          },
+          badge: {
+                    minWidth: 25,
+                    minHeight: 20,
+                    paddingHorizontal: 5,
+                    borderRadius: 20,
+                    backgroundColor: COLORS.ecommerceRed,
+                    position: 'absolute',
+                    top: -5,
+                    right: -10,
+                    justifyContent: "center",
+                    alignItems: "center",
+          },
+          badgeText: {
+                    textAlign: 'center',
+                    fontSize: 10,
+                    color: '#FFF',
+                    fontWeight: "bold"
           },
           productName: {
                     color: COLORS.ecommercePrimaryColor,

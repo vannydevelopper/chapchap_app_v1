@@ -9,6 +9,11 @@ import HomeProducts from "../../components/ecommerce/home/HomeProducts";
 import Shops from "../../components/ecommerce/home/Shops";
 import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import { useNavigation } from '@react-navigation/native'
+import Animated from "react-native-reanimated";
+import { useSelector } from "react-redux";
+import { ecommerceCartSelector } from "../../store/selectors/ecommerceCartSelectors";
+import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
 export default function EcommerceHomeScreen() {
           const { height } = useWindowDimensions()
@@ -25,6 +30,8 @@ export default function EcommerceHomeScreen() {
           const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
           const [loadingProducts, setLoadingProducts] = useState(false)
           const [products, setProducts] = useState([])
+
+          const navigation = useNavigation()
 
           const fecthProduits = async () => {
                     try {
@@ -106,9 +113,7 @@ export default function EcommerceHomeScreen() {
                                                   <View style={[styles.menuOpenerLine, { width: 15 }]} />
                                                   <View style={[styles.menuOpenerLine, { width: 25 }]} />
                                         </View>
-                                        <View style={{ marginTop: 25 }}>
-                                                  <Ionicons name="cart-outline" size={30} color={COLORS.ecommercePrimaryColor} />
-                                        </View>
+                                        <EcommerceBadge />
                               </View>
                               <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
                                         <Text style={styles.titlePrincipal}>Achat des produits</Text>
@@ -189,17 +194,18 @@ const styles = StyleSheet.create({
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    paddingHorizontal: 20,
-                    height: 88
+                    paddingHorizontal: 10,
+                    marginTop: StatusBar.currentHeight,
+                    height: 60
           },
           menuOpener: {
-                    marginTop: 25
           },
           menuOpenerLine: {
                     height: 3,
                     width: 30,
                     backgroundColor: COLORS.ecommercePrimaryColor,
-                    marginTop: 5
+                    marginTop: 5,
+                    borderRadius: 10
           },
           imgBackground: {
                     flex: 1,
@@ -282,5 +288,5 @@ const styles = StyleSheet.create({
           products: {
                     flexDirection: 'row',
                     flexWrap: 'wrap'
-          }
+          },
 })
