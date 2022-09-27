@@ -1,13 +1,20 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
+import { Portal } from 'react-native-portalize';
+import { Modalize } from 'react-native-modalize';
+import AddCart from './AddCart';
+import { useState } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 import { useNavigation } from '@react-navigation/native';
 
 export default function Product({ product, index, totalLength, fixMargins = false }) {
         const navigation = useNavigation()
           const { width } = useWindowDimensions()
-          const MAX_WIDTH = 200
           const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
           const PRODUCT_HEIGHT = 270
@@ -17,6 +24,33 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                     marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
                     marginRight: index == totalLength-1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
           }
+
+          const modalizeRef = useRef(null)
+          const [isOpen, setIsOpen] = useState(false)
+          const [loadingForm, setLoadingForm] = useState(true)
+
+          const onCartPress = () => {
+                    setIsOpen(true)
+                    modalizeRef.current?.open()
+          }
+
+          const onCloseAddToCart = () => {
+                    modalizeRef.current?.close()
+          }
+
+          const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
+
+          useEffect(() => {
+                    if(isOpen) {
+                              const timer = setTimeout(() => {
+                                        setLoadingForm(false)
+                              })
+                              return () => {
+                                        clearTimeout(timer)
+                              }
+                    }
+          }, [isOpen])
+
           return (
                     <View key={index} style={[styles.product, additionStyles]}>
                               <TouchableOpacity onPress={()=>navigation.navigate('DetailAchatScreen', {product:product})} style={styles.imageCard}>
@@ -26,9 +60,14 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                                         <View style={styles.cardLike}>
                                                   <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
                                         </View>
-                                        <View style={styles.cardLike2}>
+                                        <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
+                                                  <>
                                                   <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                        </View>
+                                                  {productInCart ? <View style={styles.badge}>
+                                                            <Text style={styles.badgeText} numberOfLines={1}>{ productInCart.QUANTITE }</Text>
+                                                  </View> : null}
+                                                  </>
+                                        </TouchableOpacity>
                               </View>
                               <View style={styles.productNames}>
                                         <Text numberOfLines={2} style={styles.productName}>
@@ -37,6 +76,30 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                                         </Text>
                               </View>
                               {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
+                              <Portal>
+                                        <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
+                                                  <Modalize
+                                                            ref={modalizeRef}
+                                                            adjustToContentHeight
+                                                            handlePosition='inside'
+                                                            modalStyle={{
+                                                                      borderTopRightRadius: 25,
+                                                                      borderTopLeftRadius: 25,
+                                                                      paddingVertical: 20
+                                                            }}
+                                                            handleStyle={{ marginTop: 10 }}
+                                                            scrollViewProps={{
+                                                                      keyboardShouldPersistTaps: "handled"
+                                                            }}
+                                                            onClosed={() => {
+                                                                      setIsOpen(false)
+                                                                      setLoadingForm(true)
+                                                            }}
+                                                  >
+                                                            <AddCart product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                                                  </Modalize>
+                                        </GestureHandlerRootView>
+                              </Portal>
                     </View>
           )
 }
@@ -65,7 +128,7 @@ const styles = StyleSheet.create({
                     justifyContent: "center",
                     alignItems: "center"
           },
-          cardLike2: {
+          cartBtn: {
                     marginTop: 10,
                     width: 35,
                     height: 35,
@@ -74,6 +137,24 @@ const styles = StyleSheet.create({
                     justifyContent: "center",
                     alignItems: "center",
                     marginLeft: 8
+          },
+          badge: {
+                    minWidth: 25,
+                    minHeight: 20,
+                    paddingHorizontal: 5,
+                    borderRadius: 20,
+                    backgroundColor: COLORS.ecommerceRed,
+                    position: 'absolute',
+                    top: -5,
+                    right: -10,
+                    justifyContent: "center",
+                    alignItems: "center",
+          },
+          badgeText: {
+                    textAlign: 'center',
+                    fontSize: 10,
+                    color: '#FFF',
+                    fontWeight: "bold"
           },
           productName: {
                     color: COLORS.ecommercePrimaryColor,
