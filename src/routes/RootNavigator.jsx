@@ -5,6 +5,7 @@ import DetailAchatScreen from '../screens/e-commerce/DetailsAchatScreen'
 import EcommerceHomeScreen from '../screens/e-commerce/EcommerceHomeScreen'
 import PlusAchCommandeScreen from '../screens/e-commerce/PlusAchCommandeScreen'
 import HomeScreen from '../screens/home/HomeScreen'
+import RestaurantHomeScreen from '../screens/restaurant/RestaurantHomeScreen'
 
 export default function RootNavigator() {
           const Stack = createStackNavigator()
@@ -20,6 +21,7 @@ export default function RootNavigator() {
                                         <Stack.Screen name="EcommerceHomeScreen" component={EcommerceHomeScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}} />
                                         <Stack.Screen name='PlusAchCommandeScreen' component={PlusAchCommandeScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}}/>
                                         <Stack.Screen name='DetailAchatScreen' component={DetailAchatScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}}/>
+                                        <Stack.Screen name='RestaurantHomeScreen' component={RestaurantHomeScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}}/>
                               </Stack.Navigator>
                     </NavigationContainer>
           )
