@@ -105,6 +105,13 @@ export default function MenuDetailScreen() {
                             <MaterialIcons name="navigate-next" size={24} color="black" />
                         </View>
                     </TouchableNativeFeedback>
+                    <TouchableNativeFeedback
+                        background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                    >
+                        <View style={styles.productsHeader}>
+                            <Text style={styles.title}>Similaires</Text>
+                        </View>
+                    </TouchableNativeFeedback>
                 </ScrollView>
             </View>
             <View style={styles.productFooter}>
@@ -231,5 +238,16 @@ const styles = StyleSheet.create({
         right: 0,
         justifyContent: "center",
         alignItems: "center",
+    },
+    productsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 10
+    },
+    title: {
+        fontWeight: 'bold'
     },
 })
