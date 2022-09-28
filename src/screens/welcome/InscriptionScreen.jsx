@@ -110,15 +110,13 @@ export default function InscriptionScreen() {
         return (
                 <>
                         {loading && <Loading />}
-                        <ImageBackground style={styles.container} source={require('../../../assets/images/g52.png')}>
+                        <View style={styles.container}>
                                 <ScrollView keyboardShouldPersistTaps="handled">
                                         <View>
                                                 <View style={styles.cardTitle}>
                                                         <Text style={styles.Title}>Compte client</Text>
                                                         <Text style={styles.description}> Chap Chap</Text>
                                                 </View>
-
-
                                                 <View style={styles.inputCard}>
                                                         <View>
                                                                 <OutlinedTextField
@@ -301,7 +299,7 @@ export default function InscriptionScreen() {
 
                                         </View>
                                 </ScrollView>
-                        </ImageBackground>
+                        </View>
                 </>
         )
 }
