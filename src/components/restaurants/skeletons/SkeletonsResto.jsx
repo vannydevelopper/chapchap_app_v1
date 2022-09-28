@@ -2,27 +2,14 @@ import React from "react";
 import { ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { COLORS } from "../../../styles/COLORS";
 
-export const CategoriesSkeletons = () => {
+export const CategoriesMenuSkeletons = () => {
           return (
                     <View style={styles.categories}>
                               {new Array(50).fill(0).map((_, index) => {
                                         return (
                                                   <View style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
                                                             <View style={styles.categoryPhoto} />
-                                                            <View style={styles.categoryText} />
-                                                  </View>
-                                        )
-                              })}
-                    </View>
-          )
-}
-export const SubMenuCategoriesSkeletons = () => {
-          return (
-                    <View style={[styles.categories, { paddingVertical: 25 }]}>
-                              {new Array(50).fill(0).map((_, index) => {
-                                        return (
-                                                  <View style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                                                            <View style={[styles.categoryText, { height: 20, width: 60 }]} />
+                                                            {/* <View style={styles.categoryText} /> */}
                                                   </View>
                                         )
                               })}
@@ -43,8 +30,7 @@ export const HomeProductsSkeletons = ({ wrap = false }) => {
           }
           return (
                     <>
-                    <View style={{...styles.title, height: 15, width: '25%', backgroundColor: '#d9ddde', marginLeft: 10, marginTop: 20, borderRadius: 5, marginBottom: 10}} />
-                    <View style={[{ flexDirection: "row", alignItems: "center"}, wrap && { flexWrap: "wrap" }]}>
+                    <View style={[{ flexDirection: "row", alignItems: "center", marginTop:15}, wrap && { flexWrap: "wrap" }]}>
                               {(new Array(10).fill(0)).map((category, index) => {
                                         return (
                                                   <View key={index.toString()} style={[styles.product,additionStyles, wrap && { marginTop: 10 }]}>
@@ -70,7 +56,7 @@ const styles = StyleSheet.create({
                     alignItems: 'center',
                     paddingHorizontal: 10,
                     backgroundColor: '#fff',
-                    paddingBottom: 5
+                //     paddingBottom: 5
           },
           category: {
                     alignItems: 'center',

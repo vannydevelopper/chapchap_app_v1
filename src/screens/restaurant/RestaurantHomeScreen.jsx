@@ -9,6 +9,7 @@ import FiltreModal from "../../components/restaurants/FiltreModal";
 import fetchApi from "../../helpers/fetchApi";
 import { COLORS } from "../../styles/COLORS"
 import RestoSubCategories from "../../components/restaurants/home/RestoubCategories";
+import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
 
 
 export default function RestaurantHomeScreen() {
@@ -17,9 +18,11 @@ export default function RestaurantHomeScreen() {
         const navigation = useNavigation()
         const [partenaires, setPartenaires] = useState([])
 
+        const [loadingMenuCategories, setLoadingMenuCatagories] = useState(true)
         const [menuCategories, setMenuCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
 
+        const [loadingMenu, setLoadingMenu] = useState(false)
         const [menuListes, setMenuListes] = useState([])
         const [selectedMenu, setSelectedMenu] = useState(null)
 
@@ -54,7 +57,7 @@ export default function RestaurantHomeScreen() {
                         } catch (error) {
                                 console.log(error)
                         } finally {
-                                //     setLoadingSubCategories(false)
+                                setLoadingMenuCatagories(false)
                         }
                 })()
         }, [])
@@ -67,16 +70,19 @@ export default function RestaurantHomeScreen() {
         useEffect(() => {
                 (async () => {
                         try {
-                                const menu = await fetchApi(`/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`, {
-                                        method: "GET",
-                                        headers: { "Content-Type": "application/json" },
-                                })
-                                setMenuListes(menu.result)
-                                console.log(menu.result)
+                                setLoadingMenu(true)
+                                if (selectedCategorie?.ID_CATEGORIE_MENU) {
+                                        const menu = await fetchApi(`/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`, {
+                                                method: "GET",
+                                                headers: { "Content-Type": "application/json" },
+                                        })
+                                        setMenuListes(menu.result)
+                                        // console.log(menu.result)
+                                }
                         } catch (error) {
                                 console.log(error)
                         } finally {
-                                //     setLoadingSubCategories(false)
+                                setLoadingMenu(false)
                         }
                 })()
         }, [selectedCategorie])
@@ -111,34 +117,46 @@ export default function RestaurantHomeScreen() {
                                         </View>
 
                                 </View>
-                                <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                                        {partenaires.map((partenaire, index) => {
-                                                return (
-                                                        <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
-                                                                <View style={styles.cardAchat}>
-                                                                        {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
-                                                                        <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
-                                                                </View>
-                                                        </TouchableOpacity>
-                                                )
-                                        })}
-                                </View>
-                                <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                                        {menuCategories.map((menuCategorie, index) => {
-                                                return (
-                                                        <TouchableOpacity key={index} onPress={() => onMenuCategoryPress(menuCategorie)}>
-                                                                <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                                        <View style={[styles.cardPhoto, { backgroundColor: menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
+                                <View >
+                                        <ScrollView
+                                                horizontal showsHorizontalScrollIndicator={false}
+                                                style={styles.subCategories}
+                                        >
+                                                {partenaires.map((partenaire, index) => {
+                                                        return (
+                                                                <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
+                                                                        <View style={styles.cardAchat}>
+                                                                                {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
+                                                                                <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
                                                                         </View>
-                                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
-                                                                </View>
-                                                        </TouchableOpacity>
-                                                )
-                                        })}
+                                                                </TouchableOpacity>
+                                                        )
+                                                })}
+                                        </ScrollView>
                                 </View>
+                                {loadingMenuCategories ? <CategoriesMenuSkeletons /> :
+                                        <View>
+                                                <ScrollView
+                                                        horizontal showsHorizontalScrollIndicator={false}
+                                                        style={styles.subCategoriesMenu}
+                                                >
+                                                        {menuCategories.map((menuCategorie, index) => {
+                                                                return (
+                                                                        <TouchableOpacity key={index} onPress={() => onMenuCategoryPress(menuCategorie)}>
+                                                                                <View style={{ alignContent: "center", alignItems: "center", margin: 20 }}>
+                                                                                        <View style={[styles.cardPhoto, { backgroundColor: menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
+                                                                                        </View>
+                                                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
+                                                                                </View>
+                                                                        </TouchableOpacity>
+                                                                )
+                                                        })}
+                                                </ScrollView>
+                                        </View>}
                                 <ScrollView showsVerticalScrollIndicator={false}>
-                                        <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef}/>
+                                        {selectedCategorie && loadingMenu ? <HomeProductsSkeletons /> :
+                                                <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef} />}
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
@@ -202,7 +220,9 @@ const styles = StyleSheet.create({
         },
         image: {
                 width: 70,
-                height: 70
+                height: 70,
+                margin: 5,
+                borderRadius: 10
         },
         cardPhoto: {
                 width: 50,
@@ -287,6 +307,12 @@ const styles = StyleSheet.create({
         imageModalPanier: {
                 width: 70,
                 height: 70,
+        },
+        subCategories: {
+                paddingVertical: 5,
+                padding: 5,
+        },
+        subCategoriesMenu: {
         }
 
 
