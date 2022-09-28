@@ -53,7 +53,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
 
           return (
                     <View key={index} style={[styles.product, additionStyles]}>
-                              <TouchableOpacity onPress={()=>navigation.navigate('DetailAchatScreen', {product:product})} style={styles.imageCard}>
+                              <TouchableOpacity onPress={()=>navigation.push('DetailAchatScreen', {product:product})} style={styles.imageCard}>
                                         <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
                               </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
