@@ -29,6 +29,19 @@ export const SubCategoriesSkeletons = () => {
                     </View>
           )
 }
+export const shopsSkeletons = () => {
+    return (
+              <View style={[styles.categories, { paddingVertical: 1000 }]}>
+                        {new Array(50).fill(0).map((_, index) => {
+                                  return (
+                                            <View style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                                      <View style={[styles.categoryText, { height: 20, width: 60 }]} />
+                                            </View>
+                                  )
+                        })}
+              </View>
+    )
+}
 
 export const HomeProductsSkeletons = ({ wrap = false }) => {
           const { width } = useWindowDimensions()
