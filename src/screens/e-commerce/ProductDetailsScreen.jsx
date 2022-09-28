@@ -29,6 +29,7 @@ export default function ProductDetailsScreen() {
           const [similarProducs, setSimilarProducts] = useState([])
 
           const { product } = route.params
+          console.log(product)
 
 
           const modalizeRef = useRef(null)

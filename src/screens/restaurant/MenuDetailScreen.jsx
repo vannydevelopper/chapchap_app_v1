@@ -1,8 +1,10 @@
 import React, { useState } from "react"
-import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView } from "react-native"
-import { Ionicons, AntDesign, Entypo, Foundation } from '@expo/vector-icons';
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, TouchableNativeFeedback, ScrollView, StatusBar } from "react-native"
+import { Ionicons, AntDesign, Entypo, Foundation, MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
+import { useCallback } from "react";
+import fetchApi from "../../helpers/fetchApi";
 export default function MenuDetailScreen() {
     const [nombre, setNombre] = useState(0);
     const route = useRoute()
@@ -31,223 +33,179 @@ export default function MenuDetailScreen() {
         }
     }
 
-    return (<>
-        <ScrollView>
-            <View style={{ marginLeft: 30, marginTop: 50, marginHorizontal: 10 }}>
-                <View style={{ width: '100%', marginTop: 10 }}>
-                    <Image source={require('../../../assets/images/event.jpg')} style={{ ...styles.imagePrincipal }} />
-                </View>
-                <TouchableOpacity style={styles.iconCard} onPress={() => navigation.goBack()}>
-                    <Ionicons name="ios-arrow-back-outline" size={24} color="white" style={{ ...styles.icon, marginTop: 0 }} />
-                </TouchableOpacity>
+    // const fecthProduitsPartenaire = async () => {
+    //     try {
+    //         const response = await fetchApi(`/resto/menu?category=${product.partenaire.ID_PARTENAIRE}`, {
+    //             method: "GET",
+    //             headers: { "Content-Type": "application/json" },
+    //         })
+    //         setShopProducts(response)
+    //     }
+    //     catch (error) {
+    //         console.log(error)
+    //     } finally {
+    //         setLoadingShopProducts(false)
+    //     }
+    // }
 
-                <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
-                <View style={styles.cardOK}>
-                    <Text style={{ color: "white", fontSize: 5 }}>5</Text>
-                </View>
+    // useFocusEffect(useCallback(()=>{
+    //     fecthProduitsPartenaire
+    // },[]))
 
-                <View style={{ marginTop: 50 }} >
-                    <Text style={styles.text} numberOfLines={2}>Riz Tropical</Text>
-                </View>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-
-
-                    <View style={{ flexDirection: "row" }}>
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="staro" size={15} color="#EFC519" />
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <AntDesign name="clockcircleo" size={15} color="#797E9A" />
-                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
-                    </View>
-                    <View style={{ marginTop: -5 }}>
-                        <Text style={styles.textFbu}>12.000 Fbu</Text>
-                    </View>
-                </View>
-                <View style={{ marginTop: 50 }} >
-                    <Text style={styles.text1} numberOfLines={2}>Riz frit avec pomme de terre</Text>
-                </View>
-                <View style={{ marginTop: 15 }} >
-                    <Text style={styles.txtDisplay}>
-                        Les pommes de terre relevent la tradictionnelle recette de riz frit
-                        et lui ajoutent de la valeur nutritive;
-                        Ce plat se cuisine en 30minutes au moins
-                    </Text>
-                </View>
-                <View >
-                    <Text style={styles.txtDispla}>Nombres de plat</Text>
-                </View>
-                <View>
-                    <View style={{ flexDirection: "row", justifyContent: 'space-around', }}>
-
-                        <TouchableOpacity
-                            onPress={mouveNumber}
-                            style={styles.carre1}>
-                            <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
-
+    return (
+        <>
+            <View style={{ marginTop: 0, flex: 1 }}>
+                <View style={styles.cardHeader}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                    </TouchableOpacity>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <TouchableOpacity style={{ marginRight: 20 }} >
+                            <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
                         </TouchableOpacity>
-                        <View style={styles.carre2}>
-                            <TextInput
-                                disabled={nombre == ''}
-
-                                keyboardType="phone-pad"
-                                defaultValue="0"
-                                onChangeText={(nb) => setNombre(nb)}
-                                value={nombre.toString()}
-                                style={{ textAlign: 'center' }}></TextInput>
-
+                    </View>
+                </View>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={styles.producHeader} >
+                        <Image source={{ uri: menuListe.IMAGE }} style={styles.productImage} />
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10 }}>
+                        <View>
+                            <TouchableOpacity style={styles.category} >
+                                <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
+                                <Text style={styles.categoryName} numberOfLines={2}>Plat du riz</Text>
+                            </TouchableOpacity>
+                            <View style={styles.productNames}>
+                                <Text style={styles.productName}>
+                                    <Text numberOfLines={2} style={styles.productName}> Roz . kasongo</Text>
+                                </Text>
+                            </View>
                         </View>
-
-                        <TouchableOpacity onPress={addNumber} style={styles.carre1}>
-                            <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
-
-                        </TouchableOpacity>
-
+                        <View style={styles.shareBtn}>
+                            <AntDesign name="sharealt" size={20} color={COLORS.primary} />
+                        </View>
                     </View>
-                </View>
-
+                    <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
+                        <Text style={styles.productDescription}>gyuguy dgyugd vyudgyuvyu gvdyuvdyuv gvyuvdyuv vyuvyuv yvyugvy vyuv</Text>
+                    </View>
+                    <TouchableNativeFeedback>
+                        <View style={styles.shop}>
+                            <View style={styles.shopLeft}>
+                                <View style={styles.shopIcon}>
+                                    <Entypo name="shop" size={24} color={COLORS.primary} />
+                                    {/* <FontAwesome name="user" size={24} color={COLORS.primary} /> */}
+                                </View>
+                                <View style={styles.shopOwner}>
+                                    <Text style={styles.productSeller}>
+                                        obr
+                                    </Text>
+                                    <Text style={styles.shopAdress}>Bujumbura</Text>
+                                </View>
+                            </View>
+                            <MaterialIcons name="navigate-next" size={24} color="black" />
+                        </View>
+                    </TouchableNativeFeedback>
+                </ScrollView>
             </View>
-        </ScrollView >
-        <View style={styles.productFooter}>
-            <Text>12000Fbu</Text>
-            <TouchableOpacity style={[styles.addCartBtn]} >
-                <>
-                    <View>
-                        <Ionicons name="cart" size={24} color="#fff" />
-                    </View>
-                    <Text style={styles.addCartBtnTitle}>
-                        Ajouter au panier
-                    </Text>
-                </>
-            </TouchableOpacity>
-        </View>
-    </>
-
+            <View style={styles.productFooter}>
+                <Text style={styles.productPrice}>15 000 Fbu</Text>
+                <TouchableOpacity style={[styles.addCartBtn]}  >
+                    <>
+                        <View>
+                            <Ionicons name="cart" size={24} color="#fff" />
+                        </View>
+                        <Text style={styles.addCartBtnTitle}>
+                            Ajouter au panier
+                        </Text>
+                        <View style={styles.badge}>
+                            <Text style={styles.badgeText} numberOfLines={1}>12</Text>
+                        </View>
+                    </>
+                </TouchableOpacity>
+            </View>
+        </>
     )
 }
 const styles = StyleSheet.create({
-    imagePrincipal:
-    {
-
-        width: '120%',
-        height: 200,
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        marginTop: StatusBar.currentHeight,
+        height: 60,
+        backgroundColor: '#F1F1F1',
+    },
+    producHeader: {
+        backgroundColor: '#F1F1F1',
+        paddingBottom: 60,
+    },
+    productImage: {
+        width: '70%',
+        minHeight: 150,
+        maxHeight: 200,
         alignSelf: 'center',
-        borderBottomLeftRadius: 60,
-        borderBottomRightRadius: 60,
-
-
+        resizeMode: "center",
+        borderRadius: 10
     },
-    text: {
-        color: '#242F68',
+    category: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 15,
+    },
+    categoryName: {
         fontWeight: "bold",
-        fontSize: 20
+        fontSize: 13,
+        color: COLORS.primary,
+        marginLeft: 5
     },
-    text1: {
-        color: '#242F68',
+    productNames: {
+        marginTop: 5
+    },
+    productName: {
         fontWeight: "bold",
-        fontSize: 16
+        fontSize: 18,
+        color: COLORS.ecommercePrimaryColor
     },
-    textFbu: {
-        color: 'red',
-        fontWeight: "bold",
-        fontSize: 15
-    },
-    carre1: {
-        padding: 15,
-        height: 50,
-        width: 50,
-        color: "#1D8585",
-        backgroundColor: '#242F68',
-        borderRadius: 10,
-        // marginTop: 1,
-    },
-    carre2: {
-        padding: 15,
-        height: 50,
-        width: 200,
-        borderWidth: 2,
-        borderColor: '#D8D8D8',
-        borderRadius: 10,
-        // marginTop: 1,
-    },
-    carre3: {
-        padding: 10,
-        height: 50,
-        width: 200,
-        backgroundColor: '#EE7526',
-        borderWidth: 2,
-        borderColor: '#D8D8D8',
-        borderRadius: 10,
-        // marginTop: 1,
-    },
-    carre: {
+    shareBtn: {
         padding: 15,
         height: 50,
         width: 50,
         color: "#1D8585",
         backgroundColor: '#D7D9E4',
-        borderRadius: 10,
-        // marginTop: 1,
+        borderRadius: 100
     },
-
-    txtDisplay: {
-        color: '#191970',
-        fontSize: 15,
-        fontWeight: 'bold',
-        opacity: 0.4
-    },
-    txtDispla: {
-        color: '#646B94',
-        fontSize: 15,
-        fontWeight: 'bold',
-        marginTop: 30
-
-    },
-    icon: {
-        width: 50,
-        top: 30,
-        position: 'absolute',
-        marginRight: 10,
-        // backgroundColor: '#fff',
-        borderRadius: 40,
+    shop: {
+        flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: "space-between",
+        marginVertical: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
     },
-    icon1: {
-        width: 50,
-        top: 30,
-        marginLeft: 10,
-        left: 250,
-        position: 'absolute',
-        // backgroundColor: '#fff',
-        borderRadius: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
+    shopLeft: {
+        flexDirection: "row",
+        alignItems: 'center'
     },
-    cardOK: {
-        width: 10,
-        height: 10,
-        backgroundColor: 'red',
-        borderRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 2,
-
-        top: 30,
-        marginLeft: 8,
-        left: 270,
-        position: 'absolute',
+    shopOwner: {
+        marginLeft: 10
     },
-    iconCard: {
-        position: "absolute",
+    productSeller: {
+        fontWeight: "bold"
+    },
+    shopAdress: {
+        color: '#777',
+        fontSize: 13
     },
     productFooter: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         padding: 10,
+    },
+    productPrice: {
+        fontWeight: "bold",
+        fontSize: 22
     },
     addCartBtn: {
         borderRadius: 30,
@@ -261,5 +219,17 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontWeight: 'bold'
+    },
+    badge: {
+        minWidth: 25,
+        minHeight: 20,
+        borderRadius: 20,
+        paddingHorizontal: 3,
+        backgroundColor: COLORS.ecommerceRed,
+        position: 'absolute',
+        top: -10,
+        right: 0,
+        justifyContent: "center",
+        alignItems: "center",
     },
 })

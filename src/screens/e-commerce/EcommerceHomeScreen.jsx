@@ -28,7 +28,7 @@ export default function EcommerceHomeScreen() {
   const [products, setProducts] = useState([])
   const [shops, setShops] = useState([])
 
-          const navigation = useNavigation()
+  const navigation = useNavigation()
 
   const fecthProduits = async () => {
     try {
