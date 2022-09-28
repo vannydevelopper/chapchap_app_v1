@@ -2,27 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, Image, useWindowDimensions, View } from 'react-native'
 import { COLORS } from '../../../styles/COLORS'
 import { AntDesign, SimpleLineIcons, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function RestoSubCategories({ menuListes, ajoutPanierRef, filtreRef }) {
         const [activendex, setActiveIndex] = useState(0)
         const { width } = useWindowDimensions()
         const [activeLayout, setActiveLaout] = useState({})
         const scrollViewRef = useRef();
-
-        const onScroll = e => {
-        }
-
-        // const onPress = useCallback((souscategorie, index) => {
-        //         selectedItemSousCategories({ ...souscategorie, index })
-
-        // }, [activeLayout])
-
-        // useEffect(() => {
-        //         scrollViewRef?.current?.scrollTo({ x: 0, y: 0, animated: true })
-        // }, [sousCategories])
-
-        // const lastSub = sousCategories[sousCategories.length - 1]
-        // const selectedWidth = activeLayout[`subCategory_${lastSub?.ID_PRODUIT_SOUS_CATEGORIE}`]?.width
+        const navigation = useNavigation()
 
         return (
                 <View style={{ marginTop: 10}}>
@@ -30,7 +17,7 @@ export default function RestoSubCategories({ menuListes, ajoutPanierRef, filtreR
                                 {menuListes.map((menuListe, index) => {
                                         return (
                                                 <View  key={index}>
-                                                        <TouchableOpacity style={styles.cardAchatDescription}>
+                                                        <TouchableOpacity onPress={()=>navigation.push('MenuDetailScreen',{menuListe:menuListe})} style={styles.cardAchatDescription}>
                                                                 <Image source={{ uri: menuListe.IMAGE }} style={styles.imageDescription} />
                                                         </TouchableOpacity>
                                                         <View style={{ flexDirection: "row" }}>

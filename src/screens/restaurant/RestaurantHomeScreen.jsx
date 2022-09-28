@@ -8,7 +8,7 @@ import AjoutPanierModalize from "../../components/restaurants/AjoutPanierModaliz
 import FiltreModal from "../../components/restaurants/FiltreModal";
 import fetchApi from "../../helpers/fetchApi";
 import { COLORS } from "../../styles/COLORS"
-import RestoSubCategories from "../../components/restaurants/home/RestoubCategories";
+import RestoSubCategories from "../../components/restaurants/home/RestoSubCategories";
 import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
 
 
