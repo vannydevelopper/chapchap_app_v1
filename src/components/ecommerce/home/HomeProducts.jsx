@@ -12,7 +12,7 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
                         <TouchableNativeFeedback
                                 accessibilityRole="button"
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-                                onPress={() => navigation.navigate('PlusAchCommandeScreen', {
+                                onPress={() => navigation.navigate('AllProductsScreen', {
                                         selectedCategorie: selectedCategorie, selectedsousCategories: selectedsousCategories
                                 })}
                         >

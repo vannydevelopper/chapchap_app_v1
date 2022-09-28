@@ -18,7 +18,7 @@ import AddCart from "../../components/ecommerce/main/AddCart";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import { ecommerceProductSelector } from "../../store/selectors/ecommerceCartSelectors";
 import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-export default function DetailAchatScreen() {
+export default function ProductDetailsScreen() {
           const navigation = useNavigation()
           const route = useRoute()
 

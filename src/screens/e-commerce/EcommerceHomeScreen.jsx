@@ -187,7 +187,7 @@ export default function EcommerceHomeScreen() {
                                         >
                                                   <View style={styles.productsHeader}>
                                                             <Text style={styles.title}>Recommandé pour vous</Text>
-                                                            <MaterialIcons name="navigate-next" size={24} color="black" />
+                                                            {/* <MaterialIcons name="navigate-next" size={24} color="black" /> */}
                                                   </View>
                                         </TouchableNativeFeedback>
 
