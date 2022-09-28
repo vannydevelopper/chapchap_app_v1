@@ -58,7 +58,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                               </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
                                         <View style={styles.cardLike}>
-                                                  <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
+                                                  <AntDesign name="hearto" size={24} color="#F29558" />
                                         </View>
                                         <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
                                                   <>
