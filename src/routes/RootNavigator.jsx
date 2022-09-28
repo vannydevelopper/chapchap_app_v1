@@ -20,6 +20,7 @@ export default function RootNavigator() {
                                         <Stack.Screen name="HomeScreen" component={HomeScreen} />
                                         <Stack.Screen name="EcommerceHomeScreen" component={EcommerceHomeScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}} />
                                         <Stack.Screen name="EcommerceCartScreen" component={EcommerceCartScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}} />
+                                        <Stack.Screen name='RestaurantHomeScreen' component={RestaurantHomeScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}}/>
                               </Stack.Navigator>
                     </NavigationContainer>
           )

@@ -7,6 +7,8 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AjoutPanierModalize from "../../components/restaurants/AjoutPanierModalize";
 import FiltreModal from "../../components/restaurants/FiltreModal";
 import fetchApi from "../../helpers/fetchApi";
+import { COLORS } from "../../styles/COLORS"
+import RestoSubCategories from "../../components/restaurants/home/RestoubCategories";
 
 
 export default function RestaurantHomeScreen() {
@@ -14,7 +16,12 @@ export default function RestaurantHomeScreen() {
         const filtreRef = useRef(null)
         const navigation = useNavigation()
         const [partenaires, setPartenaires] = useState([])
+
         const [menuCategories, setMenuCategories] = useState([])
+        const [selectedCategorie, setSelectedCategorie] = useState(null)
+
+        const [menuListes, setMenuListes] = useState([])
+        const [selectedMenu, setSelectedMenu] = useState(null)
 
         const fetchPartenaire = async () => {
                 try {
@@ -23,7 +30,7 @@ export default function RestaurantHomeScreen() {
                                 headers: { "Content-Type": "application/json" },
                         })
                         setPartenaires(response.result)
-                        console.log(response.result)
+                        // console.log(response.result)
                 }
                 catch (error) {
                         console.log(error)
@@ -51,6 +58,28 @@ export default function RestaurantHomeScreen() {
                         }
                 })()
         }, [])
+
+        const onMenuCategoryPress = (menuCategorie) => {
+                setSelectedCategorie(menuCategorie)
+        }
+
+        //fetch menu
+        useEffect(() => {
+                (async () => {
+                        try {
+                                const menu = await fetchApi(`/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`, {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+                                })
+                                setMenuListes(menu.result)
+                                console.log(menu.result)
+                        } catch (error) {
+                                console.log(error)
+                        } finally {
+                                //     setLoadingSubCategories(false)
+                        }
+                })()
+        }, [selectedCategorie])
 
         return (
                 <>
@@ -97,9 +126,9 @@ export default function RestaurantHomeScreen() {
                                 <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
                                         {menuCategories.map((menuCategorie, index) => {
                                                 return (
-                                                        <TouchableOpacity>
+                                                        <TouchableOpacity key={index} onPress={() => onMenuCategoryPress(menuCategorie)}>
                                                                 <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                                        <View style={styles.cardPhoto}>
+                                                                        <View style={[styles.cardPhoto, { backgroundColor: menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
                                                                                 <Ionicons name="shirt-sharp" size={24} color="white" />
                                                                         </View>
                                                                         <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
@@ -109,82 +138,7 @@ export default function RestaurantHomeScreen() {
                                         })}
                                 </View>
                                 <ScrollView showsVerticalScrollIndicator={false}>
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                                                <View >
-                                                        <TouchableOpacity style={styles.cardAchatDescription}>
-                                                                <Image source={require('../../../assets/restaurant/chickenBurger.png')} style={styles.imageDescription} />
-                                                        </TouchableOpacity>
-                                                        <View style={{ flexDirection: "row" }}>
-                                                                <TouchableOpacity style={styles.cardLike}>
-                                                                        <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
-                                                                        <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                        </View>
-                                                        <View style={styles.titleName}>
-                                                                <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Riz Tropitel</Text>
-                                                        </View>
-                                                        <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
-
-                                                </View>
-                                                <View>
-                                                        <TouchableOpacity style={styles.cardAchatDescription}>
-                                                                <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.imageDescription} />
-                                                        </TouchableOpacity>
-                                                        <View style={{ flexDirection: "row" }}>
-                                                                <TouchableOpacity style={styles.cardLike}>
-                                                                        <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
-                                                                        <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                        </View>
-                                                        <View style={styles.titleName}>
-                                                                <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Poulet grille</Text>
-                                                        </View>
-                                                        <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
-
-                                                </View>
-                                        </View>
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
-                                                <View>
-                                                        <TouchableOpacity style={styles.cardAchatDescription}>
-                                                                <Image source={require('../../../assets/restaurant/chickenBurger.png')} style={styles.imageDescription} />
-                                                        </TouchableOpacity>
-                                                        <View style={{ flexDirection: "row" }}>
-                                                                <TouchableOpacity style={styles.cardLike}>
-                                                                        <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
-                                                                        <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                        </View>
-                                                        <View style={styles.titleName}>
-                                                                <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Riz Tropitel</Text>
-                                                        </View>
-                                                        <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
-
-                                                </View>
-                                                <View>
-                                                        <TouchableOpacity style={styles.cardAchatDescription}>
-                                                                <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.imageDescription} />
-                                                        </TouchableOpacity>
-                                                        <View style={{ flexDirection: "row" }}>
-                                                                <TouchableOpacity style={styles.cardLike}>
-                                                                        <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                                <TouchableOpacity onPress={() => ajoutPanierRef.current.open()} style={styles.cardLike2}>
-                                                                        <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                                </TouchableOpacity>
-                                                        </View>
-                                                        <View style={styles.titleName}>
-                                                                <Text numberOfLines={2} style={{ maxWidth: 150, fontSize: 17, fontWeight: "bold", color: "#fff" }}>Poulet grille</Text>
-                                                        </View>
-                                                        <Text style={{ color: "#000", fontWeight: "bold" }}>FBu 45.000</Text>
-
-                                                </View>
-                                        </View>
+                                        <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef}/>
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
