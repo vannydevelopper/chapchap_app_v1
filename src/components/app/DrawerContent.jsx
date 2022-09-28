@@ -1,117 +1,147 @@
 import React from "react"
-import { Text, StyleSheet, View, ScrollView, ImageBackground, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, View, ScrollView, ImageBackground, TouchableOpacity, TouchableNativeFeedback, Image, StatusBar } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign, FontAwesome, Entypo, Feather } from '@expo/vector-icons';
+import { DrawerContentScrollView  } from '@react-navigation/drawer'
+import { useSelector } from "react-redux";
+import { userSelector } from "../../store/selectors/userSelector";
+import { COLORS } from "../../styles/COLORS";
 
 export default function DrawerContent() {
+          const user = useSelector(userSelector)
           return (
                     <View style={styles.drawerContent}>
-                              <View style={styles.card}>
-                                        <AntDesign name="close" size={40} color="#1D8585" style={{ marginLeft: 280, marginTop: 40 }} />
-                                        <Text style={{ textAlign: 'center', fontWeight: "bold", marginTop: 10 }}>NDAYISABA Claudine</Text>
-                              </View>
-                              <ScrollView>
-                                        <TouchableOpacity>
-                                                  <View style={{
-                                                            padding: 20,
-                                                            marginHorizontal: 20,
-                                                            color: "#1D8585",
-                                                            backgroundColor: '#87AFC7',
-                                                            borderRadius: 10,
-                                                            marginTop: 1,
-                                                            flexDirection: "row",
-
-                                                  }}>
-                                                            <AntDesign name="home" size={27} color="#1D8585" />
-                                                            <Text style={{ ...styles.text, color: "#1D8585" }}>Produits et  service</Text>
+                              <TouchableNativeFeedback>
+                                        <View style={styles.connectedUser}>
+                                                  <View style={styles.imageContainer}>
+                                                            <Image source={require('../../../assets/images/user.png')} style={styles.image} />
                                                   </View>
-                                        </TouchableOpacity>
-
-                                        <View style={styles.display}>
-                                                  <AntDesign name="home" size={24} color="black" />
-                                                  <Text style={styles.text}>commandes et  réservations</Text>
+                                                  <View style={styles.userNames}>
+                                                            <Text style={styles.fullName} numberOfLines={1}>{ user.result.NOM } { user.result.PRENOM }</Text>
+                                                            <Text style={styles.email}>{ user.result.EMAIL }</Text>
+                                                  </View>
                                         </View>
-                                        <View style={styles.display}>
-                                                  <AntDesign name="home" size={24} color="black" />
-                                                  <Text style={styles.text}>Wishlist</Text>
-                                        </View>
-                                        <View style={styles.display}>
-                                                  <FontAwesome name="user-o" size={24} color="black" />
-                                                  <Text style={styles.text}>Compte</Text>
-                                        </View>
-
-                                        <View style={styles.ligne}></View>
-                                        <View style={styles.display}>
-                                                  <Feather name="menu" size={24} color="black" />
-                                                  <Text style={styles.text}>condition d'utilisation</Text>
-                                        </View>
-                                        <View style={styles.display}>
-                                                  <AntDesign name="back" size={24} color="black" />
-                                                  <Text style={styles.text}>politique de retour</Text>
-                                        </View>
-                                        <View style={styles.display}>
-                                                  <AntDesign name="setting" size={24} color="black" />
-                                                  <Text style={styles.text}>Parametre</Text>
-                                        </View>
-                                        <View style={styles.display}>
-                                                  <AntDesign name="infocirlceo" size={24} color="black" />
-                                                  <Text style={styles.text}>infos et assistance</Text>
-                                        </View>
-                                        <View style={styles.display}>
-                                                  <MaterialIcons name="logout" size={20} color="black" />
-                                                  <Text style={styles.text}>Deconnexion</Text>
-                                        </View>
-                              </ScrollView>
+                              </TouchableNativeFeedback>
+                              <View style={styles.separator} />
+                              <DrawerContentScrollView style={styles.drawerScroller}>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden", backgroundColor: COLORS.handleColor }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <AntDesign name="home" size={27} color="#000" />
+                                                                      <Text style={[styles.drawerItemLabel, { color: '#000' }]}>Produits et  services</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <Feather name="shopping-cart" size={24} color="#777" />
+                                                                      <Text style={styles.drawerItemLabel}>Commandes</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <AntDesign name="hearto" size={24} color="#777" />
+                                                                      <Text style={styles.drawerItemLabel}>Wishlist</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                                        <View style={[styles.separator, { marginVertical: 20 }]} />
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <Feather name="menu" size={24} color="#777" />
+                                                                      <Text style={styles.drawerItemLabel}>Condition d'utilisation</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <AntDesign name="setting" size={24} color="#777" />
+                                                                      <Text style={styles.drawerItemLabel}>Paramètres</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <AntDesign name="infocirlceo" size={24} color="#777" />
+                                                                      <Text style={styles.drawerItemLabel}>Infos et assistance</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
+                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                                            <View style={styles.drawerItem}>
+                                                                      <MaterialIcons name="logout" size={20} color="#777" />
+                                                                      <Text style={styles.drawerItemLabel}>Déconnexion</Text>
+                                                            </View>
+                                                  </View>
+                                        </TouchableNativeFeedback>
+                              </DrawerContentScrollView>
                     </View>
           )
 
 }
 const styles = StyleSheet.create({
-          card: {
-                    marginHorizontal: 10,
-                    marginVertical: 20
-          },
-          display: {
-                    padding: 20,
-                    marginHorizontal: 20,
-                    // backgroundColor: '#fff',
-                    // borderRadius: 10,
-                    // elevation: 8,
-                    // borderWidth: 2,
-                    // borderColor: '#fff',
-                    marginTop: 5,
-                    flexDirection: "row",
-                    // justifyContent: "",
-                    // alignContent: "center",
-                    // alignItems: "center"
-
-          },
-          displa: {
-                    padding: 20,
-                    marginHorizontal: 20,
-                    backgroundColor: '#fff',
-                    borderRadius: 10,
-                    elevation: 8,
-                    borderWidth: 2,
-                    borderColor: '#fff',
-                    marginTop: 5,
-                    flexDirection: "row",
-                    justifyContent: "",
-                    alignContent: "center",
-                    alignItems: "center"
-
-          },
-          text: {
-                    marginLeft: 20,
-                    marginRight: 0
-          },
-          ligne: {
-                    borderTopWidth: 1,
-                    marginTop: 10,
-                    marginHorizontal: 20,
-                    borderTopColor: '#0a5744',
+          separator: {
+                    height: 2,
+                    width: "95%",
+                    backgroundColor: COLORS.handleColor,
+                    alignSelf: "center"
           },
           drawerContent: {
-                    backgroundColor: '#FFF'
+                    backgroundColor: '#FFF',
+                    flex: 1,
+                    marginTop: StatusBar.currentHeight,
+          },
+          connectedUser: {
+                    flexDirection: "row",
+                    alignItems: "center",
+                    paddingHorizontal: 10,
+                    paddingVertical: 15
+          },
+          imageContainer: {
+                    width: 50,
+                    height: 50,
+                    backgroundColor: COLORS.handleColor,
+                    borderRadius: 10,
+                    padding: 5
+          },
+          image: {
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 10,
+                    resizeMode: "center"
+          },
+          userNames: {
+                    marginLeft: 10
+          },
+          fullName: {
+                    fontWeight: "bold",
+                    fontSize: 16
+          },
+          email: {
+                    color: '#777',
+                    fontSize: 13
+          },
+          drawerScroller: {
+                    paddingHorizontal: 10
+          },
+          drawerItem: {
+                    flexDirection: "row",
+                    alignItems: "center",
+                    borderRadius: 10,
+                    paddingHorizontal: 10,
+                    paddingVertical: 15,
+                    overflow: "hidden"
+          },
+          drawerItemLabel: {
+                    marginLeft: 10,
+                    fontWeight: "bold",
+                    color: '#777'
           }
 })
