@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
-import { useFocusEffect } from "@react-navigation/native";
+import { DrawerActions, useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
 import SubCategories from "../../components/ecommerce/home/SubCategories";
 import HomeProducts from "../../components/ecommerce/home/HomeProducts";
@@ -28,6 +28,7 @@ export default function EcommerceHomeScreen() {
           const [products, setProducts] = useState([])
           const [shops, setShops] = useState([])
 
+          const navigation = useNavigation()
 
           const fecthProduits = async () => {
                     try {
@@ -131,11 +132,11 @@ export default function EcommerceHomeScreen() {
           return (
                     <View style={styles.container}>
                               <View style={styles.cardHeader}>
-                                        <View style={styles.menuOpener}>
+                                        <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
                                                   <View style={styles.menuOpenerLine} />
                                                   <View style={[styles.menuOpenerLine, { width: 15 }]} />
                                                   <View style={[styles.menuOpenerLine, { width: 25 }]} />
-                                        </View>
+                                        </TouchableOpacity>
                                         <EcommerceBadge />
                               </View>
                               <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
@@ -187,7 +188,7 @@ export default function EcommerceHomeScreen() {
                                         >
                                                   <View style={styles.productsHeader}>
                                                             <Text style={styles.title}>Recommandé pour vous</Text>
-                                                            <MaterialIcons name="navigate-next" size={24} color="black" />
+                                                            {/* <MaterialIcons name="navigate-next" size={24} color="black" /> */}
                                                   </View>
                                         </TouchableNativeFeedback>
 
