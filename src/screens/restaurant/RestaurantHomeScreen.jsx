@@ -14,15 +14,16 @@ export default function RestaurantHomeScreen() {
         const filtreRef = useRef(null)
         const navigation = useNavigation()
         const [partenaires, setPartenaires] = useState([])
+        const [menuCategories, setMenuCategories] = useState([])
 
         const fetchPartenaire = async () => {
                 try {
-                        const response = await fetchApi('/partenaire/service/5', {
+                        const response = await fetchApi('/partenaire/service/2', {
                                 method: "GET",
                                 headers: { "Content-Type": "application/json" },
                         })
-                        setPartenaires(response)
-                        console.log(response)
+                        setPartenaires(response.result)
+                        console.log(response.result)
                 }
                 catch (error) {
                         console.log(error)
@@ -32,6 +33,24 @@ export default function RestaurantHomeScreen() {
         useFocusEffect(useCallback(() => {
                 fetchPartenaire()
         }, []))
+
+        useEffect(() => {
+                (async () => {
+                        try {
+                                const menus = await fetchApi("/resto/menu/categories", {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+                                })
+                                setMenuCategories(menus.result)
+                                // console.log(menus.result)
+
+                        } catch (error) {
+                                console.log(error)
+                        } finally {
+                                //     setLoadingSubCategories(false)
+                        }
+                })()
+        }, [])
 
         return (
                 <>
@@ -64,64 +83,30 @@ export default function RestaurantHomeScreen() {
 
                                 </View>
                                 <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
-
-                                        <TouchableOpacity style={{ alignContent: "center", alignItems: "center" }}>
-                                                <View style={styles.cardAchat}>
-                                                        <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} />
-
-                                                </View>
-                                        </TouchableOpacity>
-
-
-                                        {/* <TouchableOpacity style={{ alignContent: "center", alignItems: "center" }}>
-                                                <View style={styles.cardAchat}>
-                                                        <Image source={require('../../../assets/restaurant/onboard.png')} style={styles.image} />
-                                                </View>
-                                        </TouchableOpacity> */}
-                                        {/* <TouchableOpacity style={{ alignContent: "center", alignItems: "center" }}>
-                                                <View style={styles.cardAchat}>
-                                                        <Image source={require('../../../assets/restaurant/chickenBurger.png')} style={styles.image} />
-                                                </View>
-                                        </TouchableOpacity> */}
-                                        {/* <TouchableOpacity style={{ alignContent: "center", alignItems: "center" }}>
-                                                <View style={styles.cardAchat}>
-                                                        <Image source={require('../../../assets/restaurant/sushiMakizushi.png')} style={styles.image} />
-                                                </View>
-                                        </TouchableOpacity> */}
+                                        {partenaires.map((partenaire, index) => {
+                                                return (
+                                                        <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
+                                                                <View style={styles.cardAchat}>
+                                                                        {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
+                                                                        <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
+                                                                </View>
+                                                        </TouchableOpacity>
+                                                )
+                                        })}
                                 </View>
                                 <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                                        <TouchableOpacity>
-                                                <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                        <View style={styles.cardPhoto}>
-                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
-                                                        </View>
-                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>Dejeuner</Text>
-                                                </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                                <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                        <View style={styles.cardPhoto}>
-                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
-                                                        </View>
-                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>Petiti Dejeuner</Text>
-                                                </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                                <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                        <View style={styles.cardPhoto}>
-                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
-                                                        </View>
-                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>Desert</Text>
-                                                </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                                <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                        <View style={styles.cardPhoto}>
-                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
-                                                        </View>
-                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>Boissons</Text>
-                                                </View>
-                                        </TouchableOpacity>
+                                        {menuCategories.map((menuCategorie, index) => {
+                                                return (
+                                                        <TouchableOpacity>
+                                                                <View style={{ alignContent: "center", alignItems: "center" }}>
+                                                                        <View style={styles.cardPhoto}>
+                                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
+                                                                        </View>
+                                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
+                                                                </View>
+                                                        </TouchableOpacity>
+                                                )
+                                        })}
                                 </View>
                                 <ScrollView showsVerticalScrollIndicator={false}>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 10 }}>
@@ -222,7 +207,7 @@ export default function RestaurantHomeScreen() {
 const styles = StyleSheet.create({
         container: {
                 flex: 1,
-                marginHorizontal: 20,
+                marginHorizontal: 10,
                 marginTop: 20
         },
         input: {
@@ -263,7 +248,7 @@ const styles = StyleSheet.create({
         },
         image: {
                 width: 70,
-                height: 70,
+                height: 70
         },
         cardPhoto: {
                 width: 50,
