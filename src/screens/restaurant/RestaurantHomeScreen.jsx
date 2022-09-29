@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
-import { StyleSheet, Text, Animated, BackHandler, TouchableOpacity, View, TextInput, Image, ScrollView, TouchableNativeFeedback } from "react-native";
-import { AntDesign, SimpleLineIcons, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
+import { StyleSheet, Text, Animated, BackHandler, TouchableOpacity, StatusBar, View, TextInput, Image, ScrollView, TouchableNativeFeedback } from "react-native";
+import { AntDesign, SimpleLineIcons, FontAwesome, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { Host, Portal } from 'react-native-portalize';
 import { Modalize } from "react-native-modalize";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -10,6 +10,7 @@ import fetchApi from "../../helpers/fetchApi";
 import { COLORS } from "../../styles/COLORS"
 import RestoSubCategories from "../../components/restaurants/home/RestoSubCategories";
 import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
+import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
 
 export default function RestaurantHomeScreen() {
@@ -90,73 +91,69 @@ export default function RestaurantHomeScreen() {
         return (
                 <>
                         <View style={styles.container}>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-                                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                                                <AntDesign name="arrowleft" size={24} color="black" />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity>
-                                                <SimpleLineIcons name="basket" size={24} color="black" />
-                                        </TouchableOpacity>
+                                <View style={styles.cardHeader}>
+                                        <View style={styles.menuOpener}>
+                                                <View style={styles.menuOpenerLine} />
+                                                <View style={[styles.menuOpenerLine, { width: 15 }]} />
+                                                <View style={[styles.menuOpenerLine, { width: 25 }]} />
+                                        </View>
+                                        <EcommerceBadge />
                                 </View>
-                                <View style={{ marginTop: 15, marginBottom: 15 }}>
-                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Restauration</Text>
-                                </View>
-                                <View>
-                                        <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 15 }}>
+                                <ScrollView stickyHeaderIndices={[3]}>
+                                        <Text style={styles.titlePrincipal}>Restauration</Text>
+                                        <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
                                                 <View style={styles.searchSection}>
-                                                        <EvilIcons name="search" size={24} color="black" />
+                                                        <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                                                         <TextInput
                                                                 style={styles.input}
-                                                                placeholder="Recherche"
-
+                                                                placeholder="Recherche..."
                                                         />
                                                 </View>
-                                                <TouchableOpacity onPress={() => filtreRef.current.open()} style={styles.cardRecherche}>
-                                                        <AntDesign name="menuunfold" size={24} color="white" />
-                                                </TouchableOpacity>
+                                                <View style={styles.cardRecherche}>
+                                                        <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                                                </View>
                                         </View>
-
-                                </View>
-                                <View >
-                                        <ScrollView
-                                                horizontal showsHorizontalScrollIndicator={false}
-                                                style={styles.subCategories}
-                                        >
-                                                {partenaires.map((partenaire, index) => {
-                                                        return (
-                                                                <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
-                                                                        <View style={styles.cardAchat}>
-                                                                                {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
-                                                                                <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
-                                                                        </View>
-                                                                </TouchableOpacity>
-                                                        )
-                                                })}
-                                        </ScrollView>
-                                </View>
-                                {loadingMenuCategories ? <CategoriesMenuSkeletons /> :
-                                        <View>
+                                        <View >
                                                 <ScrollView
                                                         horizontal showsHorizontalScrollIndicator={false}
-                                                        style={styles.subCategoriesMenu}
+                                                        style={styles.subCategories}
                                                 >
-                                                        {menuCategories.map((menuCategorie, index) => {
+                                                        {partenaires.map((partenaire, index) => {
                                                                 return (
-                                                                        <TouchableOpacity key={index} onPress={() => onMenuCategoryPress(menuCategorie)}>
-                                                                                <View style={{ alignContent: "center", alignItems: "center", margin: 20 }}>
-                                                                                        <View style={[styles.cardPhoto, { backgroundColor: menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                                                                <Ionicons name="shirt-sharp" size={24} color="white" />
-                                                                                        </View>
-                                                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
+                                                                        <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
+                                                                                <View style={styles.cardAchat}>
+                                                                                        {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
+                                                                                        <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
                                                                                 </View>
                                                                         </TouchableOpacity>
                                                                 )
                                                         })}
                                                 </ScrollView>
-                                        </View>}
-                                <ScrollView showsVerticalScrollIndicator={false}>
-                                        {selectedCategorie && loadingMenu ? <HomeProductsSkeletons /> :
-                                                <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef} />}
+                                        </View>
+                                        {loadingMenuCategories ? <CategoriesMenuSkeletons /> :
+                                                <View>
+                                                        <ScrollView
+                                                                horizontal showsHorizontalScrollIndicator={false}
+                                                                style={styles.subCategoriesMenu}
+                                                        >
+                                                                {menuCategories.map((menuCategorie, index) => {
+                                                                        return (
+                                                                                <TouchableOpacity key={index} onPress={() => onMenuCategoryPress(menuCategorie)}>
+                                                                                        <View style={{ alignContent: "center", alignItems: "center", margin: 20 }}>
+                                                                                                <View style={[styles.cardPhoto, { backgroundColor: menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                                                                        <Ionicons name="shirt-sharp" size={24} color="white" />
+                                                                                                </View>
+                                                                                                <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
+                                                                                        </View>
+                                                                                </TouchableOpacity>
+                                                                        )
+                                                                })}
+                                                        </ScrollView>
+                                                </View>}
+                                        <ScrollView showsVerticalScrollIndicator={false}>
+                                                {selectedCategorie && loadingMenu ? <HomeProductsSkeletons /> :
+                                                        <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef} />}
+                                        </ScrollView>
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
@@ -179,8 +176,6 @@ export default function RestaurantHomeScreen() {
 const styles = StyleSheet.create({
         container: {
                 flex: 1,
-                marginHorizontal: 10,
-                marginTop: 20
         },
         input: {
                 flex: 1
@@ -313,7 +308,60 @@ const styles = StyleSheet.create({
                 padding: 5,
         },
         subCategoriesMenu: {
-        }
+        },
+        cardHeader: {
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingHorizontal: 10,
+                marginTop: StatusBar.currentHeight,
+                height: 60
+        },
+        menuOpener: {
+        },
+        menuOpenerLine: {
+                height: 3,
+                width: 30,
+                backgroundColor: COLORS.ecommercePrimaryColor,
+                marginTop: 5,
+                borderRadius: 10
+        },
+        titlePrincipal: {
+                fontSize: 20,
+                fontWeight: "bold",
+                marginBottom: 12,
+                color: COLORS.ecommercePrimaryColor,
+                marginHorizontal: 10
+        },
+        searchSection: {
+                flexDirection: "row",
+                marginTop: 10,
+                padding: 5,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: "#ddd",
+                alignItems: 'center',
+                backgroundColor: '#fff',
+                backgroundColor: "#D7D9E4",
+                width: "84%",
+                height: 50,
+                paddingHorizontal: 10
+        },
+        input: {
+                flex: 1,
+                marginLeft: 10
+        },
+        cardRecherche: {
+                width: 50,
+                height: 50,
+                borderRadius: 10,
+                backgroundColor: COLORS.ecommerceRed,
+                marginTop: 8,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center"
+        },
+
 
 
 })
