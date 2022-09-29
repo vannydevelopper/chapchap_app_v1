@@ -23,6 +23,7 @@ export default function RestaurantHomeScreen() {
         const [menuCategories, setMenuCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
 
+        const [firstLoadingMenu, setFirstLoadingMenu] = useState(true)
         const [loadingMenu, setLoadingMenu] = useState(false)
         const [menuListes, setMenuListes] = useState([])
         const [selectedMenu, setSelectedMenu] = useState(null)
