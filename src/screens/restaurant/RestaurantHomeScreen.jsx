@@ -11,6 +11,7 @@ import { COLORS } from "../../styles/COLORS"
 import RestoSubCategories from "../../components/restaurants/home/RestoSubCategories";
 import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import Menu from "../../components/restaurants/main/Menu";
 
 
 export default function RestaurantHomeScreen() {
@@ -181,6 +182,7 @@ export default function RestaurantHomeScreen() {
 
                                                                                 </View>
                                                                         </TouchableOpacity>
+                                                               
                                                                 )
                                                         })}
                                                 </ScrollView>
@@ -206,8 +208,21 @@ export default function RestaurantHomeScreen() {
                                                         </ScrollView>
                                                 </View>}
                                         <ScrollView showsVerticalScrollIndicator={false}>
-                                                {selectedCategorie && loadingMenu ? <HomeProductsSkeletons /> :
-                                                        <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef} />}
+                                               
+                                                                 <View style={styles.products}>
+                                                                        {menuListes.map((menu, index) => {
+                                                                                  return (
+                                                                                        
+                                                                                            <Menu
+                                                                                                      menu={menu}
+                                                                                                      index={index}
+                                                                                                      totalLength={menuListes.length}
+                                                                                                      key={index}
+                                                                                                      fixMargins
+                                                                                            />
+                                                                                  )
+                                                                        })}
+                                                              </View>
                                         </ScrollView>
                                 </ScrollView>
                                 <Portal>
@@ -425,6 +440,10 @@ const styles = StyleSheet.create({
                 alignContent: "center",
                 alignItems: "center"
         },
+        products: {
+                flexDirection: 'row',
+                flexWrap: 'wrap'
+      },
 
 
 
