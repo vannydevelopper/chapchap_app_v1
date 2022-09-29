@@ -4,7 +4,7 @@ import { Host, Portal } from 'react-native-portalize';
 import { Modalize } from "react-native-modalize";
 import { AntDesign, SimpleLineIcons, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
 
-export default function AjoutPanierModalize({ajoutPanierRef}) {
+export default function AjoutPanierModalize({product,ajoutPanierRef}) {
         return (
                 <TouchableNativeFeedback style={styles.modalContent} onPress={() => ajoutPanierRef.current.close()}>
                         <View style={styles.modalList}>
