@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { addMenuAction, removeRestaurantAction } from '../../../store/actions/restaurantCartActions'
+import { addMenuAction, removeMenuAction } from '../../../store/actions/restaurantCartActions'
 
 import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
@@ -57,11 +57,11 @@ export default function MenuCart({ menu, index }) {
                     ])
           }
 
-        //   useEffect(() => {
-        //             if(isValid()) {
-        //                       dispatch(addMenuAction(menu, amount))
-        //             }
-        //   }, [amount])
+          useEffect(() => {
+                    if(isValid()) {
+                              dispatch(addMenuAction(menu, amount))
+                    }
+          }, [amount])
           return (
                     <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
                               <View style={styles.productImage}>

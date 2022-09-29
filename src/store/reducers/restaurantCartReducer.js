@@ -17,7 +17,7 @@ export function restaurantCartReducer(menus = [], action) {
                               }
                               return [...menus, action.payload]
                     case REMOVE_MENU_ACTION:
-                              return menus.filter((command, index) => command.menu.ID_RESTAURANT_MENU != action.payload)
+                              return menus.filter((command, index) => command.ID_RESTAURANT_MENU != action.payload)
                     case RESET_CART_ACTION:
                               return []
                     default:

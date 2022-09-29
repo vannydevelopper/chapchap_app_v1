@@ -49,7 +49,7 @@ export default function AddCart({menu,onClose}) {
           }
 
         return (
-                <TouchableNativeFeedback style={styles.modalContent} onPress={() => ajoutPanierRef.current.close()}>
+                // <TouchableNativeFeedback style={styles.modalContent} onPress={() => ajoutPanierRef.current.close()}>
                         <View style={styles.modalList}>
                                 <View style={styles.modalItem}>
                                         <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -115,7 +115,7 @@ export default function AddCart({menu,onClose}) {
 
                                 </View>
                         </View>
-                </TouchableNativeFeedback>
+                // </TouchableNativeFeedback>
         )
 }
 

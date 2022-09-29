@@ -72,8 +72,8 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
                               </View>
                               <View style={styles.productNames}>
                                         <Text numberOfLines={2} style={styles.productName}>
-                                                  {menu.NOM} ·
-                                                  <Text numberOfLines={2} style={styles.productName}> {menu.NOM_SOUS_CATEGORIE}</Text>
+                                                  {menu.NOM_SOUS_CATEGORIE} ·
+                                                  <Text numberOfLines={2} style={styles.productName}> {menu.DESCRIPTION_SOUS_CATEGORIE}</Text>
                                         </Text>
                               </View>
                               {menu.MONTANT ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.MONTANT.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
