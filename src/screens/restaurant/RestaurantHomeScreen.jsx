@@ -17,7 +17,10 @@ export default function RestaurantHomeScreen() {
         const ajoutPanierRef = useRef(null)
         const filtreRef = useRef(null)
         const navigation = useNavigation()
+
         const [partenaires, setPartenaires] = useState([])
+        const [selectedPartenaire, setSelectedPartenaire] = useState(null)
+        const [menuPartenaires, setMenuPartenaires] = useState([])
 
         const [loadingMenuCategories, setLoadingMenuCatagories] = useState(true)
         const [menuCategories, setMenuCategories] = useState([])
@@ -45,7 +48,28 @@ export default function RestaurantHomeScreen() {
         useFocusEffect(useCallback(() => {
                 fetchPartenaire()
         }, []))
-        
+
+         //Fetch des menus par rapport des restaurants
+         useEffect(() => {
+                (async () => {
+                        try {
+                                const dataPartenaire = await fetchApi(`/resto/menu/${selectedPartenaire?.ID_PARTENAIRE}`, {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+                                })
+                                setMenuPartenaires(dataPartenaire)
+                                console.log(dataPartenaire)
+
+                        } catch (error) {
+                                console.log(error)
+                        } finally {
+                                setLoadingMenuCatagories(false)
+                        }
+                })()
+        }, [selectedPartenaire])
+
+
+        //Fetch all menu et filtre menu par categories
         useEffect(() => {
                 (async () => {
                         try {
@@ -68,6 +92,7 @@ export default function RestaurantHomeScreen() {
                 })()
         }, [selectedCategorie])
 
+        //Fetch des listes des categories
         useEffect(() => {
                 (async () => {
                         try {
@@ -86,12 +111,13 @@ export default function RestaurantHomeScreen() {
                 })()
         }, [])
 
+        
         const onMenuCategoryPress = (menuCategorie) => {
                 setSelectedCategorie(menuCategorie)
         }
 
-        const onPartenairePress = () => {
-
+        const onPartenairePress = (partenaire) => {
+                setSelectedPartenaire(partenaire)
         }
 
         //fetch menu
@@ -149,7 +175,7 @@ export default function RestaurantHomeScreen() {
                                                                 return (
                                                                         <TouchableOpacity onPress={() => onPartenairePress(partenaire)} key={index} style={{ alignContent: "center", alignItems: "center" }}>
                                                                                 <View style={{ alignContent: "center", alignItems: "center", margin: 10 }}>
-                                                                                        <View style={styles.cardPhotoPartenaire}>
+                                                                                        <View style={[styles.cardPhotoPartenaire, { backgroundColor: partenaire.ID_PARTENAIRE == selectedPartenaire?.ID_PARTENAIRE ? COLORS.handleColor : "#DFE1E9" } ]}>
                                                                                                 <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
                                                                                         </View>
 
