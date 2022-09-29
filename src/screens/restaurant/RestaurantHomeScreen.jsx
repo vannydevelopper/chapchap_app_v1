@@ -51,23 +51,23 @@ export default function RestaurantHomeScreen() {
         }, []))
 
         //Fetch des menus par rapport des restaurants
-        // useEffect(() => {
-        //         (async () => {
-        //                 try {
-        //                         const dataPartenaire = await fetchApi(`/resto/menu/${selectedPartenaire?.ID_PARTENAIRE}`, {
-        //                                 method: "GET",
-        //                                 headers: { "Content-Type": "application/json" },
-        //                         })
-        //                         setMenuPartenaires(dataPartenaire)
-        //                         console.log(dataPartenaire)
+        useEffect(() => {
+                (async () => {
+                        try {
+                                const dataPartenaire = await fetchApi(`/resto/menu/${selectedPartenaire?.ID_PARTENAIRE}`, {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+                                })
+                                setMenuPartenaires(dataPartenaire)
+                                // console.log(dataPartenaire)
 
-        //                 } catch (error) {
-        //                         console.log(error)
-        //                 } finally {
-        //                         setLoadingMenuCatagories(false)
-        //                 }
-        //         })()
-        // }, [selectedPartenaire])
+                        } catch (error) {
+                                console.log(error)
+                        } finally {
+                                setLoadingMenuCatagories(false)
+                        }
+                })()
+        }, [selectedPartenaire])
 
 
         //Fetch all menu et filtre menu par categories
@@ -85,7 +85,7 @@ export default function RestaurantHomeScreen() {
                                 }
                                 const menu = await fetchApi(url)
                                 setMenuListes(menu.result)
-                                // console.log(menu.result)
+                                console.log(menu.result)
                         } catch (error) {
                                 console.log(error)
                         } finally {

@@ -25,7 +25,7 @@ export default function ProduitRestoPartenaire({productPartenaires}) {
                                 </View>
 
                         </TouchableNativeFeedback>
-                        {/* <ScrollView
+                        <ScrollView
                                 style={styles.products}
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
@@ -33,14 +33,14 @@ export default function ProduitRestoPartenaire({productPartenaires}) {
                                 {productPartenaires.map((product, index) => {
                                         return (
                                                 <Menu
-                                                        product={product}
+                                                        menu={product}
                                                         index={index}
                                                         totalLength={productPartenaires.length}
                                                         key={index}
                                                 />
                                         )
                                 })}
-                        </ScrollView> */}
+                        </ScrollView>
                 </View>
         )
 }

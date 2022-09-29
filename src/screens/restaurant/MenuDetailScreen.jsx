@@ -5,15 +5,20 @@ import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/nativ
 import { COLORS } from "../../styles/COLORS";
 import fetchApi from "../../helpers/fetchApi";
 import ProduitRestoPartenaire from "../../components/restaurants/home/ProduitRestoPartenaire";
+import Menu from "../../components/restaurants/main/Menu";
+import { HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
 export default function MenuDetailScreen() {
     const [nombre, setNombre] = useState(0);
     const route = useRoute()
     const navigation = useNavigation()
     const { product } = route.params
-    // console.log(product)
+    console.log(product)
 
     const [loadingPartenaireProducts, setloadingPartenaireProducts] = useState(true)
     const [shopProducts, setShopProducts] = useState([])
+
+    const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
+    const [similarProducs, setSimilarProducts] = useState([])
 
     const fecthProduitPartenaires = async () => {
         try {
@@ -22,7 +27,7 @@ export default function MenuDetailScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setShopProducts(response.result)
-            console.log(response.result)
+            // console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -34,7 +39,20 @@ export default function MenuDetailScreen() {
         fecthProduitPartenaires()
     }, []))
 
-    useFocusEffect
+    useEffect(() => {
+        (async () => {
+            try {
+                var url = "/resto/menu"
+                const produits = await fetchApi(url)
+                setSimilarProducts(produits.result)
+                // console.log(produits.result)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setLoadingSimilarProducts(false)
+            }
+        })()
+    }, [])
 
 
     return (
@@ -91,15 +109,33 @@ export default function MenuDetailScreen() {
                         </View>
                     </TouchableNativeFeedback>
 
-                    <ProduitRestoPartenaire productPartenaires={shopProducts}/>
+                   {(loadingPartenaireProducts) ? <HomeProductsSkeletons/>:
+                    <ProduitRestoPartenaire productPartenaires={shopProducts} />}
                     
+                    {( loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
+                    <>
                     <TouchableNativeFeedback
+                        accessibilityRole="button"
                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                     >
                         <View style={styles.productsHeader}>
                             <Text style={styles.title}>Similaires</Text>
                         </View>
                     </TouchableNativeFeedback>
+                    <View style={styles.products}>
+                        {similarProducs.map((product, index) => {
+                            return (
+                                <Menu
+                                    menu={product}
+                                    index={index}
+                                    totalLength={shopProducts.length}
+                                    key={index}
+                                    fixMargins
+                                />
+                            )
+                        })}
+                    </View>
+                    </>}
                 </ScrollView>
             </View>
             <View style={styles.productFooter}>
@@ -238,4 +274,8 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold'
     },
+    products: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+},
 })
