@@ -17,15 +17,12 @@ export default function RestaurantHomeScreen() {
         const ajoutPanierRef = useRef(null)
         const filtreRef = useRef(null)
         const navigation = useNavigation()
-
         const [partenaires, setPartenaires] = useState([])
-        const [selectedPartenaire, setSelectedPartenaire] = useState(null)
 
         const [loadingMenuCategories, setLoadingMenuCatagories] = useState(true)
         const [menuCategories, setMenuCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
 
-        const [firstLoadingMenu, setFirstLoadingMenu] = useState(true)
         const [loadingMenu, setLoadingMenu] = useState(false)
         const [menuListes, setMenuListes] = useState([])
         const [selectedMenu, setSelectedMenu] = useState(null)
@@ -37,7 +34,7 @@ export default function RestaurantHomeScreen() {
                                 headers: { "Content-Type": "application/json" },
                         })
                         setPartenaires(response.result)
-                        console.log(response.result)
+                        // console.log(response.result)
                 }
                 catch (error) {
                         console.log(error)
@@ -67,37 +64,29 @@ export default function RestaurantHomeScreen() {
         }, [])
 
         const onMenuCategoryPress = (menuCategorie) => {
-                if (menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
-                        return setSelectedCategorie(null)
-                }
                 setSelectedCategorie(menuCategorie)
         }
-
-        const onPartenairePress = () => {}
 
         //fetch menu
         useEffect(() => {
                 (async () => {
                         try {
-                                if (firstLoadingMenu == false) {
-                                        setLoadingMenu(true)
+                                setLoadingMenu(true)
+                                if (selectedCategorie?.ID_CATEGORIE_MENU) {
+                                        const menu = await fetchApi(`/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`, {
+                                                method: "GET",
+                                                headers: { "Content-Type": "application/json" },
+                                        })
+                                        setMenuListes(menu.result)
+                                        // console.log(menu.result)
                                 }
-                                var url = "/resto/menu"
-                                if (selectedCategorie) {
-                                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
-                                }
-                                const menu = await fetchApi(url)
-                                setMenuListes(menu.result)
-                                // console.log(menu.result)
                         } catch (error) {
                                 console.log(error)
                         } finally {
-                                setFirstLoadingMenu(false)
                                 setLoadingMenu(false)
                         }
                 })()
         }, [selectedCategorie])
-
 
         return (
                 <>
@@ -131,7 +120,7 @@ export default function RestaurantHomeScreen() {
                                                 >
                                                         {partenaires.map((partenaire, index) => {
                                                                 return (
-                                                                        <TouchableOpacity onPress={() => onPartenairePress(partenaire)} key={index} style={{ alignContent: "center", alignItems: "center" }}>
+                                                                        <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
                                                                                 <View style={styles.cardAchat}>
                                                                                         {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
                                                                                         <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
@@ -162,13 +151,13 @@ export default function RestaurantHomeScreen() {
                                                         </ScrollView>
                                                 </View>}
                                         <ScrollView showsVerticalScrollIndicator={false}>
-                                                {selectedCategorie && (firstLoadingMenu || loadingMenu) ? <HomeProductsSkeletons /> :
+                                                {selectedCategorie && loadingMenu ? <HomeProductsSkeletons /> :
                                                         <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef} />}
                                         </ScrollView>
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                <AjoutPanierModalize product={partenaires}  ajoutPanierRef={ajoutPanierRef} />
+                                                <AjoutPanierModalize ajoutPanierRef={ajoutPanierRef} />
                                         </Modalize>
                                 </Portal>
 
@@ -319,7 +308,6 @@ const styles = StyleSheet.create({
                 padding: 5,
         },
         subCategoriesMenu: {
-                backgroundColor:"#fff"
         },
         cardHeader: {
                 flexDirection: 'row',
