@@ -16,7 +16,7 @@ export const CategoriesSkeletons = () => {
                     </View>
           )
 }
-export const SubMenuCategoriesSkeletons = () => {
+export const SubCategoriesSkeletons = () => {
           return (
                     <View style={[styles.categories, { paddingVertical: 25 }]}>
                               {new Array(50).fill(0).map((_, index) => {
