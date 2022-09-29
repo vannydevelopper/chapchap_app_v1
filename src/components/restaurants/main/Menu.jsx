@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 import { useNavigation } from '@react-navigation/native';
+import { restaurantProductSelector } from '../../../store/selectors/restaurantCartSelectors';
 
 export default function Menu({ menu, index, totalLength, fixMargins = false }) {
   const navigation = useNavigation()
@@ -38,7 +39,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
             modalizeRef.current?.close()
   }
 
-  const productInCart = useSelector(ecommerceProductSelector(menu.ID_RESTAURANT_MENU))
+  const productInCart = useSelector(restaurantProductSelector(menu.ID_RESTAURANT_MENU))
 
   useEffect(() => {
             if(isOpen) {
@@ -96,7 +97,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
                                                                       setLoadingForm(true)
                                                             }}
                                                   >
-                                                            <AddCart product={menu} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                                                            <AddCart menu={menu} loadingForm={loadingForm} onClose={onCloseAddToCart} />
                                                   </Modalize>
                                         </GestureHandlerRootView>
                               </Portal>
