@@ -47,6 +47,28 @@ export default function RestaurantHomeScreen() {
         useFocusEffect(useCallback(() => {
                 fetchPartenaire()
         }, []))
+        
+        useEffect(() => {
+                (async () => {
+                        try {
+                                if (firstLoadingMenu == false) {
+                                        setLoadingMenu(true)
+                                }
+                                var url = "/resto/menu"
+                                if (selectedCategorie) {
+                                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                                }
+                                const menu = await fetchApi(url)
+                                setMenuListes(menu.result)
+                                // console.log(menu.result)
+                        } catch (error) {
+                                console.log(error)
+                        } finally {
+                                setFirstLoadingMenu(false)
+                                setLoadingMenu(false)
+                        }
+                })()
+        }, [selectedCategorie])
 
         useEffect(() => {
                 (async () => {
@@ -74,7 +96,7 @@ export default function RestaurantHomeScreen() {
         }
 
         const onPartenairePress = () => {
-                
+
         }
 
         //fetch menu
@@ -242,7 +264,7 @@ const styles = StyleSheet.create({
                 justifyContent: "center",
                 alignItems: "center",
         },
-        cardPhotoPartenaire:{
+        cardPhotoPartenaire: {
                 width: 60,
                 height: 60,
                 //backgroundColor: "#242F68",
