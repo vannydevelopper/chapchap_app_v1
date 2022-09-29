@@ -157,7 +157,7 @@ export default function RestaurantHomeScreen() {
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                <AjoutPanierModalize ajoutPanierRef={ajoutPanierRef} />
+                                                <AjoutPanierModalize product={partenaires}  ajoutPanierRef={ajoutPanierRef} />
                                         </Modalize>
                                 </Portal>
 

@@ -86,7 +86,7 @@ export default function ProductShopsScreen() {
                                         if (firstLoadingProducts == false) {
                                                   setLoadingProducts(true)
                                         }
-                                        var url =  `/products/product/${id} `
+                                        var url =  `/products/products/${id} `
                                         if (selectedCategorie) {
                                                   url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                                         }
