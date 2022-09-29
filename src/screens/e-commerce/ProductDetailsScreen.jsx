@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { Image, View, StyleSheet, Text, TouchableOpacity, TouchableNativeFeedback, TextInput, ScrollView, StatusBar } from "react-native"
+import { Image, View, StyleSheet, Text, TouchableOpacity, TouchableNativeFeedback, TextInput, ScrollView, StatusBar, Modal } from "react-native"
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import ProduitPartenaire from "../../components/ecommerce/home/ProduitPartenaire";
@@ -18,6 +18,7 @@ import AddCart from "../../components/ecommerce/main/AddCart";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import { ecommerceProductSelector } from "../../store/selectors/ecommerceCartSelectors";
 import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import ProductImages from "../../components/ecommerce/details/ProductImages";
 export default function ProductDetailsScreen() {
           const navigation = useNavigation()
           const route = useRoute()
@@ -29,8 +30,6 @@ export default function ProductDetailsScreen() {
           const [similarProducs, setSimilarProducts] = useState([])
 
           const { product } = route.params
-          console.log(product)
-
 
           const modalizeRef = useRef(null)
           const [isOpen, setIsOpen] = useState(false)
@@ -46,6 +45,12 @@ export default function ProductDetailsScreen() {
           const onCloseAddToCart = () => {
                     modalizeRef.current?.close()
           }
+
+          var IMAGES = [
+                    product.produit_partenaire.IMAGE_1 ? product.produit_partenaire.IMAGE_1 : undefined,
+                    product.produit_partenaire.IMAGE_2 ? product.produit_partenaire.IMAGE_2 : undefined,
+                    product.produit_partenaire.IMAGE_3 ? product.produit_partenaire.IMAGE_3 : undefined,
+          ]
 
           const fecthProduits = async () => {
                     try {
@@ -91,6 +96,7 @@ export default function ProductDetailsScreen() {
           return (
                     <>
                               <View style={{ marginTop: 0, flex: 1 }}>
+                                        {/* {showImageModal && <ImagesGallery images={IMAGES.filter(image => image)} showImageModal={showImageModal} setShowImageModal={setShowImageModal} />} */}
                                         <View style={styles.cardHeader}>
                                                   <TouchableOpacity onPress={() => navigation.goBack()}>
                                                             <Ionicons name="arrow-back-sharp" size={24} color="black" />
@@ -102,11 +108,9 @@ export default function ProductDetailsScreen() {
                                                             <EcommerceBadge />
                                                   </View>
                                         </View>
-                                        <ScrollView showsVerticalScrollIndicator={false}>
-                                                  <View style={styles.producHeader} >
-                                                            <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.productImage} />
-                                                  </View>
-                                                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10 }}>
+                                        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
+                                                  <ProductImages images={IMAGES} />
+                                                  <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10, marginTop: 10 }}>
                                                             <View>
                                                                       <TouchableOpacity style={styles.category} >
                                                                                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
@@ -146,29 +150,29 @@ export default function ProductDetailsScreen() {
                                                   </TouchableNativeFeedback>
                                                   {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} />}
                                                   {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
-                                                  <>
-                                                  <TouchableNativeFeedback
-                                                            accessibilityRole="button"
-                                                            background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-                                                  >
-                                                            <View style={styles.productsHeader}>
-                                                                      <Text style={styles.title}>Similaires</Text>
-                                                            </View>
-                                                  </TouchableNativeFeedback>
-                                                  <View style={styles.products}>
-                                                            {similarProducs.map((product, index) => {
-                                                                      return (
-                                                                                <Product
-                                                                                          product={product}
-                                                                                          index={index}
-                                                                                          totalLength={shopProducts.length}
-                                                                                          key={index}
-                                                                                          fixMargins
-                                                                                />
-                                                                      )
-                                                            })}
-                                                  </View>
-                                                  </>}
+                                                            <>
+                                                                      <TouchableNativeFeedback
+                                                                                accessibilityRole="button"
+                                                                                background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                                                                      >
+                                                                                <View style={styles.productsHeader}>
+                                                                                          <Text style={styles.title}>Similaires</Text>
+                                                                                </View>
+                                                                      </TouchableNativeFeedback>
+                                                                      <View style={styles.products}>
+                                                                                {similarProducs.map((product, index) => {
+                                                                                          return (
+                                                                                                    <Product
+                                                                                                              product={product}
+                                                                                                              index={index}
+                                                                                                              totalLength={shopProducts.length}
+                                                                                                              key={index}
+                                                                                                              fixMargins
+                                                                                                    />
+                                                                                          )
+                                                                                })}
+                                                                      </View>
+                                                            </>}
 
                                         </ScrollView>
                               </View>
@@ -226,10 +230,6 @@ const styles = StyleSheet.create({
                     height: 60,
                     backgroundColor: '#F1F1F1',
           },
-          producHeader: {
-                    backgroundColor: '#F1F1F1',
-                    paddingBottom: 60,
-          },
           category: {
                     flexDirection: "row",
                     alignItems: "center",
@@ -248,14 +248,6 @@ const styles = StyleSheet.create({
                     fontWeight: "bold",
                     fontSize: 18,
                     color: COLORS.ecommercePrimaryColor
-          },
-          productImage: {
-                    width: '70%',
-                    minHeight: 150,
-                    maxHeight: 200,
-                    alignSelf: 'center',
-                    resizeMode: "center",
-                    borderRadius: 10
           },
           shop: {
                     flexDirection: "row",
@@ -330,7 +322,7 @@ const styles = StyleSheet.create({
           productDescription: {
                     color: '#777',
                     fontSize: 15,
-                    lineHeight: 20
+                    lineHeight: 22
           },
           txtDispla: {
                     color: '#646B94',
