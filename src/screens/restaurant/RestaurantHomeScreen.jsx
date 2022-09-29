@@ -11,6 +11,7 @@ import { COLORS } from "../../styles/COLORS"
 import RestoSubCategories from "../../components/restaurants/home/RestoSubCategories";
 import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import Menu from "../../components/restaurants/main/Menu";
 
 
 export default function RestaurantHomeScreen() {
@@ -23,6 +24,7 @@ export default function RestaurantHomeScreen() {
         const [menuCategories, setMenuCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
 
+        const [firstLoadingMenu, setFirstLoadingMenu] = useState(true)
         const [loadingMenu, setLoadingMenu] = useState(false)
         const [menuListes, setMenuListes] = useState([])
         const [selectedMenu, setSelectedMenu] = useState(null)
@@ -44,6 +46,28 @@ export default function RestaurantHomeScreen() {
         useFocusEffect(useCallback(() => {
                 fetchPartenaire()
         }, []))
+        
+        useEffect(() => {
+                (async () => {
+                        try {
+                                if (firstLoadingMenu == false) {
+                                        setLoadingMenu(true)
+                                }
+                                var url = "/resto/menu"
+                                if (selectedCategorie) {
+                                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                                }
+                                const menu = await fetchApi(url)
+                                setMenuListes(menu.result)
+                                // console.log(menu.result)
+                        } catch (error) {
+                                console.log(error)
+                        } finally {
+                                setFirstLoadingMenu(false)
+                                setLoadingMenu(false)
+                        }
+                })()
+        }, [selectedCategorie])
 
         useEffect(() => {
                 (async () => {
@@ -65,6 +89,10 @@ export default function RestaurantHomeScreen() {
 
         const onMenuCategoryPress = (menuCategorie) => {
                 setSelectedCategorie(menuCategorie)
+        }
+
+        const onPartenairePress = () => {
+
         }
 
         //fetch menu
@@ -97,7 +125,7 @@ export default function RestaurantHomeScreen() {
                                                 <View style={[styles.menuOpenerLine, { width: 15 }]} />
                                                 <View style={[styles.menuOpenerLine, { width: 25 }]} />
                                         </View>
-                                        <EcommerceBadge />
+                                        {/* <EcommerceBadge /> */}
                                 </View>
                                 <ScrollView stickyHeaderIndices={[3]}>
                                         <Text style={styles.titlePrincipal}>Restauration</Text>
@@ -120,12 +148,15 @@ export default function RestaurantHomeScreen() {
                                                 >
                                                         {partenaires.map((partenaire, index) => {
                                                                 return (
-                                                                        <TouchableOpacity key={index} style={{ alignContent: "center", alignItems: "center" }}>
-                                                                                <View style={styles.cardAchat}>
-                                                                                        {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
-                                                                                        <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
+                                                                        <TouchableOpacity onPress={() => onPartenairePress(partenaire)} key={index} style={{ alignContent: "center", alignItems: "center" }}>
+                                                                                <View style={{ alignContent: "center", alignItems: "center", margin: 10 }}>
+                                                                                        <View style={styles.cardPhotoPartenaire}>
+                                                                                                <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
+                                                                                        </View>
+
                                                                                 </View>
                                                                         </TouchableOpacity>
+                                                               
                                                                 )
                                                         })}
                                                 </ScrollView>
@@ -151,13 +182,26 @@ export default function RestaurantHomeScreen() {
                                                         </ScrollView>
                                                 </View>}
                                         <ScrollView showsVerticalScrollIndicator={false}>
-                                                {selectedCategorie && loadingMenu ? <HomeProductsSkeletons /> :
-                                                        <RestoSubCategories menuListes={menuListes} ajoutPanierRef={ajoutPanierRef} filtreRef={filtreRef} />}
+                                               
+                                                                 <View style={styles.products}>
+                                                                        {menuListes.map((menu, index) => {
+                                                                                  return (
+                                                                                        
+                                                                                            <Menu
+                                                                                                      menu={menu}
+                                                                                                      index={index}
+                                                                                                      totalLength={menuListes.length}
+                                                                                                      key={index}
+                                                                                                      fixMargins
+                                                                                            />
+                                                                                  )
+                                                                        })}
+                                                              </View>
                                         </ScrollView>
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                <AjoutPanierModalize ajoutPanierRef={ajoutPanierRef} />
+                                                <AjoutPanierModalize product={partenaires} ajoutPanierRef={ajoutPanierRef} />
                                         </Modalize>
                                 </Portal>
 
@@ -216,12 +260,20 @@ const styles = StyleSheet.create({
         image: {
                 width: 70,
                 height: 70,
-                margin: 5,
                 borderRadius: 10
         },
         cardPhoto: {
                 width: 50,
                 height: 50,
+                //backgroundColor: "#242F68",
+                backgroundColor: "#DFE1E9",
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+        },
+        cardPhotoPartenaire: {
+                width: 60,
+                height: 60,
                 //backgroundColor: "#242F68",
                 backgroundColor: "#DFE1E9",
                 borderRadius: 10,
@@ -308,6 +360,7 @@ const styles = StyleSheet.create({
                 padding: 5,
         },
         subCategoriesMenu: {
+                backgroundColor: "#fff"
         },
         cardHeader: {
                 flexDirection: 'row',
@@ -361,6 +414,10 @@ const styles = StyleSheet.create({
                 alignContent: "center",
                 alignItems: "center"
         },
+        products: {
+                flexDirection: 'row',
+                flexWrap: 'wrap'
+      },
 
 
 
