@@ -2,25 +2,25 @@ export const ADD_COMMAND_ACTION = 'ADD_COMMAND_ACTION'
 export const REMOVE_COMMAND_ACTION = 'REMOVE_COMMAND_ACTION'
 export const RESET_CART_ACTION = 'RESET_CART_ACTION'
 
-export function restaurantCartReducer(products = [], action) {
+export function restaurantCartReducer(menus = [], action) {
           switch (action.type) {
                     case ADD_COMMAND_ACTION:
-                              const product = products.find(command => command.produit_partenaire.ID_PRODUIT_PARTENAIRE == action.payload.produit_partenaire.ID_PRODUIT_PARTENAIRE)
-                              if(product) {
-                                        const newCommands = products.map(commande => {
-                                                  if(commande.produit_partenaire.ID_PRODUIT_PARTENAIRE == product.produit_partenaire.ID_PRODUIT_PARTENAIRE) {
+                              const menu = menus.find(command => command.ID_RESTAURANT_MENU == action.payload.ID_RESTAURANT_MENU)
+                              if(menu) {
+                                        const newCommands = menus.map(commande => {
+                                                  if(commande.ID_RESTAURANT_MENU == menu.ID_RESTAURANT_MENU) {
                                                             return {...commande, QUANTITE: action.payload.QUANTITE}
                                                   }
                                                   return commande
                                         })
                                         return newCommands
                               }
-                              return [...products, action.payload]
+                              return [...menus, action.payload]
                     case REMOVE_COMMAND_ACTION:
-                              return products.filter((command, index) => command.produit_partenaire.ID_PRODUIT_PARTENAIRE != action.payload)
+                              return menus.filter((command, index) => command.menu.ID_RESTAURANT_MENU != action.payload)
                     case RESET_CART_ACTION:
                               return []
                     default:
-                              return products
+                              return menus
           }
 }

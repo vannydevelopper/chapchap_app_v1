@@ -125,7 +125,7 @@ export default function RestaurantHomeScreen() {
                                                 <View style={[styles.menuOpenerLine, { width: 15 }]} />
                                                 <View style={[styles.menuOpenerLine, { width: 25 }]} />
                                         </View>
-                                        <EcommerceBadge />
+                                        {/* <EcommerceBadge /> */}
                                 </View>
                                 <ScrollView stickyHeaderIndices={[3]}>
                                         <Text style={styles.titlePrincipal}>Restauration</Text>

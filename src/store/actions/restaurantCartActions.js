@@ -1,16 +1,18 @@
-import { ADD_COMMAND_ACTION, REMOVE_COMMAND_ACTION, RESET_CART_ACTION } from "../reducers/ecommerceCartReducer"
+import { ADD_COMMAND_ACTION, REMOVE_COMMAND_ACTION, RESET_CART_ACTION } from "../reducers/restaurantCartReducer"
 
 
-export const addProductAction = (product, count) => {
+export const addMenuAction = (menu, count) => {
           return {
                     type: ADD_COMMAND_ACTION,
-                    payload: { ...product, QUANTITE: count }
+                    payload: { ...menu, QUANTITE: count },       
+                    
           }
+          
 }
-export const removeProductAction = (ID_PRODUIT_PARTENAIRE) => {
+export const removeProductAction = (ID_RESTAURANT_MENU) => {
           return {
                     type: REMOVE_COMMAND_ACTION,
-                    payload: ID_PRODUIT_PARTENAIRE
+                    payload: ID_RESTAURANT_MENU
           }
 }
 

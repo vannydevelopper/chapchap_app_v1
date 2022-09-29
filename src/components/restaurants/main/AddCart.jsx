@@ -3,20 +3,63 @@ import { StyleSheet, Text, Animated, BackHandler, TouchableOpacity, View, TextIn
 import { Host, Portal } from 'react-native-portalize';
 import { Modalize } from "react-native-modalize";
 import { AntDesign, SimpleLineIcons, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
+import { COLORS } from "../../../styles/COLORS"
+import { useDispatch } from "react-redux";
+import { addMenuAction } from "../../../store/actions/restaurantCartActions";
 
-export default function AddCart({product,ajoutPanierRef}) {
+
+export default function AddCart({menu,onClose}) {
+    const [selectedSize, setSelectedSize] = useState(null)
+          const [amount, setAmount] = useState(1)
+          const [isFocused, setIsFocused] = useState(false)
+          const dispatch = useDispatch()
+
+          const onDecrement = () => {
+                    if(parseInt(amount) == 1) {
+                              return false
+                    }
+                    if(parseInt(amount) <= 0) {
+                              return 1
+                    }
+                    setAmount(l => parseInt(l) - 1)
+          }
+
+          const onIncrement = () => {
+                    if(amount == 10) {
+                              return false
+                    }
+                    setAmount(l => parseInt(l) +1)
+          }
+
+          const onChangeText = am => {
+                    setAmount(am)
+          }
+          const checkAmount = () => {
+                    setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
+          }
+
+          const onAddToCart = () => {
+                    onClose()
+                    dispatch(addMenuAction(menu, amount))
+          }
+
+          let isnum = /^\d+$/.test(amount);
+          const isValid = () => {
+                    return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
+          }
+
         return (
                 <TouchableNativeFeedback style={styles.modalContent} onPress={() => ajoutPanierRef.current.close()}>
                         <View style={styles.modalList}>
                                 <View style={styles.modalItem}>
                                         <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                                <Image source={require('../../../../assets/restaurant/cheesePizza.png')} style={styles.imageModal}/>
+                                        <Image source={{ uri: menu.IMAGE}} style={styles.image} />
 
                                         </View>
                                         <ScrollView keyboardShouldPersistTaps="handled">
                                                 <View>
                                                         <View >
-                                                                <Text numberOfLines={1} style={{ fontSize: 25, fontWeight: "bold", color: "#777" }} >Riz Tropical</Text>
+                                                                <Text numberOfLines={1} style={{ fontSize: 25, fontWeight: "bold", color: "#777" }} >{menu.NOM_SOUS_CATEGORIE}</Text>
                                                         </View>
                                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
                                                                 <View>
@@ -29,40 +72,44 @@ export default function AddCart({product,ajoutPanierRef}) {
                                                                         <Text>30 min</Text>
                                                                 </View>
                                                                 <View>
-                                                                        <Text style={{ fontSize: 15, fontWeight: "bold", color: "red" }}>12 000 Fbu</Text>
+                                                                        <Text style={{ fontSize: 15, fontWeight: "bold", color: "red" }}>{menu.MONTANT}Fbu</Text>
                                                                 </View>
                                                         </View>
                                                         <View style={{ marginTop: 15 }}>
-                                                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>Riz frit avec pomme de terre</Text>
+                                                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>{menu.DESCRIPTION_SOUS_CATEGORIE}</Text>
                                                         </View>
                                                         <View style={{ marginTop: 20 }}>
                                                                 <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de piat</Text>
                                                         </View>
-                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-                                                                <TouchableOpacity style={styles.cardSigne}>
-                                                                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>-</Text>
-
-                                                                </TouchableOpacity>
-                                                                <View style={styles.cardInput}>
-                                                                        <TextInput style={{ textAlign: 'center' }}></TextInput>
-
-                                                                </View>
-                                                                <TouchableOpacity style={styles.cardSigne}>
-                                                                        <Text style={{ color: 'white', fontSize: 12, textAlign: 'center', fontWeight: 'bold' }}>+</Text>
-
-                                                                </TouchableOpacity>
-                                                        </View>
-                                                        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", alignContent: "center", marginTop: 20 }}>
-                                                                <View style={styles.cardIcon}>
-                                                                        <AntDesign name="sharealt" size={20} color="black" />
-                                                                </View>
-                                                                <View style={styles.cardIcon}>
-                                                                        <AntDesign name="shoppingcart" size={20} color="black" />
-                                                                </View>
-                                                                <TouchableOpacity style={styles.cardBouton}>
-                                                                        <Text style={{ textAlign: 'center', color: 'white', }}>Ajouter au panier</Text>
-                                                                </TouchableOpacity>
-                                                        </View>
+                                                        
+                                                        <View style={styles.moreDetails}>
+                                        {/* <Text style={[styles.subTitle, ]}>Quantité</Text>
+                                        <Text style={{ fontSize: 12, color: '#777', marginBottom: 5 }}>
+                                                  Disponible: { menu.stock.QUANTITE_RESTANTE }
+                                        </Text> */}
+                                        <View style={styles.amountContainer}>
+                                                  <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                            <Text style={styles.amountChangerText}>-</Text>
+                                                  </TouchableOpacity>
+                                                  <TextInput
+                                                            style={[styles.input, isFocused && { borderColor: COLORS.primary}]}
+                                                            value={amount.toString()}
+                                                            onChangeText={onChangeText}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => {
+                                                                      setIsFocused(false)
+                                                                      checkAmount()
+                                                            }}
+                                                            keyboardType="decimal-pad"
+                                                  />
+                                                  <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >=10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                                                            <Text style={styles.amountChangerText}>+</Text>
+                                                  </TouchableOpacity>
+                                        </View>
+                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                                                  <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
+                                        </TouchableOpacity>
+                              </View>
                                                 </View>
                                         </ScrollView>
 
@@ -121,4 +168,48 @@ const styles = StyleSheet.create({
                 width: 150,
                 height: 150,
         },
+        moreDetails: {
+            marginTop: 20
+  },
+  amountChanger: {
+    width: 50,
+    height: 50,
+    backgroundColor: COLORS.ecommercePrimaryColor,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
+},
+amountChangerText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 20
+},
+addCartBtn: {
+    marginTop: 15,
+    borderRadius: 5,
+    backgroundColor: COLORS.ecommerceOrange,
+    paddingVertical: 15,
+},
+addCartBtnTitle: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold'
+},
+amountContainer: {
+flexDirection: 'row',
+alignItems: 'center',
+justifyContent: 'space-between',
+height: 50
+},
+input: {
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    flex: 1,
+    height: "100%",
+    marginHorizontal: 10,
+    textAlign: 'center',
+    color: COLORS.ecommercePrimaryColor,
+    fontWeight: 'bold'
+},
 })
