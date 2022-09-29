@@ -77,7 +77,7 @@ export default function MenuDetailScreen() {
                             </TouchableOpacity>
                             <View style={styles.productNames}>
                                 <Text style={styles.productName}>
-                                    <Text numberOfLines={2} style={styles.productName}> Roz . kasongo</Text>
+                                    <Text numberOfLines={2} style={styles.productName}> Riz . kasongo </Text>
                                 </Text>
                             </View>
                         </View>
