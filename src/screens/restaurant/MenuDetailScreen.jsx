@@ -1,56 +1,41 @@
-import React, { useState } from "react"
+import React, { useCallback, useState, useEffect } from "react";
 import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, TouchableNativeFeedback, ScrollView, StatusBar } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
-import { useCallback } from "react";
 import fetchApi from "../../helpers/fetchApi";
+import ProduitRestoPartenaire from "../../components/restaurants/home/ProduitRestoPartenaire";
 export default function MenuDetailScreen() {
     const [nombre, setNombre] = useState(0);
     const route = useRoute()
     const navigation = useNavigation()
-    const { menuListe } = route.params
-    console.log(menuListe)
-    const addNumber = async () => {
+    const { product } = route.params
+    // console.log(product)
 
-        if (nombre != '') {
-            setNombre(nbr => parseInt(nbr) + 1)
+    const [loadingPartenaireProducts, setloadingPartenaireProducts] = useState(true)
+    const [shopProducts, setShopProducts] = useState([])
+
+    const fecthProduitPartenaires = async () => {
+        try {
+            const response = await fetchApi(`/resto/menu/${product.ID_PARTENAIRE}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            })
+            setShopProducts(response.result)
+            console.log(response.result)
         }
-        else {
-            setNombre(1)
-        }
-    }
-
-    const mouveNumber = async () => {
-
-        if (nombre != '') {
-            setNombre(nbr => parseInt(nbr) - 1)
-
-        }
-        else {
-            setNombre(0)
-
+        catch (error) {
+            console.log(error)
+        } finally {
+            setloadingPartenaireProducts(false)
         }
     }
+    useFocusEffect(useCallback(() => {
+        fecthProduitPartenaires()
+    }, []))
 
-    // const fecthProduitsPartenaire = async () => {
-    //     try {
-    //         const response = await fetchApi(`/resto/menu?category=${product.partenaire.ID_PARTENAIRE}`, {
-    //             method: "GET",
-    //             headers: { "Content-Type": "application/json" },
-    //         })
-    //         setShopProducts(response)
-    //     }
-    //     catch (error) {
-    //         console.log(error)
-    //     } finally {
-    //         setLoadingShopProducts(false)
-    //     }
-    // }
+    useFocusEffect
 
-    // useFocusEffect(useCallback(()=>{
-    //     fecthProduitsPartenaire
-    // },[]))
 
     return (
         <>
@@ -67,17 +52,17 @@ export default function MenuDetailScreen() {
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={styles.producHeader} >
-                        <Image source={{ uri: menuListe.IMAGE }} style={styles.productImage} />
+                        <Image source={{ uri: product.IMAGE }} style={styles.productImage} />
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10 }}>
                         <View>
                             <TouchableOpacity style={styles.category} >
                                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
-                                <Text style={styles.categoryName} numberOfLines={2}>Plat du riz</Text>
+                                <Text style={styles.categoryName} numberOfLines={2}>{product.NOM_CATEGORIE}</Text>
                             </TouchableOpacity>
                             <View style={styles.productNames}>
                                 <Text style={styles.productName}>
-                                    <Text numberOfLines={2} style={styles.productName}> Riz . kasongo </Text>
+                                    <Text numberOfLines={2} style={styles.productName}>{product.NOM_SOUS_CATEGORIE}</Text>
                                 </Text>
                             </View>
                         </View>
@@ -86,7 +71,7 @@ export default function MenuDetailScreen() {
                         </View>
                     </View>
                     <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
-                        <Text style={styles.productDescription}>gyuguy dgyugd vyudgyuvyu gvdyuvdyuv gvyuvdyuv vyuvyuv yvyugvy vyuv</Text>
+                        <Text style={styles.productDescription}>{product.DESCRIPTION_SOUS_CATEGORIE}</Text>
                     </View>
                     <TouchableNativeFeedback>
                         <View style={styles.shop}>
@@ -105,6 +90,9 @@ export default function MenuDetailScreen() {
                             <MaterialIcons name="navigate-next" size={24} color="black" />
                         </View>
                     </TouchableNativeFeedback>
+
+                    <ProduitRestoPartenaire productPartenaires={shopProducts}/>
+                    
                     <TouchableNativeFeedback
                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                     >

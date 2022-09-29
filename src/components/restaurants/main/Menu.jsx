@@ -53,7 +53,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
 
           return (
             <View key={index} style={[styles.product, additionStyles]}>
-                              <TouchableOpacity onPress={()=>navigation.push('ProductDetailsScreen', {product:menu})} style={styles.imageCard}>
+                              <TouchableOpacity onPress={()=>navigation.push('MenuDetailScreen', {product:menu})} style={styles.imageCard}>
                                         <Image source={{ uri: menu.IMAGE}} style={styles.image} />
                               </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
