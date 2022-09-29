@@ -3,7 +3,8 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSpring, withTiming } from "react-native-reanimated";
 import { useSelector } from "react-redux";
-import { restaurantCartSelector } from "../../../store/selectors/restaurantCartSelectors";
+import{restaurantCartSelector} from "../../../store/selectors/restaurantCartSelectors"
+import { ecommerceCartSelector } from "../../../store/selectors/ecommerceCartSelectors";
 import { COLORS } from "../../../styles/COLORS";
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from "react";
@@ -11,28 +12,28 @@ import { useEffect } from "react";
 
 export default function RestaurantBadge() {
           const navigation = useNavigation()
-          const productsInCart = useSelector(restaurantCartSelector)
+          const menusInCart = useSelector(restaurantCartSelector)
           const scale = useSharedValue(1)
           const scaleAnimatedStyles = useAnimatedStyle(() => ({
                     transform: [{ scale: scale.value }]
           }))
 
           const onPress = () => {
-                    navigation.navigate('EcommerceCartScreen')
+                    navigation.navigate('RestaurantCartScreen')
           }
           
           useEffect(() => {
-                    if(productsInCart.length > 0) {
+                    if(menusInCart.length > 0) {
                               scale.value = withRepeat(withTiming(1.5, { duration: 200 }), 2, true)
                     }
-          }, [productsInCart])
+          }, [menusInCart])
           
           return (
                     <TouchableOpacity style={{}} onPress={onPress}>
                               <Animated.View style={[styles.btn, scaleAnimatedStyles]}>
                                         <Ionicons name="cart-outline" size={30} color={COLORS.ecommercePrimaryColor} />
-                                        {productsInCart.length > 0 ? <View style={styles.badge}>
-                                                  <Text style={styles.badgeText} numberOfLines={1}>{ productsInCart.length }</Text>
+                                        {menusInCart.length > 0 ? <View style={styles.badge}>
+                                                  <Text style={styles.badgeText} numberOfLines={1}>{ menusInCart.length }</Text>
                                         </View> : null}
                               </Animated.View>
                     </TouchableOpacity>

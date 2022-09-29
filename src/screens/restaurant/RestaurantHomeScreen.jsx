@@ -10,7 +10,7 @@ import fetchApi from "../../helpers/fetchApi";
 import { COLORS } from "../../styles/COLORS"
 import RestoSubCategories from "../../components/restaurants/home/RestoSubCategories";
 import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
-import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import Menu from "../../components/restaurants/main/Menu";
 
 
@@ -125,7 +125,7 @@ export default function RestaurantHomeScreen() {
                                                 <View style={[styles.menuOpenerLine, { width: 15 }]} />
                                                 <View style={[styles.menuOpenerLine, { width: 25 }]} />
                                         </View>
-                                        {/* <EcommerceBadge /> */}
+                                        <RestaurantBadge />
                                 </View>
                                 <ScrollView stickyHeaderIndices={[3]}>
                                         <Text style={styles.titlePrincipal}>Restauration</Text>
