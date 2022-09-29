@@ -322,10 +322,7 @@ const styles = StyleSheet.create({
                 padding: 5,
         },
         subCategoriesMenu: {
-<<<<<<< HEAD
-=======
                 backgroundColor: "#fff"
->>>>>>> 0d46507e9410b81e9a5d24686ea49cd1ca921b22
         },
         cardHeader: {
                 flexDirection: 'row',
