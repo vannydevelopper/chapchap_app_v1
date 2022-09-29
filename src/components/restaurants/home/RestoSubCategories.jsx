@@ -12,7 +12,7 @@ export default function RestoSubCategories({ menuListes, ajoutPanierRef, filtreR
         const navigation = useNavigation()
 
         return (
-                <View style={{ marginTop: 10}}>
+                <View style={{ marginTop: 10, marginHorizontal:10}}>
                         <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:"space-between"}}>
                                 {menuListes.map((menuListe, index) => {
                                         return (
@@ -20,7 +20,7 @@ export default function RestoSubCategories({ menuListes, ajoutPanierRef, filtreR
                                                         <TouchableOpacity onPress={()=>navigation.push('MenuDetailScreen',{menuListe:menuListe})} style={styles.cardAchatDescription}>
                                                                 <Image source={{ uri: menuListe.IMAGE }} style={styles.imageDescription} />
                                                         </TouchableOpacity>
-                                                        <View style={{ flexDirection: "row" }}>
+                                                        <View style={{ flexDirection: "row", marginTop:5 }}>
                                                                 <TouchableOpacity style={styles.cardLike}>
                                                                         <Ionicons name="heart-dislike-outline" size={24} color="#F29558" />
                                                                 </TouchableOpacity>
@@ -87,5 +87,6 @@ const styles = StyleSheet.create({
                 marginTop: 20,
                 width: 150,
                 height: 150,
+                borderRadius:20
         },
 })
