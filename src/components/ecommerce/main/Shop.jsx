@@ -1,9 +1,13 @@
 import React from 'react'
-import { Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import { Image, StyleSheet, Text,TouchableNativeFeedback, useWindowDimensions, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function Shop({ shop, index, totalLength }) {
+  const navigation = useNavigation()
+
           const { width } = useWindowDimensions()
           const MAX_WIDTH = 200
           const PRODUCT_MARGIN = 10
@@ -17,9 +21,11 @@ export default function Shop({ shop, index, totalLength }) {
           }
           return (
                     <View key={index} style={[styles.shop, additionStyles]}>
+                       <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE })}>
                               <View style={styles.imageCard}>
                                         <Image source={{ uri: shop.image}} style={styles.image} />
                               </View>
+                              </TouchableNativeFeedback>
                                         <Text numberOfLines={2} style={styles.shopName}>
                                         {shop.NOM_ORGANISATION}
                               </Text>
