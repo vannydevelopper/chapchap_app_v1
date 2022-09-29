@@ -73,7 +73,9 @@ export default function RestaurantHomeScreen() {
                 setSelectedCategorie(menuCategorie)
         }
 
-        const onPartenairePress = () => {}
+        const onPartenairePress = () => {
+                
+        }
 
         //fetch menu
         useEffect(() => {
@@ -132,9 +134,11 @@ export default function RestaurantHomeScreen() {
                                                         {partenaires.map((partenaire, index) => {
                                                                 return (
                                                                         <TouchableOpacity onPress={() => onPartenairePress(partenaire)} key={index} style={{ alignContent: "center", alignItems: "center" }}>
-                                                                                <View style={styles.cardAchat}>
-                                                                                        {/* <Image source={require('../../../assets/restaurant/cheesePizza.png')} style={styles.image} /> */}
-                                                                                        <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
+                                                                                <View style={{ alignContent: "center", alignItems: "center", margin: 10 }}>
+                                                                                        <View style={styles.cardPhotoPartenaire}>
+                                                                                                <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
+                                                                                        </View>
+
                                                                                 </View>
                                                                         </TouchableOpacity>
                                                                 )
@@ -168,7 +172,7 @@ export default function RestaurantHomeScreen() {
                                 </ScrollView>
                                 <Portal>
                                         <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                <AjoutPanierModalize product={partenaires}  ajoutPanierRef={ajoutPanierRef} />
+                                                <AjoutPanierModalize product={partenaires} ajoutPanierRef={ajoutPanierRef} />
                                         </Modalize>
                                 </Portal>
 
@@ -227,12 +231,20 @@ const styles = StyleSheet.create({
         image: {
                 width: 70,
                 height: 70,
-                margin: 5,
                 borderRadius: 10
         },
         cardPhoto: {
                 width: 50,
                 height: 50,
+                //backgroundColor: "#242F68",
+                backgroundColor: "#DFE1E9",
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+        },
+        cardPhotoPartenaire:{
+                width: 60,
+                height: 60,
                 //backgroundColor: "#242F68",
                 backgroundColor: "#DFE1E9",
                 borderRadius: 10,
@@ -319,7 +331,7 @@ const styles = StyleSheet.create({
                 padding: 5,
         },
         subCategoriesMenu: {
-                backgroundColor:"#fff"
+                backgroundColor: "#fff"
         },
         cardHeader: {
                 flexDirection: 'row',
