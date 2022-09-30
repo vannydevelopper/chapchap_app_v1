@@ -1,18 +1,26 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, TouchableNativeFeedback, ScrollView, StatusBar } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
+import { Modalize } from "react-native-modalize";
+import { Portal } from "react-native-portalize";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSelector } from 'react-redux';
 import fetchApi from "../../helpers/fetchApi";
 import ProduitRestoPartenaire from "../../components/restaurants/home/ProduitRestoPartenaire";
 import Menu from "../../components/restaurants/main/Menu";
 import { HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
+import { restaurantProductSelector } from "../../store/selectors/restaurantCartSelectors"
+import AddCart from "../../components/restaurants/main/AddCart"
+// import ProductImages from "../../components/ecommerce/details/ProductImages";
+import ProductImages from "../../components/restaurants/details/ProductImages"
 export default function MenuDetailScreen() {
     const [nombre, setNombre] = useState(0);
     const route = useRoute()
     const navigation = useNavigation()
     const { product } = route.params
-    console.log(product)
+    // console.log(product)
 
     const [loadingPartenaireProducts, setloadingPartenaireProducts] = useState(true)
     const [shopProducts, setShopProducts] = useState([])
@@ -20,14 +28,34 @@ export default function MenuDetailScreen() {
     const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
     const [similarProducs, setSimilarProducts] = useState([])
 
+    const productInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
+
+    const modalizeRef = useRef(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const [loadingForm, setLoadingForm] = useState(true)
+
+    const onCartPress = () => {
+        setIsOpen(true)
+        modalizeRef.current?.open()
+    }
+    const onCloseAddToCart = () => {
+        modalizeRef.current?.close()
+    }
+
+    var IMAGES = [
+        product.IMAGE ? product.IMAGE : undefined,
+        product.IMAGE_2 ? product.IMAGE_2 : undefined,
+        product.IMAGE_3 ? product.IMAGE_3 : undefined,
+]
+
     const fecthProduitPartenaires = async () => {
         try {
-            const response = await fetchApi(`/resto/menu/${product.ID_PARTENAIRE}`, {
+            const response = await fetchApi(`/resto/menu?partenaire=${product.ID_PARTENAIRE}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
             setShopProducts(response.result)
-            // console.log(response.result)
+            console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -68,10 +96,11 @@ export default function MenuDetailScreen() {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.producHeader} >
+                <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
+                    <ProductImages images={IMAGES}/>
+                    {/* <View style={styles.producHeader} >
                         <Image source={{ uri: product.IMAGE }} style={styles.productImage} />
-                    </View>
+                    </View> */}
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10 }}>
                         <View>
                             <TouchableOpacity style={styles.category} >
@@ -109,38 +138,38 @@ export default function MenuDetailScreen() {
                         </View>
                     </TouchableNativeFeedback>
 
-                   {(loadingPartenaireProducts) ? <HomeProductsSkeletons/>:
-                    <ProduitRestoPartenaire productPartenaires={shopProducts} />}
-                    
-                    {( loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
-                    <>
-                    <TouchableNativeFeedback
-                        accessibilityRole="button"
-                        background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-                    >
-                        <View style={styles.productsHeader}>
-                            <Text style={styles.title}>Similaires</Text>
-                        </View>
-                    </TouchableNativeFeedback>
-                    <View style={styles.products}>
-                        {similarProducs.map((product, index) => {
-                            return (
-                                <Menu
-                                    menu={product}
-                                    index={index}
-                                    totalLength={shopProducts.length}
-                                    key={index}
-                                    fixMargins
-                                />
-                            )
-                        })}
-                    </View>
-                    </>}
+                    {(loadingPartenaireProducts) ? <HomeProductsSkeletons /> :
+                        <ProduitRestoPartenaire productPartenaires={shopProducts} />}
+
+                    {(loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
+                        <>
+                            <TouchableNativeFeedback
+                                accessibilityRole="button"
+                                background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                            >
+                                <View style={styles.productsHeader}>
+                                    <Text style={styles.title}>Similaires</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                            <View style={styles.products}>
+                                {similarProducs.map((product, index) => {
+                                    return (
+                                        <Menu
+                                            menu={product}
+                                            index={index}
+                                            totalLength={shopProducts.length}
+                                            key={index}
+                                            fixMargins
+                                        />
+                                    )
+                                })}
+                            </View>
+                        </>}
                 </ScrollView>
             </View>
             <View style={styles.productFooter}>
-                <Text style={styles.productPrice}>15 000 Fbu</Text>
-                <TouchableOpacity style={[styles.addCartBtn]}  >
+                {product.MONTANT ? <Text style={styles.productPrice}>{product.MONTANT.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+                <TouchableOpacity style={[styles.addCartBtn]} onPress={onCartPress}  >
                     <>
                         <View>
                             <Ionicons name="cart" size={24} color="#fff" />
@@ -148,12 +177,38 @@ export default function MenuDetailScreen() {
                         <Text style={styles.addCartBtnTitle}>
                             Ajouter au panier
                         </Text>
-                        <View style={styles.badge}>
-                            <Text style={styles.badgeText} numberOfLines={1}>12</Text>
-                        </View>
+                        {productInCart ? <View style={styles.badge}>
+                            <Text style={styles.badgeText} numberOfLines={productInCart.QUANTITE}></Text>
+                        </View> : null}
+
                     </>
                 </TouchableOpacity>
             </View>
+            <Portal>
+                <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
+                    <Modalize
+                        ref={modalizeRef}
+                        adjustToContentHeight
+                        handlePosition='inside'
+                        modalStyle={{
+                            borderTopRightRadius: 25,
+                            borderTopLeftRadius: 25,
+                            paddingVertical: 20
+                        }}
+                        handleStyle={{ marginTop: 10 }}
+                        scrollViewProps={{
+                            keyboardShouldPersistTaps: "handled"
+                        }}
+                        onClosed={() => {
+                            setIsOpen(false)
+                            setLoadingForm(true)
+                        }}
+                    >
+
+                        <AddCart menu={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                    </Modalize>
+                </GestureHandlerRootView>
+            </Portal>
         </>
     )
 }
@@ -277,5 +332,5 @@ const styles = StyleSheet.create({
     products: {
         flexDirection: 'row',
         flexWrap: 'wrap'
-},
+    },
 })

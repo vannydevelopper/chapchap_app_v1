@@ -18,7 +18,7 @@ export default function ProduitRestoPartenaire({productPartenaires}) {
                                         paddingHorizontal: 10
                                 }}>
                                         <View style={styles.productsHeader}>
-                                                <Text style={styles.title}>Dans ce boutique</Text>
+                                                <Text style={styles.title}>Dans mon restaurant</Text>
                                                 <MaterialIcons name="navigate-next" size={24} color="black" />
                                         </View>
 

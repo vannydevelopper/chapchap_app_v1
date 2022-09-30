@@ -11,13 +11,11 @@ const API_URL = false
  * @param {object} options - autres options comme les headers et le body
  * @returns {Promise}
  */
-
 const initialOptions = {
           method: 'GET',
           cacheData: false,
           checkInCacheFirst: false
 }
-
 export default async function fetchApi(url, options = initialOptions) {
           options = {
                     ...initialOptions,

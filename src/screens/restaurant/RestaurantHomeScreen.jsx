@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useRef, useEffect } from "react";
-import { StyleSheet, Text, Animated, BackHandler, TouchableOpacity, StatusBar, View, TextInput, Image, ScrollView, TouchableNativeFeedback } from "react-native";
+import { StyleSheet, Text, Animated, BackHandler,  TouchableOpacity, StatusBar, View, TextInput, Image, ScrollView, TouchableNativeFeedback } from "react-native";
 import { AntDesign, SimpleLineIcons, FontAwesome, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
 import { Host, Portal } from 'react-native-portalize';
 import { Modalize } from "react-native-modalize";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, DrawerActions } from "@react-navigation/native";
 import AjoutPanierModalize from "../../components/restaurants/AjoutPanierModalize";
 import FiltreModal from "../../components/restaurants/FiltreModal";
 import fetchApi from "../../helpers/fetchApi";
@@ -81,11 +81,11 @@ export default function RestaurantHomeScreen() {
                                 if (selectedCategorie) {
                                         url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
                                 }else if(selectedPartenaire){
-                                        url = `/resto/menu/${selectedPartenaire?.ID_PARTENAIRE}`
+                                        url = `/resto/menu?partenaire=${selectedPartenaire?.ID_PARTENAIRE}`
                                 }
                                 const menu = await fetchApi(url)
                                 setMenuListes(menu.result)
-                                console.log(menu.result)
+                                console.log(url)
                         } catch (error) {
                                 console.log(error)
                         } finally {
@@ -138,10 +138,12 @@ export default function RestaurantHomeScreen() {
 
         const onMenuCategoryPress = (menuCategorie) => {
                 setSelectedCategorie(menuCategorie)
+                setSelectedPartenaire(null)
         }
 
         const onPartenairePress = (partenaire) => {
                 setSelectedPartenaire(partenaire)
+                setSelectedCategorie(null)
         }
 
        
@@ -150,11 +152,11 @@ export default function RestaurantHomeScreen() {
                 <>
                         <View style={styles.container}>
                                 <View style={styles.cardHeader}>
-                                        <View style={styles.menuOpener}>
+                                        <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
                                                 <View style={styles.menuOpenerLine} />
                                                 <View style={[styles.menuOpenerLine, { width: 15 }]} />
                                                 <View style={[styles.menuOpenerLine, { width: 25 }]} />
-                                        </View>
+                                        </TouchableOpacity>
                                         <RestaurantBadge />
                                 </View>
                                 <ScrollView stickyHeaderIndices={[3]}>
@@ -183,6 +185,7 @@ export default function RestaurantHomeScreen() {
                                                                                         <View style={[styles.cardPhotoPartenaire, { backgroundColor: partenaire.ID_PARTENAIRE == selectedPartenaire?.ID_PARTENAIRE ? COLORS.handleColor : "#DFE1E9" }]}>
                                                                                                 <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
                                                                                         </View>
+
 
                                                                                 </View>
                                                                         </TouchableOpacity>
