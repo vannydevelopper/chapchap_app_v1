@@ -55,7 +55,7 @@ export default function MenuDetailScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setShopProducts(response.result)
-            console.log(response.result)
+            // console.log(response.result)
         }
         catch (error) {
             console.log(error)
