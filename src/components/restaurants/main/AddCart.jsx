@@ -14,7 +14,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
         const [amount, setAmount] = useState(1)
         const [isFocused, setIsFocused] = useState(false)
         const dispatch = useDispatch()
-        console.log(menu)
+        // console.log(menu)
 
         const onDecrement = () => {
                 if (parseInt(amount) == 1) {
@@ -74,8 +74,8 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                         color: "#fff",
                                         position: "absolute",
                                         marginTop: 90,
-                                        marginHorizontal: 20
-                                }} >{menu.NOM_SOUS_CATEGORIE}</Text>
+                                        marginHorizontal: 15
+                                }} >{menu.NOM_MENU}</Text>
                                 <View style={styles.ligne}></View>
                                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
                                         <View>
