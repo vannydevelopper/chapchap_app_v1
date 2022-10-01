@@ -111,11 +111,14 @@ const styles = StyleSheet.create({
           imageCard: {
                     borderRadius: 8,
                     height: "60%",
-                    width: "100%"
+                    width: "100%",
+                    backgroundColor: '#F1F1F1',
+                    justifyContent: "center",
+                    alignItems: "center"
           },
           image: {
-                    height: "100%",
-                    width: "100%",
+                    height: "95%",
+                    width: "95%",
                     borderRadius: 8,
                     resizeMode: 'contain'
           },
