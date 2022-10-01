@@ -46,7 +46,7 @@ export default function MenuDetailScreen() {
         product.IMAGE ? product.IMAGE : undefined,
         product.IMAGE_2 ? product.IMAGE_2 : undefined,
         product.IMAGE_3 ? product.IMAGE_3 : undefined,
-]
+    ]
 
     const fecthProduitPartenaires = async () => {
         try {
@@ -97,7 +97,7 @@ export default function MenuDetailScreen() {
                     </View>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-                    <ProductImages images={IMAGES}/>
+                    <ProductImages images={IMAGES} />
                     {/* <View style={styles.producHeader} >
                         <Image source={{ uri: product.IMAGE }} style={styles.productImage} />
                     </View> */}
@@ -204,8 +204,7 @@ export default function MenuDetailScreen() {
                             setLoadingForm(true)
                         }}
                     >
-
-                        <AddCart menu={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                        <AddCart product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
                     </Modalize>
                 </GestureHandlerRootView>
             </Portal>
@@ -332,5 +331,11 @@ const styles = StyleSheet.create({
     products: {
         flexDirection: 'row',
         flexWrap: 'wrap'
+    },
+    badgeText: {
+        textAlign: 'center',
+        fontSize: 10,
+        color: '#FFF',
+        fontWeight: "bold"
     },
 })

@@ -14,6 +14,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
         const [amount, setAmount] = useState(1)
         const [isFocused, setIsFocused] = useState(false)
         const dispatch = useDispatch()
+        console.log(menu)
 
         const onDecrement = () => {
                 if (parseInt(amount) == 1) {
@@ -56,70 +57,77 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                         style={{ alignSelf: 'center', marginBottom: 15, marginTop: 20 }}
                 /> :
 
-                <View style={styles.container}>
-                                        <View style={styles.product}>
-                                                <View style={styles.productImage}>
-                                                        <Image source={{ uri: menu.IMAGE }} style={styles.image} />
-                                                </View>
-                                                {/* <View style={styles.productDetails}>
+                        <View style={styles.container}>
+                                <View style={styles.product}>
+                                        <View style={styles.productImage}>
+                                                <Image source={{ uri: menu.IMAGE }} style={styles.image} />
+                                        </View>
+                                        {/* <View style={styles.productDetails}>
                                                         <View >
                                                                 <Text numberOfLines={1} style={{ fontSize: 25, fontWeight: "bold", color: "#777" }} >{menu.NOM_SOUS_CATEGORIE}</Text>
                                                         </View></View> */}
+                                </View>
+                                <Text numberOfLines={1} style={{
+                                        marginTop: 15,
+                                        fontSize: 25,
+                                        fontWeight: "bold",
+                                        color: "#fff",
+                                        position: "absolute",
+                                        marginTop: 90,
+                                        marginHorizontal: 20
+                                }} >{menu.NOM_SOUS_CATEGORIE}</Text>
+                                <View style={styles.ligne}></View>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+                                        <View>
+                                                <Entypo name="star-outlined" size={24} color="black" />
                                         </View>
-                                        <View >
-                                                <Text numberOfLines={1} style={{ marginTop:15, fontSize: 25, fontWeight: "bold", color: "#777" }} >{menu.NOM_SOUS_CATEGORIE}</Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+                                        <View style={{ flexDirection: "row", alignContent: "center", alignItems: "center" }}>
                                                 <View>
-                                                        <Entypo name="star-outlined" size={24} color="black" />
+                                                        <Ionicons name="ios-time-outline" size={24} color="black" />
                                                 </View>
-                                                <View style={{ flexDirection: "row", alignContent: "center", alignItems: "center" }}>
-                                                        <View>
-                                                                <Ionicons name="ios-time-outline" size={24} color="black" />
-                                                        </View>
-                                                        <Text>30 min</Text>
-                                                </View>
-                                                <View>
-                                                        <Text style={{ fontSize: 15, fontWeight: "bold", color: "red" }}>{menu.MONTANT}Fbu</Text>
-                                                </View>
+                                                <Text>30 min</Text>
                                         </View>
-                                        <View style={{ marginTop: 15 }}>
-                                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>{menu.DESCRIPTION_SOUS_CATEGORIE}</Text>
+                                        <View>
+                                                <Text style={{ fontSize: 15, fontWeight: "bold", color: "red" }}>{menu.MONTANT} Fbu</Text>
                                         </View>
-                                        <View style={{ marginTop: 20 }}>
-                                                <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de piat</Text>
-                                        </View>
+                                </View>
+                                {/* <View style={{ marginTop: 15 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>{menu.DESCRIPTION_SOUS_CATEGORIE}</Text>
+                                </View> */}
+                                <View style={{ marginTop: 20 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
+                                </View>
 
-                                        <View style={styles.moreDetails}>
-                                                {/* <Text style={[styles.subTitle, ]}>Quantité</Text>
+                                <View style={styles.moreDetails}>
+                                        {/* <Text style={[styles.subTitle, ]}>Quantité</Text>
                                         <Text style={{ fontSize: 12, color: '#777', marginBottom: 5 }}>
                                                   Disponible: { menu.stock.QUANTITE_RESTANTE }
                                         </Text> */}
-                                                <View style={styles.amountContainer}>
-                                                        <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                                                                <Text style={styles.amountChangerText}>-</Text>
-                                                        </TouchableOpacity>
-                                                        <TextInput
-                                                                style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                                                                value={amount.toString()}
-                                                                onChangeText={onChangeText}
-                                                                onFocus={() => setIsFocused(true)}
-                                                                onBlur={() => {
-                                                                        setIsFocused(false)
-                                                                        checkAmount()
-                                                                }}
-                                                                keyboardType="decimal-pad"
-                                                        />
-                                                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                                                                <Text style={styles.amountChangerText}>+</Text>
-                                                        </TouchableOpacity>
-                                                </View>
-                                                <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                                                        <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
+                                        <View style={styles.amountContainer}>
+                                                <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                        <Text style={styles.amountChangerText}>-</Text>
+                                                </TouchableOpacity>
+                                                <TextInput
+                                                        style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                                                        value={amount.toString()}
+                                                        onChangeText={onChangeText}
+                                                        onFocus={() => setIsFocused(true)}
+                                                        onBlur={() => {
+                                                                setIsFocused(false)
+                                                                checkAmount()
+                                                        }}
+                                                        keyboardType="decimal-pad"
+                                                />
+                                                <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                                                        <Text style={styles.amountChangerText}>+</Text>
                                                 </TouchableOpacity>
                                         </View>
+                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                                                <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
+                                        </TouchableOpacity>
                                 </View>
-                 
+                        </View>
+
         )
 
 }
@@ -223,8 +231,7 @@ const styles = StyleSheet.create({
                 alignItems: 'center',
                 height: 100,
                 paddingVertical: 15,
-                borderBottomWidth: 1,
-                borderBottomColor: '#F1F1F1'
+
         },
         productImage: {
                 flex: 0.5,
@@ -238,5 +245,10 @@ const styles = StyleSheet.create({
         },
         container: {
                 padding: 10,
-      },
+        },
+        ligne: {
+                marginTop:40,
+                borderBottomWidth: 1,
+                borderBottomColor: '#F1F1F1'
+        }
 })
