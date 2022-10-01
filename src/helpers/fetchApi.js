@@ -3,7 +3,7 @@ import cache from "../utils/cache";
 import wait from "../utils/wait";
 const API_URL = false
           ? "http://app.mediabox.bi:2522"
-          : "http://192.168.43.51:3000";
+          : "http://192.168.43.195:3000";
          
 /**
  * consomer une api avec les options par défaut
@@ -11,13 +11,11 @@ const API_URL = false
  * @param {object} options - autres options comme les headers et le body
  * @returns {Promise}
  */
-
 const initialOptions = {
           method: 'GET',
           cacheData: false,
           checkInCacheFirst: false
 }
-
 export default async function fetchApi(url, options = initialOptions) {
           options = {
                     ...initialOptions,

@@ -67,7 +67,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                                         </View></View> */}
                                         </View>
                                         <View >
-                                                <Text numberOfLines={1} style={{ fontSize: 25, fontWeight: "bold", color: "#777" }} >{menu.NOM_SOUS_CATEGORIE}</Text>
+                                                <Text numberOfLines={1} style={{ marginTop:15, fontSize: 25, fontWeight: "bold", color: "#777" }} >{menu.NOM_SOUS_CATEGORIE}</Text>
                                         </View>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
                                                 <View>

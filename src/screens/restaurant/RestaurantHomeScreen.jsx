@@ -186,6 +186,7 @@ export default function RestaurantHomeScreen() {
                                                                                                 <Image source={{ uri: partenaire.IMAGE }} style={styles.image} />
                                                                                         </View>
 
+
                                                                                 </View>
                                                                         </TouchableOpacity>
 
