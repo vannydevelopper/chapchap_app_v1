@@ -26,7 +26,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
             marginRight: index == totalLength-1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
   }
 
-  console.log(menu)
+  // console.log(menu)
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)

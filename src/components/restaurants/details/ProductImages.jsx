@@ -8,6 +8,7 @@ import ImageView from "react-native-image-viewing";
 
 export default function ProductImages({ images }) {
           const IMAGES = images.filter(img => img)
+        //   console.log(images)
           const { width } = useWindowDimensions()
           const [activendex, setActiveIndex] = useState(0)
 

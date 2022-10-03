@@ -52,6 +52,7 @@ export default function ProductDetailsScreen() {
                     product.produit_partenaire.IMAGE_3 ? product.produit_partenaire.IMAGE_3 : undefined,
           ]
 
+          
           const fecthProduits = async () => {
                     try {
                               const response = await fetchApi(`/partenaire/ecommerce/${product.partenaire.ID_PARTENAIRE}`, {
