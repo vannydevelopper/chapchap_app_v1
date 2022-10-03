@@ -134,8 +134,8 @@ export default function EcommerceCartScreen() {
                                                             <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
                                                   </View>
                                         </View>
-                                        <TouchableOpacity style={styles.checkoutBtn}>
-                                                  <Text style={styles.checkoutBtnTitle}>PAIEMENT</Text>
+                                        <TouchableOpacity style={styles.checkoutBtn} onPress={() => navigation.navigate("ShippingInfoScreen")}>
+                                                  <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
                                         </TouchableOpacity>
                               </View>
                     </View>
