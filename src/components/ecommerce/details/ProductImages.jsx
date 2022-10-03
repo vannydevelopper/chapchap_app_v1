@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect } from 'react'
 import { useCallback } from 'react'
 import { useState } from 'react'
-import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native'
 import Animated, { useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, runOnJS, withSpring } from 'react-native-reanimated'
 import ImageView from "react-native-image-viewing";
 
@@ -45,12 +45,14 @@ export default function ProductImages({ images }) {
                               >
                                         {IMAGES.map((image, index) => {
                                                   return (
-                                                            <TouchableOpacity style={[styles.imageContainer, { width }]} key={index} onPress={() => {
+                                                            <TouchableWithoutFeedback key={index} onPress={() => {
                                                                       setImageIndex(index)
                                                                       setShowImageModal(true)
                                                             }}>
-                                                                      <Image source={{ uri: image }} style={styles.productImage} />
-                                                            </TouchableOpacity>
+                                                                      <View style={[styles.imageContainer, { width }]} >
+                                                                                <Image source={{ uri: image }} style={styles.productImage} />
+                                                                      </View>
+                                                            </TouchableWithoutFeedback>
                                                   )
                                         })}
                               </Animated.ScrollView>
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
           container: {
                     backgroundColor: '#F1F1F1',
                     // paddingBottom: 60,
-                    height: 200
+                    height: 250
           },
           pagination: {
                     flexDirection: "row",
@@ -106,11 +108,9 @@ const styles = StyleSheet.create({
                     height: "100%",
           },
           productImage: {
-                    width: '70%',
-                    minHeight: 150,
-                    maxHeight: 200,
+                    width: '90%',
+                    height: "90%",
                     alignSelf: 'center',
-                    resizeMode: "center",
-                    borderRadius: 10
+                    resizeMode: "contain"
           },
 })
