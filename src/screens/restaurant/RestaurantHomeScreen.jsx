@@ -85,7 +85,7 @@ export default function RestaurantHomeScreen() {
                                 }
                                 const menu = await fetchApi(url)
                                 setMenuListes(menu.result)
-                                console.log(url)
+                                // console.log(url)
                         } catch (error) {
                                 console.log(error)
                         } finally {

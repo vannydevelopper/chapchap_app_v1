@@ -25,7 +25,8 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
             marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
             marginRight: index == totalLength-1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
   }
-  
+
+  // console.log(menu)
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
@@ -72,7 +73,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
                               </View>
                               <View style={styles.productNames}>
                                         <Text numberOfLines={2} style={styles.productName}>
-                                                  {menu.NOM_SOUS_CATEGORIE} ·
+                                                  {menu.NOM_MENU} ·
                                                   <Text numberOfLines={2} style={styles.productName}> {menu.DESCRIPTION_SOUS_CATEGORIE}</Text>
                                         </Text>
                               </View>

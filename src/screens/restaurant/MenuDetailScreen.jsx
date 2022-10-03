@@ -20,7 +20,7 @@ export default function MenuDetailScreen() {
     const route = useRoute()
     const navigation = useNavigation()
     const { product } = route.params
-    // console.log(product)
+    //  console.log(product.IMAGE2 )
 
     const [loadingPartenaireProducts, setloadingPartenaireProducts] = useState(true)
     const [shopProducts, setShopProducts] = useState([])
@@ -41,13 +41,23 @@ export default function MenuDetailScreen() {
     const onCloseAddToCart = () => {
         modalizeRef.current?.close()
     }
+    useEffect(() => {
+        if(isOpen) {
+                  const timer = setTimeout(() => {
+                            setLoadingForm(false)
+                  })
+                  return () => {
+                            clearTimeout(timer)
+                  }
+        }
+}, [isOpen])
 
     var IMAGES = [
         product.IMAGE ? product.IMAGE : undefined,
-        product.IMAGE_2 ? product.IMAGE_2 : undefined,
-        product.IMAGE_3 ? product.IMAGE_3 : undefined,
-]
+        product.IMAGE2 ? product.IMAGE2 : undefined,
+        product.IMAGE3 ? product.IMAGE3 : undefined,
 
+    ]
     const fecthProduitPartenaires = async () => {
         try {
             const response = await fetchApi(`/resto/menu?partenaire=${product.ID_PARTENAIRE}`, {
@@ -55,7 +65,7 @@ export default function MenuDetailScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setShopProducts(response.result)
-            console.log(response.result)
+            // console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -97,7 +107,7 @@ export default function MenuDetailScreen() {
                     </View>
                 </View>
                 <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
-                    <ProductImages images={IMAGES}/>
+                    <ProductImages images={IMAGES} />
                     {/* <View style={styles.producHeader} >
                         <Image source={{ uri: product.IMAGE }} style={styles.productImage} />
                     </View> */}
@@ -178,8 +188,8 @@ export default function MenuDetailScreen() {
                             Ajouter au panier
                         </Text>
                         {productInCart ? <View style={styles.badge}>
-                            <Text style={styles.badgeText} numberOfLines={productInCart.QUANTITE}></Text>
-                        </View> : null}
+                                                                      <Text style={styles.badgeText} numberOfLines={1}>{productInCart.QUANTITE}</Text>
+                                                            </View> : null}
 
                     </>
                 </TouchableOpacity>
@@ -204,7 +214,6 @@ export default function MenuDetailScreen() {
                             setLoadingForm(true)
                         }}
                     >
-
                         <AddCart menu={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
                     </Modalize>
                 </GestureHandlerRootView>
@@ -306,18 +315,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold'
     },
-    badge: {
-        minWidth: 25,
-        minHeight: 20,
-        borderRadius: 20,
-        paddingHorizontal: 3,
-        backgroundColor: COLORS.ecommerceRed,
-        position: 'absolute',
-        top: -10,
-        right: 0,
-        justifyContent: "center",
-        alignItems: "center",
-    },
+ 
     productsHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -333,4 +331,23 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
+    badge: {
+        minWidth: 25,
+        minHeight: 20,
+        borderRadius: 20,
+        paddingHorizontal: 3,
+        backgroundColor: COLORS.ecommerceRed,
+        position: 'absolute',
+        top: -10,
+        right: 0,
+        justifyContent: "center",
+        alignItems: "center",
+},
+badgeText: {
+        textAlign: 'center',
+        fontSize: 10,
+        color: '#FFF',
+        fontWeight: "bold"
+}
+    
 })
