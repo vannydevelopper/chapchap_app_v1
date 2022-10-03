@@ -14,7 +14,6 @@ export default function AddCart({ menu, onClose, loadingForm }) {
         const [amount, setAmount] = useState(1)
         const [isFocused, setIsFocused] = useState(false)
         const dispatch = useDispatch()
-        console.log(menu)
 
         const onDecrement = () => {
                 if (parseInt(amount) == 1) {

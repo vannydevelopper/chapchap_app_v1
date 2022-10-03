@@ -138,7 +138,7 @@ export default function RestaurantCartScreen() {
                                                   </View>
                                         </View>
                                         <TouchableOpacity style={styles.checkoutBtn}>
-                                                  <Text style={styles.checkoutBtnTitle}>PAIEMENT</Text>
+                                                  <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
                                         </TouchableOpacity>
                               </View>
                     </View>

@@ -7,6 +7,7 @@ import EcommerceHomeScreen from "../screens/e-commerce/EcommerceHomeScreen";
 import PaymentScreen from "../screens/e-commerce/PaymentScreen";
 import ProductDetailsScreen from "../screens/e-commerce/ProductDetailsScreen";
 import ProductShopsScreen from "../screens/e-commerce/ProductShopsScreen";
+import SearchLivreurScreen from "../screens/e-commerce/SearchLivreurScreen";
 import ShippingInfoScreen from "../screens/e-commerce/ShippingInfoScreen";
 
 export default function EcommerceNavigator() {
@@ -28,6 +29,7 @@ export default function EcommerceNavigator() {
                               }}>
                                         <Stack.Screen name="ShippingInfoScreen" component={ShippingInfoScreen} />
                                         <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+                                        <Stack.Screen name="SearchLivreurScreen" component={SearchLivreurScreen}/>
                               </Stack.Group>
                     </Stack.Navigator>
           )
