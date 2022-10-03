@@ -18,8 +18,8 @@ export default function EcommerceBadge() {
           }))
 
           const onPress = () => {
-                //     navigation.navigate('EcommerceCartScreen')
-                    navigation.navigate('SearchLivreurScreen')
+                    navigation.navigate('EcommerceCartScreen')
+                //     navigation.navigate('SearchLivreurScreen')
           }
           
           useEffect(() => {
