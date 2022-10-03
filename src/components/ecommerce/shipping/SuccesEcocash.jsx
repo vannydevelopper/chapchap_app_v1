@@ -2,10 +2,8 @@ import React from "react";
 import { Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import LottieView from 'lottie-react-native';
 import {COLORS} from "../../../styles/COLORS"
-import { useNavigation } from "@react-navigation/native";
 
 export default function SuccessEcocash() {
-        const navigation = useNavigation()
         return (
                 <View style={styles.container}>
                         <ScrollView style={{}} keyboardShouldPersistTaps='always'>
