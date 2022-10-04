@@ -5,18 +5,21 @@ import ProductCart from "../../components/ecommerce/main/ProductCart";
 import { ecommerceCartSelector } from "../../store/selectors/ecommerceCartSelectors";
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from "../../styles/COLORS";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
 import LottieView from 'lottie-react-native';
 import { useState } from "react";
 import Product from "../../components/ecommerce/main/Product";
 import { useEffect } from "react";
-import fetchApi from "../../helpers/fetchApi";
+import fetchApi, { API_URL } from "../../helpers/fetchApi";
 import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import { useRef } from "react";
+import io from 'socket.io-client'
 
 export default function EcommerceCartScreen() {
           const products = useSelector(ecommerceCartSelector)
           const navigation = useNavigation()
+          const socket = useRef(io(API_URL)).current
 
           const [recommndations, setRecomandations] = useState([])
           const [loadingProducts, setLoadingProducts] = useState(false)
@@ -52,6 +55,20 @@ export default function EcommerceCartScreen() {
                               }
                     })()
           }, [products])
+
+          useFocusEffect(useCallback(() => {
+                    socket.on('connect', () => {
+                              console.log('connected')
+                              socket.emit('join', { userId: 1 });
+                    })
+                    socket.on('NEW_MESSAGE', message => {
+                              console.log(message)
+                    })
+                    return () => {
+                              socket.disconnect()
+                    }
+          }, []))
+
           if(products.length == 0) {
                     return (
                               <View style={[styles.container, { backgroundColor: '#fff' }]}>
@@ -134,7 +151,9 @@ export default function EcommerceCartScreen() {
                                                             <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
                                                   </View>
                                         </View>
-                                        <TouchableOpacity style={styles.checkoutBtn} onPress={() => navigation.navigate("ShippingInfoScreen")}>
+                                        <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
+                                                  navigation.navigate("ShippingInfoScreen")
+                                        }}>
                                                   <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
                                         </TouchableOpacity>
                               </View>

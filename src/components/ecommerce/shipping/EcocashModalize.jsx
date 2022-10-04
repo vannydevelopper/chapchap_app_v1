@@ -8,8 +8,14 @@ import { FontAwesome, Fontisto, EvilIcons, Feather, Ionicons, MaterialIcons, Fon
 import { useCallback } from "react"
 import { useSelector } from "react-redux"
 import { ecommerceCartSelector } from "../../../store/selectors/ecommerceCartSelectors"
+import { useEffect } from "react"
+import { useState } from "react"
+import Loading from "../../app/Loading"
+import fetchApi from "../../../helpers/fetchApi"
+import { useRoute } from "@react-navigation/native"
 
-export default function EcocashModalize({ info, loadingForm, onClose }) {
+export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, commandes, onFInish }) {
+          const [loading, setLoading] = useState(false)
           const [data, handleChange] = useForm({
                     tel: ""
           })
@@ -34,6 +40,36 @@ export default function EcocashModalize({ info, loadingForm, onClose }) {
                     return total
           }, [products])
 
+          const onPay = async () => {
+                    try {
+                              setLoading(true)
+                              setErrors({})
+                              let isnum = /^\d+$/.test(data.tel);
+                              if(!isnum) {
+                                        return setError("tel", ["Numéro de téléphone invalide"])
+                              }
+                              const commande = await fetchApi('/commandes/clients', {
+                                        method: "POST",
+                                        body: JSON.stringify({
+                                                  numero: data.tel,
+                                                  shipping_info: {
+                                                            TELEPHONE: shipping_info.tel,
+                                                            N0M: shipping_info.nom,
+                                                            PRENOM: shipping_info.prenom,
+                                                            ADRESSE: shipping_info.address,
+                                                  },
+                                                  commandes
+                                        }),
+                                        headers: { "Content-Type": "application/json" },
+                              })
+                              onFInish()
+                    } catch (error) {
+                              console.log(error)
+                    } finally {
+                              setLoading(false)
+                    }
+          }
+
           const totalAmount = getAmount() + 0
           return (
                     loadingForm ? <ActivityIndicator
@@ -43,6 +79,7 @@ export default function EcocashModalize({ info, loadingForm, onClose }) {
                               style={{ alignSelf: 'center', marginBottom: 15, marginTop: 20 }}
                     /> :
                     <View style={styles.container}>
+                              {loading && <Loading />}
                               <Image source={info.image} style={styles.image} />
                               <OutlinedTextField
                                         label="Numéro ecocash"
@@ -80,7 +117,7 @@ export default function EcocashModalize({ info, loadingForm, onClose }) {
                                                   </Text>
                                         </View>
                               </View>
-                              <TouchableOpacity style={styles.payBtn}>
+                              <TouchableOpacity style={[styles.payBtn, !isValidate() && { opacity: 0.5 }]} disabled={!isValidate()} onPress={onPay}>
                                         <Text style={styles.payBtnTitle}>PAYER ({getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu)</Text>
                               </TouchableOpacity>
                     </View>

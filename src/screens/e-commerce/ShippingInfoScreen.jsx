@@ -184,7 +184,7 @@ export default function ShippingInfoScreen() {
                                                             <Ionicons name="close" size={30} color="#777" />
                                                   </View>
                                         </TouchableNativeFeedback>
-                                        <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen')}>
+                                        <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data })}>
                                                   <View style={[styles.nextBtn, !isValidate() && { opacity: 0.5 }]}>
                                                             <Text style={[styles.navigationBtnText]}>Suivant</Text>
                                                   </View>

@@ -2,13 +2,15 @@ import React, { useRef, useState } from 'react'
 import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
 import { COLORS } from '../../styles/COLORS'
 import { MaterialIcons, Ionicons } from '@expo/vector-icons'; 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Portal } from 'react-native-portalize';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Modalize } from 'react-native-modalize';
 import EcocashModalize from '../../components/ecommerce/shipping/EcocashModalize';
 import { useEffect } from 'react';
 import Loading from '../../components/app/Loading';
+import { useSelector } from 'react-redux';
+import { ecommerceCartSelector } from '../../store/selectors/ecommerceCartSelectors';
 
 
 export default function PaymentScreen() {
@@ -53,9 +55,18 @@ export default function PaymentScreen() {
           }
 
           const navigation = useNavigation()
+          const route = useRoute()
           const ecocashModalizeRef = useRef(null)
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
+
+          const { shipping_info } = route.params
+          const products = useSelector(ecommerceCartSelector)
+          const commandes = products.map(product => ({
+                    ID_PRODUIT_STOCK: product.stock.ID_PRODUIT_STOCK,
+                    QUANTITE: product.QUANTITE,
+                    PRIX: product.produit_partenaire.PRIX
+          }))
 
           const onMethodPress = method => {
                     setIsOpen(true)
@@ -63,6 +74,11 @@ export default function PaymentScreen() {
           }
 
           const onCloseModalize = () => {
+                    ecocashModalizeRef.current?.close()
+          }
+
+          const onEcocashFinish = () => {
+                    setIsOpen(false)
                     ecocashModalizeRef.current?.close()
           }
 
@@ -134,7 +150,7 @@ export default function PaymentScreen() {
                                                                       setLoadingForm(true)
                                                             }}
                                                   >
-                                                            <EcocashModalize info={METHODS[0]} loadingForm={loadingForm} onClose={onCloseModalize} />
+                                                            <EcocashModalize info={METHODS[0]} loadingForm={loadingForm} onClose={onCloseModalize} shipping_info={shipping_info} commandes={commandes} onFInish={onEcocashFinish} />
                                                   </Modalize>
                                         </GestureHandlerRootView>
                               </Portal>
