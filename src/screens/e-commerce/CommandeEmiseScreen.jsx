@@ -1,7 +1,36 @@
 import React from "react"
 import { Image, StyleSheet, View, Text, ScrollView } from "react-native"
 import { Feather, Ionicons, Entypo } from '@expo/vector-icons';
+import { useState, useEffect } from "react";
+import fetchApi from "../../helpers/fetchApi";
+import moment from "moment/moment";
 export default function CommandeEmiseScreen() {
+const [commandes, setCommandes] = useState([])
+moment.updateLocale('fr', {
+    calendar: {
+            sameDay: "[Aujourd'hui]",
+            lastDay: '[Hier]',
+            nextDay: 'DD-M-YYYY',
+            lastWeek: 'DD-M-YYYY',
+            sameElse: 'DD-M-YYYY',
+    },
+})
+    const fecthCommandes = async () => {
+        try {
+            const response = await fetchApi(`/commandes`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            })
+            setCommandes(response.result)
+            console.log(response.result)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        fecthCommandes()
+    }, [])
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -23,71 +52,35 @@ export default function CommandeEmiseScreen() {
                     </View>
                 </View>
 
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                }}>
-                    <View style={styles.cardAchat}>
-                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                    </View>
-                    <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                        <Text style={styles.textRobe}>Robe noire Louis vutton</Text>
-                        <Text style={styles.date}>14Nov.2022   2piecs</Text>
-                        <View style={{ flexDirection: "row", marginTop: 15 }}>
-                            <View style={styles.cardOK}><Entypo name="check" size={6} color="white" /></View>
-                            <View style={{ marginLeft: 7 }}>
-                                <Text style={styles.textCommande}>Commande Livrée</Text>
+                {commandes.map((commande, index) => {
+
+                    return (
+                        <View style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }} key={index}>
+                            <View style={styles.cardAchat}>
+                                <Ionicons name="shirt-sharp" size={70} color="black" />
+                            </View>
+
+                            <View style={{ marginTop: 20, marginHorizontal: 0 }}>
+                                <Text style={styles.textRobe}>Robe noire Louis vutton</Text>
+                                <Text style={styles.date}> {moment(commande.DATE_COMMANDE).format('DD-MM-YYYY  HH:mm:ss')}   {commande.QUANTITE}piecs</Text>
+                                <View style={{ flexDirection: "row", marginTop: 15 }}>
+                                    <View style={styles.cardOK}><Entypo name="check" size={6} color="white" /></View>
+                                    <View style={{ marginLeft: 7 }}>
+                                        <Text style={styles.textCommande}>{commande.DESCRIPTION}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={{ marginTop: 20, marginHorizontal: 0 }}>
+                                <Text style={styles.montant}>{commande.SOMME}Fbu</Text>
                             </View>
                         </View>
-                    </View>
-                    <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                        <Text style={styles.montant}>85 000Fbu</Text>
-                    </View>
-                </View>
-                <View style={styles.ligne}></View>
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                }}>
-                    <View style={styles.cardAchat}>
-                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                    </View>
-                    <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                        <Text style={styles.textRobe}>Robe noire Louis vutton</Text>
-                        <Text style={styles.date}>14Nov.2022   2piecs</Text>
-                        <View style={{ flexDirection: "row", marginTop: 15 }}>
-                            <View style={styles.cardOK}><Entypo name="check" size={6} color="white" /></View>
-                            <View style={{ marginLeft: 7 }}>
-                                <Text style={styles.textCommande}>Commande Livrée</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                        <Text style={styles.montant}>85 000Fbu</Text>
-                    </View>
-                </View>
-                <View style={styles.ligne}></View>
-                <View style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                }}>
-                    <View style={styles.cardAchat}>
-                        <Ionicons name="shirt-sharp" size={70} color="black" />
-                    </View>
-                    <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                        <Text style={styles.textRobe}>Robe noire Louis vutton</Text>
-                        <Text style={styles.date}>14Nov.2022   2piecs</Text>
-                        <View style={{ flexDirection: "row", marginTop: 15 }}>
-                            <View style={styles.cardOK}><Entypo name="check" size={6} color="white" /></View>
-                            <View style={{ marginLeft: 7 }}>
-                                <Text style={styles.textCommande}>Commande Livrée</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                        <Text style={styles.montant}>85 000Fbu</Text>
-                    </View>
-                </View>
+                    )
+                })}
+
+
 
             </View>
         </ScrollView>
