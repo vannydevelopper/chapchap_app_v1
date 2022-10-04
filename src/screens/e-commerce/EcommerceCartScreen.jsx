@@ -14,12 +14,10 @@ import { useEffect } from "react";
 import fetchApi, { API_URL } from "../../helpers/fetchApi";
 import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import { useRef } from "react";
-import io from 'socket.io-client'
 
 export default function EcommerceCartScreen() {
           const products = useSelector(ecommerceCartSelector)
           const navigation = useNavigation()
-          const socket = useRef(io(API_URL)).current
 
           const [recommndations, setRecomandations] = useState([])
           const [loadingProducts, setLoadingProducts] = useState(false)
@@ -55,19 +53,6 @@ export default function EcommerceCartScreen() {
                               }
                     })()
           }, [products])
-
-          useFocusEffect(useCallback(() => {
-                    socket.on('connect', () => {
-                              console.log('connected')
-                              socket.emit('join', { userId: 1 });
-                    })
-                    socket.on('NEW_MESSAGE', message => {
-                              console.log(message)
-                    })
-                    return () => {
-                              socket.disconnect()
-                    }
-          }, []))
 
           if(products.length == 0) {
                     return (

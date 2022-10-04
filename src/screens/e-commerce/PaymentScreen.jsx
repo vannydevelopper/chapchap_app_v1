@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import Loading from '../../components/app/Loading';
 import { useSelector } from 'react-redux';
 import { ecommerceCartSelector } from '../../store/selectors/ecommerceCartSelectors';
+import EcocashPeddingPayment from '../../components/ecommerce/shipping/EcocashPeddingPayment';
 
 
 export default function PaymentScreen() {
@@ -60,6 +61,8 @@ export default function PaymentScreen() {
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
 
+          const [ecocashIsPending, setEcocashIsPending] = useState(false)
+
           const { shipping_info } = route.params
           const products = useSelector(ecommerceCartSelector)
           const commandes = products.map(product => ({
@@ -80,6 +83,7 @@ export default function PaymentScreen() {
           const onEcocashFinish = () => {
                     setIsOpen(false)
                     ecocashModalizeRef.current?.close()
+                    setEcocashIsPending(true)
           }
 
           useEffect(() => {
@@ -94,7 +98,7 @@ export default function PaymentScreen() {
           }, [isOpen])
           return (
                     <View style={styles.container}>
-                              {/* {true && <Loading />} */}
+                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} />}
                               <ScrollView keyboardShouldPersistTap="handled">
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>

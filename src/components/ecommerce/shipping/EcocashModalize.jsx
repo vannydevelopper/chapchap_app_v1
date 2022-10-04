@@ -10,42 +10,10 @@ import { useSelector } from "react-redux"
 import { ecommerceCartSelector } from "../../../store/selectors/ecommerceCartSelectors"
 import { Portal } from "react-native-portalize"
 import SuccessEcocash from './SuccesEcocash'
+import fetchApi from '../../../helpers/fetchApi'
+import Loading from '../../app/Loading'
 
-const ConfirmModal = ({ onClose, loading }) => {
-          const [scale] = useState(new Animated.Value(1.1))
-          useEffect(() => {
-                    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-                              onClose()
-                              return true
-                    })
-                    Animated.spring(scale, {
-                              toValue: 1,
-                              useNativeDriver: true
-                    }).start()
-                    return () => {
-                              backHandler.remove()
-                    }
-          }, [])
-          return (
-                    <Portal>
-                              <TouchableWithoutFeedback onPress={onClose}>
-                                        <View style={styles.modalContainer}>
-                                                  <TouchableWithoutFeedback onPress={onClose}>
-                                                            <Animated.View style={{ ...styles.modalContent, transform: [{ scale }] }}>
-                                                                      <View style={{ borderBottomWidth: 0, paddingVertical: 10, paddingHorizontal: 20, backgroundColor: COLORS.ecommerceOrange }}>
-                                                                                <Text style={{ fontWeight: 'bold', color: '#fff', opacity: 0.8, textAlign: 'center' }}>
-                                                                                          Paiement initié avec succes
-                                                                                </Text>
-                                                                      </View>
-                                                                      <SuccessEcocash />
 
-                                                            </Animated.View>
-                                                  </TouchableWithoutFeedback>
-                                        </View>
-                              </TouchableWithoutFeedback>
-                    </Portal>
-          )
-}
 
 export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, commandes, onFInish }) {
           const [loading, setLoading] = useState(false)
@@ -191,22 +159,5 @@ const styles = StyleSheet.create({
                     textAlign: "center",
                     color: '#fff',
                     fontWeight: "bold"
-          },
-          modalContainer: {
-                    position: 'absolute',
-                    zIndex: 1,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-          },
-          modalContent: {
-                    width: '90%',
-                    maxWidth: 400,
-                    backgroundColor: '#fff',
-                    borderRadius: 10,
-                    overflow: 'hidden',
-                    maxHeight: '90%'
           },
 })
