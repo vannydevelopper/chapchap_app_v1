@@ -168,28 +168,28 @@ export default function ShippingInfoScreen() {
                                                                       //           addressInputRef.current.focus()
                                                                       // }}
                                                                       autoCompleteType='off'
-                                                                      returnKeyType="next"
+                                                                      // returnKeyType="next"
                                                                       keyboardType="number-pad"
-                                                                      blurOnSubmit={false}
+                                                                      // blurOnSubmit={false}
                                                                       containerStyle={{ 
                                                                                 marginTop: 10
                                                                       }}
                                                             />
                                                   </View>
                                         </View>
+                                        <View style={styles.navigation}>
+                                                  <TouchableNativeFeedback useForeground onPress={() => navigation.goBack()}>
+                                                            <View style={styles.cancelBtn}>
+                                                                      <Ionicons name="close" size={30} color="#777" />
+                                                            </View>
+                                                  </TouchableNativeFeedback>
+                                                  <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data })}>
+                                                            <View style={[styles.nextBtn, !isValidate() && { opacity: 0.5 }]}>
+                                                                      <Text style={[styles.navigationBtnText]}>Suivant</Text>
+                                                            </View>
+                                                  </TouchableNativeFeedback>
+                                        </View>
                               </ScrollView>
-                              <View style={styles.navigation}>
-                                        <TouchableNativeFeedback useForeground onPress={() => navigation.goBack()}>
-                                                  <View style={styles.cancelBtn}>
-                                                            <Ionicons name="close" size={30} color="#777" />
-                                                  </View>
-                                        </TouchableNativeFeedback>
-                                        <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data })}>
-                                                  <View style={[styles.nextBtn, !isValidate() && { opacity: 0.5 }]}>
-                                                            <Text style={[styles.navigationBtnText]}>Suivant</Text>
-                                                  </View>
-                                        </TouchableNativeFeedback>
-                              </View>
                     </View>
           )
 }

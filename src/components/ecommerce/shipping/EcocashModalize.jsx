@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, BackHandler, Animated, TouchableWithoutFeedback, View } from "react-native"
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, BackHandler, Animated, TouchableWithoutFeedback, View, Keyboard } from "react-native"
 import { useForm } from "../../../hooks/useForm"
 import { useFormErrorsHandle } from "../../../hooks/useFormErrorsHandle"
 import { COLORS } from "../../../styles/COLORS"
@@ -9,7 +9,6 @@ import { useCallback } from "react"
 import { useSelector } from "react-redux"
 import { ecommerceCartSelector } from "../../../store/selectors/ecommerceCartSelectors"
 import { Portal } from "react-native-portalize"
-import SuccessEcocash from './SuccesEcocash'
 import fetchApi from '../../../helpers/fetchApi'
 import Loading from '../../app/Loading'
 
@@ -43,6 +42,7 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
 
           const onPay = async () => {
                     try {
+                              Keyboard.dismiss()
                               setLoading(true)
                               setErrors({})
                               let isnum = /^\d+$/.test(data.tel);
