@@ -62,7 +62,7 @@ export default function ShippingInfoScreen() {
                               <ScrollView keyboardShouldPersistTap="handled">
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>
-                                                            Informations sur la livraison
+                                                            Livraison
                                                   </Text>
                                                   <Text style={styles.titleDesc}>
                                                             Soyez sincère en complètant ce formulaire
@@ -185,7 +185,9 @@ export default function ShippingInfoScreen() {
                                                   </TouchableNativeFeedback>
                                                   <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data })}>
                                                             <View style={[styles.nextBtn, !isValidate() && { opacity: 0.5 }]}>
-                                                                      <Text style={[styles.navigationBtnText]}>Suivant</Text>
+                                                                      <Text style={[styles.navigationBtnText]}>
+                                                                                Suivant
+                                                                      </Text>
                                                             </View>
                                                   </TouchableNativeFeedback>
                                         </View>

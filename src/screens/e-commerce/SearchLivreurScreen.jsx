@@ -1,22 +1,64 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
-import { FontAwesome, AntDesign, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, AntDesign, Ionicons, Zocial } from '@expo/vector-icons';
 import { COLORS } from "../../styles/COLORS"
 import LottieView from 'lottie-react-native';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useState } from "react";
+import { useEffect } from "react";
+import fetchApi from "../../helpers/fetchApi";
+import moment from "moment/moment";
 
 export default function SearchLivreurScreen() {
           const navigation = useNavigation()
+          const route = useRoute()
+          const { commande } = route.params
+          const [status, setStatus] = useState([])
+          const [loadingStatus, setLoadingStatus] = useState(true)
+          const [currentStatus, setCurrentStatus] = useState(null)
+          const [peddingStatus, setPeddingStatus] = useState(null)
+          moment.updateLocale('fr', {
+                    calendar: {
+                              sameDay: "[Aujourd'hui]",
+                              lastDay: '[Hier]',
+                              nextDay: 'DD-M-YYYY',
+                              lastWeek: 'DD-M-YYYY',
+                              sameElse: 'DD-M-YYYY',
+                    },
+          })
+
+          useEffect(() => {
+                    (async () => {
+                              try {
+                                        const stts = await fetchApi(`/commandes/status/${commande.ID_COMMANDE}`, {
+                                                  cacheData: false,
+                                                  checkInCacheFirst: false
+                                        })
+                                        const current = stts.result.find(st => st.ID_STATUT == commande.ID_STATUT)
+                                        const pedding = stts.result.find(st => st.ID_STATUT == current.NEXT_ID_STATUT)
+                                        setCurrentStatus(current)
+                                        setPeddingStatus(pedding)
+                                        setStatus(stts.result)
+                              } catch (error) {
+                                        console.log(error)
+                              } finally {
+                                        setLoadingStatus(false)
+                              }
+                    })()
+          }, [])
+
           return (
                     <View style={styles.container}>
                               <View style={styles.header}>
-                                        <Text style={styles.titlePrincipal}>En attente du livreur</Text>
+                                        <Text style={styles.titlePrincipal}>
+                                                  { currentStatus?.NEXT_STATUS }
+                                        </Text>
                                         <LottieView style={{ width: 100, height: 100, alignSelf: "center" }} source={require('../../../assets/lotties/loading.json')} autoPlay loop={true} />
                               </View>
                               <View style={styles.cardStatus}>
                                         <View style={styles.importantInfos}>
                                                   <View style={styles.importantInfo}>
-                                                            <Text style={[styles.importantInfoValue]}>SH62HH</Text>
+                                                            <Text style={[styles.importantInfoValue]}>{ commande.CODE_UNIQUE }</Text>
                                                             <Text style={styles.importantInfoTitle}>
                                                                       Code de la commande
                                                             </Text>
@@ -62,23 +104,25 @@ export default function SearchLivreurScreen() {
                                                             </Text>
                                                   </View>
                                         </View>}
-                                        <Text style={[styles.titlePrincipal, { textAlign: "left", marginTop: 10, fontSize: 18, marginBottom: 5 }]}>Status de livraisons</Text>
+                                        <Text style={[styles.titlePrincipal, { textAlign: "left", marginTop: 10, fontSize: 18, marginBottom: 5 }]}>
+                                                  Status de livraisons
+                                        </Text>
                                         <View style={styles.statusContainer}>
                                                   <View>
-                                                            {new Array(4).fill(0).map((status, index) => {
+                                                            {!loadingStatus && status.filter(t => t.ID_STATUT != 1).map((status, index) => {
                                                                       return (
                                                                                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginBottom: 25 }} key={index}>
                                                                                           <View style={{ flexDirection: "row" }}>
                                                                                                     <View style={styles.cardIcon}>
-                                                                                                              <FontAwesome name="car" size={24} color="black" />
+                                                                                                              <Zocial name="statusnet" size={24} color="#777" />
                                                                                                     </View>
                                                                                                     <View style={{ marginLeft: 10 }}>
-                                                                                                              <View>
-                                                                                                                        <Text style={styles.statutTitle}>Pick depart</Text>
-                                                                                                              </View>
-                                                                                                              <View>
-                                                                                                                        <Text style={styles.dateStatus}>10 Oct 2021 at 10:30 P.M</Text>
-                                                                                                              </View>
+                                                                                                              <Text style={styles.statutTitle} numberOfLines={1}>
+                                                                                                                        { status.DESCRIPTION }
+                                                                                                              </Text>
+                                                                                                              <Text style={styles.dateStatus}>
+                                                                                                                        {status.DATE_INSERTION ? `${moment(status.DATE_INSERTION).calendar()} à ${moment(status.DATE_INSERTION).format('HH:mm')}` : '-'}
+                                                                                                              </Text>
                                                                                                     </View>
                                                                                           </View>
                                                                                 </View>
@@ -86,10 +130,10 @@ export default function SearchLivreurScreen() {
                                                             })}
                                                   </View>
                                                   <View style={styles.statusCheckes}>
-                                                            {new Array(4).fill(0).map((status, index) => {
+                                                            {!loadingStatus && status.filter(t => t.ID_STATUT != 1).map((status, index) => {
                                                                       return (
-                                                                                <View style={[styles.statutVue, index == 3 && { backgroundColor: '#ddd', elevation: 0 }]} key={index}>
-                                                                                          {index != 3 && <AntDesign name="check" size={15} color="white" />}
+                                                                                <View style={[styles.statutVue, !status.completed && status.ID_STATUT != peddingStatus.ID_STATUT && { backgroundColor: '#ddd', elevation: 0 }]} key={index}>
+                                                                                          {status.completed && <AntDesign name="check" size={15} color="white" />}
                                                                                 </View>
                                                                       )
                                                             })}
@@ -98,14 +142,14 @@ export default function SearchLivreurScreen() {
                                         </View>
                                         <View style={styles.navigation}>
                                                   <TouchableNativeFeedback useForeground onPress={() => {
-                                                            navigation.navigate('EcommerceHomeScreen')
+                                                            // navigation.navigate('EcommerceHomeScreen')
                                                             navigation.goBack()
                                                   }}>
                                                             <View style={styles.cancelBtn}>
                                                                       <Ionicons name="close" size={30} color="#777" />
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback useForeground onPress={{}}>
+                                                  <TouchableNativeFeedback useForeground>
                                                             <View style={[styles.nextBtn]}>
                                                                       <Text style={[styles.navigationBtnText]}>
                                                                                 Voir la commande
@@ -246,7 +290,7 @@ const styles = StyleSheet.create({
           progressIndicator: {
                     position: 'absolute',
                     width: 1,
-                    height: "80%",
+                    height: "70%",
                     borderWidth: 1,
                     borderStyle: "dashed",
                     borderColor: '#c2baba',
