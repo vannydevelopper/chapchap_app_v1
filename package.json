@@ -43,7 +43,8 @@
     "react-native-web": "~0.18.7",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
-    "rn-material-ui-textfield": "^1.0.7"
+    "rn-material-ui-textfield": "^1.0.7",
+    "socket.io-client": "^4.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

@@ -6,9 +6,17 @@ import { DrawerContentScrollView  } from '@react-navigation/drawer'
 import { useSelector } from "react-redux";
 import { userSelector } from "../../store/selectors/userSelector";
 import { COLORS } from "../../styles/COLORS";
+import { DrawerActions, useRoute } from "@react-navigation/native";
+import { useEffect } from "react";
 
-export default function DrawerContent() {
+export default function DrawerContent({ state, navigation, descriptors }) {
           const user = useSelector(userSelector)
+
+          const handlePress = routeName => {
+                    navigation.navigate(routeName)
+                    navigation.dispatch(DrawerActions.closeDrawer)
+          }
+          console.log(state)
           return (
                     <View style={styles.drawerContent}>
                               <TouchableNativeFeedback>
@@ -24,19 +32,19 @@ export default function DrawerContent() {
                               </TouchableNativeFeedback>
                               <View style={styles.separator} />
                               <DrawerContentScrollView style={styles.drawerScroller}>
-                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)}>
-                                                  <View style={{ borderRadius: 10, overflow: "hidden", backgroundColor: COLORS.handleColor }}>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)} onPress={() => handlePress('HomeScreen')}>
+                                                  <View style={[{ borderRadius: 10, overflow: "hidden" }, (state.index == 0 || state.index == 1 || state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
                                                             <View style={styles.drawerItem}>
                                                                       <AntDesign name="home" size={27} color="#000" />
-                                                                      <Text style={[styles.drawerItemLabel, { color: '#000' }]}>Produits et  services</Text>
+                                                                      <Text style={[styles.drawerItemLabel, (state.index == 0 || state.index == 1 || state.index == 2) && { color: '#000' }]}>Produits et  services</Text>
                                                             </View>
                                                   </View>
                                         </TouchableNativeFeedback>
-                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
-                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')} onPress={() => handlePress('Commande')}>
+                                                  <View style={[{ borderRadius: 10, overflow: "hidden" }, state.index == 3 && { backgroundColor: COLORS.handleColor }]}>
                                                             <View style={styles.drawerItem}>
                                                                       <Feather name="shopping-cart" size={24} color="#777" />
-                                                                      <Text style={styles.drawerItemLabel}>Commandes</Text>
+                                                                      <Text style={[styles.drawerItemLabel, (state.index == 3) && { color: '#000' }]}>Commandes</Text>
                                                             </View>
                                                   </View>
                                         </TouchableNativeFeedback>
