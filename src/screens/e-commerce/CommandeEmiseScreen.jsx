@@ -48,7 +48,7 @@ moment.updateLocale('fr', {
                         <Text style={{ color: "white", textAlign: "center", fontWeight: "bold", }}>Livrées</Text>
                     </View>
                     <View style={{ ...styles.carre, backgroundColor: "#FCEADE" }}>
-                        <Text style={{ color: "#EE7526", textAlign: "center", fontWeight: "bold", }}>En attante</Text>
+                        <Text style={{ color: "#EE7526", textAlign: "center", fontWeight: "bold", }}>En attente</Text>
                     </View>
                 </View>
 
@@ -74,11 +74,11 @@ moment.updateLocale('fr', {
                                 </View>
                             </View>
                             <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                                <Text style={styles.montant}>{commande.SOMME}Fbu</Text>
+                                <Text style={styles.montant}>{commande.SOMME.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
                             </View>
                         </View>
                     )
-                })}
+                })} 
 
 
 
