@@ -48,7 +48,7 @@ moment.updateLocale('fr', {
                         <Text style={{ color: "white", textAlign: "center", fontWeight: "bold", }}>Livrées</Text>
                     </View>
                     <View style={{ ...styles.carre, backgroundColor: "#FCEADE" }}>
-                        <Text style={{ color: "#EE7526", textAlign: "center", fontWeight: "bold", }}>En attente</Text>
+                        <Text style={{ color: "#EE7526", textAlign: "center", fontWeight: "bold", }}>En attante</Text>
                     </View>
                 </View>
 
@@ -74,11 +74,11 @@ moment.updateLocale('fr', {
                                 </View>
                             </View>
                             <View style={{ marginTop: 20, marginHorizontal: 0 }}>
-                                <Text style={styles.montant}>{commande.SOMME.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+                                <Text style={styles.montant}>{commande.SOMME}Fbu</Text>
                             </View>
                         </View>
                     )
-                })} 
+                })}
 
 
 
@@ -121,41 +121,66 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
 
-    },
-    cardOK: {
-        width: 10,
-        height: 10,
-        backgroundColor: '#55C869',
-        borderRadius: 9,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 3
-    },
-    textCommande: {
-        color: "#55C869",
-        fontSize: 9,
-        fontWeight: "bold",
-    },
-    textRobe: {
-        color: "#3e4778",
-        fontSize: 12,
-        fontWeight: "bold",
-    },
-    date: {
-        color: "#B9BDCA",
-        fontSize: 11,
-        fontWeight: "bold",
-    }
-    ,
-
-    montant: {
-        color: "#EE7526",
-        fontSize: 12,
-        fontWeight: "bold",
-    },
-    ligne: {
-        borderTopWidth: 1,
-        marginTop: 10,
-        borderTopColor: '#B9BDCA',
-    },
+          },
+          productImage: {
+                    width: "100%",
+                    height: "100%",
+                    resizeMode: "contain",
+                    borderRadius: 10
+          },
+          cardOK: {
+                    width: 10,
+                    height: 10,
+                    backgroundColor: '#55C869',
+                    borderRadius: 9,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 3
+          },
+          textCommande: {
+                    color: "#55C869",
+                    fontSize: 10,
+                    fontWeight: "bold",
+          },
+          textRobe: {
+                    color: "#3e4778",
+                    fontSize: 12,
+                    fontWeight: "bold",
+          },
+          date: {
+                    color: "#B9BDCA",
+                    fontSize: 11,
+                    fontWeight: "bold",
+          },
+          montant: {
+                    color: "#EE7526",
+                    fontSize: 12,
+                    fontWeight: "bold",
+                    textAlign: "right",
+          },
+          ligne: {
+                    borderTopWidth: 1,
+                    marginTop: 10,
+                    borderTopColor: '#B9BDCA',
+          },
+          imageContainer: {
+                    height: "100%",
+                    width: 100,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+          },
+          logo: {
+                    resizeMode: 'center',
+                    height: "50%",
+                    width: "50%",
+                    marginTop: 25
+          },
+          emptyFeedback: {
+                    textAlign: "center",
+                    marginTop: 10,
+                    color: COLORS.ecommercePrimaryColor,
+                    fontWeight: "bold",
+                    opacity: 0.6,
+                    fontSize: 16
+          },
 })
