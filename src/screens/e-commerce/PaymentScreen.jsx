@@ -62,7 +62,6 @@ export default function PaymentScreen() {
           const [loadingForm, setLoadingForm] = useState(true)
 
           const [ecocashIsPending, setEcocashIsPending] = useState(false)
-          const [commande, setCommande] = useState(null)
 
           const { shipping_info } = route.params
           const products = useSelector(ecommerceCartSelector)
@@ -81,11 +80,10 @@ export default function PaymentScreen() {
                     ecocashModalizeRef.current?.close()
           }
 
-          const onEcocashFinish = (commande) => {
+          const onEcocashFinish = () => {
                     setIsOpen(false)
                     ecocashModalizeRef.current?.close()
                     setEcocashIsPending(true)
-                    setCommande(commande)
           }
 
           useEffect(() => {
@@ -100,11 +98,11 @@ export default function PaymentScreen() {
           }, [isOpen])
           return (
                     <View style={styles.container}>
-                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} commande={commande} />}
+                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} />}
                               <ScrollView keyboardShouldPersistTap="handled">
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>
-                                                            Payer avec
+                                                            Méthode {"\n"}de paiement
                                                   </Text>
                                         </View>
                                         <View style={styles.methods}>

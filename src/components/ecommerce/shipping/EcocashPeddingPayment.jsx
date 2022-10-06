@@ -12,7 +12,7 @@ import { userSelector } from "../../../store/selectors/userSelector"
 import LottieView from 'lottie-react-native';
 import { useNavigation } from "@react-navigation/native"
 
-export default function EcocashPeddingPayment({ onClose, loading, commande }) {
+export default function EcocashPeddingPayment({ onClose, loading }) {
           const socket = useRef(io(API_URL)).current
           const [scale] = useState(new Animated.Value(1.1))
           const user = useSelector(userSelector)
@@ -68,9 +68,8 @@ export default function EcocashPeddingPayment({ onClose, loading, commande }) {
                                                                                                     <LottieView style={{ width: 100, height: 100 }} source={require('../../../../assets/lotties/loading.json')} autoPlay loop={true} />}
                                                                                           
                                                                                           {isConfirmed ? <TouchableOpacity onPress={() => {
-                                                                                                    console.log({ commande })
                                                                                                     onClose()
-                                                                                                    navigation.navigate("SearchLivreurScreen", { commande })
+                                                                                                    navigation.navigate("SearchLivreurScreen")
                                                                                           }}>
                                                                                                     <View style={styles.payBtn} >
                                                                                                               <Text style={styles.payBtnTitle}>CONTINUER</Text>
