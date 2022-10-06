@@ -21,16 +21,6 @@ export default function EcommerceNavigator() {
                                         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
                                         <Stack.Screen name="ProductShopsScreen" component={ProductShopsScreen} />
                               </Stack.Group>
-
-                              <Stack.Group screenOptions={{
-                                        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-                                        header: () => <PaginationHeader />,
-                                        headerMode: "float"
-                              }}>
-                                        <Stack.Screen name="ShippingInfoScreen" component={ShippingInfoScreen} />
-                                        <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
-                                        <Stack.Screen name="SearchLivreurScreen" component={SearchLivreurScreen}/>
-                              </Stack.Group>
                     </Stack.Navigator>
           )
 }

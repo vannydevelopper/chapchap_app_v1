@@ -63,7 +63,7 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                                         }),
                                         headers: { "Content-Type": "application/json" },
                               })
-                              onFInish()
+                              onFInish(commande.result)
                     } catch (error) {
                               console.log(error)
                     } finally {
