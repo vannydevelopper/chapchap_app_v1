@@ -209,7 +209,8 @@ const styles = StyleSheet.create({
                     lineHeight: 33
           },
           header: {
-                    marginVertical: 20,
+                    marginBottom: 20,
+                    marginTop: StatusBar.currentHeight + 20
           },
           titleDesc: {
                     color: '#777',

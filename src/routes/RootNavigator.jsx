@@ -28,6 +28,7 @@ export default function RootNavigator() {
                                         <Stack.Group screenOptions={{
                                                   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                                                   header: () => <PaginationHeader />,
+                                                  headerShown: false,
                                                   headerMode: "float"
                                         }}>
                                                   <Stack.Screen name="ShippingInfoScreen" component={ShippingInfoScreen} />

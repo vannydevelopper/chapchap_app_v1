@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
 import { FontAwesome, AntDesign, Ionicons, Zocial } from '@expo/vector-icons';
 import { COLORS } from "../../styles/COLORS"
 import LottieView from 'lottie-react-native';
@@ -47,13 +47,25 @@ export default function SearchLivreurScreen() {
                     })()
           }, [])
 
+          if(loadingStatus) {
+                    return (
+                              <View style={{ flex: 1, justifyContent: "center", alignItems: "center"}}>
+                                        <ActivityIndicator
+                                                  size={"large"}
+                                                  color="#000"
+                                        />
+                              </View>
+                    )
+          }
+
           return (
                     <View style={styles.container}>
                               <View style={styles.header}>
                                         <Text style={styles.titlePrincipal}>
                                                   { currentStatus?.NEXT_STATUS }
                                         </Text>
-                                        <LottieView style={{ width: 100, height: 100, alignSelf: "center" }} source={require('../../../assets/lotties/loading.json')} autoPlay loop={true} />
+                                        {currentStatus.ID_STATUT == 4 ? <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/check.json')} autoPlay loop={false} /> :
+                                        <LottieView style={{ width: 100, height: 100, alignSelf: "center" }} source={require('../../../assets/lotties/loading.json')} autoPlay loop={true} />}
                               </View>
                               <View style={styles.cardStatus}>
                                         <View style={styles.importantInfos}>

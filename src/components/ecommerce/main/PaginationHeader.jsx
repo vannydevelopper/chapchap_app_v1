@@ -49,7 +49,7 @@ export default function PaginationHeader() {
 const styles = StyleSheet.create({
           container: {
                     backgroundColor: '#FFF',
-                    width: "100%"
+                    width: "100%",
           },
           pagination: {
                     flexDirection: "row",

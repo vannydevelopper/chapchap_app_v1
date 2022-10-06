@@ -81,11 +81,11 @@ export default function PaymentScreen() {
                     ecocashModalizeRef.current?.close()
           }
 
-          const onEcocashFinish = (commande) => {
+          const onEcocashFinish = (comm) => {
                     setIsOpen(false)
                     ecocashModalizeRef.current?.close()
                     setEcocashIsPending(true)
-                    setCommande(commande)
+                    setCommande(comm)
           }
 
           useEffect(() => {
@@ -100,7 +100,7 @@ export default function PaymentScreen() {
           }, [isOpen])
           return (
                     <View style={styles.container}>
-                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} commande={commande} />}
+                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} idCommande={commande?.ID_COMMANDE} />}
                               <ScrollView keyboardShouldPersistTap="handled">
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>
@@ -174,10 +174,11 @@ const styles = StyleSheet.create({
                     fontSize: 22,
                     paddingLeft: 10,
                     paddingRight: 50,
-                    lineHeight: 33
+                    lineHeight: 33,
           },
           header: {
-                    marginVertical: 20
+                    marginBottom: 20,
+                    marginTop: StatusBar.currentHeight + 20
           },
           method: {
                     flexDirection: "row",

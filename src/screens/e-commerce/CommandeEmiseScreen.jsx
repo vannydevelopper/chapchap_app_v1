@@ -1,5 +1,5 @@
 import React from "react"
-import { Image, StyleSheet, View, Text, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native"
+import { Image, StyleSheet, View, Text, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback, RefreshControl } from "react-native"
 import { Feather, Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { useState, useEffect } from "react";
 import fetchApi from "../../helpers/fetchApi";
@@ -14,6 +14,7 @@ export default function CommandeEmiseScreen() {
           const [commandes, setCommandes] = useState([])
           const navigation = useNavigation()
           const [loading, setLoading] = useState(true)
+          const [refreshing, setRefreshing] = useState(false)
           moment.updateLocale('fr', {
                     calendar: {
                               sameDay: "[Aujourd'hui]",
@@ -23,17 +24,14 @@ export default function CommandeEmiseScreen() {
                               sameElse: 'DD-M-YYYY',
                     },
           })
-          const fecthCommandes = async () => {
+          const getCommandes = async () => {
                     try {
-                              const response = await fetchApi(`/commandes`, {
+                              return await fetchApi(`/commandes`, {
                                         method: "GET",
                                         headers: { "Content-Type": "application/json" },
                               })
-                              setCommandes(response.result)
-                              setLoading(false)
-                    }
-                    catch (error) {
-                              console.log(error)
+                    } catch (error) {
+                              throw error
                     }
           }
 
@@ -41,8 +39,39 @@ export default function CommandeEmiseScreen() {
                     navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
           }
           useFocusEffect(useCallback(() => {
-                    fecthCommandes()
+                    (async () => {
+                              try {
+                                        const response = await getCommandes()
+                                        setCommandes(response.result)
+                              } catch (error) {
+                                        console.log(error)
+                              } finally {
+                                        setLoading(false)
+                              }
+                    })()
           }, []))
+
+          const onRefresh = async () => {
+                    try {
+                              setRefreshing(true)
+                              const response = await getCommandes()
+                              setCommandes(response.result)
+                    } catch (error) {
+                              console.log(error)
+                    } finally {
+                              setRefreshing(false)
+                    }
+          }
+
+          const getStatusColor = idStatus => {
+                    if(idStatus == 3) {
+                              return COLORS.ecommercePrimaryColor
+                    }
+                    if(idStatus == 4) {
+                              return COLORS.primary
+                    }
+                    return  '#B9BDCA'
+          }
           return (
                     <View style={styles.container}>
                               <View style={styles.cardHeader}>
@@ -60,68 +89,72 @@ export default function CommandeEmiseScreen() {
                               </View>
                               <Text style={styles.title}>Commandes emises</Text>
                               {loading ? <CommandeSkeletons /> :
-                              <>
-
-                                        {commandes.length == 0 ? 
-                                        <View style={{ marginTop: 30 }}>
-                                                  <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
-                                                  <Text style={styles.emptyFeedback}>Aucune commande trouvée</Text> 
-                                        </View>:
                                         <>
-                                        <View style={{
-                                                  flexDirection: "row",
-                                                  justifyContent: "space-between",
-                                                  paddingBottom: 10,
-                                                  paddingHorizontal: 10
-                                        }}>
-                                                  <View style={{ ...styles.carre, backgroundColor: "#EE7526" }}>
-                                                            <Text style={{ color: "white", textAlign: "center", fontWeight: "bold", }}>En ettente</Text>
-                                                  </View>
-                                                  <View style={{ ...styles.carre, backgroundColor: "#FCEADE" }}>
-                                                            <Text style={{ color: "#EE7526", textAlign: "center", fontWeight: "bold", }}>Livrées</Text>
-                                                  </View>
-                                        </View>
-                                        <FlatList
-                                                  data={commandes}
-                                                  keyExtractor={(item, index) => index}
-                                                  showsVerticalScrollIndicator={false}
-                                                  renderItem={(({ item: commande, index}) => {
-                                                            return (
-                                                                      <TouchableNativeFeedback onPress={() => handleCommandePress(commande)}>
-                                                                                <View style={styles.commande} key={index}>
-                                                                                          <View style={styles.cardAchat}>
-                                                                                                    <Image source={{ uri: commande.details[0]?.IMAGE_1 }} style={styles.productImage} />
-                                                                                          </View>
-                                                                                          <View style={{ marginLeft: 15, flex: 1 }}>
-                                                                                                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                                                                              <View>
-                                                                                                                        <Text style={styles.textRobe}>
-                                                                                                                                  Commande : { commande.CODE_UNIQUE }
-                                                                                                                        </Text>
-                                                                                                                        <Text style={styles.date}>
-                                                                                                                                  {moment(commande.DATE_COMMANDE).calendar()} {moment(commande.DATE_COMMANDE).format('HH:mm')}   {commande.ITEMS} produit{commande.ITEMS > 1 && 's'}
-                                                                                                                        </Text>
-                                                                                                              </View>
-                                                                                                              <Text style={styles.montant}>
-                                                                                                                        {commande.TOTAL.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu
-                                                                                                              </Text>
-                                                                                                    </View>
-                                                                                                    <View style={{ flexDirection: "row", marginTop: 10, alignItems: "center" }}>
-                                                                                                              <Entypo name="circle" size={10} color="#B9BDCA" />
-                                                                                                              <View style={{ marginLeft: 7 }}>
-                                                                                                                        <Text style={[styles.textCommande, { color: '#B9BDCA' }]}>
-                                                                                                                                  {commande.STATUT_DESCRIPTION}
-                                                                                                                        </Text>
-                                                                                                              </View>
-                                                                                                    </View>
-                                                                                          </View>
+
+                                                  {commandes.length == 0 ?
+                                                            <View style={{ marginTop: 30 }}>
+                                                                      <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
+                                                                      <Text style={styles.emptyFeedback}>Aucune commande trouvée</Text>
+                                                            </View> :
+                                                            <>
+                                                                      <View style={{
+                                                                                flexDirection: "row",
+                                                                                justifyContent: "space-between",
+                                                                                paddingBottom: 10,
+                                                                                paddingHorizontal: 10
+                                                                      }}>
+                                                                                <View style={{ ...styles.carre, backgroundColor: "#EE7526" }}>
+                                                                                          <Text style={{ color: "white", textAlign: "center", fontWeight: "bold", }}>En ettente</Text>
                                                                                 </View>
-                                                                      </TouchableNativeFeedback>
-                                                            )
-                                                  })}
-                                        />
+                                                                                <View style={{ ...styles.carre, backgroundColor: "#FCEADE" }}>
+                                                                                          <Text style={{ color: "#EE7526", textAlign: "center", fontWeight: "bold", }}>Livrées</Text>
+                                                                                </View>
+                                                                      </View>
+                                                                      <FlatList
+                                                                                data={commandes}
+                                                                                keyExtractor={(item, index) => index}
+                                                                                showsVerticalScrollIndicator={false}
+                                                                                refreshControl={<RefreshControl
+                                                                                          colors={[COLORS.ecommercePrimaryColor]} refreshing={refreshing}
+                                                                                          onRefresh={onRefresh} />}
+                                                                                renderItem={(({ item: commande, index }) => {
+                                                                                          return (
+                                                                                                    <TouchableNativeFeedback onPress={() => handleCommandePress(commande)}>
+                                                                                                              <View style={styles.commande} key={index}>
+                                                                                                                        <View style={styles.cardAchat}>
+                                                                                                                                  <Image source={{ uri: commande.details[0]?.IMAGE_1 }} style={styles.productImage} />
+                                                                                                                        </View>
+                                                                                                                        <View style={{ marginLeft: 15, flex: 1 }}>
+                                                                                                                                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                                                                                                            <View>
+                                                                                                                                                      <Text style={styles.textRobe}>
+                                                                                                                                                                Commande : {commande.CODE_UNIQUE}
+                                                                                                                                                      </Text>
+                                                                                                                                                      <Text style={styles.date}>
+                                                                                                                                                                {moment(commande.DATE_COMMANDE).calendar()} {moment(commande.DATE_COMMANDE).format('HH:mm')}   {commande.ITEMS} produit{commande.ITEMS > 1 && 's'}
+                                                                                                                                                      </Text>
+                                                                                                                                            </View>
+                                                                                                                                            <Text style={styles.montant}>
+                                                                                                                                                      {commande.TOTAL.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu
+                                                                                                                                            </Text>
+                                                                                                                                  </View>
+                                                                                                                                  <View style={{ flexDirection: "row", marginTop: 10, alignItems: "center" }}>
+                                                                                                                                            {commande.ID_STATUT == 4 ? <AntDesign name="checkcircle" size={10} color={COLORS.primary} />:
+                                                                                                                                            <Entypo name="circle" size={10} color={getStatusColor(commande.ID_STATUT)} />}
+                                                                                                                                            <View style={{ marginLeft: 7 }}>
+                                                                                                                                                      <Text style={[styles.textCommande, { color: getStatusColor(commande.ID_STATUT) }]}>
+                                                                                                                                                                {commande.NEXT_STATUS}
+                                                                                                                                                      </Text>
+                                                                                                                                            </View>
+                                                                                                                                  </View>
+                                                                                                                        </View>
+                                                                                                              </View>
+                                                                                                    </TouchableNativeFeedback>
+                                                                                          )
+                                                                                })}
+                                                                      />
+                                                            </>}
                                         </>}
-                              </>}
                     </View>
           )
 }

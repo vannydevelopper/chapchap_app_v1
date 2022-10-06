@@ -6,18 +6,33 @@ import { Animated, BackHandler, Image, ScrollView, StyleSheet, Text, TouchableOp
 import { Portal } from "react-native-portalize"
 import { COLORS } from "../../../styles/COLORS"
 import io from 'socket.io-client'
-import { API_URL } from "../../../helpers/fetchApi"
+import fetchApi, { API_URL } from "../../../helpers/fetchApi"
 import { useSelector } from "react-redux"
 import { userSelector } from "../../../store/selectors/userSelector"
 import LottieView from 'lottie-react-native';
 import { useNavigation } from "@react-navigation/native"
+import Loading from "../../app/Loading"
 
-export default function EcocashPeddingPayment({ onClose, loading, commande }) {
+export default function EcocashPeddingPayment({ onClose, idCommande }) {
           const socket = useRef(io(API_URL)).current
           const [scale] = useState(new Animated.Value(1.1))
           const user = useSelector(userSelector)
           const [isConfirmed, setIsConfirmed] = useState(false)
           const navigation = useNavigation()
+          const [loading, setLoading]  = useState(false)
+
+          const onNextPress = async () => {
+                    try {
+                              setLoading(true)
+                              const commande = await fetchApi(`/commandes/${idCommande}`)
+                              onClose()
+                              navigation.navigate("SearchLivreurScreen", { commande: commande.result })
+                    } catch (error) {
+                              console.log(err)
+                    } finally {
+                              setLoading(false)
+                    }
+          }
 
           useEffect(() => {
                     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -48,6 +63,7 @@ export default function EcocashPeddingPayment({ onClose, loading, commande }) {
           }, [])
           return (
                     <Portal>
+                              {loading && <Loading />}
                               <TouchableWithoutFeedback onPress={() => {}}>
                                         <View style={styles.modalContainer}>
                                                   <TouchableWithoutFeedback onPress={() => {}}>
@@ -67,11 +83,7 @@ export default function EcocashPeddingPayment({ onClose, loading, commande }) {
                                                                                           {isConfirmed ? <LottieView style={{ width: 100, height: 100 }} source={require('../../../../assets/lotties/check.json')} autoPlay loop={false} /> :
                                                                                                     <LottieView style={{ width: 100, height: 100 }} source={require('../../../../assets/lotties/loading.json')} autoPlay loop={true} />}
                                                                                           
-                                                                                          {isConfirmed ? <TouchableOpacity onPress={() => {
-                                                                                                    console.log({ commande })
-                                                                                                    onClose()
-                                                                                                    navigation.navigate("SearchLivreurScreen", { commande })
-                                                                                          }}>
+                                                                                          {isConfirmed ? <TouchableOpacity onPress={onNextPress}>
                                                                                                     <View style={styles.payBtn} >
                                                                                                               <Text style={styles.payBtnTitle}>CONTINUER</Text>
                                                                                                     </View>
