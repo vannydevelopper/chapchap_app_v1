@@ -137,7 +137,10 @@ export default function RestaurantCartScreen() {
                                                             <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
                                                   </View>
                                         </View>
-                                        <TouchableOpacity style={styles.checkoutBtn}>
+                                        <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
+                                                navigation.navigate("ShippingInfoRestoScreen")
+                                      }}
+                                        >
                                                   <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
                                         </TouchableOpacity>
                               </View>
