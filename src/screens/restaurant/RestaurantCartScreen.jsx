@@ -138,7 +138,7 @@ export default function RestaurantCartScreen() {
                                                   </View>
                                         </View>
                                         <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
-                                                navigation.navigate("ShippingInfoRestoScreen")
+                                                navigation.navigate("ShippingInfoScreen",{service:2})
                                       }}
                                         >
                                                   <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>

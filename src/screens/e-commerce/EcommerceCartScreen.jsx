@@ -137,7 +137,7 @@ export default function EcommerceCartScreen() {
                                                   </View>
                                         </View>
                                         <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
-                                                  navigation.navigate("ShippingInfoScreen")
+                                                  navigation.navigate("ShippingInfoScreen", {service:1})
                                         }}>
                                                   <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
                                         </TouchableOpacity>
