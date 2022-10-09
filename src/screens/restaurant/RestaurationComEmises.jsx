@@ -132,7 +132,7 @@ export default function RestaurationComEmises() {
                                                                                                                                                                 Commande : {commande.CODE_UNIQUE}
                                                                                                                                                       </Text>
                                                                                                                                                       <Text style={styles.date}>
-                                                                                                                                                                {moment(commande.DATE_COMMANDE).calendar()} {moment(commande.DATE_COMMANDE).format('HH:mm')}   {commande.ITEMS} produit{commande.ITEMS > 1 && 's'}
+                                                                                                                                                                {moment(commande.DATE_COMMANDE).calendar()} {moment(commande.DATE_COMMANDE).format('HH:mm')}   {commande.ITEMS} plat{commande.ITEMS > 1 && 's'}
                                                                                                                                                       </Text>
                                                                                                                                             </View>
                                                                                                                                             <Text style={styles.montant}>
@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
                     borderRadius: 5,
                     justifyContent: "center",
                     alignItems: "center"
-
           },
           productImage: {
                     width: "100%",

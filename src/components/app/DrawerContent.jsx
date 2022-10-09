@@ -49,15 +49,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                   <View style={[{ borderRadius: 10, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }]}>
                                                             <View style={styles.drawerItem}>
                                                                       <Feather name="shopping-cart" size={24} color="#777" />
-                                                                      <Text style={[styles.drawerItemLabel, (state.index == 3) && { color: '#000' }]}>Commandes e-commerce</Text>
-                                                            </View>
-                                                  </View>
-                                        </TouchableNativeFeedback>
-                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')} onPress={() => handlePress('CommandeRestauration')}>
-                                                  <View style={[{ borderRadius: 10, overflow: "hidden" }, state.index == 3 && { backgroundColor: COLORS.handleColor }]}>
-                                                            <View style={styles.drawerItem}>
-                                                                      <Feather name="shopping-cart" size={24} color="#777" />
-                                                                      <Text style={[styles.drawerItemLabel, (state.index == 3) && { color: '#000' }]}>Commandes restauration</Text>
+                                                                      <Text style={[styles.drawerItemLabel, (state.index == 3) && { color: '#000' }]}>Commandes</Text>
                                                             </View>
                                                             {showServiceCommands ? <Ionicons name="caret-up" size={24} color="#777" /> :
                                                                       <Ionicons name="caret-down" size={24} color="#777" />}
@@ -71,7 +63,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                                       </Text>
                                                             </View>
                                                   </TouchableOpacity>
-                                                  <TouchableOpacity onPress={() => {}} style={{ borderRadius: 10 }}>
+                                                  <TouchableOpacity style={{ borderRadius: 10 }} onPress={() => handlePress('CommandeRestauration')}>
                                                             <View style={[styles.service,  (state.index == 4) && { backgroundColor: COLORS.handleColor }]}>
                                                                       <Text style={[styles.serviceName, (state.index == 3) && { color: '#000' }]}>
                                                                                 Restauration
