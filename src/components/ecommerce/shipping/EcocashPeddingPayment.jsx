@@ -28,7 +28,7 @@ export default function EcocashPeddingPayment({ onClose, idCommande }) {
                               onClose()
                               navigation.navigate("SearchLivreurScreen", { commande: commande.result })
                     } catch (error) {
-                              console.log(err)
+                              console.log(error)
                     } finally {
                               setLoading(false)
                     }

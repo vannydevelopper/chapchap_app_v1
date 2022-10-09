@@ -4,6 +4,7 @@ import MenuDetailScreen from "../screens/restaurant/MenuDetailScreen";
 import RestaurantCartScreen from "../screens/restaurant/RestaurantCartScreen";
 import RestaurantHomeScreen from "../screens/restaurant/RestaurantHomeScreen";
 
+
 export default function RestaurantNavigator(){
         const Stack = createStackNavigator()
         return(
@@ -11,7 +12,6 @@ export default function RestaurantNavigator(){
                         <Stack.Screen name="RestaurantHomeScreen" component={RestaurantHomeScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}}/>
                         <Stack.Screen name="MenuDetailScreen" component={MenuDetailScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid}}/>
                         <Stack.Screen name="RestaurantCartScreen" component={RestaurantCartScreen} options={{ cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid}} />
-
                 </Stack.Navigator>
         )
 }

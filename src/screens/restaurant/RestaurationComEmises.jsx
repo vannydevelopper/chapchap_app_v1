@@ -10,7 +10,7 @@ import CommandeSkeletons from "../../components/app/Skeletons";
 import { useCallback } from "react";
 import LottieView from 'lottie-react-native';
 
-export default function CommandeEmiseScreen() {
+export default function RestaurationComEmises() {
           const [commandes, setCommandes] = useState([])
           const navigation = useNavigation()
           const [loading, setLoading] = useState(true)
@@ -26,7 +26,7 @@ export default function CommandeEmiseScreen() {
           })
           const getCommandes = async () => {
                     try {
-                              return await fetchApi(`/commandes`, {
+                              return await fetchApi(`/commandes/restaurant`, {
                                         method: "GET",
                                         headers: { "Content-Type": "application/json" },
                               })

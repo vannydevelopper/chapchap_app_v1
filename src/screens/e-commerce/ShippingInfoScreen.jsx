@@ -6,11 +6,14 @@ import { useForm } from "../../hooks/useForm";
 import { useFormErrorsHandle } from "../../hooks/useFormErrorsHandle";
 import { useRef } from "react";
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function ShippingInfoScreen() {
 
           const navigation = useNavigation()
+          const route = useRoute()
+          const {service} = route.params
+        //   console.log(service)
 
           const [data, handleChange] = useForm({
                     nom: "",
@@ -183,7 +186,7 @@ export default function ShippingInfoScreen() {
                                                                       <Ionicons name="close" size={30} color="#777" />
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data })}>
+                                                  <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data, service:service })}>
                                                             <View style={[styles.nextBtn, !isValidate() && { opacity: 0.5 }]}>
                                                                       <Text style={[styles.navigationBtnText]}>
                                                                                 Suivant

@@ -13,6 +13,7 @@ import { useEffect } from "react";
 export default function RestaurantBadge() {
           const navigation = useNavigation()
           const menusInCart = useSelector(restaurantCartSelector)
+          //console.log(menusInCart)
           const scale = useSharedValue(1)
           const scaleAnimatedStyles = useAnimatedStyle(() => ({
                     transform: [{ scale: scale.value }]
