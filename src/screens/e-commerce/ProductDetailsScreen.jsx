@@ -143,7 +143,9 @@ export default function ProductDetailsScreen() {
                                                                                                     {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
                                                                                                     {/* <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} /> */}
                                                                                           </Text>
-                                                                                          <Text style={styles.shopAdress}>Bujumbura</Text>
+                                                                                          <Text style={styles.shopAdress}>
+                                                                                                    { product.partenaire.ADRESSE_COMPLETE ? product.partenaire.ADRESSE_COMPLETE : "Particulier" }
+                                                                                          </Text>
                                                                                 </View>
                                                                       </View>
                                                                       <MaterialIcons name="navigate-next" size={24} color="black" />

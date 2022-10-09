@@ -14,7 +14,7 @@ export default function EcommerceNavigator() {
           const Stack = createStackNavigator()
           return (
                     <Stack.Navigator>
-                              <Stack.Group screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid }}>
+                              <Stack.Group screenOptions={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid }}>
                                         <Stack.Screen name="EcommerceHomeScreen" component={EcommerceHomeScreen} />
                                         <Stack.Screen name="EcommerceCartScreen" component={EcommerceCartScreen} />
                                         <Stack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
