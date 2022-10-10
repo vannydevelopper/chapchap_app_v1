@@ -11,10 +11,11 @@ import { ecommerceCartSelector } from "../../../store/selectors/ecommerceCartSel
 import { Portal } from "react-native-portalize"
 import fetchApi from '../../../helpers/fetchApi'
 import Loading from '../../app/Loading'
+import { restaurantCartSelector } from '../../../store/selectors/restaurantCartSelectors'
 
 
 
-export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, commandes, onFInish }) {
+export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, service, commandes, resto, onFInish }) {
           const [loading, setLoading] = useState(false)
           const [data, handleChange] = useForm({
                     tel: ""
@@ -31,14 +32,29 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                     },
           })
           const products = useSelector(ecommerceCartSelector)
+          const restaurants = useSelector(restaurantCartSelector)
 
-          const getAmount = useCallback(() => {
-                    var total = 0
-                    products.forEach(product => {
-                              total += parseInt(product.produit_partenaire.PRIX) * product.QUANTITE
-                    })
-                    return total
-          }, [products])
+          if (products) {
+                    var getAmount = useCallback(() => {
+                              var total = 0
+                              products.forEach(product => {
+                                        total += parseInt(product.produit_partenaire.PRIX) * product.QUANTITE
+                              })
+                              return total
+                    }, [products])
+          }
+
+          if (restaurants) {
+                    var getAmount = useCallback(() => {
+                              var total = 0
+                              restaurants.forEach(restaurant => {
+                                        total += parseInt(restaurant.MONTANT) * restaurant.QUANTITE
+                              })
+                              return total
+                    }, [restaurants])
+          }
+
+
 
           const onPay = async () => {
                     try {
@@ -49,23 +65,47 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                               if (!isnum) {
                                         return setError("tel", ["Numéro de téléphone invalide"])
                               }
-                              const commande = await fetchApi('/commandes/clients', {
-                                        method: "POST",
-                                        body: JSON.stringify({
-                                                  numero: data.tel,
-                                                  shipping_info: {
-                                                            TELEPHONE: shipping_info.tel,
-                                                            N0M: shipping_info.nom,
-                                                            PRENOM: shipping_info.prenom,
-                                                            ADRESSE: shipping_info.address,
-                                                  },
-                                                  commandes
-                                        }),
-                                        headers: { "Content-Type": "application/json" },
-                              })
-                              onFInish(commande.result)
+                              if (service == 2) {
+                                        const commande = await fetchApi('/commandes/clients/restaurant', {
+                                                  method: "POST",
+                                                  body: JSON.stringify({
+                                                            numero: data.tel,
+                                                            shipping_info: {
+                                                                      TELEPHONE: shipping_info.tel,
+                                                                      N0M: shipping_info.nom,
+                                                                      PRENOM: shipping_info.prenom,
+                                                                      ADRESSE: shipping_info.address,
+                                                            },
+                                                            service: service,
+                                                            resto
+                                                  }),
+                                                  headers: { "Content-Type": "application/json" },
+                                        })
+                                        onFInish(commande.result)
+                              } else if (service == 1) {
+                                        const commande = await fetchApi('/commandes/clients', {
+                                                  method: "POST",
+                                                  body: JSON.stringify({
+                                                            numero: data.tel,
+                                                            shipping_info: {
+                                                                      TELEPHONE: shipping_info.tel,
+                                                                      N0M: shipping_info.nom,
+                                                                      PRENOM: shipping_info.prenom,
+                                                                      ADRESSE: shipping_info.address,
+                                                            },
+                                                            service: service,
+                                                            commandes
+                                                  }),
+                                                  headers: { "Content-Type": "application/json" },
+                                        })
+                                        onFInish(commande.result)
+                              }
+
                     } catch (error) {
                               console.log(error)
+                              if(error.httpStatus == "UNPROCESSABLE_ENTITY") {
+                                        return setError("tel", [error.message])
+                              }
                     } finally {
                               setLoading(false)
                     }

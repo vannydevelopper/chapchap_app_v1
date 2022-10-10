@@ -12,6 +12,7 @@ import Loading from '../../components/app/Loading';
 import { useSelector } from 'react-redux';
 import { ecommerceCartSelector } from '../../store/selectors/ecommerceCartSelectors';
 import EcocashPeddingPayment from '../../components/ecommerce/shipping/EcocashPeddingPayment';
+import { restaurantCartSelector } from '../../store/selectors/restaurantCartSelectors';
 
 
 export default function PaymentScreen() {
@@ -64,13 +65,26 @@ export default function PaymentScreen() {
           const [ecocashIsPending, setEcocashIsPending] = useState(false)
           const [commande, setCommande] = useState(null)
 
-          const { shipping_info } = route.params
+          const { shipping_info, service } = route.params
+          console.log(service)
           const products = useSelector(ecommerceCartSelector)
-          const commandes = products.map(product => ({
-                    ID_PRODUIT_STOCK: product.stock.ID_PRODUIT_STOCK,
-                    QUANTITE: product.QUANTITE,
-                    PRIX: product.produit_partenaire.PRIX
-          }))
+          const restaurants = useSelector(restaurantCartSelector)
+         
+          if(products){
+                var commandes = products.map(product => ({
+                        ID_PRODUIT_STOCK: product.stock.ID_PRODUIT_STOCK,
+                        QUANTITE: product.QUANTITE,
+                        PRIX: product.produit_partenaire.PRIX
+              }))
+          }
+          if(restaurants){
+                var resto = restaurants.map(restaurant => ({
+                        ID_RESTAURANT_MENU: restaurant.ID_RESTAURANT_MENU,
+                        QUANTITE: restaurant.QUANTITE,
+                        MONTANT: restaurant.MONTANT
+              }))
+          }
+          
 
           const onMethodPress = method => {
                     setIsOpen(true)
@@ -156,7 +170,7 @@ export default function PaymentScreen() {
                                                                       setLoadingForm(true)
                                                             }}
                                                   >
-                                                            <EcocashModalize info={METHODS[0]} loadingForm={loadingForm} onClose={onCloseModalize} shipping_info={shipping_info} commandes={commandes} onFInish={onEcocashFinish} />
+                                                            <EcocashModalize info={METHODS[0]} loadingForm={loadingForm} onClose={onCloseModalize} shipping_info={shipping_info} commandes={commandes} resto={resto} service={service} onFInish={onEcocashFinish} />
                                                   </Modalize>
                                         </GestureHandlerRootView>
                               </Portal>

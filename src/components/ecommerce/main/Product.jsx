@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, useWindowDimensions, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { Portal } from 'react-native-portalize';
@@ -13,7 +13,7 @@ import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCart
 import { useNavigation } from '@react-navigation/native';
 
 export default function Product({ product, index, totalLength, fixMargins = false }) {
-        const navigation = useNavigation()
+          const navigation = useNavigation()
           const { width } = useWindowDimensions()
           const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
@@ -22,7 +22,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                     width: PRODUCT_WIDTH,
                     height: PRODUCT_HEIGHT,
                     marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
-                    marginRight: index == totalLength-1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
+                    marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
           }
 
           const modalizeRef = useRef(null)
@@ -41,7 +41,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
           const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
 
           useEffect(() => {
-                    if(isOpen) {
+                    if (isOpen) {
                               const timer = setTimeout(() => {
                                         setLoadingForm(false)
                               })
@@ -52,20 +52,22 @@ export default function Product({ product, index, totalLength, fixMargins = fals
           }, [isOpen])
 
           return (
-                    <View key={index} style={[styles.product, additionStyles]}>
-                              <TouchableOpacity onPress={()=>navigation.push('ProductDetailsScreen', {product:product})} style={styles.imageCard}>
-                                        <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
-                              </TouchableOpacity>
+                    <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
+                              <TouchableWithoutFeedback onPress={() => navigation.push('ProductDetailsScreen', { product: product })} >
+                                        <View style={styles.imageCard}>
+                                                  <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+                                        </View>
+                              </TouchableWithoutFeedback>
                               <View style={{ flexDirection: "row" }}>
                                         <View style={styles.cardLike}>
                                                   <AntDesign name="hearto" size={24} color="#F29558" />
                                         </View>
                                         <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
                                                   <>
-                                                  <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                  {productInCart ? <View style={styles.badge}>
-                                                            <Text style={styles.badgeText} numberOfLines={1}>{ productInCart.QUANTITE }</Text>
-                                                  </View> : null}
+                                                            <AntDesign name="shoppingcart" size={24} color="#F29558" />
+                                                            {productInCart ? <View style={styles.badge}>
+                                                                      <Text style={styles.badgeText} numberOfLines={1}>{productInCart.QUANTITE}</Text>
+                                                            </View> : null}
                                                   </>
                                         </TouchableOpacity>
                               </View>
@@ -75,7 +77,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                                                   <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
                                         </Text>
                               </View>
-                              {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
+                              {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
                               <Portal>
                                         <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                                                   <Modalize
@@ -162,6 +164,6 @@ const styles = StyleSheet.create({
           productName: {
                     color: COLORS.ecommercePrimaryColor,
                     fontWeight: "400",
-                    fontSize: 13         
+                    fontSize: 13
           }
 })

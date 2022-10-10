@@ -1,20 +1,26 @@
 import React from "react"
 import { Text, StyleSheet, View, ScrollView, ImageBackground, TouchableOpacity, TouchableNativeFeedback, Image, StatusBar } from "react-native";
 import { MaterialIcons } from '@expo/vector-icons';
-import { AntDesign, FontAwesome, Entypo, Feather } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Entypo, Feather, Ionicons } from '@expo/vector-icons';
 import { DrawerContentScrollView  } from '@react-navigation/drawer'
 import { useSelector } from "react-redux";
 import { userSelector } from "../../store/selectors/userSelector";
 import { COLORS } from "../../styles/COLORS";
 import { DrawerActions, useRoute } from "@react-navigation/native";
 import { useEffect } from "react";
+import { useState } from "react";
 
 export default function DrawerContent({ state, navigation, descriptors }) {
           const user = useSelector(userSelector)
+          const [showServiceCommands, setShowCommandService] = useState(false)
 
           const handlePress = routeName => {
                     navigation.navigate(routeName)
                     navigation.dispatch(DrawerActions.closeDrawer)
+          }
+
+          const onCommandeToggle = () => {
+                    setShowCommandService(t => !t)
           }
           return (
                     <View style={styles.drawerContent}>
@@ -39,14 +45,32 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                             </View>
                                                   </View>
                                         </TouchableNativeFeedback>
-                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')} onPress={() => handlePress('Commande')}>
-                                                  <View style={[{ borderRadius: 10, overflow: "hidden" }, state.index == 3 && { backgroundColor: COLORS.handleColor }]}>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')} onPress={onCommandeToggle}>
+                                                  <View style={[{ borderRadius: 10, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }]}>
                                                             <View style={styles.drawerItem}>
                                                                       <Feather name="shopping-cart" size={24} color="#777" />
                                                                       <Text style={[styles.drawerItemLabel, (state.index == 3) && { color: '#000' }]}>Commandes</Text>
                                                             </View>
+                                                            {showServiceCommands ? <Ionicons name="caret-up" size={24} color="#777" /> :
+                                                                      <Ionicons name="caret-down" size={24} color="#777" />}
                                                   </View>
                                         </TouchableNativeFeedback>
+                                        {showServiceCommands && <View style={styles.services}>
+                                                  <TouchableOpacity onPress={() => navigation.navigate("Commande")} style={{ borderRadius: 10 }}>
+                                                            <View style={[styles.service,  (state.index == 3) && { backgroundColor: COLORS.handleColor }]}>
+                                                                      <Text style={[styles.serviceName, (state.index == 3) && { color: '#000' }]}>
+                                                                                Achat de produits
+                                                                      </Text>
+                                                            </View>
+                                                  </TouchableOpacity>
+                                                  <TouchableOpacity style={{ borderRadius: 10 }} onPress={() => handlePress('CommandeRestauration')}>
+                                                            <View style={[styles.service,  (state.index == 4) && { backgroundColor: COLORS.handleColor }]}>
+                                                                      <Text style={[styles.serviceName, (state.index == 3) && { color: '#000' }]}>
+                                                                                Restauration
+                                                                      </Text>
+                                                            </View>
+                                                  </TouchableOpacity>
+                                        </View>}
                                         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
                                                   <View style={{ borderRadius: 10, overflow: "hidden" }}>
                                                             <View style={styles.drawerItem}>
@@ -151,5 +175,34 @@ const styles = StyleSheet.create({
                     marginLeft: 10,
                     fontWeight: "bold",
                     color: '#777'
+          },
+          services: {
+                    paddingLeft: 20
+          },
+          service: {
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 5,
+                    padding: 10,
+                    borderRadius: 10
+          },
+          serviceImageContainer: {
+                    width: 35,
+                    height: 35,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 10,
+                    borderColor: COLORS.handleColor,
+                    borderWidth: 2
+          },
+          serviceImage: {
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 10
+          },
+          serviceName: {
+                    color: '#777',
+                    marginLeft: 10,
+                    fontSize: 13
           }
 })
