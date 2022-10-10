@@ -66,7 +66,7 @@ export default function PaymentScreen() {
           const [commande, setCommande] = useState(null)
 
           const { shipping_info, service } = route.params
-          console.log(service)
+    
           const products = useSelector(ecommerceCartSelector)
           const restaurants = useSelector(restaurantCartSelector)
          
@@ -114,7 +114,7 @@ export default function PaymentScreen() {
           }, [isOpen])
           return (
                     <View style={styles.container}>
-                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} idCommande={commande?.ID_COMMANDE} />}
+                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} idCommande={commande?.ID_COMMANDE} service={service} />}
                               <ScrollView keyboardShouldPersistTap="handled">
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>

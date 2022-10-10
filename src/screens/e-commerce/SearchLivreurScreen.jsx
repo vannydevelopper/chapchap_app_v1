@@ -12,7 +12,7 @@ import moment from "moment/moment";
 export default function SearchLivreurScreen() {
           const navigation = useNavigation()
           const route = useRoute()
-          const { commande } = route.params
+          const { commande,service } = route.params
           const [status, setStatus] = useState([])
           const [loadingStatus, setLoadingStatus] = useState(true)
           const [currentStatus, setCurrentStatus] = useState(null)
@@ -30,13 +30,25 @@ export default function SearchLivreurScreen() {
           useEffect(() => {
                     (async () => {
                               try {
-                                        const stts = await fetchApi(`/commandes/status/${commande.ID_COMMANDE}`, {
-                                                  cacheData: false,
-                                                  checkInCacheFirst: false
-                                        })
+                                 if(service==1)
+                                 {
+                                    var stts = await fetchApi(`/commandes/status/${commande.ID_COMMANDE}`, {
+                                        cacheData: false,
+                                        checkInCacheFirst: false
+                              })
+                                 }
+                                 else if(service==2)
+                                 {
+                                    var stts = await fetchApi(`/commandes/status/resto/${commande.ID_COMMANDE}`, {
+                                        cacheData: false,
+                                        checkInCacheFirst: false
+                              })
+                                 }
+                                        
                                         const current = stts.result.find(st => st.ID_STATUT == commande.ID_STATUT)
                                         const pedding = stts.result.find(st => st.ID_STATUT == current.NEXT_ID_STATUT)
                                         setCurrentStatus(current)
+                                        console.log(currentStatus)
                                         setPeddingStatus(pedding)
                                         setStatus(stts.result)
                               } catch (error) {
@@ -64,7 +76,7 @@ export default function SearchLivreurScreen() {
                                         <Text style={styles.titlePrincipal}>
                                                   { currentStatus?.NEXT_STATUS }
                                         </Text>
-                                        {currentStatus.ID_STATUT == 4 ? <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/check.json')} autoPlay loop={false} /> :
+                                        {currentStatus?.ID_STATUT == 4 ? <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/check.json')} autoPlay loop={false} /> :
                                         <LottieView style={{ width: 100, height: 100, alignSelf: "center" }} source={require('../../../assets/lotties/loading.json')} autoPlay loop={true} />}
                               </View>
                               <View style={styles.cardStatus}>
