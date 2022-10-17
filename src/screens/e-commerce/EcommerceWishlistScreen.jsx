@@ -11,7 +11,7 @@ import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
-export default function EcommerceHomeScreen() {
+export default function EcommerceWishlistScreen() {
           const { height } = useWindowDimensions()
           const route = useRoute()
         //   const {wishlist} = route.params
@@ -89,12 +89,13 @@ export default function EcommerceHomeScreen() {
                                         if (firstLoadingProducts == false) {
                                                   setLoadingProducts(true)
                                         }
-                                        var url = "/products"
+                                        var url = "/products?wishlist=active"
                                         if (selectedCategorie) {
                                                   url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                                         }
                                         const produits = await fetchApi(url)
                                         setProducts(produits.result)
+                                        console.log(products)
                               } catch (error) {
                                         console.log(error)
                               } finally {
