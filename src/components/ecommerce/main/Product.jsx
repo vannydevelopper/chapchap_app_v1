@@ -14,6 +14,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
+   
   const [wishlist, setWishlist] = useState(false)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
@@ -57,6 +58,7 @@ useFocusEffect(useCallback(() => {
 
 
   const Addishlist = async (id) => {
+    console.log(id)
     if(wishlist)
     {
       try {
@@ -83,11 +85,15 @@ useFocusEffect(useCallback(() => {
     else{
       try {
         const form = new FormData()
-        form.append("ID_PRODUIT_PARTENAIRE", id)
-        // console.log(id)
+        // form.append("ID_PRODUIT", id)
+         console.log(id)
         const newWishlist = await fetchApi('/wishlist', {
-          method: "POST",
-          body: form
+          method: 'POST',
+                                body: JSON.stringify({
+                                  ID_PRODUIT: id,
+                                       
+                                }),
+                                headers: { "Content-Type": "application/json" },
         })
         
         setWishlist(true)
@@ -121,13 +127,13 @@ useFocusEffect(useCallback(() => {
     <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
       <TouchableWithoutFeedback onPress={() => navigation.push('ProductDetailsScreen', { product: product })} >
         <View style={styles.imageCard}>
-          <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+          <Image source={{ uri: product.produit.IMAGE }} style={styles.image} />
         </View>
       </TouchableWithoutFeedback>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
           onPress={() => {
-            Addishlist(product.produit_partenaire.ID_PRODUIT_PARTENAIRE)
+            Addishlist(product.produit.ID_PRODUIT)
             setWishlist(true)
           }}
         >
