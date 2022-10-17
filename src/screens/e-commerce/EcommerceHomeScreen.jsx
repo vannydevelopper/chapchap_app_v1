@@ -29,6 +29,7 @@ export default function EcommerceHomeScreen() {
           const [loadingProducts, setLoadingProducts] = useState(false)
           const [products, setProducts] = useState([])
           const [shops, setShops] = useState([])
+          
 
           const navigation = useNavigation()
 
@@ -111,7 +112,7 @@ export default function EcommerceHomeScreen() {
                                         }
                                         var url = "/partenaire/ecommerce"
                                         if (selectedCategorie) {
-                                                  // url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                                                   url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                                         }
                                         const shops = await fetchApi(url)
                                         setShops(shops.result)
