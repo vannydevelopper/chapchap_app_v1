@@ -38,7 +38,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                     modalizeRef.current?.close()
           }
 
-          const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
+          const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
 
           useEffect(() => {
                     if (isOpen) {
