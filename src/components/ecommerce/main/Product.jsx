@@ -55,6 +55,7 @@ useFocusEffect(useCallback(() => {
   fecthWishlist()
 }, []))
 
+
   const Addishlist = async (id) => {
     if(wishlist)
     {
@@ -67,6 +68,9 @@ useFocusEffect(useCallback(() => {
         {
         onRemove(id)
         }
+
+          // const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
+
 
         setWishlist(false)
 
