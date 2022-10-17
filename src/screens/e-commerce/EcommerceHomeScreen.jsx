@@ -63,7 +63,7 @@ export default function EcommerceHomeScreen() {
             return setSelectedsousCategories(null)
         }
         setSelectedsousCategories(souscategorie)
-       // setSelectedsousCategories(null)
+        // setSelectedsousCategories(null)
     }
 
     //fetch des sous  categories
@@ -95,8 +95,9 @@ export default function EcommerceHomeScreen() {
                 var url = "/products"
                 if (selectedCategorie) {
                     url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
-                } else if(selectedItemSousCategories) {
-                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT} &subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+                }
+                if (selectedItemSousCategories) {
+                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
                 }
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
@@ -121,7 +122,6 @@ export default function EcommerceHomeScreen() {
                 // }
                 const shops = await fetchApi(url)
                 setShops(shops.result)
-                console.log(shops.result)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -182,7 +182,7 @@ export default function EcommerceHomeScreen() {
                     <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
-                    }
+                }
 
 
                 <TouchableNativeFeedback
