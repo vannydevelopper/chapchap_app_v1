@@ -12,6 +12,7 @@ import { useEffect } from "react";
 export default function EcommerceBadge() {
           const navigation = useNavigation()
           const productsInCart = useSelector(ecommerceCartSelector)
+        //    console.log(productsInCart)
           const scale = useSharedValue(1)
           const scaleAnimatedStyles = useAnimatedStyle(() => ({
                     transform: [{ scale: scale.value }]

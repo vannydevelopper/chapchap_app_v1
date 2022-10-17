@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 import { useNavigation } from '@react-navigation/native';
+import fetchApi from "../../../helpers/fetchApi";
 
 export default function Product({ product, index, totalLength, fixMargins = false }) {
           const navigation = useNavigation()
@@ -34,6 +35,25 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                     modalizeRef.current?.open()
           }
 
+  const Addishlist =  async(id) => {
+    
+    console.log(id)
+    try {
+              
+             
+              const form = new FormData()
+              form.append("ID_PRODUIT_PARTENAIRE", id)
+              console.log(id)
+              const newWishlist = await fetchApi('/wishlist', {
+                method: "POST",
+                body: form
+      })
+              
+    } catch (error) {
+              console.log(error)
+    } 
+    
+}
           const onCloseAddToCart = () => {
                     modalizeRef.current?.close()
           }
@@ -59,9 +79,17 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                                         </View>
                               </TouchableWithoutFeedback>
                               <View style={{ flexDirection: "row" }}>
+                              <TouchableOpacity style={styles.cartBtn} 
+                              onPress={() => {
+                                Addishlist(product.produit_partenaire.ID_PRODUIT_PARTENAIRE)
+                      }}
+                          >
+
                                         <View style={styles.cardLike}>
                                                   <AntDesign name="hearto" size={24} color="#F29558" />
                                         </View>
+                                        </TouchableOpacity>
+
                                         <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
                                                   <>
                                                             <AntDesign name="shoppingcart" size={24} color="#F29558" />

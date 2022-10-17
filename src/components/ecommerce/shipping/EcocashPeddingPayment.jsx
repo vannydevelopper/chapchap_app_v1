@@ -13,20 +13,20 @@ import LottieView from 'lottie-react-native';
 import { useNavigation } from "@react-navigation/native"
 import Loading from "../../app/Loading"
 
-export default function EcocashPeddingPayment({ onClose, idCommande }) {
+export default function EcocashPeddingPayment({ onClose, idCommande,service }) {
           const socket = useRef(io(API_URL)).current
           const [scale] = useState(new Animated.Value(1.1))
           const user = useSelector(userSelector)
           const [isConfirmed, setIsConfirmed] = useState(false)
           const navigation = useNavigation()
           const [loading, setLoading]  = useState(false)
-
+          
           const onNextPress = async () => {
                     try {
                               setLoading(true)
                               const commande = await fetchApi(`/commandes/${idCommande}`)
                               onClose()
-                              navigation.navigate("SearchLivreurScreen", { commande: commande.result })
+                              navigation.navigate("SearchLivreurScreen", { commande: commande.result,service:service })
                     } catch (error) {
                               console.log(error)
                     } finally {

@@ -14,8 +14,10 @@ export default function DrawerContent({ state, navigation, descriptors }) {
           const user = useSelector(userSelector)
           const [showServiceCommands, setShowCommandService] = useState(false)
 
-          const handlePress = routeName => {
-                    navigation.navigate(routeName)
+          const handlePress =( routeName) => {
+            
+            navigation.navigate(routeName)
+            
                     navigation.dispatch(DrawerActions.closeDrawer)
           }
 
@@ -71,9 +73,9 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                             </View>
                                                   </TouchableOpacity>
                                         </View>}
-                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
-                                                  <View style={{ borderRadius: 10, overflow: "hidden" }}>
-                                                            <View style={styles.drawerItem}>
+                                        <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)} onPress={() => handlePress('EcommerceWishlistScreen')}>
+                                                  <View style={[{ borderRadius: 10, overflow: "hidden" }, (state.index == 0 || state.index == 1 || state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+                                                                 <View style={styles.drawerItem}>
                                                                       <AntDesign name="hearto" size={24} color="#777" />
                                                                       <Text style={styles.drawerItemLabel}>Wishlist</Text>
                                                             </View>
