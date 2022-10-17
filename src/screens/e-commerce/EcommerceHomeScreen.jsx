@@ -23,10 +23,12 @@ export default function EcommerceHomeScreen() {
     const [sousCategories, SetSousCategories] = useState([])
     const [selectedsousCategories, setSelectedsousCategories] = useState(null)
 
+
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
     const [shops, setShops] = useState([])
+
 
     const navigation = useNavigation()
 
