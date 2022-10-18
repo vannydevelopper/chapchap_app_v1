@@ -47,9 +47,9 @@ export default function EcommerceWishlistScreen() {
     setSelectedsousCategories(souscategorie)
   }
 
-  const onRemove = useCallback((ID_PRODUIT_PARTENAIRE) => {
+  const onRemove = useCallback((ID_PRODUIT) => {
    
-    const newProducts = products.filter(p => p.produit_partenaire.ID_PRODUIT_PARTENAIRE != ID_PRODUIT_PARTENAIRE)
+    const newProducts = products.filter(p => p.produit.ID_PRODUIT != ID_PRODUIT)
     setProducts(newProducts)
   }, [products])
 

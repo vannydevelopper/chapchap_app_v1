@@ -38,10 +38,11 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   }
   const fecthWishlist= async () => {
     try {
-              const wishliste = await fetchApi(`/wishlist/verification/${product.produit_partenaire.ID_PRODUIT_PARTENAIRE}`, {
+              const wishliste = await fetchApi(`/wishlist/verification/${product.produit.ID_PRODUIT}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
               })
+              console.log(wishliste.result)
               if(wishliste.result)
               {
                 setWishlist(true)

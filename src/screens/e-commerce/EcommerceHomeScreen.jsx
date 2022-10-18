@@ -98,11 +98,13 @@ export default function EcommerceHomeScreen() {
                 if (selectedCategorie) {
                     url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                 }
-                if (selectedItemSousCategories) {
+                if (selectedsousCategories) {
                     url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
                 }
+                
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
+                
             } catch (error) {
                 console.log(error)
             } finally {
