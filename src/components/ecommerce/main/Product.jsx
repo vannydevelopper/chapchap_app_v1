@@ -14,7 +14,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
-   
+  //  console.log(product)
   const [wishlist, setWishlist] = useState(false)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
@@ -38,11 +38,11 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   }
   const fecthWishlist= async () => {
     try {
-              const wishliste = await fetchApi(`/wishlist/verification/${product.produit.ID_PRODUIT}`, {
+              const wishliste = await fetchApi(`/wishlist/verification/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
               })
-              console.log(wishliste.result)
+              // console.log(wishliste.result)
               if(wishliste.result)
               {
                 setWishlist(true)
@@ -59,9 +59,10 @@ useFocusEffect(useCallback(() => {
 
 
   const Addishlist = async (id) => {
-    console.log(id)
+    //  console.log(id)
     if(wishlist)
     {
+      console.log(id)
       try {
         
         const newWishlist = await fetchApi(`/wishlist/suppression/${id}`, {
@@ -71,9 +72,6 @@ useFocusEffect(useCallback(() => {
         {
         onRemove(id)
         }
-
-          // const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
-
 
         setWishlist(false)
 
@@ -87,11 +85,11 @@ useFocusEffect(useCallback(() => {
       try {
         const form = new FormData()
         // form.append("ID_PRODUIT", id)
-         console.log(id)
+        //  console.log(id)
         const newWishlist = await fetchApi('/wishlist', {
           method: 'POST',
                                 body: JSON.stringify({
-                                  ID_PRODUIT: id,
+                                  ID_PRODUIT_PARTENAIRE: id,
                                        
                                 }),
                                 headers: { "Content-Type": "application/json" },
@@ -134,7 +132,7 @@ useFocusEffect(useCallback(() => {
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
           onPress={() => {
-            Addishlist(product.produit.ID_PRODUIT)
+            Addishlist(product.produit.ID_PRODUIT_PARTENAIRE)
             setWishlist(true)
           }}
         >

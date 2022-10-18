@@ -4,13 +4,16 @@ import { Feather, Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import { useState, useEffect } from "react";
 import fetchApi from "../../helpers/fetchApi";
 import moment from "moment/moment";
-import { DrawerActions, useFocusEffect, useNavigation } from "@react-navigation/native";
+import { DrawerActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
 import CommandeSkeletons from "../../components/app/Skeletons";
 import { useCallback } from "react";
 import LottieView from 'lottie-react-native';
 
 export default function CommandeEmiseScreen() {
+    const route=useRoute    ()
+    const {ID_PARTENAIRE_SERVICE}=route.params
+    console.log(ID_PARTENAIRE_SERVICE)
           const [commandes, setCommandes] = useState([])
           const navigation = useNavigation()
           const [loading, setLoading] = useState(true)
@@ -26,7 +29,7 @@ export default function CommandeEmiseScreen() {
           })
           const getCommandes = async () => {
                     try {
-                              return await fetchApi(`/commandes`, {
+                              return await fetchApi(`/commandes/${ID_PARTENAIRE_SERVICE}`, {
                                         method: "GET",
                                         headers: { "Content-Type": "application/json" },
                               })

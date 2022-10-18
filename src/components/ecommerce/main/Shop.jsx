@@ -23,11 +23,11 @@ export default function Shop({ shop, index, totalLength }) {
                     <View key={index} style={[styles.shop, additionStyles]}>
                        <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE })}>
                               <View style={styles.imageCard}>
-                                        <Image source={{ uri: shop.BACKGROUND_IMAGE }} style={styles.image} />
+                                        <Image source={{ uri: shop.LOGO }} style={styles.image} />
                               </View>
                               </TouchableNativeFeedback>
                                         <Text numberOfLines={2} style={styles.shopName}>
-                                        {shop.NOM_ORGANISATION}
+                                        {shop.NOM_ORGANISATION }
                               </Text>
                               {shop.categories.map((categorie,index)=>{
                                 return(

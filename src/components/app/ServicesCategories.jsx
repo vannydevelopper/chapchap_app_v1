@@ -8,28 +8,34 @@ const SERVICES = [{
           title: "Achat de produits",
           imageBg: require('../../../assets/images/ecommerce.png'),
           icon:  require('../../../assets/images/ecommerce-icon.png'),
-          route: "EcommerceNavigator"
+          route: "EcommerceNavigator",
+          ID_SERVICE:1
 },{
           title: "Restauration",
           imageBg: require('../../../assets/images/resto.jpg'),
           icon:  require('../../../assets/images/resto-icon.png'),
-          route: "RestaurantNavigator"
+          route: "RestaurantNavigator",
+          ID_SERVICE:2
 },{
           title: "Evénement",
           imageBg: require('../../../assets/images/event.jpg'),
-          icon:  require('../../../assets/images/event-icon.png')
+          icon:  require('../../../assets/images/event-icon.png'),
+          ID_SERVICE:3
 },{
           title: "Services à la personne",
           imageBg: require('../../../assets/images/person.jpg'),
-          icon:  require('../../../assets/images/person-icon.png')
+          icon:  require('../../../assets/images/person-icon.png'),
+          ID_SERVICE:4
 },{
           title: "Hôtel",
           imageBg: require('../../../assets/images/hotel.jpg'),
-          icon:  require('../../../assets/images/hotel-icon.png')
+          icon:  require('../../../assets/images/hotel-icon.png'),
+          ID_SERVICE:5
 },{
           title: "Publicité et campagne",
           imageBg: require('../../../assets/images/pub.jpg'),
-          icon:  require('../../../assets/images/pub-icon.png')
+          icon:  require('../../../assets/images/pub-icon.png'),
+          ID_SERVICE:6
 }]
 export default function ServicesCategories() {
           const { width, height } = useWindowDimensions()
@@ -58,7 +64,7 @@ export default function ServicesCategories() {
                                                   {SERVICES.map((service, index) => {
                                                             return (
                                                                       <View style={[styles.serviceContainer, { width: SERVICE_WIDTH, height: SERVICE_WIDTH }]} key={index.toString()}>
-                                                                                <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("#C4C4C4")} useForeground onPress={() => navigation.navigate(service.route)}>
+                                                                                <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple("#C4C4C4")} useForeground onPress={() => navigation.navigate(service.route,{ID_SERVICE:service.ID_SERVICE})}>
                                                                                 <View style={[styles.service]}>
                                                                                           <ImageBackground source={service.imageBg} style={[styles.serviceBackgound]} borderRadius={10} resizeMode='cover' imageStyle={{ opacity: 0.8 }}>
                                                                                                     <View style={{ position: 'absolute', width: "100%", height: "100%", backgroundColor: "rgba(0, 0, 0, 0.3)", borderRadius: 10}} />
