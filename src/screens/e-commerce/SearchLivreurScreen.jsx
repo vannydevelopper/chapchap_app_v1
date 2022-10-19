@@ -48,7 +48,7 @@ export default function SearchLivreurScreen() {
                                         const current = stts.result.find(st => st.ID_STATUT == commande.ID_STATUT)
                                         const pedding = stts.result.find(st => st.ID_STATUT == current.NEXT_ID_STATUT)
                                         setCurrentStatus(current)
-                                        console.log(commande)
+                                       
                                         setPeddingStatus(pedding)
                                         setStatus(stts.result)
                               } catch (error) {
@@ -173,7 +173,10 @@ export default function SearchLivreurScreen() {
                                                                       <Ionicons name="close" size={30} color="#777" />
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback useForeground>
+                                                  <TouchableNativeFeedback useForeground onPress={() => {
+                                                            // navigation.navigate('EcommerceHomeScreen')
+                                                            navigation.goBack()
+                                                  }}>
                                                             <View style={[styles.nextBtn]}>
                                                                       <Text style={[styles.navigationBtnText]}>
                                                                                 Voir la commande

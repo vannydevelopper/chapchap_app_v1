@@ -62,7 +62,6 @@ useFocusEffect(useCallback(() => {
     //  console.log(id)
     if(wishlist)
     {
-      console.log(id)
       try {
         
         const newWishlist = await fetchApi(`/wishlist/suppression/${id}`, {
@@ -110,7 +109,7 @@ useFocusEffect(useCallback(() => {
   }
 
   const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
-
+// console.log(productInCart)
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {

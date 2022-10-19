@@ -13,7 +13,7 @@ import LottieView from 'lottie-react-native';
 export default function CommandeEmiseScreen() {
     const route=useRoute    ()
     const {ID_PARTENAIRE_SERVICE}=route.params
-    console.log(ID_PARTENAIRE_SERVICE)
+
           const [commandes, setCommandes] = useState([])
           const navigation = useNavigation()
           const [loading, setLoading] = useState(true)
@@ -39,14 +39,16 @@ export default function CommandeEmiseScreen() {
           }
 
           const handleCommandePress = commande => {
-                    navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
+                    navigation.navigate('DetailCommandeScreen', { commande })
+                    // navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
+
           }
           useFocusEffect(useCallback(() => {
                     (async () => {
                               try {
                                         const response = await getCommandes()
                                         setCommandes(response.result)
-                                        console.log(response)
+                                        
                               } catch (error) {
                                         console.log(error)
                               } finally {

@@ -12,6 +12,7 @@ import PaginationHeader from '../components/ecommerce/main/PaginationHeader';
 import ShippingInfoScreen from '../screens/e-commerce/ShippingInfoScreen';
 import PaymentScreen from '../screens/e-commerce/PaymentScreen';
 import SearchLivreurScreen from '../screens/e-commerce/SearchLivreurScreen';
+import DetailCommandeScreen from '../screens/e-commerce/DetailCommandeScreen';
 
 export default function RootNavigator() {
           const Drawer = createDrawerNavigator()
@@ -35,6 +36,7 @@ export default function RootNavigator() {
                                                   <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
                                                   <Stack.Screen name="SearchLivreurScreen" component={SearchLivreurScreen} />
                                         </Stack.Group>
+                                        <Stack.Screen name="DetailCommandeScreen" component={DetailCommandeScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, }}  />
                                         <Stack.Screen name="NoHeaderSearchLivreurScreen" component={SearchLivreurScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, }}  />
                               </Stack.Navigator>
                     </NavigationContainer>

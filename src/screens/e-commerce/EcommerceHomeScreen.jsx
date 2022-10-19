@@ -127,7 +127,7 @@ export default function EcommerceHomeScreen() {
                 // }
                 const shops = await fetchApi(url)
                 setShops(shops.result)
-                console.log(shops)
+                
 
             } catch (error) {
                 console.log(error)

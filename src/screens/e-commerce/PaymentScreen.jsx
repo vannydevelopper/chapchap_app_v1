@@ -69,7 +69,7 @@ export default function PaymentScreen() {
     
           const products = useSelector(ecommerceCartSelector)
           const restaurants = useSelector(restaurantCartSelector)
-          console.log(restaurants)
+        
          
           if(products){
                 var commandes = products.map(product => ({
