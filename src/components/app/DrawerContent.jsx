@@ -99,7 +99,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
           })}
         </View>}
         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)} onPress={() => handlePress('EcommerceWishlistScreen')}>
-          <View style={[{ borderRadius: 10, overflow: "hidden" }, (state.index == 0 || state.index == 1 || state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+          <View style={[{ borderRadius: 10, overflow: "hidden" }, ( state.index == 3) && { backgroundColor: COLORS.handleColor }]}>
             <View style={styles.drawerItem}>
               <AntDesign name="hearto" size={24} color="#777" />
               <Text style={styles.drawerItemLabel}>Wishlist</Text>

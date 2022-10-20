@@ -108,8 +108,8 @@ useFocusEffect(useCallback(() => {
     modalizeRef.current?.close()
   }
 
-  const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
-// console.log(productInCart)
+  const productInCart = useSelector(ecommerceProductSelector(product.produit.ID_PRODUIT_PARTENAIRE))
+  //  console.log(product.produit.ID_PRODUIT_PARTENAIRE)
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
