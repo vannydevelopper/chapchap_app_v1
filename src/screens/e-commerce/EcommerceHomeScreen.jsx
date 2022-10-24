@@ -28,10 +28,7 @@ export default function EcommerceHomeScreen() {
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
     const [shops, setShops] = useState([])
-
-
     const navigation = useNavigation()
-
     const fecthCategories = async () => {
         try {
             const response = await fetchApi("/products/categories", {

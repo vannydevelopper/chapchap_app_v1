@@ -7,8 +7,9 @@ import { addProductAction, removeProductAction } from '../../../store/actions/ec
 import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
-export default function ProductCart({ product, index }) {
-          const totalPrice = product.produit_partenaire.PRIX * product.QUANTITE
+export default function ProductCart({ product, selectedColor ,selectedSize,index }) {
+         console.log(selectedColor)
+    const totalPrice = product.produit_partenaire.PRIX * product.QUANTITE
           const [amount, setAmount] = useState(product.QUANTITE)
           const [isFocused, setIsFocused] = useState(false)
 
@@ -51,7 +52,7 @@ export default function ProductCart({ product, index }) {
                                         style: "cancel"
                               },
                               { text: "Oui", onPress:  async () => {
-                                        dispatch(removeProductAction(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
+                                        dispatch(removeProductAction(product.produit.ID_PRODUIT_PARTENAIRE))
                               } }
                     ])
           }
@@ -81,6 +82,7 @@ export default function ProductCart({ product, index }) {
                                                             { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
                                                             <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} />
                                                   </Text> */}
+
                                                   {product.produit_partenaire.PRIX ? <Text style={styles.unitPrice}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
                                         </View>
                                         <View style={styles.detailsFooter}>

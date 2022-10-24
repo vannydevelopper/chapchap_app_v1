@@ -16,6 +16,8 @@ import fetchApi from "../../../helpers/fetchApi";
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
   //  console.log(product)
   const [wishlist, setWishlist] = useState(false)
+  const [selectedSize, setSelectedSize] = useState(null)
+
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -31,6 +33,72 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
+
+  const [SIZES, setSIZES] = useState([])
+  const [colors, SetColors] = useState([])
+
+  const onSizePress =async (size) => {
+ 
+      try {
+
+  
+          // setLoadingSubCategories(true)
+          if (size?.id) {
+              const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${size?.id}`, {
+                  method: "GET",
+                  headers: { "Content-Type": "application/json" },
+              })
+              SetColors(color.result)
+        // console.log(colors)
+              
+          }
+      } catch (error) {
+          console.log(error)
+      } 
+    
+    // setSelectedsousCategories(null)
+}
+    const fecthSizes = async () => {
+        try {
+                  const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
+                            method: "GET",
+                            headers: { "Content-Type": "application/json" },
+                  })
+                  
+                  setSIZES(sizes.result)
+   
+
+        }
+        catch (error) {
+                  console.log(error)
+        } 
+    }
+    
+    useFocusEffect(useCallback(() => {
+      fecthSizes()
+  }, []))
+
+    useEffect(() => {
+      (async () => {
+          try {
+              // setLoadingSubCategories(true)
+              if (selectedSize?.ID_TAILLE) {
+                  const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${selectedSize?.ID_TAILLE}`, {
+                      method: "GET",
+                      headers: { "Content-Type": "application/json" },
+                  })
+                  SetColor(color.result)
+                  console.log("color.result")
+              }
+          } catch (error) {
+              console.log(error)
+          } 
+          // finally {
+          //     setLoadingSubCategories(false)
+          // }
+      })()
+  }, [selectedSize])
+
 
   const onCartPress = () => {
     setIsOpen(true)
@@ -178,7 +246,7 @@ useFocusEffect(useCallback(() => {
               setLoadingForm(true)
             }}
           >
-            <AddCart product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+            <AddCart colors={colors}onSizePress={onSizePress} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
           </Modalize>
         </GestureHandlerRootView>
       </Portal>
