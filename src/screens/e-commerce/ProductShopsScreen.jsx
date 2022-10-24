@@ -83,6 +83,7 @@ export default function ProductShopsScreen() {
           useEffect(() => {
                     (async () => {
                               try {
+
                                         if (firstLoadingProducts == false) {
                                                   setLoadingProducts(true)
                                         }
@@ -92,7 +93,8 @@ export default function ProductShopsScreen() {
                                         }
                                         const produits = await fetchApi(url)
                                         setProducts(produits.result)
-                                        console.log(products)
+                                        console.log(produits.result)
+
                               } catch (error) {
                                         console.log(error)
                               } finally {

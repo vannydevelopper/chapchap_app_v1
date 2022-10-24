@@ -6,7 +6,6 @@ import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 
 export default function HomeProducts({ products, selectedCategorie, selectedsousCategories }) {
-
         const navigation = useNavigation()
         return (
                 <View style={styles.homeProducts}>
