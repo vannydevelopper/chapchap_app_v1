@@ -92,7 +92,9 @@ export default function ProductShopsScreen() {
                                                   url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                                         }
                                         const produits = await fetchApi(url)
+                                        console.log(produits)
                                         setProducts(produits.result)
+
                               } catch (error) {
                                         console.log(error)
                               } finally {

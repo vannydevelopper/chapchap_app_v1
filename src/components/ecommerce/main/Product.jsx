@@ -63,9 +63,10 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                   const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
                             method: "GET",
                             headers: { "Content-Type": "application/json" },
+                            
                   })
-                  
                   setSIZES(sizes.result)
+                  
    
 
         }
