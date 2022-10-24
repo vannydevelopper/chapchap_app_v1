@@ -7,8 +7,7 @@ import { addProductAction, removeProductAction } from '../../../store/actions/ec
 import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
-export default function ProductCart({ product, selectedColor ,selectedSize,index }) {
-         console.log(selectedColor)
+export default function ProductCart({ product, index }) {
     const totalPrice = product.produit_partenaire.PRIX * product.QUANTITE
           const [amount, setAmount] = useState(product.QUANTITE)
           const [isFocused, setIsFocused] = useState(false)
@@ -72,12 +71,20 @@ export default function ProductCart({ product, selectedColor ,selectedSize,index
                                                   <View style={styles.productNames}>
                                                             <Text numberOfLines={2} style={styles.productName}>
                                                                       {product.produit.NOM} ·
+
                                                                       <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
                                                             </Text>
                                                             <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
                                                                       <MaterialCommunityIcons name="delete" size={24} color="#777" />
                                                             </TouchableOpacity>
                                                   </View>
+                                                  <View style={styles.productNames}>
+                                                  <Text numberOfLines={2} style={styles.productName}> {product.COLOR.COULEUR} 
+                                                   . <Text numberOfLines={2} style={styles.productName}> {product.SIZE.name}</Text>
+                                                  </Text>
+  
+                                                  </View>
+                                                  
                                                   {/* <Text style={styles.unitPrice}>
                                                             { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
                                                             <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} />
@@ -102,7 +109,7 @@ export default function ProductCart({ product, selectedColor ,selectedSize,index
                                                                       }}
                                                                       keyboardType="decimal-pad"
                                                             />
-                                                            <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= product.stock.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= product.stock.QUANTITE_RESTANTE)}>
+                                                            <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE)}>
                                                                       <Text style={styles.amountChangerText}>+</Text>
                                                             </TouchableOpacity>
                                                   </View>

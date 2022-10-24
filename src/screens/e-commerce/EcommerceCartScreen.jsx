@@ -17,7 +17,7 @@ import { useRef } from "react";
 
 export default function EcommerceCartScreen() {
           const products = useSelector(ecommerceCartSelector)
-          console.log(products)
+        //   console.log(products)
           const navigation = useNavigation()
 
           const [recommndations, setRecomandations] = useState([])
@@ -114,6 +114,7 @@ export default function EcommerceCartScreen() {
                                                             return (
                                                                       <ProductCart
                                                                                 product={product}
+                                                                                
                                                                                 index={index}
                                                                                 key={index}
                                                                       />

@@ -50,6 +50,7 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
 
           const onAddToCart = () => {
                     onClose()
+                    
                     dispatch(addProductAction(product, amount,selectedColor ,selectedSize))
           }
 
