@@ -30,8 +30,6 @@ export default function ProductDetailsScreen() {
           const [similarProducs, setSimilarProducts] = useState([])
 
           const { product } = route.params
-
-          console.log(product)
           const modalizeRef = useRef(null)
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
@@ -159,7 +157,7 @@ export default function ProductDetailsScreen() {
                                                                       <MaterialIcons name="navigate-next" size={24} color="black" />
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} />}
+                                                  {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
                                                   {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
                                                             <>
                                                                       <TouchableNativeFeedback

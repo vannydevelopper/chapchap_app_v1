@@ -2,17 +2,17 @@ import React from 'react'
 import { StyleSheet, TouchableNativeFeedback, View, Text, Image, FlatList, ScrollView, TouchableOpacity } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import Product from '../main/Product';
 
-export default function ProduitPartenaire({ productPartenaires }) {   
-    const navigation = useNavigation()
-    console.log(productPartenaires.ID_PARTENAIRE_SERVICE)
-    
+
+export default function ProduitPartenaire({ productPartenaires,ID_PARTENAIRE_SERVICE }) {
+    const navigation=useNavigation()
+    console.log(ID_PARTENAIRE_SERVICE)
           return (
                     <View style={styles.homeProducts}>
-                              <TouchableNativeFeedback
-                                      onPress={() => navigation.navigate('ProductShopsScreen', { id: productPartenaires.ID_PARTENAIRE_SERVICE  })}
+                              <TouchableNativeFeedback onPress={()=>navigation.navigate('ProductShopsScreen',{id:ID_PARTENAIRE_SERVICE})}
+
                                         accessibilityRole="button"
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
 
