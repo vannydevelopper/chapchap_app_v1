@@ -25,17 +25,18 @@ export default function ProductDetailsScreen() {
 
           const [loadingShopProducts, setLoadingShopProducts] = useState(true)
           const [shopProducts, setShopProducts] = useState([])
-
+       //console.log(shopProducts)
           const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
           const [similarProducs, setSimilarProducts] = useState([])
 
           const { product } = route.params
 
+          console.log(product)
           const modalizeRef = useRef(null)
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
 
-          const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PRODUIT_PARTENAIRE))
+          const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
 
           const onCartPress = () => {
                     setIsOpen(true)
@@ -52,15 +53,22 @@ export default function ProductDetailsScreen() {
                     product.produit_partenaire.IMAGE_3 ? product.produit_partenaire.IMAGE_3 : undefined,
           ]
 
-          
+  
+
           const fecthProduits = async () => {
                     try {
-                              const response = await fetchApi(`/partenaire/ecommerce/${product.partenaire.ID_PARTENAIRE}`, {
-                                        method: "GET",
+                              const response = await fetchApi(`/products/products/${product.produit_partenaire.ID_PARTENAIRE_SERVICE}`, {
+                                method: "GET",
                                         headers: { "Content-Type": "application/json" },
-                              })
+                                    })
+
                               setShopProducts(response.result)
+                              //const url=`/products/products/${product.partenaire.ID_PARTENAIRE_SERVICE}`
+
+
+                              
                     }
+                    
                     catch (error) {
                               console.log(error)
                     } finally {
@@ -115,16 +123,16 @@ export default function ProductDetailsScreen() {
                                                             <View>
                                                                       <TouchableOpacity style={styles.category} >
                                                                                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
-                                                                                <Text style={styles.categoryName} numberOfLines={2}>{product.categorie.NOM}</Text>
+                                                                                <Text style={styles.categoryName} numberOfLines={2}>{product.produit.NOM}</Text>
                                                                       </TouchableOpacity>
                                                                       <View style={styles.productNames}>
                                                                                 <Text style={styles.productName}>
-                                                                                          {product.produit.NOM} ·
+                                                                                          {product.produit.NOM} 
                                                                                           <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
                                                                                 </Text>
                                                                       </View>
                                                             </View>
-                                                            <View style={styles.shareBtn}>
+                                                            <View style={styles.shareBtn}> 
                                                                       <AntDesign name="sharealt" size={20} color={COLORS.primary} />
                                                             </View>
                                                   </View>

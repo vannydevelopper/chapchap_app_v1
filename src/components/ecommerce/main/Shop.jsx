@@ -18,14 +18,16 @@ export default function Shop({ shop, index, totalLength }) {
                     height: PRODUCT_HEIGHT,
                     marginLeft: index > 0 ? PRODUCT_MARGIN : 0,
                     marginRight: index == totalLength-1 ? PRODUCT_MARGIN : 0
+                    
           }
           return (
+                    
                     <View key={index} style={[styles.shop, additionStyles]}>
-                       <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE })}>
+                       <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE })}>
                               <View style={styles.imageCard}>
                                         <Image source={{ uri: shop.LOGO }} style={styles.image} />
                               </View>
-                              </TouchableNativeFeedback>
+                              </TouchableNativeFeedback> 
                                         <Text numberOfLines={2} style={styles.shopName}>
                                         {shop.NOM_ORGANISATION }
                               </Text>

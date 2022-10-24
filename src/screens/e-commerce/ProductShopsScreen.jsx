@@ -92,7 +92,7 @@ export default function ProductShopsScreen() {
                                         }
                                         const produits = await fetchApi(url)
                                         setProducts(produits.result)
-                                        console.log(products)
+                                       // console.log(products)
                               } catch (error) {
                                         console.log(error)
                               } finally {

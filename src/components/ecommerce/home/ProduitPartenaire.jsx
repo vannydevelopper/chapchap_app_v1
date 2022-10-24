@@ -5,12 +5,17 @@ import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 import Product from '../main/Product';
 
-export default function ProduitPartenaire({ productPartenaires }) {
+export default function ProduitPartenaire({ productPartenaires }) {   
+    const navigation = useNavigation()
+    console.log(productPartenaires.ID_PARTENAIRE_SERVICE)
+    
           return (
                     <View style={styles.homeProducts}>
                               <TouchableNativeFeedback
+                                      onPress={() => navigation.navigate('ProductShopsScreen', { id: productPartenaires.ID_PARTENAIRE_SERVICE  })}
                                         accessibilityRole="button"
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+
 
                               >
                                         <View style={{
@@ -26,6 +31,7 @@ export default function ProduitPartenaire({ productPartenaires }) {
                                         </View>
 
                               </TouchableNativeFeedback>
+
 
                               <ScrollView
                                         style={styles.products}

@@ -3,11 +3,13 @@ import { StyleSheet, TouchableNativeFeedback, View, Text, Image, FlatList, Scrol
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import Product from '../main/Product';
 import Shop from '../main/Shop';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Shops({ shops }) {
+    const navigation=useNavigation()
           return (
                     <View style={styles.homeshops}>
-                              <TouchableNativeFeedback
+                              <TouchableNativeFeedback onPress={() => navigation.navigate('ShopsScreen', { shops })}
                                         accessibilityRole="button"
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                               >
