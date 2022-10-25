@@ -7,10 +7,11 @@ import { addProductAction, removeProductAction } from '../../../store/actions/ec
 import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
-export default function ProductCart({ product, index }) {
+export default function PartenaireCart({ product, index }) {
     const totalPrice = product.produit_partenaire.PRIX * product.QUANTITE
           const [amount, setAmount] = useState(product.QUANTITE)
           const [isFocused, setIsFocused] = useState(false)
+
           const dispatch = useDispatch()
 
           const onDecrement = () => {
@@ -60,7 +61,7 @@ export default function ProductCart({ product, index }) {
                               dispatch(addProductAction(product, amount))
                     }
           }, [amount])
-          return (
+          return (<>
                     <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
                               <View style={styles.productImage}>
                                         <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
@@ -115,6 +116,62 @@ export default function ProductCart({ product, index }) {
                                         </View>
                               </View>
                     </View>
+                    <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
+                    <View style={styles.productImage}>
+                              <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+                    </View>
+                    <View style={styles.productDetails}>
+                              <View style={styles.detailsHeader}>
+                                        <View style={styles.productNames}>
+                                                  <Text numberOfLines={2} style={styles.productName}>
+                                                            {product.produit.NOM} ·
+
+                                                            <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
+                                                  </Text>
+                                                  <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
+                                                            <MaterialCommunityIcons name="delete" size={24} color="#777" />
+                                                  </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.productNames}>
+                                        <Text numberOfLines={2} style={styles.productName}> {product.COLOR.COULEUR} 
+                                         . <Text numberOfLines={2} style={styles.productName}> {product.SIZE.name}</Text>
+                                        </Text>
+
+                                        </View>
+                                        
+                                        {/* <Text style={styles.unitPrice}>
+                                                  { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
+                                                  <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} />
+                                        </Text> */}
+
+                                        {product.produit_partenaire.PRIX ? <Text style={styles.unitPrice}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
+                              </View>
+                              <View style={styles.detailsFooter}>
+                                        {product.produit_partenaire.PRIX ? <Text numberOfLines={1} style={styles.productPrice}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
+                                        <View style={styles.amountContainer}>
+                                                  <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                            <Text style={styles.amountChangerText}>-</Text>
+                                                  </TouchableOpacity>
+                                                  <TextInput
+                                                            style={[styles.input, isFocused && { borderColor: COLORS.primary}]}
+                                                            value={amount.toString()}
+                                                            onChangeText={onChangeText}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => {
+                                                                      setIsFocused(false)
+                                                                      checkAmount()
+                                                            }}
+                                                            keyboardType="decimal-pad"
+                                                  />
+                                                  <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE)}>
+                                                            <Text style={styles.amountChangerText}>+</Text>
+                                                  </TouchableOpacity>
+                                        </View>
+                              </View>
+                    </View>
+          </View>
+       </>             
+
           )
 }
 
