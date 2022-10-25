@@ -87,7 +87,8 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
                               <View style={styles.moreDetails}>
                                         <Text style={styles.subTitle}>Taille</Text>
                                         <View style={[styles.sizes]}>
-                                                  {SIZES.map((size, index) =>
+                                                  {
+                                                  SIZES?.map((size, index) =>
                                                    <TouchableOpacity style={[styles.size, index == 0 && { marginLeft: 0 }, size.id == selectedSize?.id && { backgroundColor: COLORS.ecommercePrimaryColor }]} key={index} onPress={() => 
                                                    {
                                                     setSelectedSize(size)

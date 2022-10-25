@@ -29,7 +29,7 @@ export default function ShopsScreen() {
 
     const navigation = useNavigation()
     const { shops } = route.params
-   // console.log(shops)
+    // console.log(shops)
 
 
     return (
@@ -38,7 +38,12 @@ export default function ShopsScreen() {
             <View style={styles.cardHeader}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
+
+                        <View style={styles.productsHeader}>
+                            <Ionicons name="arrow-back-sharp" size={24} color="black" /><Text>   </Text>
+                            <Text style={styles.title}>Les boutiques</Text>
+
+                        </View>
                     </TouchableOpacity>
                     <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
                         {selectedCategorie ? selectedCategorie.NOM : products.NOM_ORGANISATION}
@@ -61,10 +66,7 @@ export default function ShopsScreen() {
 
 
 
-                <View style={styles.shopsHeader}>
-                    <Text style={styles.title}>Les boutiques</Text>
-                   
-                </View>
+
 
 
                 <View style={styles.products}>
@@ -92,13 +94,13 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold'
-},
+    },
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 10,
-        
+
         marginTop: StatusBar.currentHeight,
         height: 60
     },
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-       // marginTop: 10,
+        // marginTop: 10,
         paddingVertical: 10,
         paddingHorizontal: 10
     },

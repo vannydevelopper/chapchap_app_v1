@@ -35,7 +35,7 @@ export default function ProductDetailsScreen() {
           const [loadingForm, setLoadingForm] = useState(true)
 
           const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
-
+            //console.log(product)
           const onCartPress = () => {
                     setIsOpen(true)
                     modalizeRef.current?.open()
@@ -61,7 +61,7 @@ export default function ProductDetailsScreen() {
                                     })
 
                               setShopProducts(response.result)
-                              //const url=`/products/products/${product.partenaire.ID_PARTENAIRE_SERVICE}`
+                             
 
 
                               
@@ -83,6 +83,7 @@ export default function ProductDetailsScreen() {
                                         var url = `/products?category=${product.categorie.ID_CATEGORIE_PRODUIT}`
                                         const produits = await fetchApi(url)
                                         setSimilarProducts(produits.result)
+                                        //console.log(product)
                               } catch (error) {
                                         console.log(error)
                               } finally {
@@ -125,7 +126,7 @@ export default function ProductDetailsScreen() {
                                                                       </TouchableOpacity>
                                                                       <View style={styles.productNames}>
                                                                                 <Text style={styles.productName}>
-                                                                                          {product.produit.NOM} 
+                                                                                          {product.produit.NOM} .
                                                                                           <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
                                                                                 </Text>
                                                                       </View>
@@ -144,6 +145,7 @@ export default function ProductDetailsScreen() {
                                                                                           {true ? <Entypo name="shop" size={24} color={COLORS.primary} /> :
                                                                                                     <FontAwesome name="user" size={24} color={COLORS.primary} />}
                                                                                 </View>
+                                                                                <TouchableOpacity onPress={()=>navigation.navigate('ProductShopsScreen',{id:product.produit_partenaire.ID_PARTENAIRE_SERVICE})}>
                                                                                 <View style={styles.shopOwner}>
                                                                                           <Text style={styles.productSeller}>
                                                                                                     {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
@@ -153,6 +155,7 @@ export default function ProductDetailsScreen() {
                                                                                                     { product.partenaire.ADRESSE_COMPLETE ? product.partenaire.ADRESSE_COMPLETE : "Particulier" }
                                                                                           </Text>
                                                                                 </View>
+                                                                               </TouchableOpacity>
                                                                       </View>
                                                                       <MaterialIcons name="navigate-next" size={24} color="black" />
                                                             </View>

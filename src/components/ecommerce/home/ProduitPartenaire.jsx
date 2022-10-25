@@ -22,7 +22,7 @@ export default function ProduitPartenaire({ productPartenaires,ID_PARTENAIRE_SER
                                                   marginTop: 10,
                                                   paddingVertical: 10,
                                                   paddingHorizontal: 10
-                                        }}>
+                                        }}> 
                                                   <View style={styles.productsHeader}>
                                                             <Text style={styles.title}>Dans ce boutique</Text>
                                                             <MaterialIcons name="navigate-next" size={24} color="black" />
