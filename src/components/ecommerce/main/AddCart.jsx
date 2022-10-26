@@ -7,7 +7,6 @@ import { addProductAction } from "../../../store/actions/ecommerceCartActions";
 import { color } from "react-native-reanimated";
 // import { useFocusEffect } from "@react-navigation/native";
 export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm, onClose }) {
-  console.log(colors)
           const [selectedSize, setSelectedSize] = useState(null)
           const [selectedColor, setSelectedColor] = useState(null)
           const [selectedColors, setSelectedColors] = useState(null)
@@ -26,8 +25,6 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
           }
           const onIncrement = () => {
             if (selectedColor.QUANTITE_RESTANTE) {
-              console.log("amount"+amount)
-              console.log("selectedColor.QUANTITE_RESTANTE"+selectedColor.QUANTITE_RESTANTE)
               if(amount == selectedColor.QUANTITE_RESTANTE) {
                 return false
       }

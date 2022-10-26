@@ -74,10 +74,10 @@ export default function DrawerContent({ state, navigation, descriptors }) {
           </View>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')} onPress={onCommandeToggle}>
-          <View style={[{ borderRadius: 10, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }]}>
+          <View style={[{ borderRadius: 10, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }, (state.index == 2)&& { backgroundColor: COLORS.handleColor }]}>
             <View style={styles.drawerItem}>
               <Feather name="shopping-cart" size={24} color="#777" />
-              <Text style={[styles.drawerItemLabel, (state.index == 3) && { color: '#000' }]}>Commandes</Text>
+              <Text style={[styles.drawerItemLabel, (state.index == 0 || state.index == 1 || state.index == 2) && { color: '#000' }]}>Commandes</Text>
             </View>
             {showServiceCommands ? <Ionicons name="caret-up" size={24} color="#777" /> :
               <Ionicons name="caret-down" size={24} color="#777" />}
@@ -88,8 +88,8 @@ export default function DrawerContent({ state, navigation, descriptors }) {
           {partenaires.map((partenaire, index) => {
             return (
               <TouchableOpacity index={index} onPress={() => navigation.navigate("Commande",{ID_PARTENAIRE_SERVICE:partenaire.ID_PARTENAIRE_SERVICE})} style={{ borderRadius: 10 }}>
-                <View style={[styles.service, (state.index == 3) && { backgroundColor: COLORS.handleColor }]}>
-                  <Text style={[styles.serviceName, (state.index == 3) && { color: '#000' }]}>
+                <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+                  <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                     {partenaire.NOM_ORGANISATION}
                   </Text>
                 </View>
