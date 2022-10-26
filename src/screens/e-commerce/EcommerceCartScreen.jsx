@@ -128,16 +128,19 @@ export default function EcommerceCartScreen() {
                         <ScrollView>
                               {partenaireProducts.map((partenaire, i) => {
                                     var somme = 0
+                                    var element=0
                                     partenaire.PRODUCTS.forEach(product => {
                                           somme += parseInt(product.produit_partenaire.PRIX) * product.QUANTITE
+                                          element=element+product.QUANTITE
                                     })
                                     const parte = partenaire.PRODUCTS[0].produit_partenaire
                                     return (
                                           <View style={{ marginTop: 25,backgroundColor: '#F1F1F1',padding:10,borderRadius:10 }}>
-                                                <Text style={styles.boutique}>BOUTIQUE : {parte.NOM_ORGANISATION}</Text>
+                                                <Text style={styles.boutique}>{parte.NOM_ORGANISATION}</Text>
+                                                <Text style={styles.somme}>Total : {somme.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+                                                <Text style={styles.somme}>Elément : {element} </Text>
                                                 {
                                                       partenaire.PRODUCTS.map((product, index) => {
-                                                            //      somme=somme+(product.produit_partenaire.PRIX* product.QUANTITE)
                                                             return (
                                                                   <ProductCart
                                                                         product={product}
@@ -150,7 +153,6 @@ export default function EcommerceCartScreen() {
             
                                                 <View style={{  marginTop:10,borderRadius:12}}>
                                                 {/* backgroundColor: '#F1F1F1' */}
-                                                      <Text style={styles.somme}>Somme : {somme.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
 
                                                 </View>
 
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
       boutique: {
             fontSize: 10,
             fontWeight: "bold",
-            alignSelf: "center",
+            // alignSelf: "center",
             marginBottom: 12,
             color: COLORS.ecommercePrimaryColor,
             marginHorizontal: 10

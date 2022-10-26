@@ -83,12 +83,6 @@ export default function ProductCart({ product, index }) {
                                                   </Text>
   
                                                   </View>
-                                                  
-                                                  {/* <Text style={styles.unitPrice}>
-                                                            { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
-                                                            <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} />
-                                                  </Text> */}
-
                                                   {product.produit_partenaire.PRIX ? <Text style={styles.unitPrice}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
                                         </View>
                                         <View style={styles.detailsFooter}>
