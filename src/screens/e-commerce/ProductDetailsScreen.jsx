@@ -161,6 +161,7 @@ export default function ProductDetailsScreen() {
                 </TouchableOpacity>
               </View>
               <MaterialIcons name="navigate-next" size={24} color="black" />
+
             </View>
           </TouchableNativeFeedback>
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
