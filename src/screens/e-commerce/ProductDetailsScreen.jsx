@@ -35,7 +35,7 @@ export default function ProductDetailsScreen() {
   const [loadingForm, setLoadingForm] = useState(true)
 
   const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
-  console.log(product)
+  // console.log(product)
   const onCartPress = () => {
     setIsOpen(true)
     modalizeRef.current?.open()

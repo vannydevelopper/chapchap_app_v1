@@ -14,10 +14,9 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
-  //  console.log(product)
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
-
+console.log(product)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -37,67 +36,60 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const [SIZES, setSIZES] = useState([])
   const [colors, SetColors] = useState([])
 
-  const onSizePress =async (size) => {
- 
-      try {
+  const onSizePress = async (size) => {
 
-  
-          // setLoadingSubCategories(true)
-          if (size?.id) {
-              const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${size?.id}`, {
-                  method: "GET",
-                  headers: { "Content-Type": "application/json" },
-              })
-              SetColors(color.result)
-        // console.log(colors)
-              
-          }
-      } catch (error) {
-          console.log(error)
-      } 
-    
-    // setSelectedsousCategories(null)
-}
-    const fecthSizes = async () => {
-        try {
-                  const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
-                            method: "GET",
-                            headers: { "Content-Type": "application/json" },
-                            
-                  })
-                  setSIZES(sizes.result)
-                  
-   
+    try {
+      // setLoadingSubCategories(true)
+      if (size?.id) {
+        const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${size?.id}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        })
+        SetColors(color.result)
 
-        }
-        catch (error) {
-                  console.log(error)
-        } 
+      }
+    } catch (error) {
+      console.log(error)
     }
-    
-    useFocusEffect(useCallback(() => {
-      fecthSizes()
+
+    // setSelectedsousCategories(null)
+  }
+  const fecthSizes = async () => {
+    try {
+      const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+
+      })
+      setSIZES(sizes.result)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(useCallback(() => {
+    fecthSizes()
   }, []))
 
-    useEffect(() => {
-      (async () => {
-          try {
-              // setLoadingSubCategories(true)
-              if (selectedSize?.ID_TAILLE) {
-                  const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${selectedSize?.ID_TAILLE}`, {
-                      method: "GET",
-                      headers: { "Content-Type": "application/json" },
-                  })
-                  SetColor(color.result)
-                  console.log("color.result")
-              }
-          } catch (error) {
-              console.log(error)
-          } 
-          // finally {
-          //     setLoadingSubCategories(false)
-          // }
-      })()
+  useEffect(() => {
+    (async () => {
+      try {
+        // setLoadingSubCategories(true)
+        if (selectedSize?.ID_TAILLE) {
+          const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${selectedSize?.ID_TAILLE}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          })
+          SetColor(color.result)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      // finally {
+      //     setLoadingSubCategories(false)
+      // }
+    })()
   }, [selectedSize])
 
 
@@ -105,40 +97,37 @@ export default function Product({ product, index, totalLength, fixMargins = fals
     setIsOpen(true)
     modalizeRef.current?.open()
   }
-  const fecthWishlist= async () => {
+  const fecthWishlist = async () => {
     try {
-              const wishliste = await fetchApi(`/wishlist/verification/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-              })
-              // console.log(wishliste.result)
-              if(wishliste.result)
-              {
-                setWishlist(true)
-              }
+      const wishliste = await fetchApi(`/wishlist/verification/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+      // console.log(wishliste.result)
+      if (wishliste.result) {
+        setWishlist(true)
+      }
 
     }
     catch (error) {
-              console.log(error)
-    } 
-}
-useFocusEffect(useCallback(() => {
-  fecthWishlist()
-}, []))
+      console.log(error)
+    }
+  }
+  useFocusEffect(useCallback(() => {
+    fecthWishlist()
+  }, []))
 
 
   const Addishlist = async (id) => {
     //  console.log(id)
-    if(wishlist)
-    {
+    if (wishlist) {
       try {
-        
+
         const newWishlist = await fetchApi(`/wishlist/suppression/${id}`, {
           method: "DELETE",
         })
-        if(onRemove)
-        {
-        onRemove(id)
+        if (onRemove) {
+          onRemove(id)
         }
 
         setWishlist(false)
@@ -146,32 +135,32 @@ useFocusEffect(useCallback(() => {
       } catch (error) {
         console.log(error)
       }
-      
+
     }
-    
-    else{
+
+    else {
       try {
         const form = new FormData()
         // form.append("ID_PRODUIT", id)
         //  console.log(id)
         const newWishlist = await fetchApi('/wishlist', {
           method: 'POST',
-                                body: JSON.stringify({
-                                  ID_PRODUIT_PARTENAIRE: id,
-                                       
-                                }),
-                                headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ID_PRODUIT_PARTENAIRE: id,
+
+          }),
+          headers: { "Content-Type": "application/json" },
         })
-        
+
         setWishlist(true)
 
-      
+
       } catch (error) {
         console.log(error)
       }
 
     }
-    
+
   }
   const onCloseAddToCart = () => {
     modalizeRef.current?.close()
@@ -194,7 +183,7 @@ useFocusEffect(useCallback(() => {
     <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
       <TouchableWithoutFeedback onPress={() => navigation.push('ProductDetailsScreen', { product: product })} >
         <View style={styles.imageCard}>
-          <Image source={{ uri: product.produit.IMAGE }} style={styles.image} />
+          <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
         </View>
       </TouchableWithoutFeedback>
       <View style={{ flexDirection: "row" }}>
@@ -205,9 +194,9 @@ useFocusEffect(useCallback(() => {
           }}
         >
           <View style={styles.cardLike}>
-            {wishlist ? <AntDesign name="heart" size={24} color="#F29558" />:<AntDesign name="hearto" size={24} color="#F29558" />}
-            
-            
+            {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
+
+
           </View>
         </TouchableOpacity>
 
@@ -247,7 +236,7 @@ useFocusEffect(useCallback(() => {
               setLoadingForm(true)
             }}
           >
-            <AddCart colors={colors}onSizePress={onSizePress} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+            <AddCart colors={colors} onSizePress={onSizePress} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
           </Modalize>
         </GestureHandlerRootView>
       </Portal>

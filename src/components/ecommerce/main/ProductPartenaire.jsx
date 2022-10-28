@@ -14,7 +14,6 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function ProductPartenaire({ product, index, totalLength, fixMargins = false }) {
         const navigation = useNavigation()
-        console.log(product)
           const { width } = useWindowDimensions()
           const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
@@ -55,7 +54,7 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
           return (
                     <View key={index} style={[styles.product, additionStyles]}>
                               <TouchableOpacity onPress={()=>navigation.push('ProductDetailsScreen', {product:product})} style={styles.imageCard}>
-                                        <Image source={{ uri: product.IMAGE_1 }} style={styles.image} />
+                                        <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
                               </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
                                         <View style={styles.cardLike}>
@@ -76,7 +75,7 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
                                                   <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
                                         </Text>
                               </View>
-                              {product.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
+                              {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
                               <Portal>
                                         <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                                                   <Modalize

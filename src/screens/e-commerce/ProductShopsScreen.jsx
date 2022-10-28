@@ -35,6 +35,7 @@ export default function ProductShopsScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
+            console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -92,7 +93,6 @@ export default function ProductShopsScreen() {
                     url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                 }
                 const produits = await fetchApi(url)
-                console.log(produits)
                 setProducts(produits.result)
 
             } catch (error) {
@@ -114,7 +114,7 @@ export default function ProductShopsScreen() {
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View style={styles.productsHeader}>
-                            <Ionicons name="arrow-back-sharp" size={24} color="black" /><Text>   </Text>
+                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
                             <Text style={styles.title}>Les produits disponibles</Text>
 
                         </View>
