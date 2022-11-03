@@ -211,7 +211,7 @@ console.log(product)
       </View>
       <View style={styles.productNames}>
         <Text numberOfLines={2} style={styles.productName}>
-          {product.produit.NOM} ·
+          {product.produit.NOM} 
           <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
         </Text>
       </View>
