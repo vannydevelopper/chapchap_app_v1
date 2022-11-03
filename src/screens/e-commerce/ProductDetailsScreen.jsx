@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { Image, View, StyleSheet, Text, TouchableOpacity, TouchableNativeFeedback, TextInput, ScrollView, StatusBar, Modal } from "react-native"
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { useNavigation, useRoute } from "@react-navigation/native";
 import ProduitPartenaire from "../../components/ecommerce/home/ProduitPartenaire";
 import fetchApi from "../../helpers/fetchApi";
@@ -11,8 +12,10 @@ import Product from "../../components/ecommerce/main/Product";
 import { Entypo } from '@expo/vector-icons';
 import { COLORS } from "../../styles/COLORS";
 import { Portal } from "react-native-portalize";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Modalize } from "react-native-modalize";
+import { EvilIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { useRef } from "react";
 import AddCart from "../../components/ecommerce/main/AddCart";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
@@ -34,6 +37,8 @@ export default function ProductDetailsScreen() {
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
 
+  const [note, Setnote] = useState(null)
+  const [commentaire, Setcommentaire] = useState(null)
   const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
   // console.log(product)
   const onCartPress = () => {
@@ -51,7 +56,12 @@ export default function ProductDetailsScreen() {
     product.produit_partenaire.IMAGE_3 ? product.produit_partenaire.IMAGE_3 : undefined,
   ]
 
+  const onetoilePress = (note) => {
 
+    Setnote(note)
+
+
+  }
 
   const fecthProduits = async () => {
     try {
@@ -101,6 +111,29 @@ export default function ProductDetailsScreen() {
       }
     }
   }, [isOpen])
+  const enregistrement = async () => {
+
+    try {
+      const res = await fetchApi("/products/note", {
+        method: 'POST',
+        body: JSON.stringify({
+          ID_PRODUIT_PARTENAIRE:product.produit.ID_PRODUIT_PARTENAIRE,
+          NOTE:note,
+          COMMENTAIRE:commentaire,
+
+
+        }),
+        
+        headers: { "Content-Type": "application/json" },
+      })
+      console.log(res)
+
+    }
+    catch (error) {
+      console.log(error)
+
+    }
+  }
   return (
     <>
       <View style={{ marginTop: 0, flex: 1 }}>
@@ -164,6 +197,57 @@ export default function ProductDetailsScreen() {
 
             </View>
           </TouchableNativeFeedback>
+          {/* <View>
+            <Text>
+              {JSON.stringify({ note })}
+            </Text>
+          </View> */}
+          <View style={styles.etoiles}>
+            {new Array(5).fill(0).map((_, index) => {
+              return (
+                <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
+                  <View >
+                    {note && note >= index + 1 ? <FontAwesome name="star" size={35} color="black" /> :
+
+                      <FontAwesome name="star-o" size={35} color="black" />}
+                  </View>
+                </TouchableWithoutFeedback>
+              )
+            })}
+          </View>
+          {note && <View style={styles.inputCard}>
+            <View>
+              <OutlinedTextField
+                label="Commentaire"
+                fontSize={14}
+                baseColor={COLORS.smallBrown}
+                tintColor={COLORS.primary}
+                containerStyle={{ borderRadius: 20 }}
+                multiline={true}
+                value={commentaire}
+                onChangeText={(t) => Setcommentaire(t)}
+
+                autoCompleteType='off'
+                returnKeyType="next"
+                blurOnSubmit={false}
+              />
+            </View>
+
+          </View>}
+          {note && <TouchableWithoutFeedback
+            onPress={enregistrement}
+          >
+            <View style={[styles.button]}>
+              <Text style={styles.buttonText}>Enregistrer</Text>
+            </View>
+          </TouchableWithoutFeedback>}
+       {note && <View>
+              <Text>NDAYIKENGURUKIYE Innocent</Text>
+              <Text>j'aime cet produit </Text>
+
+          </View>}
+
+
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
             <>
@@ -250,6 +334,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 15,
+  },
+  etoiles: {
+
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    fontSize: 60,
+    paddingHorizontal: 20
+
+  },
+  inputCard: {
+    marginHorizontal: 20,
+    marginTop: 10,
+    multiline: true
+
+
   },
   categoryName: {
     fontWeight: "bold",
@@ -383,6 +482,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flexDirection: "row",
     alignItems: "center"
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    // textTransform:"uppercase",
+    fontSize: 16,
+    textAlign: "center"
+  },
+  button: {
+    marginTop: 10,
+    borderRadius: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.primaryPicker,
+    marginHorizontal: 20
   },
   addCartBtnTitle: {
     textAlign: 'center',
