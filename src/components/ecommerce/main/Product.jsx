@@ -33,41 +33,29 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
-
   const [SIZES, setSIZES] = useState([])
   const [colors, SetColors] = useState([])
-
-  const onSizePress =async (size) => {
+  const [variantes, setVariantes] = useState([])
+  const [combinaisons,setCombinaisons]=useState([])
  
-      try {
+  const onPress =useCallback ((newCombinaison)=>{
+    const isSelected=combinaisons.find(i=>i.ID_VALUE==newCombinaison.ID_VALUE && i.ID_VARIANT==newCombinaison.ID_VARIANT)
+    if(!isSelected){
+      setCombinaisons(t=>[newCombinaison])
+    }
+    else{
+      setCombinaisons(t=>[...t,newCombinaison])
 
-  
-          // setLoadingSubCategories(true)
-          if (size?.id) {
-              const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${size?.id}`, {
-                  method: "GET",
-                  headers: { "Content-Type": "application/json" },
-              })
-              SetColors(color.result)
-        // console.log(colors)
-              
-          }
-      } catch (error) {
-          console.log(error)
-      } 
-    
-    // setSelectedsousCategories(null)
-}
+    }
+    console.log(combinaisons)
+  },[combinaisons])
     const fecthSizes = async () => {
         try {
                   const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
                             method: "GET",
                             headers: { "Content-Type": "application/json" },
                   })
-                  
                   setSIZES(sizes.result)
-   
-
         }
         catch (error) {
                   console.log(error)
@@ -77,6 +65,23 @@ export default function Product({ product, index, totalLength, fixMargins = fals
     useFocusEffect(useCallback(() => {
       fecthSizes()
   }, []))
+  const fecthVariantes = async () => {
+    try {
+              const sizes = await fetchApi(`/products/variante/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+              })
+              setVariantes(sizes.result)
+    }
+    catch (error) {
+              console.log(error)
+    } 
+}
+
+useFocusEffect(useCallback(() => {
+  fecthVariantes()
+}, []))
+
 
     useEffect(() => {
       (async () => {
@@ -246,7 +251,7 @@ useFocusEffect(useCallback(() => {
               setLoadingForm(true)
             }}
           >
-            <AddCart colors={colors}onSizePress={onSizePress} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+            <AddCart combinaisons={combinaisons} onPress={onPress} variantes={variantes}colors={colors}  SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
           </Modalize>
         </GestureHandlerRootView>
       </Portal>
