@@ -35,7 +35,7 @@ export default function ProductShopsScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            console.log(response.result)
+            //console.log(response.result)
         }
         catch (error) {
             console.log(error)

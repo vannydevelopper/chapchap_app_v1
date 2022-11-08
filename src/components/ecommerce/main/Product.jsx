@@ -16,7 +16,6 @@ import fetchApi from "../../../helpers/fetchApi";
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
-console.log(product)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10

@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { Image, View, StyleSheet, Text, TouchableOpacity, TouchableNativeFeedback, TextInput, ScrollView, StatusBar, Modal } from "react-native"
+import { Image, View, StyleSheet, Text, TouchableOpacity, TouchableNativeFeedback, TextInput, ScrollView, StatusBar, Modal, ActivityIndicator } from "react-native"
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -22,21 +22,27 @@ import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import { ecommerceProductSelector } from "../../store/selectors/ecommerceCartSelectors";
 import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import ProductImages from "../../components/ecommerce/details/ProductImages";
+import moment from "moment/moment";
+import Loading from "../../components/app/Loading";
 export default function ProductDetailsScreen() {
   const navigation = useNavigation()
   const route = useRoute()
 
   const [loadingShopProducts, setLoadingShopProducts] = useState(true)
   const [shopProducts, setShopProducts] = useState([])
+  const [produitnote, Setproduitnote] = useState([])
+  const [userNote, setUserNote] = useState([])
+
   //console.log(shopProducts)
   const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
   const [similarProducs, setSimilarProducts] = useState([])
-
+  const user = useSelector(userSelector)
+  //console.log(user.result.ID_USER)
   const { product } = route.params
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
-
+  const [loading, setLoading] = useState(false)
   const [note, Setnote] = useState(null)
   const [commentaire, Setcommentaire] = useState(null)
   const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
@@ -45,6 +51,15 @@ export default function ProductDetailsScreen() {
     setIsOpen(true)
     modalizeRef.current?.open()
   }
+  moment.updateLocale('fr', {
+    calendar: {
+      sameDay: "[Aujourd'hui]",
+      lastDay: '[Hier]',
+      nextDay: 'DD-M-YYYY',
+      lastWeek: 'DD-M-YYYY',
+      sameElse: 'DD-M-YYYY',
+    },
+  })
 
   const onCloseAddToCart = () => {
     modalizeRef.current?.close()
@@ -114,28 +129,60 @@ export default function ProductDetailsScreen() {
   const enregistrement = async () => {
 
     try {
+
+      setLoading(true)
       const res = await fetchApi("/products/note", {
         method: 'POST',
         body: JSON.stringify({
-          ID_PRODUIT_PARTENAIRE:product.produit.ID_PRODUIT_PARTENAIRE,
-          NOTE:note,
-          COMMENTAIRE:commentaire,
+          ID_PRODUIT_PARTENAIRE: product.produit.ID_PRODUIT_PARTENAIRE,
+          NOTE: note,
+          COMMENTAIRE: commentaire,
 
 
         }),
-        
+
         headers: { "Content-Type": "application/json" },
       })
-      console.log(res)
-
     }
     catch (error) {
       console.log(error)
 
+    } finally {
+      setLoading(false)
+      Setcommentaire("")
     }
   }
+  useEffect(() => {
+    (async () => {
+      try {
+        var url = `/products/note/liste/${product.produit.ID_PRODUIT_PARTENAIRE}`
+        const produitsNotes = await fetchApi(url)
+        Setproduitnote(produitsNotes.result)
+        //console.log(produitsNotes)
+      } catch (error) {
+        console.log(error)
+      }
+    })()
+  }, [])
+
+
+  const fecthNotes = async () => {
+    try {
+      var url = `/products/note/${product.produit.ID_PRODUIT_PARTENAIRE}`
+      const userNotes = await fetchApi(url)
+      setUserNote(userNotes)
+      console.log(userNotes)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useFocusEffect(useCallback(() => {
+    fecthNotes()
+  }, []))
+
   return (
     <>
+      {loading && <Loading />}
       <View style={{ marginTop: 0, flex: 1 }}>
         {/* {showImageModal && <ImagesGallery images={IMAGES.filter(image => image)} showImageModal={showImageModal} setShowImageModal={setShowImageModal} />} */}
         <View style={styles.cardHeader}>
@@ -207,7 +254,7 @@ export default function ProductDetailsScreen() {
               return (
                 <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
                   <View >
-                    {note && note >= index + 1 ? <FontAwesome name="star" size={35} color="black" /> :
+                    {note && note >= index + 1 ? <FontAwesome name="star" size={35} color={COLORS.primaryPicker} /> :
 
                       <FontAwesome name="star-o" size={35} color="black" />}
                   </View>
@@ -237,15 +284,51 @@ export default function ProductDetailsScreen() {
           {note && <TouchableWithoutFeedback
             onPress={enregistrement}
           >
-            <View style={[styles.button]}>
+            <View style={[styles.button,]}>
               <Text style={styles.buttonText}>Enregistrer</Text>
+
             </View>
           </TouchableWithoutFeedback>}
-       {note && <View>
-              <Text>NDAYIKENGURUKIYE Innocent</Text>
-              <Text>j'aime cet produit </Text>
 
-          </View>}
+
+          {produitnote.map((note, index) => {
+            return (
+              <View key={index} style={{ marginTop: 15 }}>
+                <View style={styles.notecard}>
+                  <View style={styles.Cardnote}>
+                    <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
+                  </View>
+                  <View style={styles.rateHeader}>
+                    <View style={styles.rateTitles}>
+                      <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
+                      <Text style={{ color: '#777', marginRight: 10 }}>
+                        {moment(note.produit_note.DATE).format('DD-M-YYYY')}
+                      </Text>
+                    </View>
+                    <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
+                      {new Array(5).fill(0).map((_, index) => {
+                        return (
+                          <TouchableWithoutFeedback >
+                            <View >
+                              {note.produit_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
+
+                                <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
+
+                            </View>
+                          </TouchableWithoutFeedback>
+                        )
+                      })}
+                    </View>
+                  </View>
+                </View>
+
+                <View style={{ marginLeft: 60, marginTop: 7 }}>
+                  <Text>{note.produit_note.COMENTAIRE}</Text>
+                </View>
+              </View>
+            )
+
+          })}
 
 
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
@@ -335,12 +418,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 15,
   },
+  points: {
+    marginTop: 25,
+    marginLeft: 10
+
+
+  },
+  userImage: {
+    width: "120%",
+    height: "120%",
+    borderRadius: 50,
+    // alignItems:"center",
+    // justifyContent:"center"
+
+
+
+
+  },
+  Cardnote: {
+    padding: 15,
+    height: 20,
+    width: 20,
+    color: "#1D8585",
+    backgroundColor: '#D7D9E4',
+    borderRadius: 50,
+
+  },
   etoiles: {
 
     flexDirection: 'row',
     justifyContent: 'space-between',
     fontSize: 60,
-    paddingHorizontal: 20
+    paddingHorizontal: 10
 
   },
   inputCard: {
@@ -461,6 +570,12 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold'
   },
+  productImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+    borderRadius: 10
+  },
   products: {
     flexDirection: 'row',
     flexWrap: 'wrap'
@@ -502,6 +617,36 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#fff',
     fontWeight: 'bold'
+  },
+  Cardnote: {
+    padding: 15,
+    height: 40,
+    width: 40,
+    color: "#1D8585",
+    backgroundColor: '#D7D9E4',
+    borderRadius: 100
+  },
+  rateHeader: {
+    marginLeft: 10,
+    flex: 1
+  },
+  rateTitles: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: 'space-between'
+  },
+  notecard: {
+    marginLeft: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  notecards: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 40,
+    marginTop: 7
+
+
   },
   badge: {
     minWidth: 25,
