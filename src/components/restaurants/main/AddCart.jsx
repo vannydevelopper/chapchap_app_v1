@@ -67,7 +67,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                                   fontWeight: "bold",
                                                   flex: 0.8,
                                                   marginLeft: 10
-                                        }} >{menu.NOM_MENU}</Text>
+                                        }} >{menu.repas}</Text>
                                         </View>
                                         <View style={styles.ligne}></View>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>

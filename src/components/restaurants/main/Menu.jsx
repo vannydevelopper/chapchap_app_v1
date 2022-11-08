@@ -39,7 +39,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
                     modalizeRef.current?.close()
           }
 
-          const productInCart = useSelector(restaurantProductSelector(menu.ID_RESTAURANT_MENU))
+          const MenuInCart = useSelector(restaurantProductSelector(menu.ID_RESTAURANT_MENU))
 
           useEffect(() => {
                     if (isOpen) {
@@ -64,19 +64,19 @@ export default function Menu({ menu, index, totalLength, fixMargins = false }) {
                                         <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
                                                   <>
                                                             <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                                            {productInCart ? <View style={styles.badge}>
-                                                                      <Text style={styles.badgeText} numberOfLines={1}>{productInCart.QUANTITE}</Text>
+                                                            {MenuInCart ? <View style={styles.badge}>
+                                                                      <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
                                                             </View> : null}
                                                   </>
                                         </TouchableOpacity>
                               </View>
-                              <View style={styles.productNames}>
+                              <View style={styles.productName}>
                                         <Text numberOfLines={2} style={styles.productName}>
-                                                  {menu.NOM_MENU} ·
-                                                  <Text numberOfLines={2} style={styles.productName}> {menu.DESCRIPTION_SOUS_CATEGORIE}</Text>
+                                                  {menu.repas} ·
+                                                  <Text numberOfLines={2} style={styles.productName}> {menu.categorie}</Text>
                                         </Text>
                               </View>
-                              {menu.MONTANT ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.MONTANT.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+                              {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
                               <Portal>
                                         <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                                                   <Modalize

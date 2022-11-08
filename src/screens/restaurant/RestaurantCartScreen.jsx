@@ -27,7 +27,7 @@ export default function RestaurantCartScreen() {
           const getAmount = useCallback(() => {
                     var total = 0
                     menus.forEach(menu => {
-                              total += parseInt(menu.MONTANT) * menu.QUANTITE
+                              total += parseInt(menu.PRIX) * menu.QUANTITE
                     })
                     return total
           }, [menus])

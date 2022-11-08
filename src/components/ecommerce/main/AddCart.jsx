@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { addProductAction } from "../../../store/actions/ecommerceCartActions";
 import { color } from "react-native-reanimated";
 // import { useFocusEffect } from "@react-navigation/native";
-export default function AddCart({ onPress,variantes,colors,SIZES,product, loadingForm, onClose }) {
+export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm, onClose }) {
           const [selectedSize, setSelectedSize] = useState(null)
           const [selectedColor, setSelectedColor] = useState(null)
           const [selectedColors, setSelectedColors] = useState(null)
@@ -82,31 +82,21 @@ export default function AddCart({ onPress,variantes,colors,SIZES,product, loadin
                                         </View>
                               </View>
                               <View style={styles.moreDetails}>
-                                {
-                                  variantes.map((variante,index)=>
-                                  
-                                  <>
-
-                                  <Text style={styles.subTitle}>{variante.VARIANT_NAME}</Text>
-                                  <View style={[styles.sizes]}>
-                                                  {variante.values.map((value, index) =>
-                                                
-                                                   <TouchableOpacity style={[styles.size, index == 0 && { marginLeft: 0 }, value.ID_VALUE == selectedSize?.ID_VALUE && { backgroundColor: COLORS.ecommercePrimaryColor }]} key={index} onPress={() => 
+                                        <Text style={styles.subTitle}>Taille</Text>
+                                        <View style={[styles.sizes]}>
+                                                  {
+                                                  SIZES?.map((size, index) =>
+                                                   <TouchableOpacity style={[styles.size, index == 0 && { marginLeft: 0 }, size.id == selectedSize?.id && { backgroundColor: COLORS.ecommercePrimaryColor }]} key={index} onPress={() => 
                                                    {
-                                                    setSelectedSize(value)
+                                                    setSelectedSize(size)
+                                                    setSelectedColor(null)
                                                     onChangeText(0)
-                                                    onPress(value)
+                                                    onSizePress(size)
                                                   }
                                                    }>
-                                                            <Text style={[styles.sizeText, value.ID_VALUE == selectedSize?.ID_VALUE && { color: '#FFF' }]}>{ value.VALUES_NAME }</Text>
-                                                  </TouchableOpacity>
-                                                  )}
+                                                            <Text style={[styles.sizeText, size.id == selectedSize?.id && { color: '#FFF' }]}>{ size.name }</Text>
+                                                  </TouchableOpacity>)}
                                         </View>
-                                  </>
-                                  )
-                                }
-                                 
-                                        
                               </View>
                               {selectedSize&&<View style={styles.moreDetails}>
                                         <Text style={styles.subTitle}>couleur</Text>
@@ -220,8 +210,7 @@ const styles = StyleSheet.create({
                     marginTop: 5
           },
           size: {
-                    width: 70,
-                    maxWidth:100,
+                    width: 50,
                     height: 50,
                     borderRadius: 10,
                     backgroundColor: '#F1F1F1',
