@@ -16,7 +16,6 @@ import fetchApi from "../../../helpers/fetchApi";
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
-console.log(product)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -51,9 +50,7 @@ console.log(product)
     } catch (error) {
       console.log(error)
     }
-
-    // setSelectedsousCategories(null)
-  }
+      }
   const fecthSizes = async () => {
     try {
       const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
@@ -62,6 +59,7 @@ console.log(product)
 
       })
       setSIZES(sizes.result)
+      console.log(SIZES)
     }
     catch (error) {
       console.log(error)
