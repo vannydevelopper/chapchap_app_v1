@@ -39,7 +39,6 @@ export default function RestaurantHomeScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -97,7 +96,7 @@ export default function RestaurantHomeScreen() {
                 }
                 var url = "/resto/menu"
                 if (selectedCategorie) {
-                    url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                    url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
                 }
                 const menus = await fetchApi(url)
                 setMenus(menus.result)
@@ -123,8 +122,6 @@ export default function RestaurantHomeScreen() {
                 // }
                 const restaurant = await fetchApi(url)
                 setRestaurants(restaurant.result)
-                
-
             } catch (error) {
                 console.log(error)
             } finally {
@@ -186,8 +183,6 @@ export default function RestaurantHomeScreen() {
                 {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Restaurants restaurants={restaurants} />
                 }
-
-
                 <TouchableNativeFeedback
                     accessibilityRole="button"
                     background={TouchableNativeFeedback.Ripple('#c9c5c5')}

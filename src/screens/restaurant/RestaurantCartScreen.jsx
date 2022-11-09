@@ -19,8 +19,24 @@ import Menu from "../../components/restaurants/main/Menu";
 
 export default function RestaurantCartScreen() {
           const menus = useSelector(restaurantCartSelector)
+          var menuParPartenaire = {}
+      const partenaireMenus = []
+      menus.forEach(menu => {
+            if (menuParPartenaire[menu.ID_PARTENAIRE_SERVICE]) {
+                  menuParPartenaire[menu.ID_PARTENAIRE_SERVICE].push(menu)
+            }
+            else {
+                  menuParPartenaire[menu.ID_PARTENAIRE_SERVICE] = [menu]
+            }
+      })
+      for (let key in menuParPartenaire) {
+            const MENUS = menuParPartenaire[key]
+            partenaireMenus.push({
+              MENUS
+            })
+      }
           const navigation = useNavigation()
-
+ console.log(partenaireMenus)
           const [recommndations, setRecomandations] = useState([])
           const [loadingProducts, setLoadingProducts] = useState(false)
 
@@ -108,7 +124,7 @@ export default function RestaurantCartScreen() {
                                         </TouchableOpacity>
                               </View>
                               <Text style={styles.titlePrincipal}>Mon panier</Text>
-                              <View style={styles.products}>
+                              {/* <View style={styles.products}>
                                         <ScrollView>
                                                   {menus.map((menu, index) => {
                                                             return (
@@ -120,7 +136,44 @@ export default function RestaurantCartScreen() {
                                                             )
                                                   })}
                                         </ScrollView>
-                              </View>
+                              </View> */}
+                              <View style={styles.products}>
+                        <ScrollView>
+                              {partenaireMenus.map((partenaire, i) => {
+                                    var somme = 0
+                                    var element=0
+                                    partenaire.MENUS.forEach(menu => {
+                                          somme += parseInt(menu.PRIX) * menu.QUANTITE
+                                          element=element+menu.QUANTITE
+                                    })
+                                    const parte = partenaire.MENUS[0].ID_PARTENAIRE_SERVICE
+                                    return (
+                                          <View style={{ marginTop: 25,backgroundColor: '#F1F1F1',padding:10,borderRadius:10 }}>
+                                                <Text style={styles.boutique}>{parte}</Text>
+                                                <Text style={styles.somme}>Total : {somme.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+                                                <Text style={styles.somme}>Elément : {element} </Text>
+                                                {
+                                                      partenaire.MENUS.map((menu, index) => {
+                                                            return (
+                                                                  <MenuCart
+                                                                        menu={menu}
+                                                                        index={index}
+                                                                        key={index}
+                                                                  />
+
+                                                            )
+                                                      })}
+            
+                                                <View style={{  marginTop:10,borderRadius:12}}>
+                                                {/* backgroundColor: '#F1F1F1' */}
+
+                                                </View>
+                                          </View>
+                                    )
+                              })
+                              }
+                        </ScrollView>
+                  </View>
                               <View style={styles.cartFooter}>
                                         <View style={styles.cartFooterTotals}>
                                                   <View style={styles.imageAmount}>

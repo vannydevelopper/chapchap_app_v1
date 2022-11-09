@@ -53,7 +53,7 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
 
           let isnum = /^\d+$/.test(amount);
           const isValid = () => {
-                    return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= product.stock.QUANTITE_RESTANTE) : false
+                    return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= selectedColor.QUANTITE_RESTANTE) : false
           }
 
           return (
