@@ -31,7 +31,7 @@ export default function ProductDetailsScreen() {
   const [loadingShopProducts, setLoadingShopProducts] = useState(true)
   const [shopProducts, setShopProducts] = useState([])
   const [produitnote, Setproduitnote] = useState([])
-  const [userNote, setUserNote] = useState([])
+  const [userNote, SetuserNote] = useState([])
 
   //console.log(shopProducts)
   const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
@@ -87,9 +87,6 @@ export default function ProductDetailsScreen() {
 
       setShopProducts(response.result)
 
-
-
-
     }
 
     catch (error) {
@@ -143,6 +140,7 @@ export default function ProductDetailsScreen() {
 
         headers: { "Content-Type": "application/json" },
       })
+      Setproduitnote(n => [res.result, ...n])
     }
     catch (error) {
       console.log(error)
@@ -166,19 +164,18 @@ export default function ProductDetailsScreen() {
   }, [])
 
 
-  const fecthNotes = async () => {
-    try {
-      var url = `/products/note/${product.produit.ID_PRODUIT_PARTENAIRE}`
-      const userNotes = await fetchApi(url)
-      setUserNote(userNotes)
-      console.log(userNotes)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  useFocusEffect(useCallback(() => {
-    fecthNotes()
-  }, []))
+  useEffect(() => {
+    (async () => {
+      try {
+        var url = `/products/note/${product.produit.ID_PRODUIT_PARTENAIRE}`
+        const userNotes = await fetchApi(url)
+        SetuserNote(userNotes.result)
+        //console.log(userNote)
+      } catch (error) {
+        console.log(error)
+      }
+    })()
+  }, [])
 
   return (
     <>
@@ -249,86 +246,96 @@ export default function ProductDetailsScreen() {
               {JSON.stringify({ note })}
             </Text>
           </View> */}
-          <View style={styles.etoiles}>
-            {new Array(5).fill(0).map((_, index) => {
-              return (
-                <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
-                  <View >
-                    {note && note >= index + 1 ? <FontAwesome name="star" size={35} color={COLORS.primaryPicker} /> :
 
-                      <FontAwesome name="star-o" size={35} color="black" />}
-                  </View>
-                </TouchableWithoutFeedback>
-              )
-            })}
-          </View>
-          {note && <View style={styles.inputCard}>
-            <View>
-              <OutlinedTextField
-                label="Commentaire"
-                fontSize={14}
-                baseColor={COLORS.smallBrown}
-                tintColor={COLORS.primary}
-                containerStyle={{ borderRadius: 20 }}
-                multiline={true}
-                value={commentaire}
-                onChangeText={(t) => Setcommentaire(t)}
+          {!userNote[0] ?
+            <>
+              <View style={styles.etoiles}>
+                {new Array(5).fill(0).map((_, index) => {
+                  return (
+                    <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
+                      <View >
+                        {note && note >= index + 1 ? <FontAwesome name="star" size={35} color={COLORS.primaryPicker} /> :
 
-                autoCompleteType='off'
-                returnKeyType="next"
-                blurOnSubmit={false}
-              />
-            </View>
-
-          </View>}
-          {note && <TouchableWithoutFeedback
-            onPress={enregistrement}
-          >
-            <View style={[styles.button,]}>
-              <Text style={styles.buttonText}>Enregistrer</Text>
-
-            </View>
-          </TouchableWithoutFeedback>}
-
-
-          {produitnote.map((note, index) => {
-            return (
-              <View key={index} style={{ marginTop: 15 }}>
-                <View style={styles.notecard}>
-                  <View style={styles.Cardnote}>
-                    <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
-                  </View>
-                  <View style={styles.rateHeader}>
-                    <View style={styles.rateTitles}>
-                      <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
-                      <Text style={{ color: '#777', marginRight: 10 }}>
-                        {moment(note.produit_note.DATE).format('DD-M-YYYY')}
-                      </Text>
-                    </View>
-                    <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
-                      {new Array(5).fill(0).map((_, index) => {
-                        return (
-                          <TouchableWithoutFeedback >
-                            <View >
-                              {note.produit_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
-
-                                <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
-
-                            </View>
-                          </TouchableWithoutFeedback>
-                        )
-                      })}
-                    </View>
-                  </View>
-                </View>
-
-                <View style={{ marginLeft: 60, marginTop: 7 }}>
-                  <Text>{note.produit_note.COMENTAIRE}</Text>
-                </View>
+                          <FontAwesome name="star-o" size={35} color="black" />}
+                      </View>
+                    </TouchableWithoutFeedback>
+                  )
+                })}
               </View>
-            )
+              {note && <View style={styles.inputCard}>
+                <View>
+                  <OutlinedTextField
+                    label="Commentaire"
+                    fontSize={14}
+                    baseColor={COLORS.smallBrown}
+                    tintColor={COLORS.primary}
+                    containerStyle={{ borderRadius: 20 }}
+                    multiline={true}
+                    value={commentaire}
+                    onChangeText={(t) => Setcommentaire(t)}
 
-          })}
+                    autoCompleteType='off'
+                    returnKeyType="next"
+                    blurOnSubmit={false}
+                  />
+                </View>
+
+              </View>}
+              {note && <TouchableWithoutFeedback
+                onPress={enregistrement}
+              >
+                <View style={[styles.button,]}>
+                  <Text style={styles.buttonText}>Enregistrer</Text>
+
+                </View>
+              </TouchableWithoutFeedback>}
+            </> :
+            <>
+              {produitnote.map((note, index) => {
+                return (
+                  <View key={index} style={{ marginTop: 15 }}>
+                    <View style={styles.notecard}>
+                      <View style={styles.Cardnote} >
+                        <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
+                      </View>
+                      <View style={styles.rateHeader}>
+                        <View style={styles.rateTitles}>
+                          <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
+                          <Text style={{ color: '#777', marginRight: 10 }}>
+                            {moment(note.produit_note.DATE).format('DD-M-YYYY')}
+                          </Text>
+                        </View>
+                        <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
+                          {new Array(5).fill(0).map((_, index) => {
+                            return (
+                              <TouchableWithoutFeedback >
+                                <View >
+                                  {note.produit_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
+
+                                    <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
+
+                                </View>
+                              </TouchableWithoutFeedback>
+                            )
+                          })}
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={{ marginLeft: 60, marginTop: 7 }}>
+                      <Text>{note.produit_note.COMENTAIRE}</Text>
+                    </View>
+                  </View>
+                )
+
+              })}
+              <TouchableWithoutFeedback style={{ marginLeft: 60, marginTop: 7 }}>
+                <Text style={{ color: COLORS.primary,}}>Editer ton Note</Text>
+              </TouchableWithoutFeedback>
+            </>
+          }
+
+
 
 
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
