@@ -9,6 +9,7 @@ import ProductDetailsScreen from "../screens/e-commerce/ProductDetailsScreen";
 import ProductShopsScreen from "../screens/e-commerce/ProductShopsScreen";
 import SearchLivreurScreen from "../screens/e-commerce/SearchLivreurScreen";
 import ShippingInfoScreen from "../screens/e-commerce/ShippingInfoScreen";
+import ShopsScreen from "../screens/e-commerce/ShopsScreen";
 
 export default function EcommerceNavigator() {
           const Stack = createStackNavigator()
@@ -19,6 +20,8 @@ export default function EcommerceNavigator() {
                                         <Stack.Screen name="EcommerceCartScreen" component={EcommerceCartScreen} />
                                         <Stack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
                                         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
+                                        <Stack.Screen name="ShopsScreen" component={ShopsScreen} />
+                                       
                                         <Stack.Screen name="ProductShopsScreen" component={ProductShopsScreen} />
                               </Stack.Group>
                     </Stack.Navigator>

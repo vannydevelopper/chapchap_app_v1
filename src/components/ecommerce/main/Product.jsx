@@ -50,7 +50,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
     } catch (error) {
       console.log(error)
     }
-      }
+  }
   const fecthSizes = async () => {
     try {
       const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {

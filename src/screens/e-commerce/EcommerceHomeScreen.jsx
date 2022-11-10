@@ -187,15 +187,14 @@ export default function EcommerceHomeScreen() {
                 }
 
 
-                <TouchableNativeFeedback
-                    accessibilityRole="button"
-                    background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                <View
+                    
                 >
                     <View style={styles.productsHeader}>
                         <Text style={styles.title}>Recommandé pour vous</Text>
-                        <MaterialIcons name="navigate-next" size={24} color="black" />
+                       
                     </View>
-                </TouchableNativeFeedback>
+                </View>
 
                 <View style={styles.products}>
                     {products.map((product, index) => {
