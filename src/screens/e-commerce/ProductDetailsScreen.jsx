@@ -139,16 +139,23 @@ export default function ProductDetailsScreen() {
         }),
 
         headers: { "Content-Type": "application/json" },
+
       })
+
       Setproduitnote(n => [res.result, ...n])
+
     }
+
     catch (error) {
       console.log(error)
 
     } finally {
       setLoading(false)
       Setcommentaire("")
+
     }
+
+
   }
   useEffect(() => {
     (async () => {
@@ -289,6 +296,44 @@ export default function ProductDetailsScreen() {
 
                 </View>
               </TouchableWithoutFeedback>}
+              {produitnote.map((note, index) => {
+                return (
+                  <View key={index} style={{ marginTop: 15 }}>
+                    <View style={styles.notecard}>
+                      <View style={styles.Cardnote} >
+                        <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
+                      </View>
+                      <View style={styles.rateHeader}>
+                        <View style={styles.rateTitles}>
+                          <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
+                          <Text style={{ color: '#777', marginRight: 10 }}>
+                            {moment(note.produit_note.DATE).format('DD-M-YYYY')}
+                          </Text>
+                        </View>
+                        <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
+                          {new Array(5).fill(0).map((_, index) => {
+                            return (
+                              <TouchableWithoutFeedback >
+                                <View >
+                                  {note.produit_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
+
+                                    <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
+
+                                </View>
+                              </TouchableWithoutFeedback>
+                            )
+                          })}
+                        </View>
+                      </View>
+                    </View>
+
+                    <View style={{ marginLeft: 60, marginTop: 7 }}>
+                      <Text>{note.produit_note.COMENTAIRE}</Text>
+                    </View>
+                  </View>
+                )
+
+              })}
             </> :
             <>
               {produitnote.map((note, index) => {
@@ -329,9 +374,9 @@ export default function ProductDetailsScreen() {
                 )
 
               })}
-              <TouchableWithoutFeedback style={{ marginLeft: 60, marginTop: 7 }}>
-                <Text style={{ color: COLORS.primary,}}>Editer ton Note</Text>
-              </TouchableWithoutFeedback>
+              {/* <TouchableWithoutFeedback style={{ marginLeft: 60, marginTop: 7 }}>
+                <Text style={{ color: COLORS.primary, }}>Editer ta Note</Text>
+              </TouchableWithoutFeedback> */}
             </>
           }
 
