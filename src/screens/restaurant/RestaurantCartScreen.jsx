@@ -36,7 +36,6 @@ export default function RestaurantCartScreen() {
             })
       }
           const navigation = useNavigation()
- console.log(partenaireMenus)
           const [recommndations, setRecomandations] = useState([])
           const [loadingProducts, setLoadingProducts] = useState(false)
 

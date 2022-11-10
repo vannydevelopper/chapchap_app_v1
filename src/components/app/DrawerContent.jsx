@@ -66,10 +66,10 @@ export default function DrawerContent({ state, navigation, descriptors }) {
       <View style={styles.separator} />
       <DrawerContentScrollView style={styles.drawerScroller}>
         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)} onPress={() => handlePress('HomeScreen')}>
-          <View style={[{ borderRadius: 10, overflow: "hidden" }, (state.index == 0 || state.index == 1 || state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+          <View style={[{ borderRadius: 10, overflow: "hidden" }, (state.index == 0 ) && { backgroundColor: COLORS.handleColor }]}>
             <View style={styles.drawerItem}>
               <AntDesign name="home" size={27} color="#000" />
-              <Text style={[styles.drawerItemLabel, (state.index == 0 || state.index == 1 || state.index == 2) && { color: '#000' }]}>Produits et  services</Text>
+              <Text style={[styles.drawerItemLabel, (state.index == 0 ) && { color: '#000' }]}>Produits et  services</Text>
             </View>
           </View>
         </TouchableNativeFeedback>
