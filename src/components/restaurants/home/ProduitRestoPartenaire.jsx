@@ -4,13 +4,15 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Menu from '../main/Menu';
 
-export default function ProduitRestoPartenaire({productPartenaires}) {
+export default function ProduitRestoPartenaire({restaurant,productPartenaires}) {
+        const navigation=useNavigation()
         return (
                 <View style={styles.homeProducts}>
                         <TouchableNativeFeedback
                                 accessibilityRole="button"
-                                background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-
+                                background={TouchableNativeFeedback.Ripple('#c9c5c5')
+                        }
+                        onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant        })}
                         >
                                 <View style={{
                                         marginTop: 10,
@@ -18,7 +20,7 @@ export default function ProduitRestoPartenaire({productPartenaires}) {
                                         paddingHorizontal: 10
                                 }}>
                                         <View style={styles.productsHeader}>
-                                                <Text style={styles.title}>Dans mon restaurant</Text>
+                                                <Text style={styles.title}>Dans ce restaurant</Text>
                                                 <MaterialIcons name="navigate-next" size={24} color="black" />
                                         </View>
 

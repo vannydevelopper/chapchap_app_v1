@@ -4,11 +4,14 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 // import Product from '../main/Product';
 // import Shop from '../main/Shop';
 import Restaurant from '../main/Restaurant';
+import { useAnimatedGestureHandler } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Restaurants({ restaurants }) {
+    const navigation=useNavigation()
           return (
                     <View style={styles.homeshops}>
-                              <TouchableNativeFeedback
+                             <TouchableNativeFeedback onPress={() => navigation.navigate('RestaurantScreen', { restaurants })}
                                         accessibilityRole="button"
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                               >

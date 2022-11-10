@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function Restaurant({ restaurant, index, totalLength }) {
   const navigation = useNavigation()
-
           const { width } = useWindowDimensions()
           const MAX_WIDTH = 200
           const PRODUCT_MARGIN = 10
@@ -21,7 +20,7 @@ export default function Restaurant({ restaurant, index, totalLength }) {
           }
           return (
                     <View key={index} style={[styles.shop, additionStyles]}>
-                       <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE })}>
+                       <TouchableNativeFeedback onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant})}>
                               <View style={styles.imageCard}>
                                         <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
                               </View>

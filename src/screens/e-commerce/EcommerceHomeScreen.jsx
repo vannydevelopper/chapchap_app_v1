@@ -185,17 +185,11 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-
-
-                <View
-                    
-                >
+                <View>
                     <View style={styles.productsHeader}>
                         <Text style={styles.title}>Recommandé pour vous</Text>
-                       
                     </View>
                 </View>
-
                 <View style={styles.products}>
                     {products.map((product, index) => {
                         return (

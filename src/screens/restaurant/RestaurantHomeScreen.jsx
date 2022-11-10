@@ -162,7 +162,7 @@ export default function RestaurantHomeScreen() {
                                 return (
                                     <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
                                         <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
                                                 <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
                                             </View>
                                             <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>

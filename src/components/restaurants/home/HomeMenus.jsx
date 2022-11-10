@@ -8,13 +8,13 @@ export default function HomeMenus({ menus, selectedCategorie}) {
         const navigation = useNavigation()
         return (
                 <View style={styles.homeProducts}>
-                        <TouchableNativeFeedback>
-                                {/* accessibilityRole="button"
+                        <TouchableNativeFeedback
+                                accessibilityRole="button"
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-                                onPress={() => navigation.navigate('AllProductsScreen', {
+                                onPress={() => navigation.navigate('AllMenuScreen', {
                                         selectedCategorie: selectedCategorie
                                 })}
-                        > */}
+                        >
                                 <View style={styles.productsHeader}>
                                         <Text style={styles.title}>Les plus achetés</Text>
                                         <MaterialIcons name="navigate-next" size={24} color="black" />
