@@ -146,7 +146,7 @@ export default function RestaurantCartScreen() {
                                           somme += parseInt(menu.PRIX) * menu.QUANTITE
                                           element=element+menu.QUANTITE
                                     })
-                                    const parte = partenaire.MENUS[0].ID_PARTENAIRE_SERVICE
+                                    const parte = partenaire.MENUS[0].NOM_ORGANISATION
                                     return (
                                           <View style={{ marginTop: 25,backgroundColor: '#F1F1F1',padding:10,borderRadius:10 }}>
                                                 <Text style={styles.boutique}>{parte}</Text>
