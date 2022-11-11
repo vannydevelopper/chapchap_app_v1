@@ -6,6 +6,7 @@ import EcommerceHomeScreen from "../screens/e-commerce/EcommerceHomeScreen";
 import EcommerceWishlistScreen from "../screens/e-commerce/EcommerceWishlistScreen";
 import HomeScreen from "../screens/home/HomeScreen";
 import RestaurationComEmises from "../screens/restaurant/RestaurationComEmises";
+import WishlistTab from "../screens/wishlist/WishlistTab";
 import EcommerceNavigator from "./EcommerceNavigator";
 import RestaurantNavigator from "./RestaurantNavigator";
 
@@ -18,7 +19,8 @@ export default function DrawerNavigator() {
                               <Drawer.Screen name='RestaurantNavigator' component={RestaurantNavigator} />
                               <Drawer.Screen name='EcommerceWishlistScreen' component={EcommerceWishlistScreen} />
                               <Drawer.Screen name='Commande' component={CommandeEmiseScreen} />
-                              <Drawer.Screen name="CommandeRestauration" component={RestaurationComEmises}/>
+                              <Drawer.Screen name="WishlistTab" component={WishlistTab}/>
+                              
                     </Drawer.Navigator>
           )
 }

@@ -4,7 +4,7 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { Portal } from 'react-native-portalize';
 import { Modalize } from 'react-native-modalize';
-import AddCart from './AddCart';
+import AddCart from './AddCart1';
 import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
@@ -14,8 +14,10 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
 export default function Product({ product, index, totalLength, fixMargins = false, onRemove }) {
+  //  console.log(product)
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
+
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -31,37 +33,61 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
-
-  // const [SIZES, setSIZES] = useState([])
   const [SIZES, setSIZES] = useState([])
+  const [quantites, setQuantites] = useState([])
 
   const [colors, SetColors] = useState([])
+  const [variantes, setVariantes] = useState([])
+  const [combinaisons, setCombinaisons] = useState([])
+ var nombre=0;
+  const onPress = useCallback((newCombinaison,nbre) => {
+    nombre=nbre
+    const isSelected = combinaisons.find(i =>i.ID_VARIANT == newCombinaison.ID_VARIANT)
+    if (isSelected) {
+    var  comb = combinaisons.filter(i =>i.ID_VARIANT != newCombinaison.ID_VARIANT)
+    const newCombinaisons=[...comb,newCombinaison]
+    setCombinaisons( newCombinaisons )
+    }
+    else {
+      setCombinaisons(t => [...t, newCombinaison])
+    }
+    console.log(combinaisons.length)
+    console.log(nbre)
 
-  const onSizePress = async (size) => {
+    if(combinaisons.length==nbre-1)
+    {
+      
+        const ID_VALUE=combinaisons.map((combinaison,index)=>combinaison.ID_VALUE)
+        const form = new FormData()
+        form.append('ID_VARIANT', JSON.stringify(ID_VALUE))
 
-    try {
-      // setLoadingSubCategories(true)
-      if (size?.id) {
-        const color = await fetchApi(`/products/color/${product.produit.ID_PRODUIT_PARTENAIRE}/${size?.id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        })
-        SetColors(color.result)
+        try {
+          
+          const res =  fetchApi("/products/quantite/", {
+            method: "POST",
+            body: form
+    })
+          setQuantites(res)
+        console.log(res)
 
-      }
-    } catch (error) {
+        }
+       catch (error) {
       console.log(error)
     }
-  }
+        }
+
+    }
+
+
+  }, [combinaisons])
+  
   const fecthSizes = async () => {
     try {
       const sizes = await fetchApi(`/products/size/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
-
       })
       setSIZES(sizes.result)
-      console.log(SIZES)
     }
     catch (error) {
       console.log(error)
@@ -71,6 +97,23 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   useFocusEffect(useCallback(() => {
     fecthSizes()
   }, []))
+  const fecthVariantes = async () => {
+    try {
+      const sizes = await fetchApi(`/products/variante/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+      setVariantes(sizes.result)
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  useFocusEffect(useCallback(() => {
+    fecthVariantes()
+  }, []))
+
 
   useEffect(() => {
     (async () => {
@@ -82,6 +125,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
             headers: { "Content-Type": "application/json" },
           })
           SetColor(color.result)
+          console.log("color.result")
         }
       } catch (error) {
         console.log(error)
@@ -183,7 +227,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
     <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
       <TouchableWithoutFeedback onPress={() => navigation.push('ProductDetailsScreen', { product: product })} >
         <View style={styles.imageCard}>
-          <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+          <Image source={{ uri: product.produit.IMAGE }} style={styles.image} />
         </View>
       </TouchableWithoutFeedback>
       <View style={{ flexDirection: "row" }}>
@@ -195,6 +239,8 @@ export default function Product({ product, index, totalLength, fixMargins = fals
         >
           <View style={styles.cardLike}>
             {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
+
+
           </View>
         </TouchableOpacity>
 
@@ -234,7 +280,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
               setLoadingForm(true)
             }}
           >
-            <AddCart colors={colors} onSizePress={onSizePress} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+            <AddCart combinaisons={combinaisons} onPress={onPress} variantes={variantes} colors={colors} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
           </Modalize>
         </GestureHandlerRootView>
       </Portal>

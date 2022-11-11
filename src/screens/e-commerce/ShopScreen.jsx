@@ -134,7 +134,8 @@ const styles = StyleSheet.create({
     },
     products: {
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        marginBottom:10
 
     },
     titlePrincipal: {

@@ -8,10 +8,11 @@ import fetchApi from "../../helpers/fetchApi";
 import { useRoute } from "@react-navigation/native";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import SubCategories from "../../components/ecommerce/home/SubCategories";
-import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import Shop from "../../components/ecommerce/main/Shop";
+import Restaurant from "../../components/restaurants/main/Restaurant";
 
-export default function ShopsScreen() {
+export default function RestaurantScreen() {
     const route = useRoute()
     const { selectedCategorie: defautSelectedCategorie, selectedsousCategories: defautSelectedsousCategories } = route.params
 
@@ -28,7 +29,7 @@ export default function ShopsScreen() {
     const [products, setProducts] = useState([])
 
     const navigation = useNavigation()
-    const { shops } = route.params
+    const { restaurants } = route.params
     // console.log(shops)
 
 
@@ -41,7 +42,7 @@ export default function ShopsScreen() {
 
                         <View style={styles.productsHeader}>
                             <Ionicons name="arrow-back-sharp" size={24} color="black" /><Text>   </Text>
-                            <Text style={styles.title}>Les boutiques</Text>
+                            <Text style={styles.title}>Les restaurants</Text>
 
                         </View>
                     </TouchableOpacity>
@@ -53,29 +54,22 @@ export default function ShopsScreen() {
                     <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
                         <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
                     </TouchableOpacity>
-                    <EcommerceBadge />
+                    <RestaurantBadge />
                 </View>
             </View>
             <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
                 <Text style={styles.titlePrincipal}></Text>
                 <View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-
                     </View>
                 </View>
-
-
-
-
-
-
                 <View style={styles.products}>
-                    {shops.map((shop, index) => {
+                    {restaurants.map((restaurant, index) => {
                         return (
-                            <Shop
-                                shop={shop}
+                            <Restaurant
+                                restaurant={restaurant}
                                 index={index}
-                                totalLength={shops.length}
+                                totalLength={restaurants.length}
                                 key={index}
                             />
                         )

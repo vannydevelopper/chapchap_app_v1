@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 import { useNavigation } from '@react-navigation/native';
 
-export default function ProductPartenaire({ product, index, totalLength, fixMargins = false }) {
+export default function MenuPartenaire({ menu, index, totalLength, fixMargins = false }) {
         const navigation = useNavigation()
           const { width } = useWindowDimensions()
           const PRODUCT_MARGIN = 10
@@ -38,7 +38,7 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
                     modalizeRef.current?.close()
           }
 
-          const productInCart = useSelector(ecommerceProductSelector(product.ID_PRODUIT_PARTENAIRE))
+          const productInCart = useSelector(ecommerceProductSelector(menu.ID_PRODUIT_PARTENAIRE))
 
           useEffect(() => {
                     if(isOpen) {
@@ -53,8 +53,8 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
 
           return (
                     <View key={index} style={[styles.product, additionStyles]}>
-                              <TouchableOpacity onPress={()=>navigation.push('ProductDetailsScreen', {product:product})} style={styles.imageCard}>
-                                        <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+                              <TouchableOpacity onPress={()=>navigation.push('ProductDetailsScreen', {menu:menu})} style={styles.imageCard}>
+                                        <Image source={{ uri: menu.IMAGE }} style={styles.image} />
                               </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
                                         <View style={styles.cardLike}>
@@ -71,11 +71,11 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
                               </View>
                               <View style={styles.productNames}>
                                         <Text numberOfLines={2} style={styles.productName}>
-                                                  {product.produit.NOM} ·
-                                                  <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
+                                                  {menu.repas} ·
+                                                  <Text numberOfLines={2} style={styles.productName}> {menu.categorie}</Text>
                                         </Text>
                               </View>
-                              {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
+                              {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
                               <Portal>
                                         <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                                                   <Modalize
@@ -96,7 +96,7 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
                                                                       setLoadingForm(true)
                                                             }}
                                                   >
-                                                            <AddCart product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                                                            <AddCart menu={menu} loadingForm={loadingForm} onClose={onCloseAddToCart} />
                                                   </Modalize>
                                         </GestureHandlerRootView>
                               </Portal>

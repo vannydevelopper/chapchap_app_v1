@@ -20,8 +20,6 @@ export default function MenuDetailScreen() {
     const route = useRoute()
     const navigation = useNavigation()
     const { product } = route.params
-    //  console.log(product.IMAGE2 )
-
     const [loadingPartenaireProducts, setloadingPartenaireProducts] = useState(true)
     const [shopProducts, setShopProducts] = useState([])
 
@@ -60,12 +58,12 @@ export default function MenuDetailScreen() {
     ]
     const fecthProduitPartenaires = async () => {
         try {
-            const response = await fetchApi(`/resto/menu?partenaire=${product.ID_PARTENAIRE}`, {
+            const response = await fetchApi(`/resto/menu/restaurant/${product.ID_PARTENAIRE_SERVICE}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
             setShopProducts(response.result)
-            // console.log(response.result)
+             console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -80,10 +78,9 @@ export default function MenuDetailScreen() {
     useEffect(() => {
         (async () => {
             try {
-                var url = "/resto/menu"
+                var url = `/resto/menu?category=${product.ID_CATEGORIE_MENU}`
                 const produits = await fetchApi(url)
                 setSimilarProducts(produits.result)
-                // console.log(produits.result)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -115,11 +112,11 @@ export default function MenuDetailScreen() {
                         <View>
                             <TouchableOpacity style={styles.category} >
                                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
-                                <Text style={styles.categoryName} numberOfLines={2}>{product.NOM_CATEGORIE}</Text>
+                                <Text style={styles.categoryName} numberOfLines={2}>{product.repas}</Text>
                             </TouchableOpacity>
                             <View style={styles.productNames}>
                                 <Text style={styles.productName}>
-                                    <Text numberOfLines={2} style={styles.productName}>{product.NOM_SOUS_CATEGORIE}</Text>
+                                    <Text numberOfLines={2} style={styles.productName}>{product.categorie}</Text>
                                 </Text>
                             </View>
                         </View>
@@ -128,9 +125,10 @@ export default function MenuDetailScreen() {
                         </View>
                     </View>
                     <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
-                        <Text style={styles.productDescription}>{product.DESCRIPTION_SOUS_CATEGORIE}</Text>
+                        <Text style={styles.productDescription}>{product.DESCRIPTION}</Text>
                     </View>
-                    <TouchableNativeFeedback>
+                    <TouchableNativeFeedback
+                    onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: product })}>
                         <View style={styles.shop}>
                             <View style={styles.shopLeft}>
                                 <View style={styles.shopIcon}>
@@ -139,7 +137,7 @@ export default function MenuDetailScreen() {
                                 </View>
                                 <View style={styles.shopOwner}>
                                     <Text style={styles.productSeller}>
-                                        obr
+                                    {product.NOM_ORGANISATION }
                                     </Text>
                                     <Text style={styles.shopAdress}>Bujumbura</Text>
                                 </View>
@@ -149,7 +147,7 @@ export default function MenuDetailScreen() {
                     </TouchableNativeFeedback>
 
                     {(loadingPartenaireProducts) ? <HomeProductsSkeletons /> :
-                        <ProduitRestoPartenaire productPartenaires={shopProducts} />}
+                        <ProduitRestoPartenaire restaurant={product} productPartenaires={shopProducts} />}
 
                     {(loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
                         <>

@@ -8,34 +8,35 @@ import fetchApi from "../../helpers/fetchApi";
 import { useRoute } from "@react-navigation/native";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import SubCategories from "../../components/ecommerce/home/SubCategories";
-import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
+import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
+import LottieView from 'lottie-react-native';
 
-export default function ProductShopsScreen() {
+export default function MenusRestaurantScreen() {
     const route = useRoute()
     const { selectedCategorie: defautSelectedCategorie, selectedsousCategories: defautSelectedsousCategories } = route.params
 
     const [loadingCategories, setLoadingCatagories] = useState(true)
     const [categories, setCategories] = useState([])
-    const [selectedCategorie, setSelectedCategorie] = useState(defautSelectedCategorie)
+    const [selectedCategorie, setSelectedCategorie] = useState(null)
 
     const [loadingSubCategories, setLoadingSubCategories] = useState(false)
     const [sousCategories, SetSousCategories] = useState([])
-    const [selectedsousCategories, setSelectedsousCategories] = useState(defautSelectedsousCategories)
+    const [selectedsousCategories, setSelectedsousCategories] = useState(null)
 
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
-    const [products, setProducts] = useState([])
+    const [menus, setMenus] = useState([])
 
     const navigation = useNavigation()
-    const { id } = route.params
+    const { restaurant } = route.params
     const fecthProduits = async () => {
         try {
-            const response = await fetchApi(`/products/categories/${id} `, {
+            const response = await fetchApi(`/resto/menu/categories/${restaurant.ID_PARTENAIRE_SERVICE} `, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -49,7 +50,7 @@ export default function ProductShopsScreen() {
 
     const onCategoryPress = (categorie) => {
         if (loadingSubCategories || loadingProducts) return false
-        if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
+        if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
             return setSelectedCategorie(null)
         }
         setSelectedCategorie(categorie)
@@ -84,17 +85,15 @@ export default function ProductShopsScreen() {
     useEffect(() => {
         (async () => {
             try {
-
                 if (firstLoadingProducts == false) {
                     setLoadingProducts(true)
                 }
-                var url = `/products/products/${id} `
+                var url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE} `
                 if (selectedCategorie) {
-                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                    url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE}?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
                 }
-                const produits = await fetchApi(url)
-                setProducts(produits.result)
-
+                const menu = await fetchApi(url)
+                setMenus(menu.result)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -103,11 +102,6 @@ export default function ProductShopsScreen() {
             }
         })()
     }, [selectedCategorie, selectedsousCategories])
-
-
-
-
-
     return (
         <View style={styles.container}>
             <View style={styles.cardHeader}>
@@ -115,21 +109,18 @@ export default function ProductShopsScreen() {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View style={styles.productsHeader}>
                             <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                            <Text style={styles.title}>Les produits disponibles</Text>
-
+                            <Text style={styles.title}>Les menus de: {restaurant.NOM_ORGANISATION}</Text>
                         </View>
-
-
                     </TouchableOpacity>
-                    <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
-                        {selectedCategorie ? selectedCategorie.NOM : products.NOM_ORGANISATION}
-                    </Text>
+                    {/* <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
+                        {selectedCategorie ? selectedCategorie.NOM : menus.NOM_ORGANISATION}
+                    </Text> */}
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
                         <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
                     </TouchableOpacity>
-                    <EcommerceBadge />
+                    <RestaurantBadge />
                 </View>
             </View>
             <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
@@ -141,7 +132,7 @@ export default function ProductShopsScreen() {
                                 return (
                                     <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
                                         <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
                                                 <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
                                             </View>
                                             <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
@@ -160,20 +151,26 @@ export default function ProductShopsScreen() {
                 />)}
 
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons wrap /> :
-
+         menus.length!=0 ?
                     <View style={styles.products}>
-                        {products.map((product, index) => {
+                        {menus.map((menu, index) => {
                             return (
-                                <ProductPartenaire
-                                    product={product}
+                                <MenuPartenaire
+                                    menu={menu}
                                     index={index}
-                                    totalLength={products.length}
+                                    totalLength={menus.length}
                                     key={index}
                                     fixMargins
                                 />
                             )
                         })}
-                    </View>}
+                    </View>:
+                     <>
+                     <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
+                     <Text style={styles.emptyFeedback}>Aucune menu publie </Text>
+                     
+                     </>
+                    }
             </ScrollView>
 
         </View>
@@ -237,5 +234,13 @@ const styles = StyleSheet.create({
         minWidth: 40,
         minHeight: 40,
         borderRadius: 10,
+    },
+    emptyFeedback: {
+        textAlign: "center",
+        marginTop: 10,
+        color: COLORS.ecommercePrimaryColor,
+        fontWeight: "bold",
+        opacity: 0.6,
+        fontSize: 16
     },
 })

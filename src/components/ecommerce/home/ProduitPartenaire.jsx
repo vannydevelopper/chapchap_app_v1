@@ -8,7 +8,7 @@ import Product from '../main/Product';
 
 export default function ProduitPartenaire({ productPartenaires,ID_PARTENAIRE_SERVICE }) {
     const navigation=useNavigation()
-    //console.log(ID_PARTENAIRE_SERVICE)
+    console.log(ID_PARTENAIRE_SERVICE)
           return (
                     <View style={styles.homeProducts}>
                               <TouchableNativeFeedback onPress={()=>navigation.navigate('ProductShopsScreen',{id:ID_PARTENAIRE_SERVICE})}

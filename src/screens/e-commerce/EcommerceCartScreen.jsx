@@ -27,7 +27,6 @@ export default function EcommerceCartScreen() {
             else {
                   productParPartenaire[product.produit_partenaire.ID_PARTENAIRE_SERVICE] = [product]
             }
-
       })
       for (let key in productParPartenaire) {
             const PRODUCTS = productParPartenaire[key]
@@ -35,7 +34,7 @@ export default function EcommerceCartScreen() {
                   PRODUCTS
             })
       }
-
+// console.log(products)
       const navigation = useNavigation()
       const [recommndations, setRecomandations] = useState([])
       const [loadingProducts, setLoadingProducts] = useState(false)
