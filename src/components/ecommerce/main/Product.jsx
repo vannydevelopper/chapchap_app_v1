@@ -34,7 +34,9 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
 
+  // const [SIZES, setSIZES] = useState([])
   const [SIZES, setSIZES] = useState([])
+
   const [colors, SetColors] = useState([])
 
   const onSizePress =async (size) => {
