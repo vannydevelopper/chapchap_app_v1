@@ -195,7 +195,7 @@ export default function ProductDetailsScreen() {
           </TouchableOpacity>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-              <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor}/>
+              <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
             </TouchableOpacity>
             <EcommerceBadge />
           </View>
@@ -254,16 +254,16 @@ export default function ProductDetailsScreen() {
             </Text>
           </View> */}
 
-          {!userNote[0] ?
+          {!userNote[0] && !produitnote[0] ?
             <>
               <View style={styles.etoiles}>
                 {new Array(5).fill(0).map((_, index) => {
                   return (
                     <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
                       <View >
-                        {note && note >= index + 1 ? <FontAwesome name="star" size={35} color={COLORS.primaryPicker} /> :
+                        {note && note >= index + 1 ? <FontAwesome name="star" size={20} color={COLORS.primaryPicker} /> :
 
-                          <FontAwesome name="star-o" size={35} color="black" />}
+                          <FontAwesome name="star-o" size={20} color="black" />}
                       </View>
                     </TouchableWithoutFeedback>
                   )

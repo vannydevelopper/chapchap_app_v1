@@ -18,6 +18,7 @@ import Loading from "../../components/app/Loading";
 // import ProductImages from "../../components/ecommerce/details/ProductImages";
 import ProductImages from "../../components/restaurants/details/ProductImages"
 import { FontAwesome } from '@expo/vector-icons';
+import moment from "moment/moment";
 export default function MenuDetailScreen() {
     const [nombre, setNombre] = useState(0);
     const route = useRoute()
@@ -34,7 +35,9 @@ export default function MenuDetailScreen() {
     const modalizeRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
+    const [produitnote, Setproduitnote] = useState([])
     const [note, Setnote] = useState(null)
+    const [userNote, SetuserNote] = useState([])
     const [loading, setLoading] = useState(false)
     const [commentaire, Setcommentaire] = useState(null)
     const onCartPress = () => {
@@ -54,6 +57,15 @@ export default function MenuDetailScreen() {
             }
         }
     }, [isOpen])
+    moment.updateLocale('fr', {
+        calendar: {
+            sameDay: "[Aujourd'hui]",
+            lastDay: '[Hier]',
+            nextDay: 'DD-M-YYYY',
+            lastWeek: 'DD-M-YYYY',
+            sameElse: 'DD-M-YYYY',
+        },
+    })
 
     var IMAGES = [
         product.IMAGE ? product.IMAGE : undefined,
@@ -74,7 +86,7 @@ export default function MenuDetailScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setShopProducts(response.result)
-             console.log(response.result)
+            //console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -90,7 +102,7 @@ export default function MenuDetailScreen() {
 
         try {
 
-             setLoading(true)
+            setLoading(true)
             const res = await fetchApi("/resto/menu/note", {
                 method: 'POST',
                 body: JSON.stringify({
@@ -105,7 +117,7 @@ export default function MenuDetailScreen() {
 
             })
 
-            //Setproduitnote(n => [res.result, ...n])
+            Setproduitnote(n => [res.result, ...n])
 
         }
 
@@ -123,6 +135,30 @@ export default function MenuDetailScreen() {
     useEffect(() => {
         (async () => {
             try {
+                var url = `/resto/menu/note/liste/${product.ID_RESTAURANT_MENU}`
+                const produitsNotes = await fetchApi(url)
+                Setproduitnote(produitsNotes.result)
+                //console.log(produitsNotes)
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, [])
+    useEffect(() => {
+        (async () => {
+            try {
+                var url = `/resto/menu/note/${product.ID_RESTAURANT_MENU}`
+                const userNotes = await fetchApi(url)
+                SetuserNote(userNotes.result)
+                //console.log(userNotes.result)
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }, [])
+    useEffect(() => {
+        (async () => {
+            try {
                 var url = `/resto/menu?category=${product.ID_CATEGORIE_MENU}`
                 const produits = await fetchApi(url)
                 setSimilarProducts(produits.result)
@@ -136,8 +172,8 @@ export default function MenuDetailScreen() {
 
 
     return (
-        <>  
-        {loading && <Loading/>}
+        <>
+            {loading && <Loading />}
             <View style={{ marginTop: 0, flex: 1 }}>
                 <View style={styles.cardHeader}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -174,7 +210,7 @@ export default function MenuDetailScreen() {
                         <Text style={styles.productDescription}>{product.DESCRIPTION}</Text>
                     </View>
                     <TouchableNativeFeedback
-                    onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: product })}>
+                        onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: product })}>
                         <View style={styles.shop}>
                             <View style={styles.shopLeft}>
                                 <View style={styles.shopIcon}>
@@ -183,7 +219,7 @@ export default function MenuDetailScreen() {
                                 </View>
                                 <View style={styles.shopOwner}>
                                     <Text style={styles.productSeller}>
-                                    {product.NOM_ORGANISATION }
+                                        {product.NOM_ORGANISATION}
                                     </Text>
                                     <Text style={styles.shopAdress}>Bujumbura</Text>
                                 </View>
@@ -196,46 +232,135 @@ export default function MenuDetailScreen() {
                             {JSON.stringify({ note })}
                         </Text>
                     </View> */}
-                    <View style={styles.etoiles}>
-                        {new Array(5).fill(0).map((_, index) => {
-                            return (
-                                <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
-                                    <View >
-                                        {note && note >= index + 1 ? <FontAwesome name="star" size={35} color={COLORS.primaryPicker} /> :
+                    {!userNote[0] && !produitnote[0] ?
+                        <>
 
-                                            <FontAwesome name="star-o" size={35} color="black" />}
+
+                            <View style={styles.etoiles}>
+                                {new Array(5).fill(0).map((_, index) => {
+                                    return (
+                                        <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
+                                            <View >
+                                                {note && note >= index + 1 ? <FontAwesome name="star" size={20} color={COLORS.primaryPicker} /> :
+
+                                                    <FontAwesome name="star-o" size={20} color="black" />}
+                                            </View>
+                                        </TouchableWithoutFeedback>
+                                    )
+                                })}
+                            </View>
+                            {note && <View style={styles.inputCard}>
+                                <View>
+                                    <OutlinedTextField
+                                        label="Commentaire"
+                                        fontSize={14}
+                                        baseColor={COLORS.smallBrown}
+                                        tintColor={COLORS.primary}
+                                        containerStyle={{ borderRadius: 20 }}
+                                        multiline={true}
+                                        value={commentaire}
+                                        onChangeText={(t) => Setcommentaire(t)}
+
+                                        autoCompleteType='off'
+                                        returnKeyType="next"
+                                        blurOnSubmit={false}
+                                    />
+                                </View>
+
+                            </View>}
+                            {note && <TouchableWithoutFeedback
+                                onPress={enregistrement}
+                            >
+                                <View style={[styles.button,]}>
+                                    <Text style={styles.buttonText}>Enregistrer</Text>
+
+                                </View>
+                            </TouchableWithoutFeedback>}
+
+
+                            {produitnote.map((note, index) => {
+                                return (
+                                    <View key={index} style={{ marginTop: 15 }}>
+                                        <View style={styles.notecard}>
+                                            <View style={styles.Cardnote} >
+                                                <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
+                                            </View>
+                                            <View style={styles.rateHeader}>
+                                                <View style={styles.rateTitles}>
+                                                    <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
+                                                    <Text style={{ color: '#777', marginRight: 10 }}>
+                                                        {moment(note.restaurant_note.DATE).format('DD-M-YYYY')}
+                                                    </Text>
+                                                </View>
+                                                <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
+                                                    {new Array(5).fill(0).map((_, index) => {
+                                                        return (
+                                                            <TouchableWithoutFeedback >
+                                                                <View >
+                                                                    {note.restaurant_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
+
+                                                                        <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
+
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                        )
+                                                    })}
+                                                </View>
+                                            </View>
+                                        </View>
+
+                                        <View style={{ marginLeft: 60, marginTop: 7 }}>
+                                            <Text>{note.restaurant_note.COMENTAIRE}</Text>
+                                        </View>
                                     </View>
-                                </TouchableWithoutFeedback>
-                            )
-                        })}
-                    </View>
-                    {note && <View style={styles.inputCard}>
-                        <View>
-                            <OutlinedTextField
-                                label="Commentaire"
-                                fontSize={14}
-                                baseColor={COLORS.smallBrown}
-                                tintColor={COLORS.primary}
-                                containerStyle={{ borderRadius: 20 }}
-                                multiline={true}
-                                value={commentaire}
-                                onChangeText={(t) => Setcommentaire(t)}
+                                )
 
-                                autoCompleteType='off'
-                                returnKeyType="next"
-                                blurOnSubmit={false}
-                            />
-                        </View>
+                            })}
+                        </> :
+                        <>
+                            {produitnote.map((note, index) => {
+                                return (
+                                    <View key={index} style={{ marginTop: 15 }}>
+                                        <View style={styles.notecard}>
+                                            <View style={styles.Cardnote} >
+                                                <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
+                                            </View>
+                                            <View style={styles.rateHeader}>
+                                                <View style={styles.rateTitles}>
+                                                    <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
+                                                    <Text style={{ color: '#777', marginRight: 10 }}>
+                                                        {moment(note.restaurant_note.DATE).format('DD-M-YYYY')}
+                                                    </Text>
+                                                </View>
+                                                <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
+                                                    {new Array(5).fill(0).map((_, index) => {
+                                                        return (
+                                                            <TouchableWithoutFeedback >
+                                                                <View >
+                                                                    {note.restaurant_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
 
-                    </View>}
-                    {note && <TouchableWithoutFeedback
-                        onPress={enregistrement}
-                    >
-                        <View style={[styles.button,]}>
-                            <Text style={styles.buttonText}>Enregistrer</Text>
+                                                                        <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
 
-                        </View>
-                    </TouchableWithoutFeedback>}
+                                                                </View>
+                                                            </TouchableWithoutFeedback>
+                                                        )
+                                                    })}
+                                                </View>
+                                            </View>
+                                        </View>
+
+                                        <View style={{ marginLeft: 60, marginTop: 7 }}>
+                                            <Text>{note.restaurant_note.COMENTAIRE}</Text>
+                                        </View>
+                                    </View>
+                                )
+
+                            })}
+                            {/* <TouchableWithoutFeedback style={{ marginLeft: 60, marginTop: 7 }}>
+                <Text style={{ color: COLORS.primary, }}>Editer ta Note</Text>
+              </TouchableWithoutFeedback> */}
+                        </>
+                    }
 
                     {(loadingPartenaireProducts) ? <HomeProductsSkeletons /> :
                         <ProduitRestoPartenaire restaurant={product} productPartenaires={shopProducts} />}
@@ -359,6 +484,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#D7D9E4',
         borderRadius: 100
     },
+    userImage: {
+        width: "120%",
+        height: "120%",
+        borderRadius: 50,
+        // alignItems:"center",
+        // justifyContent:"center"
+    },
     shop: {
         flexDirection: "row",
         alignItems: 'center',
@@ -459,6 +591,28 @@ const styles = StyleSheet.create({
         top: -10,
         right: 0,
         justifyContent: "center",
+        alignItems: "center",
+    },
+    rateHeader: {
+        marginLeft: 10,
+        flex: 1
+    },
+    rateTitles: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: 'space-between'
+    },
+    Cardnote: {
+        padding: 15,
+        height: 40,
+        width: 40,
+        color: "#1D8585",
+        backgroundColor: '#D7D9E4',
+        borderRadius: 100
+    },
+    notecard: {
+        marginLeft: 10,
+        flexDirection: "row",
         alignItems: "center",
     },
     badgeText: {
