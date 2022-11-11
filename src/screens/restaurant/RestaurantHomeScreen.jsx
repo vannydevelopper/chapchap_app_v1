@@ -1,454 +1,317 @@
-import React, { useCallback, useState, useRef, useEffect } from "react";
-import { StyleSheet, Text, Animated, BackHandler, TouchableOpacity, StatusBar, View, TextInput, Image, ScrollView, TouchableNativeFeedback } from "react-native";
-import { AntDesign, SimpleLineIcons, FontAwesome, EvilIcons, Ionicons, Entypo } from '@expo/vector-icons';
-import { Host, Portal } from 'react-native-portalize';
-import { Modalize } from "react-native-modalize";
-import { useFocusEffect, useNavigation, DrawerActions } from "@react-navigation/native";
-import AjoutPanierModalize from "../../components/restaurants/AjoutPanierModalize";
-import FiltreModal from "../../components/restaurants/FiltreModal";
+import React, { useCallback, useState, useEffect } from "react";
+import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
+import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
-import { COLORS } from "../../styles/COLORS"
-import RestoSubCategories from "../../components/restaurants/home/RestoSubCategories";
-import { CategoriesMenuSkeletons, HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
-import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
+import { DrawerActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import { COLORS } from "../../styles/COLORS";
+import SubCategories from "../../components/ecommerce/home/SubCategories";
+import HomeProducts from "../../components/ecommerce/home/HomeProducts";
+import Shops from "../../components/ecommerce/home/Shops";
+import Product from "../../components/ecommerce/main/Product";
+import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";import Restaurants from "../../components/restaurants/home/Restaurants";
+import HomeMenus from "../../components/restaurants/home/HomeMenus";
 import Menu from "../../components/restaurants/main/Menu";
-
+import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 
 export default function RestaurantHomeScreen() {
-          const ajoutPanierRef = useRef(null)
-          const filtreRef = useRef(null)
-          const navigation = useNavigation()
+    const { height } = useWindowDimensions()
 
-          const [partenaires, setPartenaires] = useState([])
-          const [selectedPartenaire, setSelectedPartenaire] = useState(null)
-          const [menuPartenaires, setMenuPartenaires] = useState([])
-
-          const [loadingMenuCategories, setLoadingMenuCatagories] = useState(true)
-          const [menuCategories, setMenuCategories] = useState([])
-          const [selectedCategorie, setSelectedCategorie] = useState(null)
-
-          const [firstLoadingMenu, setFirstLoadingMenu] = useState(true)
-          const [loadingMenu, setLoadingMenu] = useState(false)
-          const [menuListes, setMenuListes] = useState([])
-          const [selectedMenu, setSelectedMenu] = useState(null)
-
-          const fetchPartenaire = async () => {
-                    try {
-                              const response = await fetchApi('/partenaire/service/2', {
-                                        method: "GET",
-                                        headers: { "Content-Type": "application/json" },
-                              })
-                              setPartenaires(response.result)
-                    }
-                    catch (error) {
-                              console.log(error)
-                    }
-          }
-
-          useFocusEffect(useCallback(() => {
-                    fetchPartenaire()
-          }, []))
-
-          //Fetch des menus par rapport des restaurants
-          useEffect(() => {
-                    (async () => {
-                              try {
-                                        const dataPartenaire = await fetchApi(`/resto/menu/${selectedPartenaire?.ID_PARTENAIRE}`, {
-                                                  method: "GET",
-                                                  headers: { "Content-Type": "application/json" },
-                                        })
-                                        setMenuPartenaires(dataPartenaire)
-                                        // console.log(dataPartenaire)
-
-                              } catch (error) {
-                                        console.log(error)
-                              } finally {
-                                        setLoadingMenuCatagories(false)
-                              }
-                    })()
-          }, [selectedPartenaire])
+    const [loadingCategories, setLoadingCatagories] = useState(true)
+    const [categories, setCategories] = useState([])
+    const [selectedCategorie, setSelectedCategorie] = useState(null)
 
 
-          //Fetch all menu et filtre menu par categories
-          useEffect(() => {
-                    (async () => {
-                              try {
-                                        if (firstLoadingMenu == false) {
-                                                  setLoadingMenu(true)
-                                        }
-                                        var url = "/resto/menu"
-                                        if (selectedCategorie) {
-                                                  url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
-                                        } else if (selectedPartenaire) {
-                                                  url = `/resto/menu?partenaire=${selectedPartenaire?.ID_PARTENAIRE}`
-                                        }
-                                        const menu = await fetchApi(url)
-                                        setMenuListes(menu.result)
-                                        // console.log(url)
-                              } catch (error) {
-                                        console.log(error)
-                              } finally {
-                                        setFirstLoadingMenu(false)
-                                        setLoadingMenu(false)
-                              }
-                    })()
-          }, [selectedCategorie, selectedPartenaire])
-
-          //Fetch des listes des categories
-          useEffect(() => {
-                    (async () => {
-                              try {
-                                        const menus = await fetchApi("/resto/menu/categories", {
-                                                  method: "GET",
-                                                  headers: { "Content-Type": "application/json" },
-                                        })
-                                        setMenuCategories(menus.result)
-                                        // console.log(menus.result)
-
-                              } catch (error) {
-                                        console.log(error)
-                              } finally {
-                                        setLoadingMenuCatagories(false)
-                              }
-                    })()
-          }, [])
-
-          //fetch menu
-          useEffect(() => {
-                    (async () => {
-                              try {
-                                        setLoadingMenu(true)
-                                        if (selectedCategorie?.ID_CATEGORIE_MENU) {
-                                                  const menu = await fetchApi(`/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`, {
-                                                            method: "GET",
-                                                            headers: { "Content-Type": "application/json" },
-                                                  })
-                                                  setMenuListes(menu.result)
-                                                  // console.log(menu.result)
-                                        }
-                              } catch (error) {
-                                        console.log(error)
-                              } finally {
-                                        setLoadingMenu(false)
-                              }
-                    })()
-          }, [selectedCategorie])
+    const [loadingSubCategories, setLoadingSubCategories] = useState(false)
+    const [sousCategories, SetSousCategories] = useState([])
+    const [selectedsousCategories, setSelectedsousCategories] = useState(null)
 
 
-          const onMenuCategoryPress = (menuCategorie) => {
-                    setSelectedCategorie(menuCategorie)
-                    setSelectedPartenaire(null)
-          }
+    const [firstLoadingMenus, setFirstLoadingMenus] = useState(true)
+    const [loadingMenus, setLoadingMenus] = useState(false)
+    const [menus, setMenus] = useState([])
+    const [restaurants, setRestaurants] = useState([])
+    const navigation = useNavigation()
+    const fecthCategories = async () => {
+        try {
+            const response = await fetchApi("/resto/menu/categories", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            })
+            setCategories(response.result)
+        }
+        catch (error) {
+            console.log(error)
+        } finally {
+            setLoadingCatagories(false)
+        }
+    }
+    useFocusEffect(useCallback(() => {
+        fecthCategories()
+    }, []))
 
-          const onPartenairePress = (partenaire) => {
-                    setSelectedPartenaire(partenaire)
-                    setSelectedCategorie(null)
-          }
+    const onCategoryPress = (categorie) => {
+        if (loadingSubCategories || loadingMenus) return false
+        if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
+            return setSelectedCategorie(null)
+        }
+        setSelectedCategorie(categorie)
+        setSelectedsousCategories(null)
+    }
+// *************************
+    const selectedItemSousCategories = (souscategorie) => {
+        if (loadingSubCategories || loadingMenus) return false
+        if (souscategorie.ID_PRODUIT_SOUS_CATEGORIE == selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE) {
+            return setSelectedsousCategories(null)
+        }
+        setSelectedsousCategories(souscategorie)
+        // setSelectedsousCategories(null)
+    }
 
+    //fetch des sous  categories
+    useEffect(() => {
+        (async () => {
+            try {
+                setLoadingSubCategories(true)
+                if (selectedCategorie?.ID_CATEGORIE_PRODUIT) {
+                    const subCategories = await fetchApi(`/products/sub_categories/${selectedCategorie?.ID_CATEGORIE_PRODUIT}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    })
+                    SetSousCategories(subCategories.result)
+                }
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setLoadingSubCategories(false)
+            }
+        })()
+    }, [selectedCategorie])
+// *************************
+    useEffect(() => {
+        (async () => {
+            try {
+                if (firstLoadingMenus == false) {
+                    setLoadingMenus(true)
+                }
+                var url = "/resto/menu"
+                if (selectedCategorie) {
+                    url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                }
+                const menus = await fetchApi(url)
+                setMenus(menus.result)
+                console.log(menus)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setFirstLoadingMenus(false)
+                setLoadingMenus(false)
+            }
+        })()
+    }, [selectedCategorie])
 
+    useEffect(() => {
+        (async () => {
+            try {
+                if (firstLoadingMenus == false) {
+                    setLoadingMenus(true)
+                }
+                var url = "/partenaire/service/2"
+                // if (selectedCategorie) {
+                //     url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                // }
+                const restaurant = await fetchApi(url)
+                setRestaurants(restaurant.result)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setFirstLoadingMenus(false)
+                setLoadingMenus(false)
+            }
+        })()
+    }, [selectedCategorie, selectedsousCategories])
 
-          return (
-                    <>
-                              <View style={styles.container}>
-                                        <View style={styles.cardHeader}>
-                                                  <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
-                                                            <View style={styles.menuOpenerLine} />
-                                                            <View style={[styles.menuOpenerLine, { width: 15 }]} />
-                                                            <View style={[styles.menuOpenerLine, { width: 25 }]} />
-                                                  </TouchableOpacity>
-                                                  <RestaurantBadge />
+    return (
+        <View style={styles.container}>
+            <View style={styles.cardHeader}>
+                <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
+                    <View style={styles.menuOpenerLine} />
+                    <View style={[styles.menuOpenerLine, { width: 15 }]} />
+                    <View style={[styles.menuOpenerLine, { width: 25 }]} />
+                </TouchableOpacity>
+                <RestaurantBadge />
+            </View>
+            <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
+                <Text style={styles.titlePrincipal}>Restaurants</Text>
+                <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
+                    <View style={styles.searchSection}>
+                        <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Recherche..."
+                        />
+                    </View>
+                    <View style={styles.cardRecherche}>
+                        <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                    </View>
+                </View>
+                {(loadingCategories || firstLoadingMenus) ? <CategoriesSkeletons /> :
+                    <View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
+                            {categories.map((categorie, index) => {
+                                return (
+                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
+                                        <View style={{ alignContent: "center", alignItems: "center" }}>
+                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
+                                            </View>
+                                            <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                         </View>
-                                        <ScrollView stickyHeaderIndices={[3]}>
-                                                  <Text style={styles.titlePrincipal}>Restauration</Text>
-                                                  <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
-                                                            <View style={styles.searchSection}>
-                                                                      <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                                                                      <TextInput
-                                                                                style={styles.input}
-                                                                                placeholder="Recherche..."
-                                                                      />
-                                                            </View>
-                                                            <View style={styles.cardRecherche}>
-                                                                      <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
-                                                            </View>
-                                                  </View>
-                                                  <View >
-                                                            <ScrollView
-                                                                      horizontal showsHorizontalScrollIndicator={false}
-                                                                      style={styles.subCategories}
-                                                            >
-                                                                      {partenaires.map((partenaire, index) => {
-                                                                                return (
-                                                                                          <TouchableOpacity onPress={() => onPartenairePress(partenaire)} key={index} style={{ alignContent: "center", alignItems: "center" }}>
-                                                                                                    <View style={{ alignContent: "center", alignItems: "center", margin: 10 }}>
-                                                                                                              <View style={[styles.cardPhotoPartenaire, { backgroundColor: partenaire.ID_PARTENAIRE == selectedPartenaire?.ID_PARTENAIRE ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                                                                                        <Image source={{ uri: partenaire.LOGO }} style={styles.image} />
-                                                                                                              </View>
-                                                                                                              <Text style={{}}>{ partenaire.NOM_ORGANISATION }</Text>
-                                                                                                    </View>
-                                                                                          </TouchableOpacity>
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </View>
+                    </View>}
+                {selectedCategorie ? ((loadingSubCategories || loadingMenus) ? <SubCategoriesSkeletons /> : <SubCategories
+                    sousCategories={sousCategories}
+                    selectedItemSousCategories={selectedItemSousCategories}
+                    selectedsousCategories={selectedsousCategories}
+                />) : null}
 
-                                                                                )
-                                                                      })}
-                                                            </ScrollView>
-                                                  </View>
-                                                  {loadingMenuCategories ? <CategoriesMenuSkeletons /> :
-                                                            <View>
-                                                                      <ScrollView
-                                                                                horizontal showsHorizontalScrollIndicator={false}
-                                                                                style={styles.subCategoriesMenu}
-                                                                      >
-                                                                                {menuCategories.map((menuCategorie, index) => {
-                                                                                          return (
-                                                                                                    <TouchableOpacity key={index} onPress={() => onMenuCategoryPress(menuCategorie)}>
-                                                                                                              <View style={{ alignContent: "center", alignItems: "center", margin: 20 }}>
-                                                                                                                        <View style={[styles.cardPhoto, { backgroundColor: menuCategorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                                                                                                  <Ionicons name="shirt-sharp" size={24} color="white" />
-                                                                                                                        </View>
-                                                                                                                        <Text style={{ fontSize: 12, fontWeight: "bold" }}>{menuCategorie.NOM}</Text>
-                                                                                                              </View>
-                                                                                                    </TouchableOpacity>
-                                                                                          )
-                                                                                })}
-                                                                      </ScrollView>
-                                                            </View>}
-                                                  <ScrollView showsVerticalScrollIndicator={false}>
+                {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <HomeMenus menus={menus} selectedCategorie={selectedCategorie} />}
+                {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <Restaurants restaurants={restaurants} />
+                }
+                <TouchableNativeFeedback
+                    accessibilityRole="button"
+                    background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                >
+                    <View style={styles.productsHeader}>
+                        <Text style={styles.title}>Recommandé pour vous</Text>
+                        <MaterialIcons name="navigate-next" size={24} color="black" />
+                    </View>
+                </TouchableNativeFeedback>
 
-                                                            <View style={styles.products}>
-                                                                      {menuListes.map((menu, index) => {
-                                                                                return (
-                                                                                          <Menu
-                                                                                                    menu={menu}
-                                                                                                    index={index}
-                                                                                                    totalLength={menuListes.length}
-                                                                                                    key={index}
-                                                                                                    fixMargins
-                                                                                          />
-                                                                                )
-                                                                      })}
-                                                            </View>
-                                                  </ScrollView>
-                                        </ScrollView>
-                                        <Portal>
-                                                  <Modalize ref={ajoutPanierRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                            <AjoutPanierModalize product={partenaires} ajoutPanierRef={ajoutPanierRef} />
-                                                  </Modalize>
-                                        </Portal>
-
-                                        <Portal>
-                                                  <Modalize ref={filtreRef} adjustToContentHeight handleStyle={{ display: 'none' }} modalStyle={{ borderTopRightRadius: 20, borderTopLeftRadius: 20 }}>
-                                                            <FiltreModal filtreRef={filtreRef} />
-                                                  </Modalize>
-                                        </Portal>
-
-                              </View>
-                    </>
-
-          )
+                <View style={styles.products}>
+                    {menus.map((menu, index) => {
+                        return (
+                            <Menu
+                                menu={menu}
+                                index={index}
+                                totalLength={menus.length}
+                                key={index}
+                                fixMargins
+                            />
+                        )
+                    })}
+                </View>
+            </ScrollView>
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
-          container: {
-                    flex: 1,
-          },
-          input: {
-                    flex: 1
-          },
-          searchSection: {
-                    flexDirection: "row",
-                    marginTop: 10,
-                    padding: 5,
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#ddd",
-                    //justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    backgroundColor: "#D7D9E4",
-                    width: "84%"
-          },
-          cardRecherche: {
-                    width: 40,
-                    height: 40,
-                    borderRadius: 10,
-                    backgroundColor: "#EF4255",
-                    marginTop: 8,
-                    justifyContent: "center",
-                    alignContent: "center",
-                    alignItems: "center"
-          },
-          cardAchat: {
-                    // width: 120,
-                    // height: 120,
-                    // borderWidth: 2,
-                    // borderColor: "#BCBFD1",
-                    // borderRadius: 20,
-                    // justifyContent: "center",
-                    // alignItems: "center",
-                    // margin: 5
-          },
-          image: {
-                    width: 60,
-                    height: 60,
-                    borderRadius: 10
-          },
-          cardPhoto: {
-                    width: 50,
-                    height: 50,
-                    //backgroundColor: "#242F68",
-                    backgroundColor: "#DFE1E9",
-                    borderRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-          },
-          cardPhotoPartenaire: {
-                    width: 75,
-                    height: 75,
-                    //backgroundColor: "#242F68",
-                    backgroundColor: "#DFE1E9",
-                    borderRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-          },
-          cardAchatDescription: {
-                    // marginTop: 20,
-                    // width: 150,
-                    // height: 120,
-                    // borderWidth: 2,
-                    // borderColor: "#BCBFD1",
-                    // borderRadius: 20,
-                    // justifyContent: "center",
-                    // alignItems: "center"
-          },
-          imageDescription: {
-                    marginTop: 20,
-                    width: 150,
-                    height: 150,
-          },
-          cardLike: {
-                    width: 35,
-                    height: 35,
-                    backgroundColor: "#FBD5DA",
-                    borderRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center"
-          },
-          cardLike2: {
-                    width: 35,
-                    height: 35,
-                    backgroundColor: "#FBD5DA",
-                    borderRadius: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginLeft: 8
-          },
-          titleName: {
-                    position: "absolute",
-                    marginTop: 130,
-                    marginLeft: 30,
-          },
+    container: {
+        flex: 1
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        marginTop: StatusBar.currentHeight,
+        height: 60
+    },
+    menuOpener: {
+    },
+    menuOpenerLine: {
+        height: 3,
+        width: 30,
+        backgroundColor: COLORS.ecommercePrimaryColor,
+        marginTop: 5,
+        borderRadius: 10
+    },
+    imgBackground: {
+        flex: 1,
+        width: '100%',
+        height: "100%"
+    },
+    cardOrginal: {
+    },
+    titlePrincipal: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 12,
+        color: COLORS.ecommercePrimaryColor,
+        marginHorizontal: 10
+    },
 
-
-          imageModal: {
-                    marginTop: 10,
-                    width: 150,
-                    height: 150,
-          },
-          cardSigne: {
-                    padding: 15,
-                    height: 50,
-                    width: 50,
-                    color: "#1D8585",
-                    backgroundColor: '#242F68',
-                    borderRadius: 10,
-                    // marginTop: 1,
-          },
-          cardInput: {
-                    padding: 15,
-                    height: 50,
-                    width: 155,
-                    borderWidth: 2,
-                    borderColor: '#D8D8D8',
-                    borderRadius: 10,
-                    // marginTop: 1,
-          },
-          cardIcon: {
-                    padding: 15,
-                    height: 50,
-                    width: 50,
-                    color: "#1D8585",
-                    backgroundColor: '#D7D9E4',
-                    borderRadius: 10,
-                    // marginTop: 1,
-          },
-          imageModalPanier: {
-                    width: 70,
-                    height: 70,
-          },
-          subCategories: {
-                    paddingVertical: 5,
-                    padding: 5,
-          },
-          subCategoriesMenu: {
-                    backgroundColor: "#fff"
-          },
-          cardHeader: {
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingHorizontal: 10,
-                    marginTop: StatusBar.currentHeight,
-                    height: 60
-          },
-          menuOpener: {
-          },
-          menuOpenerLine: {
-                    height: 3,
-                    width: 30,
-                    backgroundColor: COLORS.ecommercePrimaryColor,
-                    marginTop: 5,
-                    borderRadius: 10
-          },
-          titlePrincipal: {
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    marginBottom: 12,
-                    color: COLORS.ecommercePrimaryColor,
-                    marginHorizontal: 10
-          },
-          searchSection: {
-                    flexDirection: "row",
-                    marginTop: 10,
-                    padding: 5,
-                    borderRadius: 10,
-                    borderWidth: 1,
-                    borderColor: "#ddd",
-                    alignItems: 'center',
-                    backgroundColor: '#fff',
-                    backgroundColor: "#D7D9E4",
-                    width: "84%",
-                    height: 50,
-                    paddingHorizontal: 10
-          },
-          input: {
-                    flex: 1,
-                    marginLeft: 10
-          },
-          cardRecherche: {
-                    width: 50,
-                    height: 50,
-                    borderRadius: 10,
-                    backgroundColor: COLORS.ecommerceRed,
-                    marginTop: 8,
-                    justifyContent: "center",
-                    alignContent: "center",
-                    alignItems: "center"
-          },
-          products: {
-                    flexDirection: 'row',
-                    flexWrap: 'wrap'
-          },
-
-
-
+    searchSection: {
+        flexDirection: "row",
+        marginTop: 10,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        backgroundColor: "#D7D9E4",
+        width: "84%",
+        height: 50,
+        paddingHorizontal: 10
+    },
+    input: {
+        flex: 1,
+        marginLeft: 10
+    },
+    cardRecherche: {
+        width: 50,
+        height: 50,
+        borderRadius: 10,
+        backgroundColor: COLORS.ecommerceRed,
+        marginTop: 8,
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center"
+    },
+    DataImageCategorie: {
+        minWidth: 40,
+        minHeight: 40,
+        borderRadius: 10,
+    },
+    cardPhoto1: {
+        marginTop: 10,
+        width: 50,
+        height: 50,
+        backgroundColor: "#DFE1E9",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    cardPhoto: {
+        marginTop: 10,
+        width: 50,
+        height: 50,
+        //backgroundColor: "#242F68",
+        backgroundColor: "#DFE1E9",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    productsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 10
+    },
+    title: {
+        fontWeight: 'bold'
+    },
+    products: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
 })

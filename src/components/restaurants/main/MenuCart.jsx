@@ -9,7 +9,7 @@ import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 export default function MenuCart({ menu, index }) {
-          const totalPrice =menu.MONTANT * menu.QUANTITE
+          const totalPrice =menu.PRIX * menu.QUANTITE
           const [amount, setAmount] = useState(menu.QUANTITE)
           const [isFocused, setIsFocused] = useState(false)
 
@@ -45,7 +45,7 @@ export default function MenuCart({ menu, index }) {
           }
 
           const onRemoveProduct = () => {
-                    Alert.alert("Enlever le produit", "Voulez-vous vraiment enlever ce produit du panier ?", 
+                    Alert.alert("Enlever le menu", "Voulez-vous vraiment enlever ce menu du panier ?", 
                     [
                               {
                                         text: "Annuler",
@@ -71,8 +71,8 @@ export default function MenuCart({ menu, index }) {
                                         <View style={styles.detailsHeader}>
                                                   <View style={styles.productNames}>
                                                             <Text numberOfLines={2} style={styles.productName}>
-                                                                      {menu.NOM} ·
-                                                                      <Text numberOfLines={2} style={styles.productName}> {menu.NOM_SOUS_CATEGORIE}</Text>
+                                                                      {menu.repas} ·
+                                                                      <Text numberOfLines={2} style={styles.productName}> {menu.categorie}</Text>
                                                             </Text>
                                                             <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
                                                                       <MaterialCommunityIcons name="delete" size={24} color="#777" />

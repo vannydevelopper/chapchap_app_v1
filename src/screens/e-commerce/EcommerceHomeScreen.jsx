@@ -11,7 +11,7 @@ import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
-export default function EcommerceHomeScreen() {
+export default function   EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
 
     const [loadingCategories, setLoadingCatagories] = useState(true)
@@ -20,7 +20,7 @@ export default function EcommerceHomeScreen() {
 
 
     const [loadingSubCategories, setLoadingSubCategories] = useState(false)
-    const [sousCategories, SetSousCategories] = useState([])
+    const [sousCategories, SetSousCategories] = useState([]) 
     const [selectedsousCategories, setSelectedsousCategories] = useState(null)
 
 
@@ -101,8 +101,6 @@ export default function EcommerceHomeScreen() {
                 
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
-               
-                
             } catch (error) {
                 console.log(error)
             } finally {
@@ -187,17 +185,11 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-
-
-                <View
-                    
-                >
+                <View>
                     <View style={styles.productsHeader}>
                         <Text style={styles.title}>Recommandé pour vous</Text>
-                       
                     </View>
                 </View>
-
                 <View style={styles.products}>
                     {products.map((product, index) => {
                         return (
