@@ -195,7 +195,7 @@ export default function ProductDetailsScreen() {
           </TouchableOpacity>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-              <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+              <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor}/>
             </TouchableOpacity>
             <EcommerceBadge />
           </View>
@@ -381,8 +381,6 @@ export default function ProductDetailsScreen() {
           }
 
 
-
-
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
             <>
@@ -473,8 +471,6 @@ const styles = StyleSheet.create({
   points: {
     marginTop: 25,
     marginLeft: 10
-
-
   },
   userImage: {
     width: "120%",
@@ -482,10 +478,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     // alignItems:"center",
     // justifyContent:"center"
-
-
-
-
   },
   Cardnote: {
     padding: 15,

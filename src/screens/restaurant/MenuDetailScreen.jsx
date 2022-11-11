@@ -1,9 +1,10 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, TouchableNativeFeedback, ScrollView, StatusBar } from "react-native"
+import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, TouchableWithoutFeedback, TouchableNativeFeedback, ScrollView, StatusBar } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation, MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
 import { Modalize } from "react-native-modalize";
+import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { Portal } from "react-native-portalize";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux';
@@ -13,8 +14,10 @@ import Menu from "../../components/restaurants/main/Menu";
 import { HomeProductsSkeletons } from "../../components/restaurants/skeletons/SkeletonsResto";
 import { restaurantProductSelector } from "../../store/selectors/restaurantCartSelectors"
 import AddCart from "../../components/restaurants/main/AddCart"
+import Loading from "../../components/app/Loading";
 // import ProductImages from "../../components/ecommerce/details/ProductImages";
 import ProductImages from "../../components/restaurants/details/ProductImages"
+import { FontAwesome } from '@expo/vector-icons';
 export default function MenuDetailScreen() {
     const [nombre, setNombre] = useState(0);
     const route = useRoute()
@@ -33,7 +36,9 @@ export default function MenuDetailScreen() {
     const modalizeRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
-
+    const [note, Setnote] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [commentaire, Setcommentaire] = useState(null)
     const onCartPress = () => {
         setIsOpen(true)
         modalizeRef.current?.open()
@@ -42,15 +47,15 @@ export default function MenuDetailScreen() {
         modalizeRef.current?.close()
     }
     useEffect(() => {
-        if(isOpen) {
-                  const timer = setTimeout(() => {
-                            setLoadingForm(false)
-                  })
-                  return () => {
-                            clearTimeout(timer)
-                  }
+        if (isOpen) {
+            const timer = setTimeout(() => {
+                setLoadingForm(false)
+            })
+            return () => {
+                clearTimeout(timer)
+            }
         }
-}, [isOpen])
+    }, [isOpen])
 
     var IMAGES = [
         product.IMAGE ? product.IMAGE : undefined,
@@ -58,6 +63,12 @@ export default function MenuDetailScreen() {
         product.IMAGE3 ? product.IMAGE3 : undefined,
 
     ]
+    const onetoilePress = (note) => {
+
+        Setnote(note)
+
+
+    }
     const fecthProduitPartenaires = async () => {
         try {
             const response = await fetchApi(`/resto/menu?partenaire=${product.ID_PARTENAIRE}`, {
@@ -77,6 +88,40 @@ export default function MenuDetailScreen() {
         fecthProduitPartenaires()
     }, []))
 
+    const enregistrement = async () => {
+
+        try {
+
+             setLoading(true)
+            const res = await fetchApi("/resto/menu/note", {
+                method: 'POST',
+                body: JSON.stringify({
+                    ID_RESTAURANT_MENU: product.ID_RESTAURANT_MENU,
+                    NOTE: note,
+                    COMMENTAIRE: commentaire,
+
+
+                }),
+
+                headers: { "Content-Type": "application/json" },
+
+            })
+
+            //Setproduitnote(n => [res.result, ...n])
+
+        }
+
+        catch (error) {
+            console.log(error)
+
+        } finally {
+            setLoading(false)
+            Setcommentaire("")
+
+        }
+
+
+    }
     useEffect(() => {
         (async () => {
             try {
@@ -94,7 +139,8 @@ export default function MenuDetailScreen() {
 
 
     return (
-        <>
+        <>  
+        {loading && <Loading/>}
             <View style={{ marginTop: 0, flex: 1 }}>
                 <View style={styles.cardHeader}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -147,6 +193,51 @@ export default function MenuDetailScreen() {
                             <MaterialIcons name="navigate-next" size={24} color="black" />
                         </View>
                     </TouchableNativeFeedback>
+                    {/* <View>
+                        <Text>
+                            {JSON.stringify({ note })}
+                        </Text>
+                    </View> */}
+                    <View style={styles.etoiles}>
+                        {new Array(5).fill(0).map((_, index) => {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
+                                    <View >
+                                        {note && note >= index + 1 ? <FontAwesome name="star" size={35} color={COLORS.primaryPicker} /> :
+
+                                            <FontAwesome name="star-o" size={35} color="black" />}
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        })}
+                    </View>
+                    {note && <View style={styles.inputCard}>
+                        <View>
+                            <OutlinedTextField
+                                label="Commentaire"
+                                fontSize={14}
+                                baseColor={COLORS.smallBrown}
+                                tintColor={COLORS.primary}
+                                containerStyle={{ borderRadius: 20 }}
+                                multiline={true}
+                                value={commentaire}
+                                onChangeText={(t) => Setcommentaire(t)}
+
+                                autoCompleteType='off'
+                                returnKeyType="next"
+                                blurOnSubmit={false}
+                            />
+                        </View>
+
+                    </View>}
+                    {note && <TouchableWithoutFeedback
+                        onPress={enregistrement}
+                    >
+                        <View style={[styles.button,]}>
+                            <Text style={styles.buttonText}>Enregistrer</Text>
+
+                        </View>
+                    </TouchableWithoutFeedback>}
 
                     {(loadingPartenaireProducts) ? <HomeProductsSkeletons /> :
                         <ProduitRestoPartenaire productPartenaires={shopProducts} />}
@@ -188,8 +279,8 @@ export default function MenuDetailScreen() {
                             Ajouter au panier
                         </Text>
                         {productInCart ? <View style={styles.badge}>
-                                                                      <Text style={styles.badgeText} numberOfLines={1}>{productInCart.QUANTITE}</Text>
-                                                            </View> : null}
+                            <Text style={styles.badgeText} numberOfLines={1}>{productInCart.QUANTITE}</Text>
+                        </View> : null}
 
                     </>
                 </TouchableOpacity>
@@ -315,7 +406,28 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold'
     },
- 
+    inputCard: {
+        marginHorizontal: 20,
+        marginTop: 10,
+        multiline: true
+
+
+    },
+    buttonText: {
+        color: "#fff",
+        fontWeight: "bold",
+        // textTransform:"uppercase",
+        fontSize: 16,
+        textAlign: "center"
+    },
+    button: {
+        marginTop: 10,
+        borderRadius: 8,
+        paddingVertical: 14,
+        paddingHorizontal: 10,
+        backgroundColor: COLORS.primaryPicker,
+        marginHorizontal: 20
+    },
     productsHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -326,6 +438,14 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold'
+    },
+    etoiles: {
+
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        fontSize: 60,
+        paddingHorizontal: 10
+
     },
     products: {
         flexDirection: 'row',
@@ -342,12 +462,12 @@ const styles = StyleSheet.create({
         right: 0,
         justifyContent: "center",
         alignItems: "center",
-},
-badgeText: {
+    },
+    badgeText: {
         textAlign: 'center',
         fontSize: 10,
         color: '#FFF',
         fontWeight: "bold"
-}
-    
+    }
+
 })
