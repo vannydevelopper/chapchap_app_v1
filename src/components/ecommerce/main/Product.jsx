@@ -32,7 +32,9 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
 
+  // const [SIZES, setSIZES] = useState([])
   const [SIZES, setSIZES] = useState([])
+
   const [colors, SetColors] = useState([])
 
   const onSizePress = async (size) => {
@@ -207,7 +209,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
       </View>
       <View style={styles.productNames}>
         <Text numberOfLines={2} style={styles.productName}>
-          {product.produit.NOM} ·
+          {product.produit.NOM} 
           <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
         </Text>
       </View>
