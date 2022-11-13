@@ -70,7 +70,6 @@ export default function PaymentScreen() {
           const products = useSelector(ecommerceCartSelector)
           const restaurants = useSelector(restaurantCartSelector)
         
-         
           if(products){
                 var commandes = products.map(product => ({
                         ID_PRODUIT_STOCK: product.stock.ID_PRODUIT_STOCK,
@@ -82,7 +81,7 @@ export default function PaymentScreen() {
                 var resto = restaurants.map(restaurant => ({
                         ID_RESTAURANT_MENU: restaurant.ID_RESTAURANT_MENU,
                         QUANTITE: restaurant.QUANTITE,
-                        MONTANT: restaurant.MONTANT
+                        MONTANT: restaurant.PRIX
               }))
           }
           

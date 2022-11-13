@@ -18,9 +18,9 @@ export default function DrawerNavigator() {
                               <Drawer.Screen name='EcommerceNavigator' component={EcommerceNavigator} />
                               <Drawer.Screen name='RestaurantNavigator' component={RestaurantNavigator} />
                               <Drawer.Screen name='EcommerceWishlistScreen' component={EcommerceWishlistScreen} />
-                              <Drawer.Screen name='Commande' component={CommandeEmiseScreen} />
+                              <Drawer.Screen name='CommandeEmiseScreen' component={CommandeEmiseScreen} />
+                              <Drawer.Screen name='RestaurantEmiseScreen' component={RestaurationComEmises} />
                               <Drawer.Screen name="WishlistTab" component={WishlistTab}/>
-                              
                     </Drawer.Navigator>
           )
 }

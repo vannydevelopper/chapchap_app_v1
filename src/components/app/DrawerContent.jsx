@@ -85,18 +85,21 @@ export default function DrawerContent({ state, navigation, descriptors }) {
         </TouchableNativeFeedback>
         {showServiceCommands && <View style={styles.services}>
 
-          {partenaires.map((partenaire, index) => {
-            return (
-              <TouchableOpacity index={index} onPress={() => navigation.navigate("Commande",{ID_PARTENAIRE_SERVICE:partenaire.ID_PARTENAIRE_SERVICE})} style={{ borderRadius: 10 }}>
+              <TouchableOpacity index={1} onPress={() => navigation.navigate("CommandeEmiseScreen",{ID_SERVICE:1})} style={{ borderRadius: 10 }}>
                 <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
                   <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
-                    {partenaire.NOM_ORGANISATION}
+                    Achats des produit
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity index={2} onPress={() => navigation.navigate("RestaurantEmiseScreen",{ID_SERVICE:2})} style={{ borderRadius: 10 }}>
+                <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+                  <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
+                    Restaurant
                   </Text>
                 </View>
               </TouchableOpacity>
 
-            )
-          })}
         </View>}
         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple(COLORS.handleColor)} onPress={() => handlePress('WishlistTab')}>
           <View style={[{ borderRadius: 10, overflow: "hidden" }, ( state.index == 3) && { backgroundColor: COLORS.handleColor }]}>

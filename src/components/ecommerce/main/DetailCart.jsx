@@ -8,7 +8,7 @@ import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 export default function DetailCart({ product, index }) {
-        //   console.log(product.PRIX)
+         console.log(product.IMAGE_1)
           const totalPrice = product.PRIX * product.QUANTITE
          
           return (

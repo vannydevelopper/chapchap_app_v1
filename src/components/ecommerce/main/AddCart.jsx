@@ -55,7 +55,6 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
           const isValid = () => {
                     return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= selectedColor.QUANTITE_RESTANTE) : false
           }
-
           return (
                     loadingForm ? <ActivityIndicator
                               animating

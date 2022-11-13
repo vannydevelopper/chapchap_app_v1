@@ -8,10 +8,11 @@ import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, 
 import EcommerceWishlistScreen from './EcommerceWishlistScreen';
 import EvenementWishlistScreen from './EvenementWishlistScreen';
 import RestaurantWishlistScreen from './RestaurantWishlistScreen';
-
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 const TopBar = createMaterialTopTabNavigator()
 
 export default function WishlistTab() {
+    const navigation=useNavigation()
     const { height } = useWindowDimensions()
 
     useEffect(() => {
@@ -43,14 +44,14 @@ export default function WishlistTab() {
                                         </View> */}
                 {/* <View style={styles.tabIndicator} /> */}
                 <View style={styles.cardHeader}>
-                    <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
+                    <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch( DrawerActions.toggleDrawer())}>
                         <View style={styles.menuOpenerLine} />
                         <View style={[styles.menuOpenerLine, { width: 15 }]} />
                         <View style={[styles.menuOpenerLine, { width: 25 }]} />
                     </TouchableOpacity>
                     <EcommerceBadge />
                 </View>
-                <Text style={styles.titlePrincipal}>Liste des sourains</Text>
+                <Text style={styles.titlePrincipal}>Liste des souhaits</Text>
       <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10,marginBottom:10 }}>
         <View style={styles.searchSection}>
           <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     //             marginHorizontal: 20,
     //   },
     tabBar: {
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.ecommercePrimaryColor,
         height: 50,
         maxHeight: 50,
         borderRadius: 50,

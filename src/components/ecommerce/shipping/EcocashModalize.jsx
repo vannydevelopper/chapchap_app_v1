@@ -16,7 +16,7 @@ import { restaurantCartSelector } from '../../../store/selectors/restaurantCartS
 
 
 export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, service, commandes, resto, onFInish }) {
-          const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
           const [data, handleChange] = useForm({
                     tel: ""
           })
@@ -48,7 +48,7 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                     var getAmount = useCallback(() => {
                               var total = 0
                               restaurants.forEach(restaurant => {
-                                        total += parseInt(restaurant.MONTANT) * restaurant.QUANTITE
+                                        total += parseInt(restaurant.PRIX) * restaurant.QUANTITE
                               })
                               return total
                     }, [restaurants])

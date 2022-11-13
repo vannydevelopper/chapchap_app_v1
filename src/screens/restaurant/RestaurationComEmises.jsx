@@ -36,7 +36,9 @@ export default function RestaurationComEmises() {
           }
 
           const handleCommandePress = commande => {
-                    navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
+  navigation.navigate('DetailCommandeMenuscreen', { commande })
+
+                    // navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
           }
           useFocusEffect(useCallback(() => {
                     (async () => {

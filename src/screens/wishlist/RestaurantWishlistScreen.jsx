@@ -56,10 +56,8 @@ export default function RestaurantWishlistScreen() {
 
   const fecthMenus = async () => {
     try {
-              const menu = await fetchApi("/resto/menu/wishlist", {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-              })
+              var url = "/resto/menu/wishlist/all"
+               const menu = await fetchApi(url)
               setMenus(menu.result)
     }
     catch (error) {
@@ -101,7 +99,7 @@ useFocusEffect(useCallback(() => {
       </View>
     </ScrollView>:
     <>
-    <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
+    <LottieView style={{ marginTop:40, width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
     <Text style={styles.emptyFeedback}>Votre liste des souhaits est vide</Text>
     
     </>
@@ -123,7 +121,8 @@ const styles = StyleSheet.create({
     color: COLORS.ecommercePrimaryColor,
     fontWeight: "bold",
     opacity: 0.6,
-    fontSize: 16
+    fontSize: 16,
+    marginTop:40
 },
   cardHeader: {
     flexDirection: 'row',
@@ -132,6 +131,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: StatusBar.currentHeight,
     height: 60
+    
   },
   menuOpener: {
   },
