@@ -69,9 +69,9 @@ export default function ProductCart({ product, index }) {
                                         <View style={styles.detailsHeader}>
                                                   <View style={styles.productNames}>
                                                             <Text numberOfLines={2} style={styles.productName}>
-                                                                      {product.produit.NOM} ·
-
-                                                                      <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
+                                                                      {product.produit.NOM}
+                                                                       {/* ·
+                                                                      <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text> */}
                                                             </Text>
                                                             <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
                                                                       <MaterialCommunityIcons name="delete" size={24} color="#777" />

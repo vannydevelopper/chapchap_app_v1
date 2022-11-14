@@ -71,8 +71,9 @@ export default function MenuCart({ menu, index }) {
                                         <View style={styles.detailsHeader}>
                                                   <View style={styles.productNames}>
                                                             <Text numberOfLines={2} style={styles.productName}>
-                                                                      {menu.repas} ·
-                                                                      <Text numberOfLines={2} style={styles.productName}> {menu.categorie}</Text>
+                                                                      {menu.repas} 
+                                                                      {/* · */}
+                                                                      {/* <Text numberOfLines={2} style={styles.productName}> {menu.categorie}</Text> */}
                                                             </Text>
                                                             <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
                                                                       <MaterialCommunityIcons name="delete" size={24} color="#777" />
@@ -127,6 +128,7 @@ const styles = StyleSheet.create({
           image: {
                     height: "100%",
                     width: "100%",
+                    opacity:10 ,
                     borderRadius: 10
           },
           productDetails: {
