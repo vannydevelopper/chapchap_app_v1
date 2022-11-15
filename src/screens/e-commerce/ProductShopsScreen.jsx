@@ -25,7 +25,7 @@ export default function ProductShopsScreen() {
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
-
+    
     const navigation = useNavigation()
     const { id } = route.params
     const fecthProduits = async () => {

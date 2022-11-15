@@ -11,7 +11,7 @@ import SubCategories from "../../components/ecommerce/home/SubCategories";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import Shop from "../../components/ecommerce/main/Shop";
 
-export default function ShopsScreen() {
+export default function ShopsScreen( ) {
     const route = useRoute()
     const { selectedCategorie: defautSelectedCategorie, selectedsousCategories: defautSelectedsousCategories } = route.params
 
@@ -29,7 +29,7 @@ export default function ShopsScreen() {
 
     const navigation = useNavigation()
     const { shops } = route.params
-    // console.log(shops)
+    console.log(products)
 
 
     return (
@@ -68,7 +68,7 @@ export default function ShopsScreen() {
 
 
 
-
+                
                 <View style={styles.products}>
                     {shops.map((shop, index) => {
                         return (
