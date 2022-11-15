@@ -11,6 +11,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 import { useNavigation } from '@react-navigation/native';
+import fetchApi from '../../../helpers/fetchApi';
 
 export default function ProductPartenaire({ product, index, totalLength, fixMargins = false }) {
         const navigation = useNavigation()
@@ -28,7 +29,51 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
           const modalizeRef = useRef(null)
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
-
+          const [wishlist, setWishlist] = useState(false)
+          const Addishlist = async (id) => {
+            //  console.log(id)
+            if (wishlist) {
+              try {
+        
+                const newWishlist = await fetchApi(`/wishlist/suppression/${id}`, {
+                  method: "DELETE",
+                })
+                if (onRemove) {
+                  onRemove(id)
+                }
+        
+                setWishlist(false)
+        
+              } catch (error) {
+                console.log(error)
+              }
+        
+            }
+        
+            else {
+              try {
+                const form = new FormData()
+                // form.append("ID_PRODUIT", id)
+                //  console.log(id)
+                const newWishlist = await fetchApi('/wishlist', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    ID_PRODUIT_PARTENAIRE: id,
+        
+                  }),
+                  headers: { "Content-Type": "application/json" },
+                })
+        
+                setWishlist(true)
+        
+        
+              } catch (error) {
+                console.log(error)
+              }
+        
+            }
+        
+          }
           const onCartPress = () => {
                     setIsOpen(true)
                     modalizeRef.current?.open()
@@ -57,9 +102,17 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
                                         <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
                               </TouchableOpacity>
                               <View style={{ flexDirection: "row" }}>
-                                        <View style={styles.cardLike}>
-                                                  <AntDesign name="hearto" size={24} color="#F29558" />
-                                        </View>
+                              <TouchableOpacity
+          onPress={() => {
+            Addishlist(product.produit.ID_PRODUIT_PARTENAIRE)
+            setWishlist(true)
+          }}
+        >
+          <View style={styles.cardLike}>
+            {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
+          </View>
+        </TouchableOpacity>
+
                                         <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
                                                   <>
                                                   <AntDesign name="shoppingcart" size={24} color="#F29558" />

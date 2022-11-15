@@ -392,7 +392,7 @@ export default function MenuDetailScreen() {
                 </ScrollView>
             </View>
             <View style={styles.productFooter}>
-                {product.MONTANT ? <Text style={styles.productPrice}>{product.MONTANT.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+                {product.PRIX ? <Text style={styles.productPrice}>{product.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
                 <TouchableOpacity style={[styles.addCartBtn]} onPress={onCartPress}  >
                     <>
                         <View>

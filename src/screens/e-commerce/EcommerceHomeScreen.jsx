@@ -109,7 +109,6 @@ export default function   EcommerceHomeScreen() {
             }
         })()
     }, [selectedCategorie, selectedsousCategories])
-
     useEffect(() => {
         (async () => {
             try {
@@ -117,13 +116,8 @@ export default function   EcommerceHomeScreen() {
                     setLoadingProducts(true)
                 }
                 var url = "/partenaire/ecommerce"
-                // if (selectedCategorie) {
-                //     url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
-                // }
                 const shops = await fetchApi(url)
                 setShops(shops.result)
-                
-
             } catch (error) {
                 console.log(error)
             } finally {
