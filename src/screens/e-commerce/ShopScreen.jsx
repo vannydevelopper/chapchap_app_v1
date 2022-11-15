@@ -65,11 +65,7 @@ export default function ShopsScreen( ) {
                 </View>
 
 
-
-
-
-                
-                <View style={styles.products}>
+            <View style={styles.products}>
                     {shops.map((shop, index) => {
                         return (
                             <Shop

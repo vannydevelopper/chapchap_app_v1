@@ -25,7 +25,7 @@ export default function ProductShopsScreen() {
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
-    
+
     const navigation = useNavigation()
     const { id } = route.params
     const fecthProduits = async () => {
@@ -35,7 +35,7 @@ export default function ProductShopsScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            //console.log(response.result)
+            console.log(products)
         }
         catch (error) {
             console.log(error)
@@ -104,10 +104,6 @@ export default function ProductShopsScreen() {
         })()
     }, [selectedCategorie, selectedsousCategories])
 
-
-
-
-
     return (
         <View style={styles.container}>
             <View style={styles.cardHeader}>
@@ -115,9 +111,13 @@ export default function ProductShopsScreen() {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View style={styles.productsHeader}>
                             <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                            <Text style={styles.title}>Les produits disponibles</Text>
+                            <Text style={styles.title}> Les produits disponibles:</Text>
+
 
                         </View>
+                        {/* <View >
+                            <Image source={{ uri:.IMAGE_1 }} style={styles.DataImageCategorie} />
+                        </View> */}
 
 
                     </TouchableOpacity>
