@@ -100,8 +100,6 @@ export default function RestaurantHomeScreen() {
                 }
                 const menus = await fetchApi(url)
                 setMenus(menus.result)
-                console.log(menus)
-            } catch (error) {
                 console.log(error)
             } finally {
                 setFirstLoadingMenus(false)
@@ -116,7 +114,7 @@ export default function RestaurantHomeScreen() {
                 if (firstLoadingMenus == false) {
                     setLoadingMenus(true)
                 }
-                var url = "/partenaire/service/2"
+                var url = "/partenaire/service/resto"
                 // if (selectedCategorie) {
                 //     url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                 // }
