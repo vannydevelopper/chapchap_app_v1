@@ -10,10 +10,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from '../../../helpers/fetchApi';
+import { useCallback } from 'react';
 
-export default function ProductPartenaire({ product, index, totalLength, fixMargins = false }) {
+export default function ProductPartenaire({ product, index, totalLength, fixMargins = false ,onRemove }) {
         const navigation = useNavigation()
           const { width } = useWindowDimensions()
           const PRODUCT_MARGIN = 10
@@ -30,6 +31,25 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
           const [wishlist, setWishlist] = useState(false)
+          const fecthWishlist = async () => {
+            try {
+              const wishliste = await fetchApi(`/wishlist/verification/${product.produit.ID_PRODUIT_PARTENAIRE}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+              })
+              // console.log(wishliste.result)
+              if (wishliste.result) {
+                setWishlist(true)
+              }
+        
+            }
+            catch (error) {
+              console.log(error)
+            }
+          }
+          useFocusEffect(useCallback(() => {
+            fecthWishlist()
+          }, []))
           const Addishlist = async (id) => {
             //  console.log(id)
             if (wishlist) {
