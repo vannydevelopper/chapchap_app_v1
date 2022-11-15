@@ -37,6 +37,7 @@ export default function MenusRestaurantScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
+            console.log(categories)
         }
         catch (error) {
             console.log(error)
