@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
@@ -10,7 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from '../../../helpers/fetchApi';
 
 
@@ -31,7 +31,24 @@ export default function MenuPartenaire({ menu, index, totalLength, fixMargins = 
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
   const [wishlist, setWishlist] = useState(false)
-
+  const fecthWishlist = async () => {
+    try {
+        const wishliste = await fetchApi(`/wishlist/restaurant/verification/${menu.ID_RESTAURANT_MENU}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+        })
+        // console.log(wishliste.result)
+        if (wishliste.result) {
+            setWishlist(true)
+        }
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+useFocusEffect(useCallback(() => {
+    fecthWishlist()
+}, []))
   const Addishlist = async (id) => {
     //  console.log(id)
     if (wishlist) {
