@@ -7,6 +7,7 @@ import { addProductAction } from "../../../store/actions/ecommerceCartActions";
 import { color } from "react-native-reanimated";
 // import { useFocusEffect } from "@react-navigation/native";
 export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm, onClose }) {
+          // console.log(SIZES.length)
           const [selectedSize, setSelectedSize] = useState(null)
           const [selectedColor, setSelectedColor] = useState(null)
           const [selectedColors, setSelectedColors] = useState(null)
@@ -14,6 +15,7 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
           const [amount, setAmount] = useState(0)
           const [isFocused, setIsFocused] = useState(false)
           const dispatch = useDispatch()
+
           const onDecrement = () => {
                     if(parseInt(amount) == 1) {
                               return false
@@ -50,11 +52,41 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
                     
                     dispatch(addProductAction(product, amount,selectedColor ,selectedSize))
           }
+ const onDecrementOther = () => {
+                if (parseInt(amount) == 1) {
+                        return false
+                }
+                if (parseInt(amount) <= 0) {
+                        return 1
+                }
+                setAmount(l => parseInt(l) - 1)
+        }
 
+        const onIncrementOther = () => {
+                if (amount == 10) {
+                        return false
+                }
+                setAmount(l => parseInt(l) + 1)
+        }
+
+        // const onChangeText = am => {
+        //         setAmount(am)
+        // }
+        const checkAmountOther = () => {
+                setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
+        }
+
+        // const onAddToCart = () => {
+        //         onClose()
+        //         dispatch(addMenuAction(menu, amount))
+        // }
           let isnum = /^\d+$/.test(amount);
           const isValid = () => {
                     return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= selectedColor.QUANTITE_RESTANTE) : false
           }
+          const isValidOther = () => {
+            return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
+    }
           return (
                     loadingForm ? <ActivityIndicator
                               animating
@@ -80,6 +112,8 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
                                                   {product.produit_partenaire.PRIX ? <Text style={styles.price}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
                                         </View>
                               </View>
+                              {SIZES.length!=0?
+                              <>
                               <View style={styles.moreDetails}>
                                         <Text style={styles.subTitle}>Taille</Text>
                                         <View style={[styles.sizes]}>
@@ -145,6 +179,35 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
                                                   <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
                                         </TouchableOpacity>
                               </View>
+                              </>:<View>
+                              <View style={{ marginTop: 10 }}>
+                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de {product.produit.NOM} </Text>
+                                </View>
+                                <View style={styles.moreDetails}>
+                                        <View style={styles.amountContainer}>
+                                                <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrementOther} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                        <Text style={styles.amountChangerText}>-</Text>
+                                                </TouchableOpacity>
+                                                <TextInput
+                                                        style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                                                        value={amount.toString()}
+                                                        onChangeText={onChangeText}
+                                                        onFocus={() => setIsFocused(true)}
+                                                        onBlur={() => {
+                                                                setIsFocused(false)
+                                                                checkAmountOther()
+                                                        }}
+                                                        keyboardType="decimal-pad"
+                                                />
+                                                <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrementOther} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                                                        <Text style={styles.amountChangerText}>+</Text>
+                                                </TouchableOpacity>
+                                        </View>
+                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValidOther() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValidOther()}>
+                                                <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
+                                        </TouchableOpacity>
+                                </View>
+                                </View>}
                     </View>
           )
 }
