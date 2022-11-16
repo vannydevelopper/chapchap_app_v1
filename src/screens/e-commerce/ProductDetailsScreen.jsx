@@ -139,12 +139,17 @@ export default function ProductDetailsScreen() {
         }),
 
         headers: { "Content-Type": "application/json" },
+        
 
       })
 
       Setproduitnote(n => [res.result, ...n])
+      //navigation.navigate("produitDetailScreen")
+      
+      
 
     }
+    
 
     catch (error) {
       console.log(error)
@@ -152,6 +157,7 @@ export default function ProductDetailsScreen() {
     } finally {
       setLoading(false)
       Setcommentaire("")
+      
 
     }
 
@@ -169,6 +175,24 @@ export default function ProductDetailsScreen() {
       }
     })()
   }, [])
+
+//   const fetchPartenaire = async () => {
+//     try {
+//               const response = await fetchApi('/products/note/liste/${product.produit.ID_PRODUIT_PARTENAIRE}', {
+//                         method: "GET",
+//                         headers: { "Content-Type": "application/json" },
+//               })
+//               console.log(response.result)
+//               Setproduitnote(response.result)
+//     }
+//     catch (error) {
+//               console.log(error)
+//     }
+// }
+
+// useFocusEffect(useCallback(() => {
+//     fetchPartenaire()
+// }, []))
 
 
   useEffect(() => {
@@ -254,7 +278,7 @@ export default function ProductDetailsScreen() {
             </Text>
           </View> */}
 
-          {!userNote[0] && !produitnote[0] ?
+          { !userNote[0] && !produitnote[0]?
             <>
               <View style={styles.etoiles}>
                 {new Array(5).fill(0).map((_, index) => {
@@ -269,7 +293,7 @@ export default function ProductDetailsScreen() {
                   )
                 })}
               </View>
-              {note && <View style={styles.inputCard}>
+              { note && <View style={styles.inputCard}>
                 <View>
                   <OutlinedTextField
                     label="Commentaire"
@@ -292,7 +316,7 @@ export default function ProductDetailsScreen() {
                 onPress={enregistrement}
               >
                 <View style={[styles.button,]}>
-                  <Text style={styles.buttonText}>Enregistrer</Text>
+                  <Text style={styles.buttonText} >Enregistrer</Text>
 
                 </View>
               </TouchableWithoutFeedback>}
