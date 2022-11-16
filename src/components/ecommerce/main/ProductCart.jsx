@@ -77,12 +77,15 @@ export default function ProductCart({ product, index }) {
                                                                       <MaterialCommunityIcons name="delete" size={24} color="#777" />
                                                             </TouchableOpacity>
                                                   </View>
+                                                  {product.COLOR&&
                                                   <View style={styles.productNames}>
-                                                  <Text numberOfLines={2} style={styles.productName}> {product.COLOR.COULEUR} 
-                                                   . <Text numberOfLines={2} style={styles.productName}> {product.SIZE.name}</Text>
+                                                  <Text numberOfLines={2} style={styles.productName}> {product.COLOR.COULEUR?product.COLOR.COULEUR:null} 
+                                                   . <Text numberOfLines={2} style={styles.productName}> {product.SIZE.name?product.SIZE.name:null}</Text>
                                                   </Text>
   
                                                   </View>
+                                                  }
+                                                  
                                                   {product.produit_partenaire.PRIX ? <Text style={styles.unitPrice}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
                                         </View>
                                         <View style={styles.detailsFooter}>
@@ -102,9 +105,12 @@ export default function ProductCart({ product, index }) {
                                                                       }}
                                                                       keyboardType="decimal-pad"
                                                             />
-                                                            <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE)}>
+                                                            {product.COLOR ?<TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= product.COLOR.QUANTITE_RESTANTE)}>
                                                                       <Text style={styles.amountChangerText}>+</Text>
-                                                            </TouchableOpacity>
+                                                            </TouchableOpacity>:
+                                                            <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >=10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                                                                      <Text style={styles.amountChangerText}>+</Text>
+                                                            </TouchableOpacity>}
                                                   </View>
                                         </View>
                               </View>

@@ -278,7 +278,7 @@ export default function ProductDetailsScreen() {
             </Text>
           </View> */}
 
-          { !userNote[0] && !produitnote[0]?
+          {!userNote[0] ?
             <>
               <View style={styles.etoiles}>
                 {new Array(5).fill(0).map((_, index) => {

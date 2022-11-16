@@ -61,7 +61,6 @@ export default function Product({ product, index, totalLength, fixMargins = fals
 
       })
       setSIZES(sizes.result)
-      console.log(SIZES)
     }
     catch (error) {
       console.log(error)
