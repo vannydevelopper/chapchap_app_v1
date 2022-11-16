@@ -139,17 +139,17 @@ export default function ProductDetailsScreen() {
         }),
 
         headers: { "Content-Type": "application/json" },
-        
+
 
       })
 
       Setproduitnote(n => [res.result, ...n])
       //navigation.navigate("produitDetailScreen")
-      
-      
+
+
 
     }
-    
+
 
     catch (error) {
       console.log(error)
@@ -157,7 +157,7 @@ export default function ProductDetailsScreen() {
     } finally {
       setLoading(false)
       Setcommentaire("")
-      
+
 
     }
 
@@ -176,23 +176,7 @@ export default function ProductDetailsScreen() {
     })()
   }, [])
 
-//   const fetchPartenaire = async () => {
-//     try {
-//               const response = await fetchApi('/products/note/liste/${product.produit.ID_PRODUIT_PARTENAIRE}', {
-//                         method: "GET",
-//                         headers: { "Content-Type": "application/json" },
-//               })
-//               console.log(response.result)
-//               Setproduitnote(response.result)
-//     }
-//     catch (error) {
-//               console.log(error)
-//     }
-// }
 
-// useFocusEffect(useCallback(() => {
-//     fetchPartenaire()
-// }, []))
 
 
   useEffect(() => {
@@ -293,7 +277,7 @@ export default function ProductDetailsScreen() {
                   )
                 })}
               </View>
-              { note && <View style={styles.inputCard}>
+              {note && <View style={styles.inputCard}>
                 <View>
                   <OutlinedTextField
                     label="Commentaire"

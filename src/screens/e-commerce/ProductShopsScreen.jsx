@@ -56,7 +56,7 @@ export default function ProductShopsScreen() {
         setSelectedsousCategories(null)
     }
 
-    const selectedItemSousCategories = (souscategorie) => {
+    const selectedItemSousCategories = (souscategorie) => {ss
         setSelectedsousCategories(souscategorie)
     }
 
