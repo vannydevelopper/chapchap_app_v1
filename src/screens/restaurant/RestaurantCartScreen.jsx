@@ -118,11 +118,11 @@ export default function RestaurantCartScreen() {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
-                <TouchableOpacity style={{}} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                    <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                </TouchableOpacity>
+                
             </View>
+            <View style={{marginHorizontal:10}}>
             <Text style={styles.titlePrincipal}>Mon panier</Text>
+            </View>
             <View style={styles.products}>
                 <ScrollView>
                     {menus.map((menu, index) => {
@@ -138,9 +138,10 @@ export default function RestaurantCartScreen() {
             </View>
 
             <View style={styles.cartFooter}>
+
                 <Text style={{
                     textAlign: 'center', color: COLORS.ecommercePrimaryColor,
-                    fontWeight: 'bold', fontSize: 19
+                    fontWeight: 'bold', fontSize: 15
                 }}>Total : {getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text>
                 
                                         <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
@@ -170,16 +171,17 @@ const styles = StyleSheet.create({
     products: {
         paddingHorizontal: 10,
         marginHorizontal: 10,
-        borderRadius: 10,
-        padding: 10
+        borderRadius: 0,
+        padding: 1
     },
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 10,
+        paddingHorizontal: 20,
         marginTop: StatusBar.currentHeight,
         height: 60,
+        marginBottom:-10
     },
     titlePrincipal: {
         fontSize: 20,
@@ -240,14 +242,16 @@ const styles = StyleSheet.create({
     },
     checkoutBtn: {
         paddingVertical: 15,
-        backgroundColor: COLORS.ecommerceOrange,
+        backgroundColor: COLORS.ecommerceRed,
         borderRadius: 5,
-        marginTop: 10
+        marginTop: 20,
+        marginHorizontal:30
     },
     checkoutBtnTitle: {
         textAlign: "center",
         color: '#fff',
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontSize:11
     },
     emptyFeedback: {
         textAlign: "center",

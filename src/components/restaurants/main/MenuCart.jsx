@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View ,ImageBackground} from 'react-native'
 import { useDispatch } from 'react-redux'
 import { addMenuAction, removeMenuAction } from '../../../store/actions/restaurantCartActions'
 
@@ -66,16 +66,19 @@ export default function MenuCart({ menu, index }) {
     }, [amount])
     return (
         <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
-            <View style={styles.productImage}>
-                <Image source={{ uri: menu.IMAGE }} style={styles.image} />
-            </View>
+            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} borderRadius={10} resizeMode='cover' imageStyle={{ opacity: 0.8 }}>
+                 <View style={{marginTop:45,marginRight:80}}>
+                 <Text style={styles.productName1}>{menu.repas}</Text>
+
+                 </View>
+            </ImageBackground>
             <View style={styles.productDetails}>
                 <View style={styles.detailsHeader}>
                     <View style={styles.productNames}>
-                        <Text  style={styles.productName}>
+                        <Text style={styles.productName}>
                             {menu.repas}
-                          </Text>
-                        <Text style={styles.productPrix}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text>
+                        </Text>
+                        <Text style={styles.productPrix}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
 
                         {/* <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
                             <MaterialCommunityIcons name="delete" size={24} color="#777" />
@@ -111,23 +114,23 @@ export default function MenuCart({ menu, index }) {
                 </View>
             </View>
             <View style={styles.amountContainer}>
-            <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                            <Text style={styles.amountChangerText}>-</Text>
-                        </TouchableOpacity>
-                        <TextInput
-                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                            value={amount.toString()}
-                            onChangeText={onChangeText}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => {
-                                setIsFocused(false)
-                                checkAmount()
-                            }}
-                            keyboardType="decimal-pad"
-                        />
-                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                            <Text style={styles.amountChangerText}>+</Text>
-                        </TouchableOpacity>
+                <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                    <Text style={styles.amountChangerText}>-</Text>
+                </TouchableOpacity>
+                <TextInput
+                    style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                    value={amount.toString()}
+                    onChangeText={onChangeText}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => {
+                        setIsFocused(false)
+                        checkAmount()
+                    }}
+                    keyboardType="decimal-pad"
+                />
+                <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                    <Text style={styles.amountChangerText}>+</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -138,8 +141,8 @@ const styles = StyleSheet.create({
     product: {
         flexDirection: 'row',
         backgroundColor: '#F1F1F1',
-        borderRadius:9,
-        padding:5,
+        borderRadius: 9,
+        padding: 5,
         alignItems: "center",
         height: 100,
         marginTop: 20
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
         height: "70%",
         width: "20%",
         borderRadius: 10,
-        marginHorizontal:10,
+        marginHorizontal: 10,
 
         backgroundColor: '#F1F1F1'
     },
@@ -159,22 +162,32 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     productDetails: {
-        marginLeft: 10,
+        marginLeft: -40,
         justifyContent: 'space-between',
-        flex: 1
+        flex: 1,
+        marginTop:-15
     },
     productNames: {
-        // flexDirection: 'row',
-        // alignItems: 'center',
-        // justifyContent: 'space-between',
-        marginVertical:30
+        marginVertical: 30
     },
     productName: {
         color: COLORS.ecommercePrimaryColor,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontSize: 10
     },
+    productName1: {
+        textAlign: 'center',
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 7
+    },
+     serviceBackgound: {
+                    width: "50%",
+                    height: "90%",
+                    justifyContent: 'space-between'
+          },
     productPrix: {
-        color: 'red',
+        color: COLORS.ecommerceRed,
         fontWeight: 'bold'
     },
     reomoveBtn: {
@@ -205,18 +218,19 @@ const styles = StyleSheet.create({
     },
     amountContainer: {
         backgroundColor: '#fff',
-        borderRadius:5,
-     padding:1,
-     marginHorizontal:10,
+        borderRadius: 10,
+        padding: 1,
+        marginHorizontal: 10,
         flexDirection: 'row',
-        marginTop:-20
+        marginTop: -20
     },
     input: {
-        borderRadius: 5,
+        // borderRadius: 5,
         borderWidth: 1,
+        fontSize: 10,
         borderColor: '#fff',
         // flex: 1,
-         height: "0%",
+        height: "0%",
         marginHorizontal: 5,
         textAlign: 'center',
         color: COLORS.ecommercePrimaryColor,
@@ -231,8 +245,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     amountChangerText: {
-        color: 'red',
+        color: COLORS.ecommerceRed,
         fontWeight: 'bold',
-        fontSize: 16
+        fontSize: 10
     },
 })
