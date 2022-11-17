@@ -66,7 +66,7 @@ export default function MenuCart({ menu, index }) {
     }, [amount])
     return (
         <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
-            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} borderRadius={10} resizeMode='cover' imageStyle={{ opacity: 0.8 }}>
+            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} borderRadius={10}  imageStyle={{ opacity: 0.6 }}>
                  <View style={{marginTop:45,marginRight:80}}>
                  <Text style={styles.productName1}>{menu.repas}</Text>
 
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 7
+        fontSize: 10
     },
      serviceBackgound: {
                     width: "50%",
