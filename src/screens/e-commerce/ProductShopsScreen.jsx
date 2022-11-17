@@ -30,12 +30,12 @@ export default function ProductShopsScreen() {
     const { id } = route.params
     const fecthProduits = async () => {
         try {
-            const response = await fetchApi(`/products/categories/${id} `, {
+            const response = await fetchApi(`/products/categorie/${id} `, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            console.log(products)
+            console.log(categories)
         }
         catch (error) {
             console.log(error)

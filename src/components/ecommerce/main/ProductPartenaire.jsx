@@ -15,6 +15,7 @@ import fetchApi from '../../../helpers/fetchApi';
 import { useCallback } from 'react';
 
 export default function ProductPartenaire({ product, index, totalLength, fixMargins = false, onRemove }) {
+  
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -181,7 +182,7 @@ export default function ProductPartenaire({ product, index, totalLength, fixMarg
       <View style={styles.productNames}>
         <Text numberOfLines={2} style={styles.productName}>
 
-          <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
+          <Text numberOfLines={2} style={styles.productName}> {product.produit.NOM}</Text>
         </Text>
       </View>
       {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
