@@ -56,38 +56,33 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                         style={{ alignSelf: 'center', marginBottom: 15, marginTop: 20 }}
                 /> :
                         <View style={styles.container}>
-                                <View style={styles.product}>
-                                        <View style={styles.productImage}>
-                                                <Image source={{ uri: menu.IMAGE}} style={styles.image} />
-                                        </View>
-                                        <View style={styles.productDetails}>
-                                                <View>
-                                                <Text numberOfLines={3} style={styles.productName}>
-                                                        {menu.repas} ·
-                                                        <Text numberOfLines={3} style={styles.productName}> {menu.categorie}</Text>
-                                                </Text>
-                                                </View>
-                                               
-                                                <View>
-                                                <Text style={styles.productSeller}>
-                                                        {menu.NOM_ORGANISATION}
-                                                </Text>
-                                                </View>
-                                                <View style={{marginBottom:0}}>
-                                                {menu.PRIX ? <Text style={styles.price}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
-                                                </View>
-                                                <View  style={{marginTop:15,marginBottom:-35}}>
-                                                            <Entypo name="star-outlined" size={24} color="black" >
-                                                            <Entypo name="star-outlined" size={24} color="black" />
-                                                            <Entypo name="star-outlined" size={24} color="black" />
-                                                            <Entypo name="star-outlined" size={24} color="black" />
-                                                            <Entypo name="star-outlined" size={24} color="black" />
-
-                                                            </Entypo>
-                                                  </View>
-                                        </View>
-                                </View>
-                                <View style={styles.ligne}></View>
+                                {/* <View style={styles.cardPhoto}>
+                                <Image source={{ uri: menu.IMAGE}} style={styles.image} />
+                                </View> */}
+                                <View style={{ marginTop: 10 }} >
+                    <Text style={styles.text} numberOfLines={2}>{menu.repas}</Text>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
+                   
+                    <View style={{ flexDirection: "row" }}>
+                        <AntDesign name="star" size={15} color="#EFC519" />
+                        <AntDesign name="star" size={15} color="#EFC519" />
+                        <AntDesign name="star" size={15} color="#EFC519" />
+                        <AntDesign name="staro" size={15} color="#EFC519" />
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <AntDesign name="clockcircleo" size={15} color="#797E9A" />
+                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
+                    </View>
+                    <View style={{ marginTop: -5 }}>
+                        <Text style={styles.textFbu}>{menu.PRIX} Fbu</Text>
+                    </View>
+                </View>
+                <View style={{ marginTop: 10 }} >
+                    <Text style={styles.text1} numberOfLines={2}>{menu.categorie}</Text>
+                </View>
+                
+                                {/* <View style={styles.ligne}></View>
                                 <View style={{ marginTop: 10 }}>
                                         <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
                                 </View>
@@ -114,7 +109,51 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                         <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
                                                 <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
                                         </TouchableOpacity>
-                                </View>
+                                </View> */}
+                                 <View style={{ marginTop: 10 }}>
+                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
+                </View>
+                <View style={styles.moreDetails}>
+                    <View style={styles.amountContainer}>
+                        <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                            <Text style={styles.amountChangerText}>-</Text>
+                        </TouchableOpacity>
+                        <TextInput
+                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                            value={amount.toString()}
+                            onChangeText={onChangeText}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => {
+                                setIsFocused(false)
+                                checkAmount()
+                            }}
+                            keyboardType="decimal-pad"
+                        />
+                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                            <Text style={styles.amountChangerText}>+</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+                <View>
+                    <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
+
+                        <View style={styles.carre}>
+                            <AntDesign name="sharealt" size={20} color="black" />
+                        </View>
+                        <View style={styles.carre}>
+                            <AntDesign name="shoppingcart" size={20} color="black" />
+
+                        </View>
+
+                        <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                            <View style={styles.carre3}>
+                                <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
                         </View>
         )
 }
@@ -138,7 +177,16 @@ const styles = StyleSheet.create({
                 borderRadius: 10,
                 // marginTop: 1,
         },
-
+        text1: {
+                color: '#242F68',
+                fontWeight: "bold",
+                fontSize: 16
+            },
+            textFbu: {
+                color: 'red',
+                fontWeight: "bold",
+                fontSize: 15
+            },
         cardInput: {
                 padding: 15,
                 height: 50,
@@ -171,6 +219,38 @@ const styles = StyleSheet.create({
         moreDetails: {
                 marginTop: 20
         },
+        carre: {
+                padding: 15,
+                height: 50,
+                width: 50,
+                color: "#1D8585",
+                backgroundColor: '#D7D9E4',
+                borderRadius: 10,
+                // marginTop: 1,
+            },
+            carre2: {
+                padding: 15,
+                height: 50,
+                width: 200,
+                borderWidth: 2,
+                borderColor: '#D8D8D8',
+                borderRadius: 10,
+                // marginTop: 1,
+            },
+            carre3: {
+                padding: 10,
+                height: 50,
+                width: 200,
+                backgroundColor: COLORS.ecommerceOrange,
+                borderWidth: 2,
+                borderColor: '#D8D8D8',
+                borderRadius: 10,
+                // marginTop: 1,
+                //     marginTop: 15,
+                // borderRadius: 5,
+                // backgroundColor: COLORS.ecommerceOrange,
+                // paddingVertical: 15,
+            },
         amountChanger: {
                 width: 50,
                 height: 50,
@@ -226,6 +306,11 @@ const styles = StyleSheet.create({
                 flex: 1,
                 marginLeft: 30
       },
+      text: {
+        color:  COLORS.ecommercePrimaryColor,
+        fontWeight: "bold",
+        fontSize: 20
+    },
       productName: {
         color: COLORS.ecommercePrimaryColor,
         fontWeight: "bold",
@@ -245,13 +330,21 @@ productSeller: {
                 height: "100%"
         },
         image: {
-                width: "100%",
-                height: "150%",
+                width: "50%",
+                height: "50%",
                 borderRadius: 10,
                 alignContent: 'center'
         },
         container: {
                 padding: 10,
+        },
+        cardPhoto:{
+                padding:20,
+                // Width:10,
+                // Height:10,
+                // paddingHorizontal:10,
+                // borderRadius:10,
+                 backgroundColor:'red'
         },
         ligne: {
                 marginTop: 40,

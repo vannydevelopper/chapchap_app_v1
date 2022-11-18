@@ -33,6 +33,8 @@ export default function Restaurants({ restaurants }) {
 
 const styles = StyleSheet.create({
     homeshops: {
+        // paddingHorizontal:20
+
     },
     shopsHeader: {
         flexDirection: 'row',

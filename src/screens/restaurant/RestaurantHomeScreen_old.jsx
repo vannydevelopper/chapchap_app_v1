@@ -155,7 +155,7 @@ export default function RestaurantHomeScreen() {
                 </View>
                 {(loadingCategories || firstLoadingMenus) ? <CategoriesSkeletons /> :
                     <View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', }}>
                             {categories.map((categorie, index) => {
                                 return (
                                     <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>

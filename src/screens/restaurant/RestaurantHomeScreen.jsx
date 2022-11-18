@@ -9,7 +9,7 @@ import HomeProducts from "../../components/ecommerce/home/HomeProducts";
 import Shops from "../../components/ecommerce/home/Shops";
 import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";import Restaurants from "../../components/restaurants/home/Restaurants";
+import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge"; import Restaurants from "../../components/restaurants/home/Restaurants";
 import HomeMenus from "../../components/restaurants/home/HomeMenus";
 import Menu from "../../components/restaurants/main/Menu";
 import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
@@ -58,7 +58,7 @@ export default function RestaurantHomeScreen() {
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
     }
-// *************************
+    // *************************
     const selectedItemSousCategories = (souscategorie) => {
         if (loadingSubCategories || loadingMenus) return false
         if (souscategorie.ID_PRODUIT_SOUS_CATEGORIE == selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE) {
@@ -87,7 +87,7 @@ export default function RestaurantHomeScreen() {
             }
         })()
     }, [selectedCategorie])
-// *************************
+    // *************************
     useEffect(() => {
         (async () => {
             try {
@@ -139,40 +139,40 @@ export default function RestaurantHomeScreen() {
                 </TouchableOpacity>
                 <RestaurantBadge />
             </View>
-                <Text style={styles.titlePrincipal}>Restaurants</Text>
-                <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
-                    <View style={styles.searchSection}>
-                        <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Recherche..."
-                        />
-                    </View>
-                    <View style={styles.cardRecherche}>
-                        <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
-                    </View>
+            <Text style={styles.titlePrincipal}>Restaurants</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
+                <View style={styles.searchSection}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Rechercher..."
+                    />
                 </View>
-                {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                    <Restaurants restaurants={restaurants} />
-                }
-                {(loadingCategories || firstLoadingMenus) ? <CategoriesSkeletons /> :
-                    <View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between",marginTop:-100, paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-                            {categories.map((categorie, index) => {
-                                return (
-                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                        <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                            </View>
-                                            <Text style={[{ fontSize: 9, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                <View style={styles.cardRecherche}>
+                    <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                </View>
+            </View>
+            <ScrollView >
+            {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                <Restaurants restaurants={restaurants} />
+            }
+            {(loadingCategories || firstLoadingMenus) ? <CategoriesSkeletons /> :
+                <View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
+                                    <View style={{ alignContent: "center", alignItems: "center" }}>
+                                        <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
                                         </View>
-                                    </TouchableOpacity>
-                                )
-                            })}
-                        </View>
-                    </View>}
-            <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
+                                        <Text style={[{ fontSize: 9, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        })}
+                    </View>
+                </View>}
 
                 <View style={styles.products}>
                     {menus.map((menu, index) => {
@@ -272,8 +272,8 @@ const styles = StyleSheet.create({
     },
     cardPhoto: {
         marginTop: 10,
-        width: 45,
-        height: 45,
+        width: 60,
+        height: 60,
         //backgroundColor: "#242F68",
         backgroundColor: "#DFE1E9",
         borderRadius: 10,
