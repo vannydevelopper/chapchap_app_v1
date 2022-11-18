@@ -11,15 +11,6 @@ export default function Restaurants({ restaurants }) {
     const navigation = useNavigation()
     return (
         <View style={styles.homeshops}>
-            <TouchableNativeFeedback onPress={() => navigation.navigate('RestaurantScreen', { restaurants })}
-                accessibilityRole="button"
-                background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-            >
-                <View style={styles.shopsHeader}>
-                    <Text style={styles.title}>Les restaurants</Text>
-                    <MaterialIcons name="navigate-next" size={24} color="black" />
-                </View>
-            </TouchableNativeFeedback>
             <ScrollView
                 style={styles.shops}
                 horizontal
@@ -49,7 +40,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 10,
         paddingVertical: 10,
-        paddingHorizontal: 10
+        paddingHorizontal: 10,
+        // marginTop:-80
     },
     title: {
         fontWeight: 'bold'

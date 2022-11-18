@@ -25,32 +25,22 @@ export default function Restaurant({ restaurant, index, totalLength }) {
                                         <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
                               </View>
                               </TouchableNativeFeedback>
-                                        <Text numberOfLines={2} style={styles.shopName}>
-                                        {restaurant.NOM_ORGANISATION }
-                              </Text>
-                              {/* {restaurant.categories.map((categorie,index)=>{
-                                return(
-                                    <View key={index}>
-                                    <Text numberOfLines={2} style={styles.shopCategory}> {categorie.NOM}</Text>
-                                    </View>
-
-                                )
-                              })} */}
                     </View>
           )
 }
 const styles = StyleSheet.create({
           shop: {
                     maxWidth: 200,
-                    backgroundColor: '#F1F1F1',
+                    marginTop:-10,
+                    // backgroundColor: '#F1F1F1',
                     borderRadius: 8,
                     padding: 10,
                     justifyContent: 'space-between'
           },
           imageCard: {
                     borderRadius: 10,
-                    height: "65%",
-                    width: "90%",
+                    height: "50%",
+                    width: "70%",
                     borderRadius: 10,
                     backgroundColor: '#FFF',
                     alignSelf: 'center',
