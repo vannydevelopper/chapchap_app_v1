@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View ,ImageBackground} from 'react-native'
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { addMenuAction, removeMenuAction } from '../../../store/actions/restaurantCartActions'
 
@@ -66,11 +66,10 @@ export default function MenuCart({ menu, index }) {
     }, [amount])
     return (
         <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
-            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} borderRadius={10}  imageStyle={{ opacity: 0.6 }}>
-                 <View style={{marginTop:45,marginRight:80}}>
-                 <Text style={styles.productName1}>{menu.repas}</Text>
-
-                 </View>
+            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={15} imageStyle={{ opacity: 0.8 }}>
+                <View style={{ marginTop: 45, marginRight: 80 }}>
+                    <Text style={styles.productName1}>{menu.repas}</Text>
+                </View>
             </ImageBackground>
             <View style={styles.productDetails}>
                 <View style={styles.detailsHeader}>
@@ -132,6 +131,9 @@ export default function MenuCart({ menu, index }) {
                     <Text style={styles.amountChangerText}>+</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
+                <MaterialCommunityIcons name="delete" size={24} color= {COLORS.ecommerceRed} />
+            </TouchableOpacity>
         </View>
     )
 }
@@ -144,8 +146,9 @@ const styles = StyleSheet.create({
         borderRadius: 9,
         padding: 5,
         alignItems: "center",
-        height: 100,
-        marginTop: 20
+        height: 90,
+        marginTop: 20,
+
     },
     productImage: {
         height: "70%",
@@ -162,10 +165,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     productDetails: {
-        marginLeft: -40,
+        marginLeft: -63,
         justifyContent: 'space-between',
         flex: 1,
-        marginTop:-15
+        marginTop: -8
     },
     productNames: {
         marginVertical: 30
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
     productName: {
         color: COLORS.ecommercePrimaryColor,
         fontWeight: 'bold',
-        fontSize: 10
+        fontSize: 11
     },
     productName1: {
         textAlign: 'center',
@@ -181,11 +184,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 10
     },
-     serviceBackgound: {
-                    width: "50%",
-                    height: "90%",
-                    justifyContent: 'space-between'
-          },
+    serviceBackgound: {
+        width: "50%",
+        height: "95%",
+        justifyContent: 'space-between',
+    },
     productPrix: {
         color: COLORS.ecommerceRed,
         fontWeight: 'bold'
@@ -195,6 +198,7 @@ const styles = StyleSheet.create({
         height: 30,
         backgroundColor: '#F1F1F1',
         borderRadius: 5,
+        marginTop:-8,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -220,9 +224,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         padding: 1,
-        marginHorizontal: 10,
+        // marginHorizontal: 10,
         flexDirection: 'row',
-        marginTop: -20
+        marginTop: -8
     },
     input: {
         // borderRadius: 5,
@@ -231,7 +235,7 @@ const styles = StyleSheet.create({
         borderColor: '#fff',
         // flex: 1,
         height: "0%",
-        marginHorizontal: 5,
+        // marginHorizontal: 15,
         textAlign: 'center',
         color: COLORS.ecommercePrimaryColor,
         fontWeight: 'bold'

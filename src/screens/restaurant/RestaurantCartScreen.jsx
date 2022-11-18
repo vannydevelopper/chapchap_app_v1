@@ -118,13 +118,14 @@ export default function RestaurantCartScreen() {
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back-sharp" size={24} color="black" />
                 </TouchableOpacity>
-                
+
             </View>
-            <View style={{marginHorizontal:10}}>
-            <Text style={styles.titlePrincipal}>Mon panier</Text>
+            <View style={{ marginHorizontal: 10 }}>
+                <Text style={styles.titlePrincipal}>Mon panier</Text>
             </View>
+            <ScrollView>
             <View style={styles.products}>
-                <ScrollView>
+             
                     {menus.map((menu, index) => {
                         return (
                             <MenuCart
@@ -134,22 +135,22 @@ export default function RestaurantCartScreen() {
                             />
                         )
                     })}
-                </ScrollView>
-            </View>
-
-            <View style={styles.cartFooter}>
-
-                <Text style={{
-                    textAlign: 'center', color: COLORS.ecommercePrimaryColor,
-                    fontWeight: 'bold', fontSize: 15
-                }}>Total : {getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text>
                 
-                                        <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
-                                                navigation.navigate("ShippingInfoScreen",{service:2})
-                                      }}
-                                        >
-                                                  <Text style={styles.checkoutBtnTitle}>Envoyer la demande</Text>
-                                        </TouchableOpacity> 
+            </View>
+            </ScrollView>
+            <View style={styles.cartFooter}>
+                <View style={{marginVertical:20}}>
+                    <Text style={{
+                        textAlign: 'center', color: COLORS.ecommercePrimaryColor,
+                        fontWeight: 'bold', fontSize: 15
+                    }}>Total : {getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+                </View>
+                <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
+                    navigation.navigate("ShippingInfoScreen", { service: 2 })
+                }}
+                >
+                    <Text style={styles.checkoutBtnTitle}>Envoyer la demande</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -172,7 +173,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginHorizontal: 10,
         borderRadius: 0,
-        padding: 1
+        padding: 1,
+        marginBottom:70
     },
     cardHeader: {
         flexDirection: 'row',
@@ -181,7 +183,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         marginTop: StatusBar.currentHeight,
         height: 60,
-        marginBottom:-10
+        marginBottom: -10
     },
     titlePrincipal: {
         fontSize: 20,
@@ -245,13 +247,13 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.ecommerceRed,
         borderRadius: 5,
         marginTop: 20,
-        marginHorizontal:30
+        marginHorizontal: 30
     },
     checkoutBtnTitle: {
         textAlign: "center",
         color: '#fff',
         fontWeight: "bold",
-        fontSize:11
+        fontSize: 11
     },
     emptyFeedback: {
         textAlign: "center",
