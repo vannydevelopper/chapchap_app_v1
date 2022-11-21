@@ -74,10 +74,7 @@ export default function MenuDetailScreen() {
 
     ]
     const onetoilePress = (note) => {
-
         Setnote(note)
-
-
     }
     const fecthProduitPartenaires = async () => {
         try {

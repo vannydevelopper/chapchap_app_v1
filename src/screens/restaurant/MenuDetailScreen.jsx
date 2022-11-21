@@ -1,12 +1,28 @@
 import React, { useState } from "react"
 import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation } from '@expo/vector-icons';
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
+import { useDispatch } from "react-redux";
+import { restaurantProductSelector } from '../../store/selectors/restaurantCartSelectors';
+import { addMenuAction } from "../../store/actions/restaurantCartActions";
+import { useSelector } from 'react-redux';
+
 export default function MenuDetailScreen() {
+
     const route = useRoute()
+    const navigation= useNavigation()
+    const dispatch = useDispatch()
+
     const { product } = route.params
+    const MenuInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
+
     const [amount, setAmount] = useState(1)
+    if(MenuInCart)
+    {
+        const l=MenuInCart.QUANTITE
+        useState(l => parseInt(l))
+    }
     const [isFocused, setIsFocused] = useState(false)
     const onDecrement = () => {
         if (parseInt(amount) == 1) {
@@ -31,10 +47,12 @@ export default function MenuDetailScreen() {
     const checkAmount = () => {
         setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
     }
-
+const add=()=>{
+    navigation.navigate("RestaurantHomeScreen")
+}
     const onAddToCart = () => {
-        onClose()
-        dispatch(addMenuAction(menu, amount))
+        add()
+        dispatch(addMenuAction(product, amount))
     }
 
     var IMAGES = [
@@ -73,11 +91,17 @@ export default function MenuDetailScreen() {
                 </View>
                 {/* <ProductImages images={IMAGES} /> */}
                 <Ionicons name="ios-arrow-back-outline" size={24} color="white" style={{ ...styles.icon, marginTop: 0 }} />
-                <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
+                {/* <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
                 <View style={styles.cardOK}>
                     <Text style={{ color: "white", fontSize: 5 }}>5</Text>
-                </View>
-
+                </View> */}
+ <>
+                        {/* <AntDesign name="shoppingcart" size={14} color="white" /> */}
+                        <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
+                        {MenuInCart ? <View style={styles.badge}>
+                            <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
+                        </View> : null}
+                    </>
                 <View style={{ marginTop: 10 }} >
                     <Text style={styles.text} numberOfLines={2}>{product.repas}</Text>
                 </View>
@@ -181,6 +205,24 @@ const styles = StyleSheet.create({
         color: 'red',
         fontWeight: "bold",
         fontSize: 15
+    },
+    badge: {
+        minWidth: 25,
+        minHeight: 20,
+        paddingHorizontal: 5,
+        borderRadius: 20,
+        backgroundColor: COLORS.ecommerceRed,
+        position: 'absolute',
+        top: 20,
+        right: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    badgeText: {
+        textAlign: 'center',
+        fontSize: 10,
+        color: '#FFF',
+        fontWeight: "bold"
     },
     carre1: {
         padding: 15,
