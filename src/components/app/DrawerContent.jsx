@@ -109,6 +109,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
             </View>
           </View>
         </TouchableNativeFeedback>
+       
         <View style={[styles.separator, { marginVertical: 20 }]} />
         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')}>
           <View style={{ borderRadius: 10, overflow: "hidden" }}>

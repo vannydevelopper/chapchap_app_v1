@@ -12,7 +12,7 @@ import { DrawerActions, useNavigation } from "@react-navigation/native";
 const TopBar = createMaterialTopTabNavigator()
 
 export default function WishlistTab() {
-    const navigation=useNavigation()
+    const navigation = useNavigation()
     const { height } = useWindowDimensions()
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function WishlistTab() {
                                         </View> */}
                 {/* <View style={styles.tabIndicator} /> */}
                 <View style={styles.cardHeader}>
-                    <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch( DrawerActions.toggleDrawer())}>
+                    <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
                         <View style={styles.menuOpenerLine} />
                         <View style={[styles.menuOpenerLine, { width: 15 }]} />
                         <View style={[styles.menuOpenerLine, { width: 25 }]} />
@@ -52,34 +52,45 @@ export default function WishlistTab() {
                     <EcommerceBadge />
                 </View>
                 <Text style={styles.titlePrincipal}>Liste des souhaits</Text>
-      <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10,marginBottom:10 }}>
-        <View style={styles.searchSection}>
-          <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-          <TextInput
-            style={styles.input}
-            placeholder="Recherche..."
-          />
-        </View>
-        <View style={styles.cardRecherche}>
-          <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
-        </View>
-      </View>
+                <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10, marginBottom: 10 }}>
+                    <View style={styles.searchSection}>
+                        <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Recherche..."
+                        />
+                    </View>
+                    <View style={styles.cardRecherche}>
+                        <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                    </View>
+                </View>
                 <TopBar.Navigator
+
                     screenOptions={{
-                        tabBarScrollEnabled: true,
+                        // tabBarScrollEnabled: true,
+                        // tabBarStyle: styles.tabBar,
+                        // tabBarPressColor: 'transparent',
+                        // tabBarIndicatorStyle: {
+                        //     height: 40,
+                        //     backgroundColor: '#fff',
+                        //     borderRadius: 30,
+                        //     marginBottom: 5,
+                        //     marginHorizontal: 5
+                        // },
+                        // tabBarLabelStyle: {
+                        //     color: '#000',
+                        //     textTransform: 'none',
+                        //     fontWeight: 'bold',
+                        // }
                         tabBarStyle: styles.tabBar,
-                        tabBarPressColor: 'transparent',
-                        tabBarIndicatorStyle: {
-                            height: 40,
-                            backgroundColor: '#fff',
-                            borderRadius: 30,
-                            marginBottom: 5,
-                            marginHorizontal: 5
-                        },
                         tabBarLabelStyle: {
-                            color: '#000',
+                            color: COLORS.ecommercePrimaryColor,
                             textTransform: 'none',
-                            fontWeight: 'bold',
+                            fontSize: 15
+                        },
+                        tabBarIndicatorStyle: {
+                            height: 3,
+                            backgroundColor: COLORS.ecommercePrimaryColor,
                         }
                     }}
                 >
@@ -116,15 +127,15 @@ const styles = StyleSheet.create({
         width: "84%",
         height: 50,
         paddingHorizontal: 10
-      },
+    },
     cardOrginal: {
     },
     titlePrincipal: {
-      fontSize: 20,
-      fontWeight: "bold",
-      marginBottom: 12,
-      color: COLORS.ecommercePrimaryColor,
-      marginHorizontal: 10
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 12,
+        color: COLORS.ecommercePrimaryColor,
+        marginHorizontal: 10
     },
     menuOpener: {
     },
@@ -142,25 +153,25 @@ const styles = StyleSheet.create({
         marginTop: 30,
         alignSelf: "center",
     },
-    //   tabBar: {
-    //             overflow: 'hidden',
-    //             elevation: 0,
-    //             marginHorizontal: 20,
-    //   },
     tabBar: {
-        backgroundColor: COLORS.ecommercePrimaryColor,
-        height: 50,
-        maxHeight: 50,
-        borderRadius: 50,
-        paddingHorizontal: 0,
-        paddingVertical: 0,
-        paddingRight: 10,
-        marginTop: 2,
-        elevation: 10,
-        shadowColor: '#c4c4c4',
         overflow: 'hidden',
-        marginHorizontal: 10
+        elevation: 0,
+        marginHorizontal: 10,
     },
+    // tabBar: {
+    //     backgroundColor: COLORS.ecommercePrimaryColor,
+    //     height: 50,
+    //     maxHeight: 50,
+    //     borderRadius: 50,
+    //     paddingHorizontal: 0,
+    //     paddingVertical: 0,
+    //     paddingRight: 10,
+    //     marginTop: 2,
+    //     elevation: 10,
+    //     shadowColor: '#c4c4c4',
+    //     overflow: 'hidden',
+    //     marginHorizontal: 10
+    // },
     tabIndicator: {
         width: "90%",
         height: 5,
@@ -172,7 +183,7 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         marginLeft: 10
-      },
+    },
     cardRecherche: {
         width: 50,
         height: 50,
@@ -182,5 +193,5 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignContent: "center",
         alignItems: "center"
-      },
+    },
 })

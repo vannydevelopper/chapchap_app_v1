@@ -8,7 +8,7 @@ import SubCategories from "../../components/ecommerce/home/SubCategories";
 import HomeProducts from "../../components/ecommerce/home/HomeProducts";
 import Shops from "../../components/ecommerce/home/Shops";
 import Product from "../../components/ecommerce/main/Product";
-import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import { CategoriesMenuSkeletons, CategoriesSkeletons, HomeMenuSkeletons, HomeProductsSkeletons, RestaurantSkeletons, restaurantSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge"; import Restaurants from "../../components/restaurants/home/Restaurants";
 import HomeMenus from "../../components/restaurants/home/HomeMenus";
 import Menu from "../../components/restaurants/main/Menu";
@@ -153,40 +153,49 @@ export default function RestaurantHomeScreen() {
                 </View>
             </View>
             <ScrollView >
-            {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                <Restaurants restaurants={restaurants} />
-            }
-            {(loadingCategories || firstLoadingMenus) ? <CategoriesSkeletons /> :
-                <View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-                        {categories.map((categorie, index) => {
-                            return (
-                                <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                    <View style={{ alignContent: "center", alignItems: "center" }}>
-                                        <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                            <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
+                {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <RestaurantSkeletons /> :
+                    <Restaurants restaurants={restaurants} />
+                }
+                {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <CategoriesMenuSkeletons /> :
+                    <View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
+                            {categories.map((categorie, index) => {
+                                return (
+                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
+                                        <View style={{ alignContent: "center", alignItems: "center" }}>
+                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
+                                            </View>
+                                            <Text style={[{ fontSize: 9, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                         </View>
-                                        <Text style={[{ fontSize: 9, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        })}
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </View>
                     </View>
-                </View>}
+                }
+                {
+                    (firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ?
+                        <>
+                            <HomeMenuSkeletons />
+                            <HomeMenuSkeletons />
+                        </> :
+                        <View style={styles.products}>
 
-                <View style={styles.products}>
-                    {menus.map((menu, index) => {
-                        return (
-                            <Menu
-                                menu={menu}
-                                index={index}
-                                totalLength={menus.length}
-                                key={index}
-                                fixMargins
-                            />
-                        )
-                    })}
-                </View>
+                            {menus.map((menu, index) => {
+                                return (
+                                    <Menu
+                                        menu={menu}
+                                        index={index}
+                                        totalLength={menus.length}
+                                        key={index}
+                                        fixMargins
+                                    />
+                                )
+                            })}
+                        </View>
+
+                }
             </ScrollView>
         </View>
     )

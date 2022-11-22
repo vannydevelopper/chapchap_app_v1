@@ -10,8 +10,9 @@ import Shops from "../../components/ecommerce/home/Shops";
 import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import { useForm } from "../../hooks/useForm";
 
-export default function   EcommerceHomeScreen() {
+export default function EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
 
     const [loadingCategories, setLoadingCatagories] = useState(true)
@@ -20,7 +21,7 @@ export default function   EcommerceHomeScreen() {
 
 
     const [loadingSubCategories, setLoadingSubCategories] = useState(false)
-    const [sousCategories, SetSousCategories] = useState([]) 
+    const [sousCategories, SetSousCategories] = useState([])
     const [selectedsousCategories, setSelectedsousCategories] = useState(null)
 
 
@@ -29,6 +30,7 @@ export default function   EcommerceHomeScreen() {
     const [products, setProducts] = useState([])
     const [shops, setShops] = useState([])
     const navigation = useNavigation()
+
     const fecthCategories = async () => {
         try {
             const response = await fetchApi("/products/categories", {
@@ -98,7 +100,7 @@ export default function   EcommerceHomeScreen() {
                 if (selectedsousCategories) {
                     url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
                 }
-                
+
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
             } catch (error) {
@@ -140,17 +142,15 @@ export default function   EcommerceHomeScreen() {
             <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
                 <Text style={styles.titlePrincipal}>Achat des produits</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
-                    <View style={styles.searchSection}>
+                    <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
                         <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Recherche..."
-                        />
-                    </View>
+                        <Text style={styles.input}>Rechercher.......</Text>
+                    </TouchableOpacity>
                     <View style={styles.cardRecherche}>
                         <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                     </View>
                 </View>
+
                 {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
                     <View>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
@@ -176,7 +176,7 @@ export default function   EcommerceHomeScreen() {
 
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
-                
+
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
