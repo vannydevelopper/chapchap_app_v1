@@ -32,9 +32,6 @@ export default function RestaurantWishlistScreen() {
   const [shops, setShops] = useState([])
 
   const navigation = useNavigation()
-
-  
-
   const onCategoryPress = (categorie) => {
     if (loadingSubCategories || loadingProducts) return false
     if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
@@ -49,7 +46,7 @@ export default function RestaurantWishlistScreen() {
   }
 
   const onRemove = useCallback((ID_RESTAURANT_MENU) => {
-   
+
     const newMenus = menus.filter(p => p.ID_RESTAURANT_MENU != ID_RESTAURANT_MENU)
     setMenus(newMenus)
   }, [menus])
@@ -58,28 +55,28 @@ export default function RestaurantWishlistScreen() {
     try {
       if (firstLoadingProducts == false) {
         setLoadingProducts(true)
-    }
-              var url = "/resto/menu/wishlist/all"
-               const menu = await fetchApi(url)
-              setMenus(menu.result)
+      }
+      var url = "/resto/menu/wishlist/all"
+      const menu = await fetchApi(url)
+      setMenus(menu.result)
     }
     catch (error) {
-              console.log(error)
+      console.log(error)
     } finally {
       setFirstLoadingProducts(false)
       setLoadingProducts(false)
-  }s
-}
-useFocusEffect(useCallback(() => {
-  fecthMenus()
-}, []))
-  
+    }  
+  }
+  useFocusEffect(useCallback(() => {
+    fecthMenus()
+  }, []))
+
   // return (
   //   <View style={styles.container}>
-     
+
   //     {menus.length!=0 ?
   //     <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
-    
+
   //     <TouchableNativeFeedback
   //       accessibilityRole="button"
   //       background={TouchableNativeFeedback.Ripple('#c9c5c5')}
@@ -105,65 +102,62 @@ useFocusEffect(useCallback(() => {
   //   <>
   //   <LottieView style={{ marginTop:40, width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
   //   <Text style={styles.emptyFeedback}>Votre liste des souhaits est vide</Text>
-    
+
   //   </>
   //     }
 
-      
-      
+
+
   //   </View>
   // )
   return (
     <View style={styles.container}>
-      {(firstLoadingProducts || loadingProducts) ? 
-      <View style={{marginTop:20}}>
-         <HomeProductsSkeletons />
-         <HomeProductsSkeletons />
-      </View>
-      :
-                   
-   
-                   menus.length!=0 ?
-                    <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
-                    <TouchableNativeFeedback
-                      accessibilityRole="button"
-                      background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-                    >
-                      <View style={styles.productsHeader}>
-                     </View>
-                    </TouchableNativeFeedback>
-                    <View style={styles.products}>
-                           
-                      {menus.map((menu, index) => {
-                        return (
-                          <Menu
-                            menu={menu}
-                            index={index}
-                            totalLength={menus.length}
-                            key={index}
-                            fixMargins
-                            onRemove={onRemove}
-                          />
-                        )
-                      })}
-                    </View>
-                  </ScrollView>:
-                  <>
-                  <LottieView style={{ marginTop:40,width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
-                  <Text style={styles.emptyFeedback}>Votre liste des souhaits est vide</Text>
-                  
-                  </>
-                    }
+      {(firstLoadingProducts || loadingProducts) ?
+        <View style={{ marginTop: 20 }}>
+          <HomeProductsSkeletons />
+          <HomeProductsSkeletons />
+        </View>
+        :
 
-      
-      
+
+        menus.length != 0 ?
+          <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
+            <TouchableNativeFeedback
+              accessibilityRole="button"
+              background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+            >
+              <View style={styles.productsHeader}>
+              </View>
+            </TouchableNativeFeedback>
+            <View style={styles.products}>
+
+              {menus.map((menu, index) => {
+                return (
+                  <Menu
+                    menu={menu}
+                    index={index}
+                    totalLength={menus.length}
+                    key={index}
+                    fixMargins
+                    onRemove={onRemove}
+                  />
+                )
+              })}
+            </View>
+          </ScrollView> :
+          <>
+            <LottieView style={{ marginTop: 40, width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
+            <Text style={styles.emptyFeedback}>Votre liste des souhaits est vide</Text>
+
+          </>
+      }
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,marginTop:-30
+    flex: 1, marginTop: -30
   },
   emptyFeedback: {
     textAlign: "center",
@@ -172,8 +166,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     opacity: 0.6,
     fontSize: 16,
-    marginTop:40
-},
+    marginTop: 40
+  },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -181,7 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: StatusBar.currentHeight,
     height: 60
-    
+
   },
   menuOpener: {
   },
