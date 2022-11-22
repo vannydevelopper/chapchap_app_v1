@@ -141,13 +141,10 @@ export default function RestaurantHomeScreen() {
             </View>
             <Text style={styles.titlePrincipal}>Restaurants</Text>
             <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
-                <View style={styles.searchSection}>
-                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Rechercher..."
-                    />
-                </View>
+            <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
+                        <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                        <Text style={styles.input}>Rechercher.......</Text>
+                    </TouchableOpacity>
                 <View style={styles.cardRecherche}>
                     <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                 </View>

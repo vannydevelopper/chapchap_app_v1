@@ -65,7 +65,7 @@ export default function RestaurantWishlistScreen() {
     } finally {
       setFirstLoadingProducts(false)
       setLoadingProducts(false)
-    }  
+    }
   }
   useFocusEffect(useCallback(() => {
     fecthMenus()
@@ -118,8 +118,6 @@ export default function RestaurantWishlistScreen() {
           <HomeProductsSkeletons />
         </View>
         :
-
-
         menus.length != 0 ?
           <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
             <TouchableNativeFeedback
