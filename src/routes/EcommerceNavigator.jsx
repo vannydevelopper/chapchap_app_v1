@@ -11,7 +11,8 @@ import SearchLivreurScreen from "../screens/e-commerce/SearchLivreurScreen";
 import ShippingInfoScreen from "../screens/e-commerce/ShippingInfoScreen";
 import ShopsScreen from "../screens/e-commerce/ShopsScreen";
 import WishlistTab from "../screens/wishlist/WishlistTab";
-export default function EcommerceNavigator() {
+export default function EcommerceNavigator() { 
+    
           const Stack = createStackNavigator()
           return (
                     <Stack.Navigator>

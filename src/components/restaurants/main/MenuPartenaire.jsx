@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import React, { useRef } from 'react'
+import { Image, StyleSheet, ImageBackground, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { Portal } from 'react-native-portalize';
@@ -11,10 +11,11 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCartSelectors';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { restaurantProductSelector } from '../../../store/selectors/restaurantCartSelectors';
+import { useCallback } from 'react';
 import fetchApi from '../../../helpers/fetchApi';
 
-
-export default function MenuPartenaire({ menu, index, totalLength, fixMargins = false,onRemove }) {
+export default function MenuPartenaire({ menu, index, totalLength, fixMargins = false, onRemove }) {
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -33,22 +34,25 @@ export default function MenuPartenaire({ menu, index, totalLength, fixMargins = 
   const [wishlist, setWishlist] = useState(false)
   const fecthWishlist = async () => {
     try {
-        const wishliste = await fetchApi(`/wishlist/restaurant/verification/${menu.ID_RESTAURANT_MENU}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        })
-        // console.log(wishliste.result)
-        if (wishliste.result) {
-            setWishlist(true)
-        }
+      const wishliste = await fetchApi(`/wishlist/restaurant/verification/${menu.ID_RESTAURANT_MENU}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      })
+      // console.log(wishliste.result)
+      if (wishliste.result) {
+        setWishlist(true)
+      }
     }
     catch (error) {
-        console.log(error)
+      console.log(error)
     }
-}
-useFocusEffect(useCallback(() => {
+  }
+
+  useFocusEffect(useCallback(() => {
     fecthWishlist()
-}, []))
+  }, []))
+
+
   const Addishlist = async (id) => {
     //  console.log(id)
     if (wishlist) {
@@ -86,12 +90,10 @@ useFocusEffect(useCallback(() => {
     setIsOpen(true)
     modalizeRef.current?.open()
   }
-
   const onCloseAddToCart = () => {
     modalizeRef.current?.close()
   }
-
-  const productInCart = useSelector(ecommerceProductSelector(menu.ID_PRODUIT_PARTENAIRE))
+  const MenuInCart = useSelector(restaurantProductSelector(menu.ID_RESTAURANT_MENU))
 
   useEffect(() => {
     if (isOpen) {
@@ -103,11 +105,14 @@ useFocusEffect(useCallback(() => {
       }
     }
   }, [isOpen])
-
   return (
-    <View key={index} style={[styles.product, additionStyles]}>
-      <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', {product: menu })} style={styles.imageCard}>
-        <Image source={{ uri: menu.IMAGE }} style={styles.image} />
+    <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
+      <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', { product: menu })} style={styles.imageCard}>
+        <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={-10} marginTop={2} mag borderRadius={20} imageStyle={{ opacity: 0.8 }}>
+          <View style={{ marginTop: 120, marginRight: 0 }}>
+            <Text style={styles.productName1}>{menu.repas}</Text>
+          </View>
+        </ImageBackground>
       </TouchableOpacity>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
@@ -117,25 +122,19 @@ useFocusEffect(useCallback(() => {
           }}
         >
           <View style={styles.cardLike}>
-            {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
+            {wishlist ? <AntDesign name="heart" size={14} color="#F29558" /> : <AntDesign name="hearto" size={14} color="#F29558" />}
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
           <>
-            <AntDesign name="shoppingcart" size={24} color="#F29558" />
-            {productInCart ? <View style={styles.badge}>
-              <Text style={styles.badgeText} numberOfLines={1}>{productInCart.QUANTITE}</Text>
+            <AntDesign name="shoppingcart" size={14} color="#F29558" />
+            {MenuInCart ? <View style={styles.badge}>
+              <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
             </View> : null}
           </>
         </TouchableOpacity>
       </View>
-      <View style={styles.productNames}>
-        <Text numberOfLines={2} style={styles.productName}>
-          {menu.repas} ·
-          <Text numberOfLines={2} style={styles.productName}> {menu.categorie}</Text>
-        </Text>
-      </View>
-      {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+      {menu.PRIX ? <Text style={{ fontsize: 10, fontWeight: "bold", color: COLORS.ecommercePrimaryColor }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
       <Portal>
         <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
           <Modalize
@@ -161,12 +160,26 @@ useFocusEffect(useCallback(() => {
         </GestureHandlerRootView>
       </Portal>
     </View>
+
   )
 }
 
 const styles = StyleSheet.create({
+  productName1: {
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 12
+  },
+  serviceBackgound: {
+    width: "100%",
+    height: "100%",
+    justifyContent: 'center',
+  },
   product: {
-    maxWidth: 200
+    maxWidth: 300,
+    marginBottom: -40
+
   },
   imageCard: {
     borderRadius: 8,
@@ -181,19 +194,19 @@ const styles = StyleSheet.create({
   },
   cardLike: {
     marginTop: 10,
-    width: 35,
-    height: 35,
+    width: 25,
+    height: 25,
     backgroundColor: "#FBD5DA",
-    borderRadius: 10,
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center"
   },
   cartBtn: {
     marginTop: 10,
-    width: 35,
-    height: 35,
+    width: 25,
+    height: 25,
     backgroundColor: "#FBD5DA",
-    borderRadius: 10,
+    borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 8

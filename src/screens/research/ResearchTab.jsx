@@ -94,9 +94,9 @@ export default function ResearchTab() {
                         <View style={[styles.menuOpenerLine, { width: 15 }]} />
                         <View style={[styles.menuOpenerLine, { width: 25 }]} />
                     </TouchableOpacity>
-                    <EcommerceBadge />
+                    {/* <EcommerceBadge /> */}
                 </View>
-                <Text style={styles.titlePrincipal}>Liste des produits</Text>
+                {/* <Text style={styles.titlePrincipal}>Liste des produits</Text> */}
       <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10,marginBottom:10 }}>
         <View style={styles.searchSection}>
           <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />

@@ -180,7 +180,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
 
   return (
     <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
-      <TouchableWithoutFeedback onPress={() => navigation.push('ProductDetailsScreen', { product: product })} >
+      <TouchableWithoutFeedback onPress={() => navigation.navigate('EcommerceNavigator', { product: product })} >
         <View style={styles.imageCard}>
           <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
         </View>

@@ -12,11 +12,12 @@ import EcommerceNavigator from "./EcommerceNavigator";
 import RestaurantNavigator from "./RestaurantNavigator";
 
 export default function DrawerNavigator() {
+          const drawr= true
           const Drawer = createDrawerNavigator()
           return (
                     <Drawer.Navigator screenOptions={{ headerShown: false ,lazy:true,unmountOnBlur:true}} drawerContent={props => <DrawerContent {...props} />}>
                               <Drawer.Screen name='HomeScreen' component={HomeScreen} />
-                              <Drawer.Screen name='EcommerceNavigator' component={EcommerceNavigator} />
+                              <Drawer.Screen name='EcommerceNavigator' initialParams={drawr} component={EcommerceNavigator} />
                               <Drawer.Screen name='RestaurantNavigator' component={RestaurantNavigator} />
                               <Drawer.Screen name='EcommerceWishlistScreen' component={EcommerceWishlistScreen} />
                               <Drawer.Screen name='CommandeEmiseScreen' component={CommandeEmiseScreen} />

@@ -11,77 +11,38 @@ import SubCategories from "../../components/ecommerce/home/SubCategories";
 import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
 import LottieView from 'lottie-react-native';
+import Restaurant from "../../components/restaurants/main/Restaurant";
 
 export default function MenusRestaurantScreen() {
     const route = useRoute()
-    const { selectedCategorie: defautSelectedCategorie, selectedsousCategories: defautSelectedsousCategories } = route.params
-
-    const [loadingCategories, setLoadingCatagories] = useState(true)
-    const [categories, setCategories] = useState([])
-    const [selectedCategorie, setSelectedCategorie] = useState(null)
-
-    const [loadingSubCategories, setLoadingSubCategories] = useState(false)
-    const [sousCategories, SetSousCategories] = useState([])
-    const [selectedsousCategories, setSelectedsousCategories] = useState(null)
-
+    const [firstLoadingMenus, setFirstLoadingMenus] = useState(true)
+    const [loadingMenus, setLoadingMenus] = useState(false)
+    const [restaurants, setRestaurants] = useState([])
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [menus, setMenus] = useState([])
-
-    const navigation = useNavigation()
-    const { restaurant } = route.params
-    const fecthProduits = async () => {
-        try {
-            const response = await fetchApi(`/resto/menu/categories/${restaurant.ID_PARTENAIRE_SERVICE} `, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            })
-            setCategories(response.result)
-            console.log(categories)
-        }
-        catch (error) {
-            console.log(error)
-        } finally {
-            setLoadingCatagories(false)
-        }
-    }
-    useFocusEffect(useCallback(() => {
-        fecthProduits()
-    }, []))
-
-    const onCategoryPress = (categorie) => {
-        if (loadingSubCategories || loadingProducts) return false
-        if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
-            return setSelectedCategorie(null)
-        }
-        setSelectedCategorie(categorie)
-        setSelectedsousCategories(null)
-    }
-
-    const selectedItemSousCategories = (souscategorie) => {
-        setSelectedsousCategories(souscategorie)
-    }
-
-
-    //fetch des sous  categories
+    const { restaurant} = route.params
+    console.log(restaurant)
     useEffect(() => {
         (async () => {
             try {
-                setLoadingSubCategories(true)
-                if (selectedCategorie?.ID_CATEGORIE_PRODUIT) {
-                    const subCategories = await fetchApi(`/products/sub_categories/${selectedCategorie?.ID_CATEGORIE_PRODUIT}`, {
-                        method: "GET",
-                        headers: { "Content-Type": "application/json" },
-                    })
-                    SetSousCategories(subCategories.result)
+                if (firstLoadingMenus == false) {
+                    setLoadingMenus(true)
                 }
+                var url = "/partenaire/service/resto"
+                // if (selectedCategorie) {
+                //     url = `/partenaire/ecommerce?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                // }
+                const restaurant = await fetchApi(url)
+                setRestaurants(restaurant.result)
             } catch (error) {
                 console.log(error)
             } finally {
-                setLoadingSubCategories(false)
+                setFirstLoadingMenus(false)
+                setLoadingMenus(false)
             }
         })()
-    }, [selectedCategorie])
+    }, [])
 
     useEffect(() => {
         (async () => {
@@ -90,9 +51,7 @@ export default function MenusRestaurantScreen() {
                     setLoadingProducts(true)
                 }
                 var url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE} `
-                if (selectedCategorie) {
-                    url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE}?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
-                }
+                
                 const menu = await fetchApi(url)
                 setMenus(menu.result)
             } catch (error) {
@@ -102,85 +61,161 @@ export default function MenusRestaurantScreen() {
                 setLoadingProducts(false)
             }
         })()
-    }, [selectedCategorie, selectedsousCategories])
+    }, [])
     return (
-        <View style={styles.container}>
-            <View style={styles.cardHeader}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <View style={styles.productsHeader}>
-                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                            <Text style={styles.title}>Les menus de: {restaurant.NOM_ORGANISATION}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    {/* <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
-                        {selectedCategorie ? selectedCategorie.NOM : menus.NOM_ORGANISATION}
-                    </Text> */}
+        <ScrollView>
+            <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
+                <  Image source={{ uri: restaurant.LOGO }} style={{ ...styles.imagePrincipal }} />
+            </View>
+            <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: "column", marginTop: 15 }}>
+                    <Text style={{ fontWeight: "bold" }}>{restaurant.NOM_ORGANISATION}</Text>
+                    <View style={{ flexDirection: "row", marginTop: 10 }}>
+                        <SimpleLineIcons name="location-pin" size={15} color="black" />
+                        <Text style={{ fontSize: 12 }}> {restaurant.ADRESSE_COMPLETE} </Text>
+                    </View>
                 </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                        <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                    </TouchableOpacity>
-                    <RestaurantBadge />
+                <View style={styles.carre}>
+                    {/* <Text>1,7km</Text> */}
                 </View>
             </View>
-            <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
-                <Text style={styles.titlePrincipal}></Text>
-                {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
-                    <View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-                            {categories.map((categorie, index) => {
+            <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10 }}>
+                <View style={{ flexDirection: "row" }}>
+                    <AntDesign name="star" size={20} color="#EFC519" />
+                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>3.0</Text>
+                </View>
+                <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
+                    <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
+                    {restaurant.OUVERT ? <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{restaurant.OUVERT}</Text> : <Text style={{ color: "#797E9A" }}>7h-18h</Text>}
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                    <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
+                    <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{restaurant.TELEPHONE}</Text>
+                </View>
+
+            </View>
+            <View style={{ marginTop: 10, marginHorizontal: 10 }} >
+
+                {restaurant.PRESENTATION ? <Text style={{ color: "#797E9A" }}>{restaurant.PRESENTATION}</Text> :
+                    <Text style={{ color: "#797E9A" }}>
+                        the best hotel for me, I stayed there for two weeks I really enjoyed its great location. I loved the character of the hotel. The restaurant was fantastic and the staff was friendly. Well maintained rooms, comfortable bed, and great Cafe.
+                    </Text>}
+            </View>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Text style={{ fontWeight: "bold", fontSize: 17 }}>Notre menu</Text>
+            </View>
+            <View style={{ }}>
+                {(firstLoadingProducts || loadingProducts ) ? <HomeProductsSkeletons wrap /> :
+                    menus.length != 0 ?
+                    <ScrollView
+                        style={styles.shops}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >
+                            {menus.map((menu, index) => {
                                 return (
-                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                        <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                            </View>
-                                            <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                        </View>
-                                    </TouchableOpacity>
+                                    <MenuPartenaire
+                                        menu={menu}
+                                        index={index}
+                                        totalLength={menus.length}
+                                        key={index}
+                                        fixMargins
+                                    />
                                 )
                             })}
-                        </View>
-                    </View>}
+                    </ScrollView>:
+                    <Text style={styles.emptyFeedback}> Aucun menu publie dans {restaurant.NOM_ORGANISATION} </Text>
+                }
+            </View>
+            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
+                <Text style={{ fontWeight: "bold", fontSize: 17 }}>Restaurant plus proche</Text>
+            </View>
 
-
-                {selectedCategorie && ((loadingSubCategories || loadingProducts || loadingSubCategories) ? <SubCategoriesSkeletons /> : <SubCategories
-                    sousCategories={sousCategories}
-                    selectedItemSousCategories={selectedItemSousCategories}
-                    selectedsousCategories={selectedsousCategories}
-                />)}
-
-                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons wrap /> :
-         menus.length!=0 ?
-                    <View style={styles.products}>
-                        {menus.map((menu, index) => {
-                            return (
-                                <MenuPartenaire
-                                    menu={menu}
-                                    index={index}
-                                    totalLength={menus.length}
-                                    key={index}
-                                    fixMargins
-                                />
-                            )
-                        })}
-                    </View>:
-                     <>
-                     <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
-                     <Text style={styles.emptyFeedback}>Aucune menu publie </Text>
-                     
-                     </>
-                    }
-            </ScrollView>
-
-        </View>
+            {(firstLoadingProducts ) ? <HomeProductsSkeletons wrap /> :
+                restaurants.length != 0 &&
+                <ScrollView
+                    style={styles.shops}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                >
+                    {restaurants.map((restaurant, index) => {
+                        return (
+                            <Restaurant
+                                restaurant={restaurant}
+                                restaurants={restaurants}
+                                index={index}
+                                totalLength={restaurants.length}
+                                key={index}
+                            />
+                        )
+                    })}
+                </ScrollView>
+            }
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    carre: {
+        padding: 15,
+        height: 70,
+        width: 70,
+        color: "#1D8585",
+        backgroundColor: '#D7D9E4',
+        borderRadius: 10,
+    },
+    emptyFeedback: {
+        textAlign: "center",
+        marginTop: 10,
+        color: COLORS.ecommercePrimaryColor,
+        fontWeight: "bold",
+        opacity: 0.6,
+        fontSize: 16
+    },
+    imageCard: {
+        backgroundColor: "white",
+        flex: 1,
+        // marginTop: 100
+    },
+    menuCard: {
+        backgroundColor: "#D7D9E4",
+        // flex: 1,
+        // marginTop: 250,
+        // borderTopLeftRadius: 50,
+        // borderTopRightRadius: 50
+
+    },
+    imagePrincipal:
+    {
+        width: '120%',
+        height: 280,
+        alignSelf: 'center',
+        borderBottomLeftRadius: 100,
+        borderBottomRightRadius: 100,
+    },
+    txtDisplay: {
+        color: "#797E9A",
+    }
+    ,
+    serviceIcon: {
+        width: 50,
+        height: 50,
+        backgroundColor: "#fff",
+        borderRadius: 100,
+        marginLeft: 10,
+        marginTop: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    serviceName: {
+        textAlign: 'center',
+        color: '#fff',
+        fontWeight: 'bold',
+        marginBottom: 20,
+        fontSize: 16
     },
     cardHeader: {
         flexDirection: 'row',
@@ -212,7 +247,11 @@ const styles = StyleSheet.create({
     },
     products: {
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        marginTop: -20
+    },
+    shops: {
+        paddingHorizontal: 10,
     },
     titlePrincipal: {
         fontSize: 0,
@@ -232,9 +271,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     DataImageCategorie: {
-        minWidth: 40,
-        minHeight: 40,
-        borderRadius: 10,
+        // width: '10%',
+        // height:  '50%',
+        alignSelf: 'center',
+
     },
     emptyFeedback: {
         textAlign: "center",

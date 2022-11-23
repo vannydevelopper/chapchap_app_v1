@@ -7,9 +7,11 @@ import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skel
 import { useContext } from "react";
 import SearchContext from "../../context/searchContext";
 import LottieView from "lottie-react-native";
+import { useState } from "react";
 
 
 export default function EcommerceResearchScreen() {
+    const [drawr,setDrawr]=useState(true)
     const { products, firstLoadingProducts, loadingProducts } = useContext(SearchContext)
     const { height } = useWindowDimensions()
     const navigation = useNavigation()

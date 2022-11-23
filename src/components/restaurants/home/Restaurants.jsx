@@ -20,6 +20,7 @@ export default function Restaurants({ restaurants }) {
                     return (
                         <Restaurant
                             restaurant={restaurant}
+                            restaurants={restaurants}
                             index={index}
                             totalLength={restaurants.length}
                             key={index}

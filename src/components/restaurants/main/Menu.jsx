@@ -181,7 +181,6 @@ const styles = StyleSheet.create({
     product: {
         maxWidth: 300,
         marginBottom:-40
-        
     },
     imageCard: {
         borderRadius: 8,
