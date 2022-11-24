@@ -12,6 +12,7 @@ import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
 import LottieView from 'lottie-react-native';
 import Restaurant from "../../components/restaurants/main/Restaurant";
+import { Linking } from "react-native";
 
 export default function MenusRestaurantScreen() {
     const route = useRoute()
@@ -76,10 +77,10 @@ export default function MenusRestaurantScreen() {
                     </View>
                 </View>
                 <View style={styles.carre}>
-                    {/* <Text>1,7km</Text> */}
+                    <Text>1,7 Km </Text>
                 </View>
             </View>
-            <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10 }}>
+            <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10 ,justifyContent:"space-between"}}>
                 <View style={{ flexDirection: "row" }}>
                     <AntDesign name="star" size={20} color="#EFC519" />
                     <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>3.0</Text>
@@ -88,10 +89,10 @@ export default function MenusRestaurantScreen() {
                     <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
                     {restaurant.OUVERT ? <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{restaurant.OUVERT}</Text> : <Text style={{ color: "#797E9A" }}>7h-18h</Text>}
                 </View>
-                <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity onPress={()=>{Linking.openURL( `tel:${restaurant.TELEPHONE}`);}}  style={{ flexDirection: "row" }}>
                     <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
                     <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{restaurant.TELEPHONE}</Text>
-                </View>
+                </TouchableOpacity>
 
             </View>
             <View style={{ marginTop: 10, marginHorizontal: 10 }} >
@@ -161,8 +162,8 @@ const styles = StyleSheet.create({
     },
     carre: {
         padding: 15,
-        height: 70,
-        width: 70,
+        height: 50,
+        width: 100,
         color: "#1D8585",
         backgroundColor: '#D7D9E4',
         borderRadius: 10,

@@ -34,6 +34,7 @@ export default function Restaurants({ restaurants }) {
 
 const styles = StyleSheet.create({
     homeshops: {
+        marginBottom:"-6%"
         // paddingHorizontal:20
 
     },
