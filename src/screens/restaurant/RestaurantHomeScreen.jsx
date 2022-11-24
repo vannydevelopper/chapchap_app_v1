@@ -273,7 +273,7 @@ export default function RestaurantHomeScreen() {
                                                 </View> */}
                                         </ImageBackground>
                                     </View>
-                                    <Text style={styles.actionTitle}>{categorie.NOM}</Text>
+                                    <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
                                 </View>
                             )
                         })}
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     },
     resto: {
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
     },
     header: {
         flexDirection: 'row',
@@ -439,12 +439,12 @@ category: {
 },
 actionIcon: {
         borderRadius: 15,
-        width: 70,
-        height: 60,
+        width: 80,
+        height: 80,
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'center',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
 },
 disbaledContainer: {
         width: '100%',
