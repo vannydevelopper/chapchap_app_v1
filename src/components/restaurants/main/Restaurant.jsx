@@ -27,7 +27,7 @@ export default function Restaurant({ restaurant,restaurants, index, totalLength 
           <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
         </View>
       </TouchableNativeFeedback>
-      <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{restaurant.NOM_ORGANISATION}</Text>
+      <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{restaurant.NOM_ORGANISATION.toLowerCase()}</Text>
       <View style={{ flexDirection: "row",marginHorizontal:-1}}>
         <AntDesign name="star" size={14} color="#EFC519" />
         <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:10 }}>3.0</Text>
