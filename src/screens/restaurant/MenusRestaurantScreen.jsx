@@ -22,6 +22,8 @@ export default function MenusRestaurantScreen() {
     const [firstLoadingMenus, setFirstLoadingMenus] = useState(true)
     const [restaurants, setRestaurants] = useState([])
     const [wishlist, setWishlists] = useState(false)
+    const [wishlistNumber, setWishlistsNumber] = useState(null)
+
 
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
@@ -117,9 +119,30 @@ export default function MenusRestaurantScreen() {
             console.log(error)
         }
     }
+    
     useFocusEffect(useCallback(() => {
         fecthWishlist()
-    }, []))
+    }, [restaurant]))
+
+    const fecthNombreWishlist = async () => {
+        try {
+            const wishlists = await fetchApi(`/wishlist/partenaire/${restaurant.ID_PARTENAIRE_SRVICE}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            })
+            
+                setWishlistsNumber(wishlists)
+                console.log(wishlists)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    }
+    
+    useFocusEffect(useCallback(() => {
+        fecthNombreWishlist()
+    }, [restaurant]))
+    
     return (
         <ScrollView>
             <TouchableWithoutFeedback key={1} onPress={() => {
@@ -129,6 +152,7 @@ export default function MenusRestaurantScreen() {
                 <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
                     <  Image source={{ uri: restaurant.LOGO }} style={{ ...styles.imagePrincipal }} />
                 </View>
+
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => navigation.goBack()} >
                 <Ionicons name="ios-arrow-back-outline" size={40} color="white" style={{ ...styles.icon, marginTop: 20, marginHorizontal: 10 }} />
@@ -136,7 +160,7 @@ export default function MenusRestaurantScreen() {
             <TouchableWithoutFeedback style={styles.cardLike}  onPress={() => {
                         Addishlist(restaurant.ID_PARTENAIRE_SERVICE)
                     }}>
-             {!wishlist ?
+             {wishlist ?
              <AntDesign name="hearto"  size={40} color="#EFC519" style={{ ...styles.icon, marginTop: 20, marginLeft:300,  marginHorizontal: 10 }} />:
              <AntDesign name="heart"  size={40} color="#EFC519" style={{ ...styles.icon, marginTop: 20, marginLeft:300,  marginHorizontal: 10 }} />
              }
@@ -292,15 +316,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     cardLike: {
-        marginTop: 10,
-        width: 25,
-        height: 25,
-        // backgroundColor: "#FBD5DA",
-        backgroundColor: "red",
+        // marginTop: 10,
+        // width: 25,
+        // height: 25,
+        // // backgroundColor: "#FBD5DA",
 
-        borderRadius: 5,
-        justifyContent: "center",
-        alignItems: "center"
+        // borderRadius: 5,
+        // justifyContent: "center",
+        // alignItems: "center"
     },
     txtDisplay: {
         color: "#797E9A",
