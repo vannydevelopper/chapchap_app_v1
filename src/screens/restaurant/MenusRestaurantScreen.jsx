@@ -60,7 +60,6 @@ export default function MenusRestaurantScreen() {
                     headers: { "Content-Type": "application/json" },
                 })
                 setWishlists(true)
-                console.log('false')
             } catch (error) {
                 console.log(error)
             }
