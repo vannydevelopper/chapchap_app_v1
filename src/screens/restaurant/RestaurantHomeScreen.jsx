@@ -51,6 +51,7 @@ export default function RestaurantHomeScreen() {
         setIsOpen(true)
         modalizeRef.current?.open()
     }
+    
     const plusCategories = () => {
         setIsOpen(true)
         CategoriemodalizeRef.current?.open()
@@ -132,7 +133,7 @@ export default function RestaurantHomeScreen() {
                 <RestaurantBadge />
             </View>
             <Text style={styles.titlePrincipal}>Restaurants</Text>
-            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom:"1%", paddingHorizontal: 10 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: "1%", paddingHorizontal: 10 }}>
                 <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
                     <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                     <Text style={styles.input}>Rechercher.......</Text>
@@ -142,45 +143,53 @@ export default function RestaurantHomeScreen() {
                 </View>
             </View>
             <ScrollView>
-                <View style={styles.plus}>
-                    <Text style={styles.plusText}> Les plus proches</Text>
-                    <TouchableOpacity onPress={onCartPress} style={{ flexDirection: 'row' }}>
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                    </TouchableOpacity>
-                </View>
+            <TouchableOpacity onPress={onCartPress} style={styles.plus}>
+                    <View>
+                        <Text style={styles.plusText}>Les plus proches</Text>
+                    </View>
+                    <View style={{ marginLeft: 100 }}>
+                        <View onPress={plusCategories} style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
                 {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <RestaurantSkeletons /> :
                     <Restaurants restaurants={restaurants} />
                 }
-                <View style={styles.plus1}>
+                <TouchableOpacity onPress={plusCategories} style={styles.plus1}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
-                        <TouchableOpacity onPress={plusCategories} style={{ flexDirection: 'row' }}>
+                        <View onPress={plusCategories} style={{ flexDirection: 'row' }}>
                             <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
                             <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                </TouchableOpacity>
                 {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <CategoriesMenuSkeletons /> :
-                    <View  style={{marginTop:"1%"}}>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff' }}>
+                    <ScrollView
+                        style={styles.shops}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        <View style={styles.categories}>
                             {categories.map((categorie, index) => {
                                 return (
-                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                        <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                            </View>
-                                            <Text style={[{ fontSize: 9, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                    <View style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
                                         </View>
-                                    </TouchableOpacity>
+                                        <Text style={[{ fontSize: 9, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+
+                                    </View>
                                 )
                             })}
                         </View>
-                    </View>
+                    </ScrollView>
                 }
+
                 {
                     (firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ?
                         <>
@@ -223,7 +232,7 @@ export default function RestaurantHomeScreen() {
                 }}
             >
                 <ScrollView>
-                <Text style={{fontWeight: 'bold', color:COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 40, textAlign: 'center', opacity: 0.7}}>Nos restaurants</Text>
+                    <Text style={{ marginTop:10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 40, textAlign: 'center', opacity: 0.7 }}>Nos restaurants</Text>
 
                     <View style={styles.resto}>
                         {restaurants.map((restaurant, index) => {
@@ -258,15 +267,15 @@ export default function RestaurantHomeScreen() {
                 }}
             >
                 <ScrollView>
-                <Text style={{fontWeight: 'bold', color:COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7}}>Nos catégories</Text>
+                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos catégories</Text>
                     <View style={styles.resto}>
                         {categories.map((categorie, index) => {
                             return (
                                 <View style={{ ...styles.category, margin: 15 }} >
                                     <View style={styles.actionIcon}>
                                         <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
-                                            
-                                                {/* <View style={styles.disbaledContainer}>
+
+                                            {/* <View style={styles.disbaledContainer}>
                                                     <View style={styles.checkIndicator}>
                                                         <AntDesign name="check" size={24} color='#000' />
                                                     </View>
@@ -295,7 +304,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: StatusBar.currentHeight,
         height: 60,
-        marginBottom:"-3%"
+        marginBottom: "-3%"
     },
     menuOpener: {
     },
@@ -345,16 +354,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingVertical: 10,
         paddingHorizontal: 10,
-        marginBottom:"-1%"
+        marginBottom: "-1%"
     },
     plus1: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
-        marginTop:"2%",
+        marginTop: "2%",
         paddingHorizontal: 10,
-        marginBottom:"-4%"
+        marginBottom: "-1 %"
     },
     plusText: {
         color: COLORS.ecommercePrimaryColor,
@@ -371,8 +380,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     DataImageCategorie: {
-        minWidth: 40,
-        minHeight: 40,
+        width: '100%',
+        height: '100%',
         borderRadius: 10,
     },
     cardPhoto1: {
@@ -420,24 +429,46 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 15,
         marginTop: 20
-},
-title: {
+    },
+    title: {
         color: '#333',
         fontWeight: 'bold',
         marginVertical: 10,
         fontSize: 15
-},
+    },
 
-categories: {
-        // marginVertical: 20,
-        // marginTop: 30,
-},
-category: {
-        justifyContent: 'center',
+    categories: {
+        flexDirection: 'row',
         alignItems: 'center',
-        alignContent: 'center',
-},
-actionIcon: {
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+        paddingBottom: 5
+    },
+    category: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20
+    },
+    categoryPhoto: {
+        width: 60,
+        height: 60,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
+    categoryPhotoResto: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
+    categoryText: {
+        borderRadius: 5,
+        width: 40,
+        height: 6,
+        backgroundColor: COLORS.skeleton,
+        marginTop: 5
+    },
+    actionIcon: {
         borderRadius: 15,
         width: 80,
         height: 80,
@@ -445,8 +476,8 @@ actionIcon: {
         alignItems: 'center',
         alignContent: 'center',
         backgroundColor: '#fff',
-},
-disbaledContainer: {
+    },
+    disbaledContainer: {
         width: '100%',
         height: '100%',
         justifyContent: 'center',
@@ -454,16 +485,16 @@ disbaledContainer: {
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         borderRadius: 15
-},
-categoryImage: {
+    },
+    categoryImage: {
         width: '100%',
         height: '100%',
-},
-actionTitle: {
+    },
+    actionTitle: {
         marginTop: 5,
         color: '#000',
         opacity: 0.6,
         fontWeight: 'bold'
-},
+    },
 
 })

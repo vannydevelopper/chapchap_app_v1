@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView } from "react-native"
+import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
@@ -7,20 +7,22 @@ import { useDispatch } from "react-redux";
 import { restaurantProductSelector } from '../../store/selectors/restaurantCartSelectors';
 import { addMenuAction } from "../../store/actions/restaurantCartActions";
 import { useSelector } from 'react-redux';
+import ImageView from "react-native-image-viewing";
+
 
 export default function MenuDetailScreen() {
 
     const route = useRoute()
-    const navigation= useNavigation()
+    const navigation = useNavigation()
     const dispatch = useDispatch()
-
+    const [imageIndex, setImageIndex] = useState(0)
+    const [showImageModal, setShowImageModal] = useState(false)
     const { product } = route.params
     const MenuInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
 
     const [amount, setAmount] = useState(1)
-    if(MenuInCart)
-    {
-        const l=MenuInCart.QUANTITE
+    if (MenuInCart) {
+        const l = MenuInCart.QUANTITE
         useState(l => parseInt(l))
     }
     const [isFocused, setIsFocused] = useState(false)
@@ -47,9 +49,9 @@ export default function MenuDetailScreen() {
     const checkAmount = () => {
         setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
     }
-const add=()=>{
-    navigation.navigate("RestaurantHomeScreen")
-}
+    const add = () => {
+        navigation.navigate("RestaurantHomeScreen")
+    }
     const onAddToCart = () => {
         add()
         dispatch(addMenuAction(product, amount))
@@ -84,24 +86,23 @@ const add=()=>{
         return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
     }
     return (
+         <>
         <ScrollView>
             <View style={{ marginLeft: 30, marginTop: 50, marginHorizontal: 20 }}>
-                <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
-                    <  Image source={{ uri: product.IMAGE }} style={{ ...styles.imagePrincipal }} />
-                </View>
-                {/* <ProductImages images={IMAGES} /> */}
-                <Ionicons name="ios-arrow-back-outline" size={24} color="white" style={{ ...styles.icon, marginTop: 0 }} />
-                {/* <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
-                <View style={styles.cardOK}>
-                    <Text style={{ color: "white", fontSize: 5 }}>5</Text>
-                </View> */}
- <>
-                        {/* <AntDesign name="shoppingcart" size={14} color="white" /> */}
-                        <Entypo name="shopping-cart" size={24} color="white" style={{ ...styles.icon1, marginTop: 0 }} />
-                        {MenuInCart ? <View style={styles.badge}>
-                            <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
-                        </View> : null}
-                    </>
+                <TouchableWithoutFeedback key={1} onPress={() => {
+                    setImageIndex(1)
+                    setShowImageModal(true)
+                }}>
+                    <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
+                        <  Image source={{ uri: product.IMAGE }} style={{ ...styles.imagePrincipal }} />
+                    </View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={()=>navigation.goBack()} >
+                <Ionicons name="ios-arrow-back-outline" size={40} color="white" style={{ ...styles.icon, marginTop: 0 }} />
+                </TouchableWithoutFeedback>
+                {MenuInCart ? <View style={styles.badge}>
+                    <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
+                </View> : null}
                 <View style={{ marginTop: 10 }} >
                     <Text style={styles.text} numberOfLines={2}>{product.repas}</Text>
                 </View>
@@ -125,55 +126,67 @@ const add=()=>{
                 </View>
                 <View style={{ marginTop: 10 }} >
                     <Text style={styles.txtDisplay}>
-                        {product.DESCRIPTION}
+                        {product.DESCRIPTION?product.DESCRIPTION:"Aucun description"}
                     </Text>
                 </View>
-                <View style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
-                </View>
-                <View style={styles.moreDetails}>
-                    <View style={styles.amountContainer}>
-                        <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                            <Text style={styles.amountChangerText}>-</Text>
-                        </TouchableOpacity>
-                        <TextInput
-                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                            value={amount.toString()}
-                            onChangeText={onChangeText}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => {
-                                setIsFocused(false)
-                                checkAmount()
-                            }}
-                            keyboardType="decimal-pad"
-                        />
-                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                            <Text style={styles.amountChangerText}>+</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                </View>
-                <View>
-                    <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
-
-                        <View style={styles.carre}>
-                            <AntDesign name="sharealt" size={20} color="black" />
-                        </View>
-                        <View style={styles.carre}>
-                            <AntDesign name="shoppingcart" size={20} color="black" />
-
-                        </View>
-
-                        <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                            <View style={styles.carre3}>
-                                <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                    </View>
-                </View>
+                
             </View>
+            {showImageModal &&
+                <ImageView
+                    images={IMAGES.map(img => ({ uri: img }))}
+                    imageIndex={imageIndex}
+                    visible={showImageModal}
+                    onRequestClose={() => setShowImageModal(false)}
+                    swipeToCloseEnabled
+                    keyExtractor={(_, index) => index.toString()}
+                />
+            }
         </ScrollView >
+        <View style={{ marginLeft: 30, marginHorizontal: 20 }}>
+       <View style={{ marginTop: 10 }}>
+           <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
+       </View>
+       <View style={styles.moreDetails}>
+           <View style={styles.amountContainer}>
+               <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                   <Text style={styles.amountChangerText}>-</Text>
+               </TouchableOpacity>
+               <TextInput
+                   style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                   value={amount.toString()}
+                   onChangeText={onChangeText}
+                   onFocus={() => setIsFocused(true)}
+                   onBlur={() => {
+                       setIsFocused(false)
+                       checkAmount()
+                   }}
+                   keyboardType="decimal-pad"
+               />
+               <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                   <Text style={styles.amountChangerText}>+</Text>
+               </TouchableOpacity>
+           </View>
+
+       </View>
+       <View>
+           <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
+               <View style={styles.carre}>
+                   <AntDesign name="sharealt" size={20} color="black" />
+               </View>
+               <View style={styles.carre}>
+                   <AntDesign name="shoppingcart" size={20} color="black" />
+               </View>
+               <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                   <View style={styles.carre3}>
+                       <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
+                   </View>
+               </TouchableOpacity>
+
+           </View>
+       </View>
+       </View>
+      </>
+
 
     )
 }
@@ -267,7 +280,7 @@ const styles = StyleSheet.create({
     },
     moreDetails: {
         marginTop: 20,
-        marginBottom:-20
+        marginBottom: -20
     },
     input: {
         borderRadius: 5,

@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 
 
 export default function RestaurantHome({ restaurant,restaurants, index, totalLength }) {
-  // console.log(restaurants)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   
@@ -20,6 +19,9 @@ export default function RestaurantHome({ restaurant,restaurants, index, totalLen
     // marginLeft: index > 0 ? PRODUCT_MARGIN : 0,
     // marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : 0
   }
+  function strUcFirst(a){
+    return (a+'').charAt(0).toUpperCase()+a.substr(1);
+  }
   return (
     <View key={index} style={[styles.shop, additionStyles]}>
       <TouchableNativeFeedback onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant,restaurants: restaurants})}>
@@ -27,7 +29,7 @@ export default function RestaurantHome({ restaurant,restaurants, index, totalLen
           <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
         </View>
       </TouchableNativeFeedback>
-      <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{restaurant.NOM_ORGANISATION.toLowerCase()}</Text>
+      <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(restaurant.NOM_ORGANISATION.toLowerCase())}</Text>
       <View style={{ flexDirection: "row",marginHorizontal:-1}}>
         <AntDesign name="star" size={14} color="#EFC519" />
         <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:10 }}>3.0</Text>
