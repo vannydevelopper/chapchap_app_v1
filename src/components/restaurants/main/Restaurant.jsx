@@ -4,11 +4,9 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { useNavigation } from '@react-navigation/native';
 
-
 export default function Restaurant({ restaurant,restaurants, index, totalLength }) {
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
-  
   const MAX_WIDTH = 200
   const PRODUCT_MARGIN = 10
   const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
