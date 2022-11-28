@@ -4,26 +4,15 @@ import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, 
 import fetchApi from "../../helpers/fetchApi";
 import { DrawerActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
-import SubCategories from "../../components/ecommerce/home/SubCategories";
-import HomeProducts from "../../components/ecommerce/home/HomeProducts";
-import Shops from "../../components/ecommerce/home/Shops";
-import Product from "../../components/ecommerce/main/Product";
 import { CategoriesMenuSkeletons, CategoriesSkeletons, HomeMenuSkeletons, HomeProductsSkeletons, RestaurantSkeletons, restaurantSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge"; import Restaurants from "../../components/restaurants/home/Restaurants";
-import HomeMenus from "../../components/restaurants/home/HomeMenus";
 import Menu from "../../components/restaurants/main/Menu";
 import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import { Modalize } from "react-native-modalize";
-import { Portal } from "react-native-portalize";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useRef } from "react";
-import Restaurant from "../../components/restaurants/main/Restaurant";
 import RestaurantHome from "../../components/restaurants/main/RestaurantHome";
-import Categories from "../../components/restaurants/main/Categories";
 import * as Location from 'expo-location';
 
 export default function RestaurantHomeScreen() {
-    const { height } = useWindowDimensions()
 
     const [loadingCategories, setLoadingCatagories] = useState(true)
     const [categories, setCategories] = useState([])
@@ -84,10 +73,13 @@ export default function RestaurantHomeScreen() {
     }, []))
 
     const onCategoryPress = (categorie) => {
+        console.log(categorie)
+
         if (loadingSubCategories || loadingMenus) return false
         if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
             return setSelectedCategorie(null)
         }
+        console.log(categorie)
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
         CategoriemodalizeRef.current?.close()
@@ -203,13 +195,16 @@ export default function RestaurantHomeScreen() {
                         <View style={styles.categories}>
                             {categories.map((categorie, index) => {
                                 return (
-                                    <View style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                            <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                        </View>
-                                        <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-
-                                    </View>
+                                   
+                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)}  style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                            <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
+                                            </View>
+                                            <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                            {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU &&<View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
+                                                <AntDesign style={{ marginTop: 20, marginLeft: 20, color: "yellow" }} name="check" size={40} color='#000' />
+                                            </View>}
+                                        </TouchableOpacity>
                                 )
                             })}
                         </View>
@@ -348,18 +343,18 @@ export default function RestaurantHomeScreen() {
                     <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos menus</Text>
                     <View style={styles.products}>
 
-                            {menus.map((menu, index) => {
-                                return (
-                                    <Menu
-                                        menu={menu}
-                                        index={index}
-                                        totalLength={menus.length}
-                                        key={index}
-                                        fixMargins
-                                    />
-                                )
-                            })}
-                        </View>
+                        {menus.map((menu, index) => {
+                            return (
+                                <Menu
+                                    menu={menu}
+                                    index={index}
+                                    totalLength={menus.length}
+                                    key={index}
+                                    fixMargins
+                                />
+                            )
+                        })}
+                    </View>
                 </ScrollView>
             </Modalize>
         </View>
@@ -539,6 +534,13 @@ const styles = StyleSheet.create({
         height: 70,
         borderRadius: 8,
         backgroundColor: COLORS.skeleton
+    },
+    categoryChecked: {
+        width: 80,
+        height: 85,
+        borderRadius: 8,
+        marginTop:-80
+
     },
     categoryPhotoResto: {
         width: 100,
