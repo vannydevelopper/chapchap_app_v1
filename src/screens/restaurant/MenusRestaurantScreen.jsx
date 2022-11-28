@@ -14,6 +14,8 @@ import LottieView from 'lottie-react-native';
 import Restaurant from "../../components/restaurants/main/Restaurant";
 import { Linking } from "react-native";
 import ImageView from "react-native-image-viewing";
+import * as Location from 'expo-location';
+
 
 
 export default function MenusRestaurantScreen() {
@@ -36,14 +38,13 @@ export default function MenusRestaurantScreen() {
         restaurant.BACKGROUND_IMAGE ? restaurant.BACKGROUND_IMAGE : undefined,
     ]
     const Addishlist = async (id) => {
-        //  console.log(id)
         if (wishlist) {
             try {
-                
+
                 const newWishlist = await fetchApi(`/wishlist/partenaire/suppression/${id}`, {
                     method: "DELETE",
                 })
-                setWishlists(true)
+                setWishlists(false)
 
 
             } catch (error) {
@@ -67,12 +68,12 @@ export default function MenusRestaurantScreen() {
             }
         }
     }
-
     useEffect(() => {
         (async () => {
+            
             try {
                 if (firstLoadingMenus == false) {
-                    setLoadingMenus(true)
+                    // setLoadingMenus(true)
                 }
                 var url = "/partenaire/service/resto"
                 const restaurant = await fetchApi(url)
@@ -86,13 +87,49 @@ export default function MenusRestaurantScreen() {
     }, [])
 
     useEffect(() => {
+        const fecthRestos = async (lat, long) => {
+            try {
+                // if (firstLoadingMenus == false) {
+                //     setLoadingMenus(true)
+                // }
+                
+                if (lat && long) {
+                    return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}`)
+                }
+                return await fetchApi('/partenaire/service/resto')
+               
+            }
+             catch (error) {
+                throw error
+            }finally {
+                setFirstLoadingMenus(false)
+            }
+        }
+        const askLocationFetchRestos = async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                const restaurants = await fecthRestos()
+                setLoadingRestos(false)
+                setRestaurants(restaurants.result)
+                return;
+            }
+            var location = await Location.getCurrentPositionAsync({});
+            const restaurants = await fecthRestos(location.coords.latitude, location.coords.longitude)
+            // setLoadingRestos(false)
+            setRestaurants(restaurants.result)
+
+        }
+        askLocationFetchRestos()
+    }, [])
+
+    useEffect(() => {
         (async () => {
             try {
                 if (firstLoadingProducts == false) {
                     setLoadingProducts(true)
                 }
                 var url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE} `
-
                 const menu = await fetchApi(url)
                 setMenus(menu.result)
             } catch (error) {
@@ -106,7 +143,7 @@ export default function MenusRestaurantScreen() {
 
     const fecthWishlist = async () => {
         try {
-            const wishlists = await fetchApi(`/wishlist/partenaire/verification/${restaurant.ID_PARTENAIRE_SRVICE}`, {
+            const wishlists = await fetchApi(`/wishlist/partenaire/verification/${restaurant.ID_PARTENAIRE_SERVICE}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
@@ -114,35 +151,34 @@ export default function MenusRestaurantScreen() {
             {
                 setWishlists(true)
             }
+            else{
+                setWishlists(false)
+            }
         }
         catch (error) {
             console.log(error)
         }
     }
-    
     useFocusEffect(useCallback(() => {
         fecthWishlist()
     }, [restaurant]))
 
     const fecthNombreWishlist = async () => {
         try {
-            const wishlists = await fetchApi(`/wishlist/partenaire/${restaurant.ID_PARTENAIRE_SRVICE}`, {
+            const wishlists = await fetchApi(`/wishlist/partenaire/${restaurant.ID_PARTENAIRE_SERVICE}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
             })
+            setWishlistsNumber(wishlists.result)
             
-                setWishlistsNumber(wishlists)
-                console.log(wishlists)
         }
         catch (error) {
             console.log(error)
         }
     }
-    
     useFocusEffect(useCallback(() => {
         fecthNombreWishlist()
-    }, [restaurant]))
-    
+    }, [wishlist]))
     return (
         <ScrollView>
             <TouchableWithoutFeedback key={1} onPress={() => {
@@ -152,20 +188,11 @@ export default function MenusRestaurantScreen() {
                 <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
                     <  Image source={{ uri: restaurant.LOGO }} style={{ ...styles.imagePrincipal }} />
                 </View>
-
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => navigation.goBack()} >
                 <Ionicons name="ios-arrow-back-outline" size={40} color="white" style={{ ...styles.icon, marginTop: 20, marginHorizontal: 10 }} />
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback style={styles.cardLike}  onPress={() => {
-                        Addishlist(restaurant.ID_PARTENAIRE_SERVICE)
-                    }}>
-             {wishlist ?
-             <AntDesign name="hearto"  size={40} color="#EFC519" style={{ ...styles.icon, marginTop: 20, marginLeft:300,  marginHorizontal: 10 }} />:
-             <AntDesign name="heart"  size={40} color="#EFC519" style={{ ...styles.icon, marginTop: 20, marginLeft:300,  marginHorizontal: 10 }} />
-             }
-              
-            </TouchableWithoutFeedback>
+            
             <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: "column", marginTop: 15 }}>
                     <Text style={{ fontWeight: "bold" }}>{restaurant.NOM_ORGANISATION}</Text>
@@ -174,14 +201,28 @@ export default function MenusRestaurantScreen() {
                         <Text style={{ fontSize: 12 }}> {restaurant.ADRESSE_COMPLETE} </Text>
                     </View>
                 </View>
+                {/* <AntDesign name="heart" size={40} color="#F29558" /> */}
+                <TouchableOpacity
+                    onPress={() => {
+                        Addishlist(restaurant.ID_PARTENAIRE_SERVICE)
+                    }}
+                >
+                    {
+                       wishlist? <AntDesign name="heart" size={40} color="#EFC519" /> :
+                       <AntDesign name="hearto" size={40} color="#EFC519" /> 
+                    }
+                
+                </TouchableOpacity>
                 <View style={styles.carre}>
-                    <Text>1,7 Km </Text>
+                 <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { restaurant.DISTANCE? restaurant.DISTANCE.toFixed(1) :null} Km</Text>
                 </View>
             </View>
             <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10, justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row" }}>
-                    <AntDesign name="star" size={20} color="#EFC519" />
-                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>3.0</Text>
+                {wishlistNumber?
+          <AntDesign name="star" size={20} color="#EFC519" />:
+          <AntDesign name="star" size={20} color="#EFC519" />}
+                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{wishlistNumber?.Nbre}.0</Text>
                 </View>
                 <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
                     <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
@@ -237,7 +278,10 @@ export default function MenusRestaurantScreen() {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                 >
-                    {restaurants.map((restaurant, index) => {
+
+                    {
+                    
+                    restaurants.map((restaurant, index) => {
                         return (
                             <Restaurant
                                 restaurant={restaurant}
@@ -245,6 +289,8 @@ export default function MenusRestaurantScreen() {
                                 index={index}
                                 totalLength={restaurants.length}
                                 key={index}
+                                note={wishlistNumber}
+
                             />
                         )
                     })}
@@ -316,10 +362,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     cardLike: {
-        // marginTop: 10,
-        // width: 25,
-        // height: 25,
-        // // backgroundColor: "#FBD5DA",
+        // marginTop: "-65%",
+        // maxWidth: 50,
+        // left: "80%",
+        // backgroundColor: "white",
 
         // borderRadius: 5,
         // justifyContent: "center",

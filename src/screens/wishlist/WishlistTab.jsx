@@ -51,7 +51,7 @@ export default function WishlistTab() {
                     </TouchableOpacity>
                     <EcommerceBadge />
                 </View>
-                <Text style={styles.titlePrincipal}>Liste des souhaits</Text>
+                <Text style={styles.titlePrincipal}>Souhaits</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10, marginBottom: 10 }}>
                     <View style={styles.searchSection}>
                         <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
@@ -67,37 +67,24 @@ export default function WishlistTab() {
                 <TopBar.Navigator
 
                     screenOptions={{
-                        // tabBarScrollEnabled: true,
-                        // tabBarStyle: styles.tabBar,
-                        // tabBarPressColor: 'transparent',
-                        // tabBarIndicatorStyle: {
-                        //     height: 40,
-                        //     backgroundColor: '#fff',
-                        //     borderRadius: 30,
-                        //     marginBottom: 5,
-                        //     marginHorizontal: 5
-                        // },
-                        // tabBarLabelStyle: {
-                        //     color: '#000',
-                        //     textTransform: 'none',
-                        //     fontWeight: 'bold',
-                        // }
                         tabBarStyle: styles.tabBar,
                         tabBarLabelStyle: {
                             color: COLORS.ecommercePrimaryColor,
                             textTransform: 'none',
-                            fontSize: 15
+                            fontSize: 10
                         },
                         tabBarIndicatorStyle: {
                             height: 3,
                             backgroundColor: COLORS.ecommercePrimaryColor,
+                        },
+                        options:{
+                            fontSize:10
                         }
                     }}
                 >
                     <TopBar.Screen name='EcommerceWishlistScreen' component={EcommerceWishlistScreen} options={{ title: "Shops" }} />
                     <TopBar.Screen name='RestaurantWishlistScreen' component={RestaurantWishlistScreen} options={{ title: "Restaurant" }} />
                     <TopBar.Screen name='EvenementWishlistScreen' component={EvenementWishlistScreen} options={{ title: "Evenement" }} />
-
 
                 </TopBar.Navigator>
             </View>

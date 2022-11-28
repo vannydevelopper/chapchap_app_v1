@@ -31,10 +31,13 @@ export default function RestaurantHome({ restaurant,restaurants, index, totalLen
       </TouchableNativeFeedback>
       <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(restaurant.NOM_ORGANISATION.toLowerCase())}</Text>
       <View style={{ flexDirection: "row",marginHorizontal:-1}}>
-        <AntDesign name="star" size={14} color="#EFC519" />
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:10 }}>3.0</Text>
+      {restaurant.note.nbre==0 ?
+          <AntDesign name="staro" size={14} color="#EFC519" />:
+          <AntDesign name="star" size={14} color="#EFC519" />}
+        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:10 }}> {restaurant.note.nbre}.0 </Text>
         <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A",right:12 ,top:-10,fontWeight: "bold"}}>.</Text>
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à 1.O Km</Text>
+        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) :null } Km</Text>
+
       </View>
     </View>
   )
