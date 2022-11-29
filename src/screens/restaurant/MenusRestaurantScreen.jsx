@@ -264,7 +264,11 @@ export default function MenusRestaurantScreen() {
                                 )
                             })}
                         </ScrollView> :
-                        <Text style={styles.emptyFeedback}> Aucun menu publie dans {restaurant.NOM_ORGANISATION} </Text>
+                         <>
+                         <LottieView style={{ marginVertical:-20,width: 100, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/123725-box-empty.json')} autoPlay loop={false} />
+                             {/* <LottieView style={{ width: 100, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/10000-empty-box.json')} autoPlay loop={false} /> */}
+                             <Text style={styles.emptyFeedback}>Aucun menu</Text>
+                         </>
                 }
             </View>
             <View style={{ marginTop: 20, marginHorizontal: 10 }}>
@@ -457,6 +461,7 @@ const styles = StyleSheet.create({
         color: COLORS.ecommercePrimaryColor,
         fontWeight: "bold",
         opacity: 0.6,
-        fontSize: 16
+        fontSize: 16,
+        marginTop:-40,
     },
 })

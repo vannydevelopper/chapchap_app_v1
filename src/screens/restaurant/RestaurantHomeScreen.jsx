@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback,useRef, useState, useEffect } from "react";
 import { Text, View, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
@@ -8,13 +8,17 @@ import { CategoriesMenuSkeletons, CategoriesSkeletons, HomeMenuSkeletons, HomePr
 import Menu from "../../components/restaurants/main/Menu";
 import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import { Modalize } from "react-native-modalize";
-import { useRef } from "react";
 import RestaurantHome from "../../components/restaurants/main/RestaurantHome";
+import Restaurants from "../../components/restaurants/home/Restaurants";
+import { useForm } from "../../hooks/useForm";
+import LottieView from 'lottie-react-native';
+import { Portal } from 'react-native-portalize';
 import * as Location from 'expo-location';
 
 export default function RestaurantHomeScreen() {
 
     const [loadingCategories, setLoadingCatagories] = useState(true)
+    const [loadingResto, setLoadingResto] = useState(true)
     const [categories, setCategories] = useState([])
     const [selectedCategorie, setSelectedCategorie] = useState(null)
 
@@ -22,12 +26,8 @@ export default function RestaurantHomeScreen() {
     const CategoriemodalizeRef = useRef(null)
     const MenumodalizeRef = useRef(null)
 
-
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
-
-
-
     const [loadingSubCategories, setLoadingSubCategories] = useState(false)
     const [sousCategories, SetSousCategories] = useState([])
     const [selectedsousCategories, setSelectedsousCategories] = useState(null)
@@ -41,6 +41,10 @@ export default function RestaurantHomeScreen() {
 
     const navigation = useNavigation()
 
+    const [data, handleChange, setValue] = useForm({
+        resto: "",
+        menu: ""
+    })
     const onCartPress = () => {
         setIsOpen(true)
         modalizeRef.current?.open()
@@ -86,39 +90,63 @@ export default function RestaurantHomeScreen() {
     }
     useEffect(() => {
         (async () => {
+
             try {
+                console.log(data.menu)
                 if (firstLoadingMenus == false) {
                     setLoadingMenus(true)
                 }
-                var url = "/resto/menu"
+                if (data.menu) {
+                    var url = `/resto/menu?q=${data.menu}`
+                }
+                else {
+                    var url = "/resto/menu"
+                }
                 if (selectedCategorie) {
-                    url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                    if (data.menu) {
+                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}&q=${data.menu}`
+                    }
+                    else {
+                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                    }
                 }
                 const menus = await fetchApi(url)
                 setMenus(menus.result)
-            } finally {
+            }
+            finally {
                 setFirstLoadingMenus(false)
+                // handleChange('menu', '')
                 setLoadingMenus(false)
             }
         })()
-    }, [selectedCategorie])
+    }, [selectedCategorie, data.menu])
 
     useEffect(() => {
         const fecthRestos = async (lat, long) => {
             try {
-                if (firstLoadingMenus == false) {
-                    setLoadingMenus(true)
-                }
+
+                console.log(data.resto)
                 if (lat && long) {
-                    return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}`)
+                    if (data.resto) {
+                        return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}&resto=${data.resto}`)
+                    }
+                    else {
+                        return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}`)
+                    }
                 }
-                return await fetchApi('/partenaire/service/resto')
+                if (data.resto) {
+                    return await fetchApi(`/partenaire/service/resto?&resto=${data.resto}`)
+
+                }
+                else {
+                    return await fetchApi('/partenaire/service/resto')
+
+                }
             }
             catch (error) {
                 throw error
             } finally {
-                setFirstLoadingMenus(false)
-                setLoadingMenus(false)
+                setLoadingResto(false)
             }
         }
         const askLocationFetchRestos = async () => {
@@ -127,18 +155,18 @@ export default function RestaurantHomeScreen() {
             if (status !== 'granted') {
                 console.log('Permission to access location was denied');
                 const restaurants = await fecthRestos()
-                setLoadingRestos(false)
+                setLoadingResto(false)
                 setRestaurants(restaurants.result)
                 return;
             }
             var location = await Location.getCurrentPositionAsync({});
             const restaurants = await fecthRestos(location.coords.latitude, location.coords.longitude)
-            setLoadingRestos(false)
+            setLoadingResto(false)
             setRestaurants(restaurants.result)
         }
         askLocationFetchRestos()
 
-    }, [selectedCategorie, selectedsousCategories])
+    }, [data.resto])
 
     return (
         <View style={styles.container}>
@@ -172,6 +200,7 @@ export default function RestaurantHomeScreen() {
                         </View>
                     </View>
                 </TouchableOpacity>
+
                 {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <RestaurantSkeletons /> :
                     <Restaurants restaurants={restaurants} />
                 }
@@ -195,16 +224,16 @@ export default function RestaurantHomeScreen() {
                         <View style={styles.categories}>
                             {categories.map((categorie, index) => {
                                 return (
-                                   
-                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)}  style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                                            <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                            </View>
-                                            <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                            {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU &&<View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
-                                                <AntDesign style={{ marginTop: 20, marginLeft: 20, color: "yellow" }} name="check" size={40} color='#000' />
-                                            </View>}
-                                        </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? 0.2 : 1 }]} />
+                                        </View>
+                                        <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                        {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
+                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                        </View>}
+                                    </TouchableOpacity>
                                 )
                             })}
                         </View>
@@ -222,37 +251,44 @@ export default function RestaurantHomeScreen() {
                     </View>
                 </TouchableOpacity>
                 {
-                    (firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ?
+                    (firstLoadingMenus || loadingMenus) ?
                         <>
                             <HomeMenuSkeletons />
                             <HomeMenuSkeletons />
                         </> :
+                        menus.length == 0 ?
+                            <>
+                            <LottieView style={{ marginVertical:-40,width: 100, height: 300, alignSelf: "center" }} source={require('../../../assets/lotties/123725-box-empty.json')} autoPlay loop={false} />
+                                {/* <LottieView style={{ width: 100, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/10000-empty-box.json')} autoPlay loop={false} /> */}
+                                <Text style={styles.emptyFeedback}>Aucun menu</Text>
+                            </>
+                            :
+                            <View style={styles.products}>
 
-                        <View style={styles.products}>
-
-                            {menus.map((menu, index) => {
-                                return (
-                                    <Menu
-                                        menu={menu}
-                                        index={index}
-                                        totalLength={menus.length}
-                                        key={index}
-                                        fixMargins
-                                    />
-                                )
-                            })}
-                        </View>
+                                {
+                                    menus.map((menu, index) => {
+                                        return (
+                                            <Menu
+                                                menu={menu}
+                                                index={index}
+                                                totalLength={menus.length}
+                                                key={index}
+                                                fixMargins
+                                            />
+                                        )
+                                    })}
+                            </View>
 
                 }
             </ScrollView>
             <Modalize
                 ref={modalizeRef}
                 adjustToContentHeight
-                handlePosition='inside'
+                // handlePosition='inside'
                 modalStyle={{
                     borderTopRightRadius: 25,
                     borderTopLeftRadius: 25,
-                    paddingVertical: 20
+                    // paddingVertical: 20
                 }}
                 handleStyle={{ marginTop: 10 }}
                 scrollViewProps={{
@@ -263,8 +299,17 @@ export default function RestaurantHomeScreen() {
                     setLoadingForm(true)
                 }}
             >
-                <ScrollView>
-                    <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 40, textAlign: 'center', opacity: 0.7 }}>Nos restaurants</Text>
+                <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 40, textAlign: 'center', opacity: 0.7 }}>Nos restaurants</Text>
+                <View style={styles.searchSection1}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        value={data.resto}
+                        onChangeText={(newValue) => handleChange('resto', newValue)}
+                        placeholder="Rechercher "
+                    />
+                </View>
+                <ScrollView >
 
                     <View style={styles.resto}>
                         {restaurants.map((restaurant, index) => {
@@ -324,38 +369,51 @@ export default function RestaurantHomeScreen() {
             <Modalize
                 ref={MenumodalizeRef}
                 adjustToContentHeight
-                // handlePosition='inside'
-                // modalStyle={{
-                //     borderTopRightRadius: 25,
-                //     borderTopLeftRadius: 25,
-                //     paddingVertical: 20
-                // }}
                 handleStyle={{ marginTop: 10 }}
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
                 onClosed={() => {
                     setIsOpen(false)
+                    handleChange('menu', "")
                     setLoadingForm(true)
                 }}
             >
-                <ScrollView>
-                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos menus</Text>
-                    <View style={styles.products}>
+                <Text style={{ marginBottom: 10, marginBottom: 30, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos menus</Text>
+                <View style={styles.searchSection1}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        value={data.menu}
+                        onChangeText={(newValue) => handleChange('menu', newValue)}
+                        placeholder="Rechercher "
+                    />
+                </View>
+                {(firstLoadingMenus || loadingMenus) ?
+                    <>
+                        <HomeMenuSkeletons />
+                        <HomeMenuSkeletons />
+                        <HomeMenuSkeletons />
+                        <HomeMenuSkeletons />
+                    </> :
+                    <ScrollView>
 
-                        {menus.map((menu, index) => {
-                            return (
-                                <Menu
-                                    menu={menu}
-                                    index={index}
-                                    totalLength={menus.length}
-                                    key={index}
-                                    fixMargins
-                                />
-                            )
-                        })}
-                    </View>
-                </ScrollView>
+                        <View style={styles.products}>
+
+                            {menus.map((menu, index) => {
+                                return (
+                                    <Menu
+                                        menu={menu}
+                                        index={index}
+                                        totalLength={menus.length}
+                                        key={index}
+                                        fixMargins
+                                    />
+                                )
+                            })}
+                        </View>
+                    </ScrollView>
+                }
             </Modalize>
         </View>
     )
@@ -398,6 +456,21 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
 
+    searchSection1: {
+        flexDirection: "row",
+        marginTop: -20,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        alignItems: 'center',
+        backgroundColor: "white",
+        width: "95%",
+        height: 50,
+        marginHorizontal: 10,
+        paddingHorizontal: 10
+
+    },
     searchSection: {
         flexDirection: "row",
         marginTop: 10,
@@ -490,6 +563,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
     },
+    emptyFeedback: {
+        textAlign: "center",
+        marginTop:-50,
+        color: COLORS.ecommercePrimaryColor,
+        fontWeight: "bold",
+        opacity: 0.6,
+        fontSize: 16
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -539,7 +620,7 @@ const styles = StyleSheet.create({
         width: 80,
         height: 85,
         borderRadius: 8,
-        marginTop:-80
+        marginTop: -80
 
     },
     categoryPhotoResto: {
