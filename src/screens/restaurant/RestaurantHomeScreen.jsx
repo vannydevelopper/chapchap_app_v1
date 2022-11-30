@@ -77,13 +77,11 @@ export default function RestaurantHomeScreen() {
     }, []))
 
     const onCategoryPress = (categorie) => {
-        console.log(categorie)
 
         if (loadingSubCategories || loadingMenus) return false
         if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
             return setSelectedCategorie(null)
         }
-        console.log(categorie)
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
         CategoriemodalizeRef.current?.close()
@@ -92,7 +90,6 @@ export default function RestaurantHomeScreen() {
         (async () => {
 
             try {
-                console.log(data.menu)
                 if (firstLoadingMenus == false) {
                     setLoadingMenus(true)
                 }
@@ -125,7 +122,6 @@ export default function RestaurantHomeScreen() {
         const fecthRestos = async (lat, long) => {
             try {
 
-                console.log(data.resto)
                 if (lat && long) {
                     if (data.resto) {
                         return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}&resto=${data.resto}`)

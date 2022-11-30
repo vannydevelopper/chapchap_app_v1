@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback,useRef, useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TouchableWithoutFeedback, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
@@ -6,7 +6,7 @@ import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, 
 import ProductPartenaire from "../../components/ecommerce/main/ProductPartenaire";
 import fetchApi from "../../helpers/fetchApi";
 import { useRoute } from "@react-navigation/native";
-import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+// import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import SubCategories from "../../components/ecommerce/home/SubCategories";
 import RestaurantBadge from "../../components/restaurants/main/RestaurantBadge";
 import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
@@ -15,8 +15,8 @@ import Restaurant from "../../components/restaurants/main/Restaurant";
 import { Linking } from "react-native";
 import ImageView from "react-native-image-viewing";
 import * as Location from 'expo-location';
-
-
+import { Modalize } from "react-native-modalize";
+import { CategoriesMenuSkeletons, CategoriesSkeletons, HomeMenuSkeletons, HomeProductsSkeletons, RestaurantSkeletons, restaurantSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 
 export default function MenusRestaurantScreen() {
     const route = useRoute()
@@ -25,8 +25,6 @@ export default function MenusRestaurantScreen() {
     const [restaurants, setRestaurants] = useState([])
     const [wishlist, setWishlists] = useState(false)
     const [wishlistNumber, setWishlistsNumber] = useState(null)
-
-
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [menus, setMenus] = useState([])
@@ -34,6 +32,7 @@ export default function MenusRestaurantScreen() {
     const [showImageModal, setShowImageModal] = useState(false)
     const [categories, setCategories] = useState([])
     const [selectedCategorie, setSelectedCategorie] = useState(null)
+    const CategoriemodalizeRef = useRef(null)
 
     const { restaurant } = route.params
     var IMAGES = [
@@ -133,7 +132,7 @@ export default function MenusRestaurantScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            console.log("setCategories")
+            // console.log(response)
         }
         catch (error) {
             console.log(error)
@@ -146,16 +145,17 @@ export default function MenusRestaurantScreen() {
     }, []))
 
     const onCategoryPress = (categorie) => {
-        console.log(categorie)
 
-        if (loadingSubCategories || loadingMenus) return false
+        // if (loadingSubCategories || loadingMenus) return false
         if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
             return setSelectedCategorie(null)
         }
-        console.log(categorie)
         setSelectedCategorie(categorie)
-        setSelectedsousCategories(null)
         CategoriemodalizeRef.current?.close()
+    }
+    const plusCategories = () => {
+        // setIsOpen(true)
+        CategoriemodalizeRef.current?.open()
     }
     useEffect(() => {
         (async () => {
@@ -166,6 +166,7 @@ export default function MenusRestaurantScreen() {
                 var url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE} `
                 const menu = await fetchApi(url)
                 setMenus(menu.result)
+
             } catch (error) {
                 console.log(error)
             } finally {
@@ -277,6 +278,43 @@ export default function MenusRestaurantScreen() {
                         the best hotel for me, I stayed there for two weeks I really enjoyed its great location. I loved the character of the hotel. The restaurant was fantastic and the staff was friendly. Well maintained rooms, comfortable bed, and great Cafe.
                     </Text>}
             </View>
+
+            <TouchableOpacity onPress={plusCategories} style={styles.plus1}>
+                    <View>
+                        <Text style={styles.plusText}>Categories</Text>
+                    </View>
+                    <View style={{ marginLeft: 100 }}>
+                        <View onPress={plusCategories} style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
+                {/* {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <CategoriesMenuSkeletons /> : */}
+                    <ScrollView
+                        style={styles.shops}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        <View style={styles.categories}>
+                            {categories.map((categorie, index) => {
+                                return (
+
+                                    <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                    <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                        <Image source={{ uri: categorie.IMAGE }}  />
+                                    </View>
+                                    <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                    {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
+                                        <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                    </View>}
+                                </TouchableOpacity>
+                                )
+                            })}
+                        </View>
+                    </ScrollView>
+                {/* } */}
+
             <View style={{ marginTop: 20, marginHorizontal: 10 }}>
                 <Text style={{ fontWeight: "bold", fontSize: 17 }}>Notre menu</Text>
             </View>
@@ -346,6 +384,47 @@ export default function MenusRestaurantScreen() {
                     keyExtractor={(_, index) => index.toString()}
                 />
             }
+            <Modalize
+                ref={CategoriemodalizeRef}
+                adjustToContentHeight
+                handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                onClosed={() => {
+                    // setIsOpen(false)
+                    setLoadingForm(true)
+                }}
+            >
+                <ScrollView>
+                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos catégories</Text>
+                    <View style={styles.resto}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <View style={{ ...styles.categoryModel, margin: 15 }} >
+                                    <View style={styles.actionIcon}>
+                                        <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
+
+                                            {/* <View style={styles.disbaledContainer}>
+                                                    <View style={styles.checkIndicator}>
+                                                        <AntDesign name="check" size={24} color='#000' />
+                                                    </View>
+                                                </View> */}
+                                        </ImageBackground>
+                                    </View>
+                                    <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
+                                </View>
+                            )
+                        })}
+                    </View>
+                </ScrollView>
+            </Modalize>
         </ScrollView>
     )
 }
@@ -420,6 +499,59 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    DataImageCategorie: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 10,
+    },
+    cardPhoto1: {
+        marginTop: 10,
+        width: 50,
+        height: 50,
+        backgroundColor: "#DFE1E9",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    cardPhoto: {
+        marginTop: 10,
+        width: 60,
+        height: 60,
+        //backgroundColor: "#242F68",
+        backgroundColor: "#DFE1E9",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    categories: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+        paddingBottom: 5
+    },
+    categoryPhoto: {
+        width: 80,
+        height: 70,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
+    categoryChecked: {
+        width: 80,
+        height: 85,
+        borderRadius: 8,
+        marginTop: -80
+
+    },
+    category: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        marginRight: -12.6,
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
     serviceName: {
         textAlign: 'center',
         color: '#fff',
@@ -485,6 +617,15 @@ const styles = StyleSheet.create({
         // height:  '50%',
         alignSelf: 'center',
 
+    },
+    plus1: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "2%",
+        paddingHorizontal: 10,
+        marginBottom: "-1 %"
     },
     emptyFeedback: {
         textAlign: "center",
