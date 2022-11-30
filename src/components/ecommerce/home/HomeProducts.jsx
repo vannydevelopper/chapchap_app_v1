@@ -4,12 +4,13 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import Product from '../main/Product';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
+import { COLORS } from "../../../styles/COLORS";
 
 export default function HomeProducts({ products, selectedCategorie, selectedsousCategories }) {
         const navigation = useNavigation()
         return (
                 <View style={styles.homeProducts}>
-                        <TouchableNativeFeedback
+                        {/* <TouchableNativeFeedback
                                 accessibilityRole="button"
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                                 onPress={() => navigation.navigate('AllProductsScreen', {
@@ -20,7 +21,8 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
                                         <Text style={styles.title}>Les plus achetés</Text>
                                         <MaterialIcons name="navigate-next" size={24} color="black" />
                                 </View>
-                        </TouchableNativeFeedback>
+                        </TouchableNativeFeedback> */}
+                        
                         <ScrollView
                                 style={styles.products}
                                 horizontal
@@ -44,6 +46,10 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
 
 const styles = StyleSheet.create({
         homeProducts: {
+                // elevation:5,
+                // borderRadius:1,
+                // backgroundColor:"white",
+                // marginVertical:2
         },
         productsHeader: {
                 flexDirection: 'row',
@@ -53,6 +59,18 @@ const styles = StyleSheet.create({
                 paddingVertical: 10,
                 paddingHorizontal: 10
         },
+        plus1: {
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingVertical: 10,
+                paddingHorizontal: 10,
+                marginBottom: "-1%"
+            },
+            plusText: {
+                color: COLORS.ecommercePrimaryColor,
+                fontSize: 14,
+            },
         title: {
                 fontWeight: 'bold'
         },

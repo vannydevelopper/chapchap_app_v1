@@ -190,7 +190,7 @@ export default function RestaurantHomeScreen() {
                         <Text style={styles.plusText}>Les plus proches</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
-                        <View onPress={plusCategories} style={{ flexDirection: 'row' }}>
+                        <View onPress={onCartPress} style={{ flexDirection: 'row' }}>
                             <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
                             <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
                         </View>

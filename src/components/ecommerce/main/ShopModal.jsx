@@ -13,7 +13,7 @@ import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCart
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
-export default function Shop({ shop, index, totalLength, fixMargins = false }) {
+export default function ShopModal({ shop, index, totalLength, fixMargins = false }) {
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
   const navigation = useNavigation()
@@ -24,29 +24,11 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
   const additionStyles = {
     width: PRODUCT_WIDTH,
     height: PRODUCT_HEIGHT,
-    marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
-    marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
-  }
-  // return (
-  //   <View key={index} style={[styles.shop, additionStyles]}>
-  //                      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE })}>
-  //                             <View style={styles.imageCard}>
-  //                                       <Image source={{ uri: shop.LOGO }} style={styles.image} />
-  //                             </View>
-  //                             </TouchableNativeFeedback> 
-  //                                       <Text numberOfLines={2} style={styles.shopName}>
-  //                                       {shop.NOM_ORGANISATION }
-  //                             </Text>
-  //                             {shop.categories.map((categorie,index)=>{
-  //                               return(
-  //                                   <View key={index}>
-  //                                   <Text numberOfLines={2} style={styles.shopCategory}> {categorie.NOM}</Text>
-  //                                   </View>
-
-  //                               )
-  //                             })}
-  //                   </View>
-  // )
+    // marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
+    // marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
+  
+}
+ 
   function strUcFirst(a) {
     return (a + '').charAt(0).toUpperCase() + a.substr(1);
   }
@@ -136,6 +118,7 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
 
 const styles = StyleSheet.create({
   shop: {
+    marginHorizontal: 10,
     maxHeight: 150,
     marginTop: 5,
     backgroundColor: 'white',

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef,useState, useEffect } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
@@ -12,6 +12,8 @@ import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } fr
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import { useForm } from "../../hooks/useForm";
 import { Modalize } from "react-native-modalize";
+import Shop from "../../components/ecommerce/main/Shop";
+import ShopModal from "../../components/ecommerce/main/ShopModal";
 
 export default function EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
@@ -31,7 +33,11 @@ export default function EcommerceHomeScreen() {
     const [products, setProducts] = useState([])
     const [shops, setShops] = useState([])
     const navigation = useNavigation()
+
     const CategoriemodalizeRef = useRef(null)
+    const modalizeRef = useRef(null)
+    const ProductmodalizeRef = useRef(null)
+
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
     const fecthCategories = async () => {
@@ -73,7 +79,14 @@ export default function EcommerceHomeScreen() {
         // setIsOpen(true)
         CategoriemodalizeRef.current?.open()
     }
-
+    const onCartPress = () => {
+        setIsOpen(true)
+        modalizeRef.current?.open()
+    }
+    const productPress = () => {
+        setIsOpen(true)
+        ProductmodalizeRef.current?.open()
+    }
     //fetch des sous  categories
     useEffect(() => {
         (async () => {
@@ -146,7 +159,8 @@ export default function EcommerceHomeScreen() {
                 </TouchableOpacity>
                 <EcommerceBadge />
             </View>
-            <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}>
+            {/* <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}> */}
+            <ScrollView style={styles.cardOrginal}>
                 <Text style={styles.titlePrincipal}>Achat des produits</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
@@ -161,47 +175,94 @@ export default function EcommerceHomeScreen() {
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
-                    <View style={{ marginLeft: 300,marginTop:-20 }}>
-                        <View  style={{ flexDirection: 'row' }}>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
                             <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
                             <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
                         </View>
                     </View>
                 </TouchableOpacity>
                 {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
-                    <View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
+                    // <View>
+                    //     <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
+                    //         {categories.map((categorie, index) => {
+                    //             return (
+                    //                 <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
+                    //                     <View style={{ alignContent: "center", alignItems: "center" }}>
+                    //                         <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
+                    //                             <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
+                    //                         </View>
+                    //                         <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                    //                     </View>
+                    //                 </TouchableOpacity>
+                    //             )
+                    //         })}
+                    //     </View>
+                    // </View>
+                    <ScrollView
+                        style={styles.shops}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        <View style={styles.categories}>
                             {categories.map((categorie, index) => {
                                 return (
-                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                        <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                            </View>
-                                            <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+
+                                    <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
                                         </View>
+                                        <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                        {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
+                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                        </View>}
                                     </TouchableOpacity>
                                 )
                             })}
                         </View>
-                    </View>
-                    }
+                    </ScrollView>
+                }
                 {selectedCategorie ? ((loadingSubCategories || loadingProducts) ? <SubCategoriesSkeletons /> : <SubCategories
                     sousCategories={sousCategories}
                     selectedItemSousCategories={selectedItemSousCategories}
                     selectedsousCategories={selectedsousCategories}
                 />) : null}
 
+                <TouchableOpacity onPress={productPress} style={styles.plus}>
+                    <View>
+                        <Text style={styles.plusText}>Les plus proches</Text>
+                    </View>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
+                <TouchableOpacity onPress={onCartPress} style={styles.plus}>
+                    <View>
+                        <Text style={styles.plusText}>Les plus proches</Text>
+                    </View>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                <View>
+                {/* <View>
                     <View style={styles.productsHeader}>
                         <Text style={styles.title}>Recommandé pour vous</Text>
                     </View>
+                </View> */}
+                <View>
+                    <Text style={styles.plusText}>Recommandé pour vous</Text>
                 </View>
                 <View style={styles.products}>
                     {products.map((product, index) => {
@@ -216,8 +277,8 @@ export default function EcommerceHomeScreen() {
                         )
                     })}
                 </View>
-                
-         
+
+
             </ScrollView>
             <Modalize
                 ref={CategoriemodalizeRef}
@@ -253,8 +314,94 @@ export default function EcommerceHomeScreen() {
                     </View>
                 </ScrollView>
             </Modalize>
+            <Modalize
+                ref={modalizeRef}
+                adjustToContentHeight
+                // handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    // paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                onClosed={() => {
+                    setIsOpen(false)
+                    setLoadingForm(true)
+                }}
+            >
+                <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
+                <View style={styles.searchSection1}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        // value={data.resto}
+                        // onChangeText={(newValue) => handleChange('resto', newValue)}
+                        placeholder="Rechercher "
+                    />
+                </View>
+                <ScrollView >
+
+                    <View style={styles.bout}>
+                        {shops.map((shop, index) => {
+                            return (
+                                <ShopModal
+                                    shop={shop}
+                                    index={index}
+                                    totalLength={shops.length}
+                                    key={index}
+                                />
+                            )
+                        })}
+                    </View>
+                </ScrollView>
+            </Modalize>
+            <Modalize
+                ref={ProductmodalizeRef}
+                adjustToContentHeight
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                onClosed={() => {
+                    setIsOpen(false)
+                    // handleChange('menu', "")
+                    setLoadingForm(true)
+                }}
+            >
+                <Text style={{ marginBottom: 10, marginBottom: 20, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
+                <View style={styles.searchSection1}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        // value={data.menu}
+                        // onChangeText={(newValue) => handleChange('menu', newValue)}
+                        placeholder="Rechercher "
+                    />
+                </View>
+                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <ScrollView>
+
+                        <View style={styles.products}>
+                            {products.map((product, index) => {
+                                return (
+                                    <Product
+                                        product={product}
+                                        index={index}
+                                        totalLength={products.length}
+                                        key={index}
+                                        fixMargins
+                                    />
+                                )
+                            })}
+                        </View>
+                    </ScrollView>
+                }
+            </Modalize>
         </View>
-        
+
     )
 }
 
@@ -269,11 +416,27 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         marginTop: "-8%",
         paddingHorizontal: 10,
-        marginBottom: "-5 %"
+        marginBottom: "-1%"
+    },
+    plus: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "-2%",
+        paddingHorizontal: 10,
+        marginBottom: "5%"
     },
     plusText: {
         color: COLORS.ecommercePrimaryColor,
         fontSize: 14,
+    },
+    categories: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+        paddingBottom: 5
     },
     categoryModel: {
         alignItems: 'center',
@@ -282,6 +445,28 @@ const styles = StyleSheet.create({
         elevation: 10,
         backgroundColor: 'white',
         borderRadius: 10,
+    },
+    category: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        marginRight: -12.6,
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
+    categoryPhoto: {
+        width: 80,
+        height: 70,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
+    categoryChecked: {
+        width: 80,
+        height: 85,
+        borderRadius: 8,
+        marginTop: -80
+
     },
     actionIcon: {
         borderRadius: 15,
@@ -295,6 +480,25 @@ const styles = StyleSheet.create({
     categoryImage: {
         width: '100%',
         height: '100%',
+    },
+    searchSection1: {
+        flexDirection: "row",
+        marginTop: -20,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        alignItems: 'center',
+        backgroundColor: "white",
+        width: "95%",
+        height: 50,
+        marginHorizontal: 10,
+        paddingHorizontal: 10
+
+    },
+    bout: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     cardHeader: {
         flexDirection: 'row',
@@ -361,8 +565,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     DataImageCategorie: {
-        minWidth: 40,
-        minHeight: 40,
+        width: '100%',
+        height: '100%',
         borderRadius: 10,
     },
     cardPhoto1: {
