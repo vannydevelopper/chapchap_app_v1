@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useRef,useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
@@ -11,6 +11,7 @@ import Product from "../../components/ecommerce/main/Product";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import { useForm } from "../../hooks/useForm";
+import { Modalize } from "react-native-modalize";
 
 export default function EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
@@ -30,7 +31,9 @@ export default function EcommerceHomeScreen() {
     const [products, setProducts] = useState([])
     const [shops, setShops] = useState([])
     const navigation = useNavigation()
-
+    const CategoriemodalizeRef = useRef(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const [loadingForm, setLoadingForm] = useState(true)
     const fecthCategories = async () => {
         try {
             const response = await fetchApi("/products/categories", {
@@ -65,6 +68,10 @@ export default function EcommerceHomeScreen() {
         }
         setSelectedsousCategories(souscategorie)
         // setSelectedsousCategories(null)
+    }
+    const plusCategories = () => {
+        // setIsOpen(true)
+        CategoriemodalizeRef.current?.open()
     }
 
     //fetch des sous  categories
@@ -150,7 +157,17 @@ export default function EcommerceHomeScreen() {
                         <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                     </View>
                 </View>
-
+                <TouchableOpacity onPress={plusCategories} style={styles.plus1}>
+                    <View>
+                        <Text style={styles.plusText}>Categories</Text>
+                    </View>
+                    <View style={{ marginLeft: 300,marginTop:-20 }}>
+                        <View  style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
                 {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
                     <View>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
@@ -167,7 +184,8 @@ export default function EcommerceHomeScreen() {
                                 )
                             })}
                         </View>
-                    </View>}
+                    </View>
+                    }
                 {selectedCategorie ? ((loadingSubCategories || loadingProducts) ? <SubCategoriesSkeletons /> : <SubCategories
                     sousCategories={sousCategories}
                     selectedItemSousCategories={selectedItemSousCategories}
@@ -198,14 +216,85 @@ export default function EcommerceHomeScreen() {
                         )
                     })}
                 </View>
+                
+         
             </ScrollView>
+            <Modalize
+                ref={CategoriemodalizeRef}
+                adjustToContentHeight
+                handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                onClosed={() => {
+                    setIsOpen(false)
+                    setLoadingForm(true)
+                }}
+            >
+                <ScrollView>
+                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>catégories</Text>
+                    <View style={styles.cate}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <View style={{ ...styles.categoryModel, margin: 15 }} >
+                                    <View style={styles.actionIcon}>
+                                        <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage} />
+                                    </View>
+                                    <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
+                                </View>
+                            )
+                        })}
+                    </View>
+                </ScrollView>
+            </Modalize>
         </View>
+        
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    plus1: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "-8%",
+        paddingHorizontal: 10,
+        marginBottom: "-5 %"
+    },
+    plusText: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 14,
+    },
+    categoryModel: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    actionIcon: {
+        borderRadius: 15,
+        width: 80,
+        height: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        backgroundColor: '#fff',
+    },
+    categoryImage: {
+        width: '100%',
+        height: '100%',
     },
     cardHeader: {
         flexDirection: 'row',
@@ -214,6 +303,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: StatusBar.currentHeight,
         height: 60
+    },
+    cate: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     menuOpener: {
     },
