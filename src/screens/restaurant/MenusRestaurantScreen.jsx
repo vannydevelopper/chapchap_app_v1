@@ -32,6 +32,9 @@ export default function MenusRestaurantScreen() {
     const [menus, setMenus] = useState([])
     const [imageIndex, setImageIndex] = useState(0)
     const [showImageModal, setShowImageModal] = useState(false)
+    const [categories, setCategories] = useState([])
+    const [selectedCategorie, setSelectedCategorie] = useState(null)
+
     const { restaurant } = route.params
     var IMAGES = [
         restaurant.LOGO ? restaurant.LOGO : undefined,
@@ -123,6 +126,37 @@ export default function MenusRestaurantScreen() {
         askLocationFetchRestos()
     }, [])
 
+    const fecthCategories = async () => {
+        try {
+            const response = await fetchApi(`/resto/menu/categories/${restaurant.ID_PARTENAIRE_SERVICE}`, {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            })
+            setCategories(response.result)
+            console.log("setCategories")
+        }
+        catch (error) {
+            console.log(error)
+        } finally {
+            setLoadingCatagories(false)
+        }
+    }
+    useFocusEffect(useCallback(() => {
+        fecthCategories()
+    }, []))
+
+    const onCategoryPress = (categorie) => {
+        console.log(categorie)
+
+        if (loadingSubCategories || loadingMenus) return false
+        if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
+            return setSelectedCategorie(null)
+        }
+        console.log(categorie)
+        setSelectedCategorie(categorie)
+        setSelectedsousCategories(null)
+        CategoriemodalizeRef.current?.close()
+    }
     useEffect(() => {
         (async () => {
             try {
@@ -140,6 +174,8 @@ export default function MenusRestaurantScreen() {
             }
         })()
     }, [])
+
+
 
     const fecthWishlist = async () => {
         try {
@@ -341,11 +377,6 @@ const styles = StyleSheet.create({
     },
     menuCard: {
         backgroundColor: "#D7D9E4",
-        // flex: 1,
-        // marginTop: 250,
-        // borderTopLeftRadius: 50,
-        // borderTopRightRadius: 50
-
     },
     imagePrincipal:
     {

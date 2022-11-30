@@ -111,14 +111,7 @@ export default function ProductShopsScreen() {
                         <View style={styles.productsHeader}>
                             <Ionicons name="arrow-back-sharp" size={24} color="black" />
                             <Text style={styles.title}> Les produits disponibles:</Text>
-
-
                         </View>
-                        {/* <View >
-                            <Image source={{ uri:.IMAGE_1 }} style={styles.DataImageCategorie} />
-                        </View> */}
-
-
                     </TouchableOpacity>
                     <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
                         {selectedCategorie ? selectedCategorie.NOM : products.NOM_ORGANISATION}

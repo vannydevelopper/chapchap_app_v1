@@ -14,10 +14,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
 export default function Shop({ shop, index, totalLength, fixMargins = false }) {
-  //  console.log(product)
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
-
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -30,20 +28,6 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
     marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
   }
   return (
-    // <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
-    //   <TouchableWithoutFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE })} >
-    //     <View style={styles.imageCard}>
-    //       <Image source={{ uri: shop.LOGO }} style={styles.image} />
-
-    //     </View>
-    //   </TouchableWithoutFeedback>
-
-    //   <View style={styles.productNames}>
-    //     <Text numberOfLines={2} style={styles.productName}>
-    //       {shop.NOM_ORGANISATION}
-    //     </Text>
-    //   </View>
-    // </View>
     <View key={index} style={[styles.shop, additionStyles]}>
                        <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE })}>
                               <View style={styles.imageCard}>
@@ -64,8 +48,6 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
                     </View>
   )
 }
-
-
 const styles = StyleSheet.create({
   product: {
     maxWidth: 200
