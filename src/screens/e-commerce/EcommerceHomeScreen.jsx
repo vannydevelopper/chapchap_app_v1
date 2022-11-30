@@ -228,9 +228,9 @@ export default function EcommerceHomeScreen() {
                     selectedsousCategories={selectedsousCategories}
                 />) : null}
 
-                <TouchableOpacity onPress={productPress} style={styles.plus}>
+                <TouchableOpacity onPress={productPress} style={styles.plus1}>
                     <View>
-                        <Text style={styles.plusText}>Les plus proches</Text>
+                        <Text style={styles.plusText}>Les plus achetés</Text>
                     </View>
                     <View style={{ marginTop: -8 }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -262,7 +262,7 @@ export default function EcommerceHomeScreen() {
                     </View>
                 </View> */}
                 <View>
-                    <Text style={styles.plusText}>Recommandé pour vous</Text>
+                    <Text style={styles.textRcommande}>Recommandé pour vous</Text>
                 </View>
                 <View style={styles.products}>
                     {products.map((product, index) => {
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
-        marginTop: "-8%",
+        marginTop: "-1%",
         paddingHorizontal: 10,
         marginBottom: "-1%"
     },
@@ -427,10 +427,25 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginBottom: "5%"
     },
+    plusRecommande: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "-2%",
+        paddingHorizontal: 10,
+        marginBottom: "5%"
+    },
     plusText: {
         color: COLORS.ecommercePrimaryColor,
         fontSize: 14,
     },
+    textRcommande:{
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 14,
+        paddingHorizontal: 10,
+
+   },
     categories: {
         flexDirection: 'row',
         alignItems: 'center',

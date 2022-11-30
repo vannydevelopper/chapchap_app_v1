@@ -52,7 +52,7 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
   }
   return (
     <View key={index} style={[styles.shop, additionStyles]}>
-      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE })}>
+      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE,shop:shop })}>
         <View style={styles.imageCard}>
           <Image source={{ uri: shop.LOGO }} style={styles.image} />
         </View>

@@ -24,8 +24,8 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   const additionStyles = {
     width: PRODUCT_WIDTH,
     height: PRODUCT_HEIGHT,
-    marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
-    marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
+    // marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
+    // marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
   }
 
   const modalizeRef = useRef(null)
@@ -179,12 +179,10 @@ export default function Product({ product, index, totalLength, fixMargins = fals
   }, [isOpen])
 
   return (
-    <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
-      <TouchableWithoutFeedback onPress={() => navigation.navigate('EcommerceNavigator', { product: product })} >
-        <View style={styles.imageCard}>
-          <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
-        </View>
-      </TouchableWithoutFeedback>
+    <View key={index} style={[styles.product, additionStyles]}>
+      <TouchableOpacity onPress={() => navigation.push('ProductDetailsScreen', { product: product })} style={styles.imageCard}>
+        <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+      </TouchableOpacity>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
           onPress={() => {
@@ -208,8 +206,8 @@ export default function Product({ product, index, totalLength, fixMargins = fals
       </View>
       <View style={styles.productNames}>
         <Text numberOfLines={2} style={styles.productName}>
-          {product.produit.NOM} 
-          <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
+
+          <Text numberOfLines={2} style={styles.productName}> {product.produit.NOM}</Text>
         </Text>
       </View>
       {product.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
@@ -234,6 +232,7 @@ export default function Product({ product, index, totalLength, fixMargins = fals
             }}
           >
             <AddCart colors={colors} onSizePress={onSizePress} SIZES={SIZES} product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+
           </Modalize>
         </GestureHandlerRootView>
       </Portal>
@@ -243,19 +242,17 @@ export default function Product({ product, index, totalLength, fixMargins = fals
 
 const styles = StyleSheet.create({
   product: {
-    maxWidth: 200
+    maxWidth: 200,
+    marginHorizontal: 10,
   },
   imageCard: {
     borderRadius: 8,
     height: "60%",
-    width: "100%",
-    backgroundColor: '#F1F1F1',
-    justifyContent: "center",
-    alignItems: "center"
+    width: "100%"
   },
   image: {
-    height: "95%",
-    width: "95%",
+    height: "100%",
+    width: "100%",
     borderRadius: 8,
     resizeMode: 'contain'
   },

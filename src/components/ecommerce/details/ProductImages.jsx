@@ -108,8 +108,8 @@ const styles = StyleSheet.create({
                     height: "100%",
           },
           productImage: {
-                    width: '90%',
-                    height: "90%",
+                    width: '200%',
+                    height: "220%",
                     alignSelf: 'center',
                     resizeMode: "contain"
           },

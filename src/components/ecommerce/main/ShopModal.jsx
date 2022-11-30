@@ -34,7 +34,7 @@ export default function ShopModal({ shop, index, totalLength, fixMargins = false
   }
   return (
     <View key={index} style={[styles.shop, additionStyles]}>
-      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE })}>
+      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE,shop:shop })}>
         <View style={styles.imageCard}>
           <Image source={{ uri: shop.LOGO }} style={styles.image} />
         </View>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     maxWidth: 200,
-    marginBottom: 20
+    marginBottom: 1
   },
   imageCard: {
     borderRadius: 10,

@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
+import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback, TouchableWithoutFeedback } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
@@ -9,6 +9,9 @@ import { useRoute } from "@react-navigation/native";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import SubCategories from "../../components/ecommerce/home/SubCategories";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import { Linking } from "react-native";
+import HomeProducts from "../../components/ecommerce/home/HomeProducts";
+import Shops from "../../components/ecommerce/home/Shops";
 
 export default function ProductShopsScreen() {
     const route = useRoute()
@@ -16,7 +19,7 @@ export default function ProductShopsScreen() {
 
     const [loadingCategories, setLoadingCatagories] = useState(true)
     const [categories, setCategories] = useState([])
-    const [selectedCategorie, setSelectedCategorie] = useState(defautSelectedCategorie)
+    const [selectedCategorie, setSelectedCategorie] = useState(null)
 
     const [loadingSubCategories, setLoadingSubCategories] = useState(false)
     const [sousCategories, SetSousCategories] = useState([])
@@ -25,9 +28,11 @@ export default function ProductShopsScreen() {
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
+    const [shops, setShops] = useState([])
+
 
     const navigation = useNavigation()
-    const { id } = route.params
+    const { id, shop } = route.params
     const fecthProduits = async () => {
         try {
             const response = await fetchApi(`/products/categorie/${id} `, {
@@ -55,7 +60,8 @@ export default function ProductShopsScreen() {
         setSelectedsousCategories(null)
     }
 
-    const selectedItemSousCategories = (souscategorie) => {ss
+    const selectedItemSousCategories = (souscategorie) => {
+        ss
         setSelectedsousCategories(souscategorie)
     }
 
@@ -102,10 +108,161 @@ export default function ProductShopsScreen() {
             }
         })()
     }, [selectedCategorie, selectedsousCategories])
+    useEffect(() => {
+        (async () => {
+            try {
+                if (firstLoadingProducts == false) {
+                    setLoadingProducts(true)
+                }
+                var url = "/partenaire/ecommerce"
+                const shops = await fetchApi(url)
+                setShops(shops.result)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setFirstLoadingProducts(false)
+                setLoadingProducts(false)
+            }
+        })()
+    }, [selectedCategorie, selectedsousCategories])
 
     return (
-        <View style={styles.container}>
-            <View style={styles.cardHeader}>
+        <ScrollView>
+            <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
+                <  Image source={{ uri: shop.LOGO }} style={{ ...styles.imagePrincipal }} />
+            </View>
+            <TouchableWithoutFeedback onPress={() => navigation.goBack()} >
+                <Ionicons name="ios-arrow-back-outline" size={40} color="white" style={{ ...styles.icon, marginTop: 20, marginHorizontal: 10 }} />
+            </TouchableWithoutFeedback>
+            <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: "column", marginTop: 15 }}>
+                    <Text style={{ fontWeight: "bold" }}>{shop.NOM_ORGANISATION}</Text>
+                    <View style={{ flexDirection: "row", marginTop: 10 }}>
+                        <SimpleLineIcons name="location-pin" size={15} color="black" />
+                        {/* <Text style={{ fontSize: 12 }}> {restaurant.ADRESSE_COMPLETE} </Text> */}
+
+                        <Text style={{ fontSize: 12 }}> Kigobe</Text>
+                    </View>
+                </View>
+                <AntDesign style={{ marginTop: 10 }} name="hearto" size={40} color="#F29558" />
+                {/* <TouchableOpacity
+                    onPress={() => {
+                        Addishlist(restaurant.ID_PARTENAIRE_SERVICE)
+                    }}
+                >
+                    {
+                       wishlist? <AntDesign name="heart" size={40} color="#EFC519" /> :
+                       <AntDesign name="hearto" size={40} color="#EFC519" /> 
+                    }
+                
+                </TouchableOpacity> */}
+                <View style={styles.carre}>
+                    {/* <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { restaurant.DISTANCE? restaurant.DISTANCE.toFixed(1) :null} Km</Text> */}
+                    <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à 17 Km</Text>
+                </View>
+            </View>
+
+            <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10, justifyContent: "space-between" }}>
+                <View style={{ flexDirection: "row" }}>
+                    {/* {wishlistNumber ?
+                        <AntDesign name="star" size={20} color="#EFC519" /> :
+                        <AntDesign name="star" size={20} color="#EFC519" />} */}
+                    <AntDesign name="star" size={20} color="#EFC519" />
+                    {/* <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{wishlistNumber?.Nbre}.0</Text> */}
+                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>5.0</Text>
+
+                </View>
+                <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
+                    <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
+                    {/* {shop.OUVERT ? <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{restaurant.OUVERT}</Text> : <Text style={{ color: "#797E9A" }}>7h-18h</Text>} */}
+                    <Text style={{ color: "#797E9A" }}>7h-18h</Text>
+                </View>
+                <TouchableOpacity onPress={() => { Linking.openURL(`tel:61236061`); }} style={{ flexDirection: "row" }}>
+                    <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
+                    <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>61236061</Text>
+                </TouchableOpacity>
+
+            </View>
+            <View style={{ marginTop: 10, marginHorizontal: 10 }} >
+
+                {/* {restaurant.PRESENTATION ? <Text style={{ color: "#797E9A" }}>{restaurant.PRESENTATION}</Text> :
+                    <Text style={{ color: "#797E9A" }}>
+                        the best hotel for me, I stayed there for two weeks I really enjoyed its great location. I loved the character of the hotel. The restaurant was fantastic and the staff was friendly. Well maintained rooms, comfortable bed, and great Cafe.
+                    </Text>} */}
+                <Text style={{ color: "#797E9A" }}>
+                    the {shop.NOM_ORGANISATION}, I stayed there for two weeks I really enjoyed its great location. I loved the character of the hotel. The restaurant was fantastic and the staff was friendly. Well maintained rooms, comfortable bed, and great Cafe.
+                </Text>
+            </View>
+            {/* <TouchableOpacity style={styles.plus1}>
+                <View>
+                    <Text style={styles.plusText}>Categories</Text>
+                </View>
+                <View style={{ marginTop: -8 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                    </View>
+                </View>
+            </TouchableOpacity> */}
+            {/* <ScrollView
+                style={styles.categorys}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+            >
+                <View style={styles.categories}>
+                    {shop.categories.map((categorie, index) => {
+                        return (
+
+                            <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                              
+                                <View style={[styles.categoryPhoto,]}>
+                                    <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie]} />
+                                </View>
+                                <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+
+                            </TouchableOpacity>
+                        )
+                    })}
+                </View>
+            </ScrollView> */}
+
+            <TouchableOpacity style={styles.plus}>
+                <View>
+                    <Text style={styles.plusText}>Produits</Text>
+                </View>
+                <View style={{ marginTop: -8 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                    </View>
+                </View>
+            </TouchableOpacity>
+            {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
+
+            <TouchableOpacity style={styles.plus}>
+                <View>
+                    <Text style={styles.plusText}>Les plus proches</Text>
+                </View>
+                <View style={{ marginTop: -8 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                    </View>
+                </View>
+            </TouchableOpacity>
+            {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                <Shops shops={shops} />
+            }
+
+
+
+
+
+
+
+
+            {/* <View style={styles.cardHeader}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <View style={styles.productsHeader}>
@@ -166,15 +323,96 @@ export default function ProductShopsScreen() {
                             )
                         })}
                     </View>}
-            </ScrollView>
+            </ScrollView> */}
 
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    categorys: {
+        marginTop: "0%"
+    },
+    imagePrincipal:
+    {
+        width: '120%',
+        height: 280,
+        alignSelf: 'center',
+        borderBottomLeftRadius: 100,
+        borderBottomRightRadius: 100,
+    },
+    carre: {
+        padding: 15,
+        height: 50,
+        width: 100,
+        color: "#1D8585",
+        backgroundColor: '#D7D9E4',
+        borderRadius: 10,
+    },
+    plus: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "-2%",
+        paddingHorizontal: 10,
+        marginBottom: "5%"
+    },
+    plus1: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "1%",
+        paddingHorizontal: 10,
+        marginBottom: "-4%"
+    },
+    plusText: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 14,
+    },
+    categories: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+        paddingBottom: 5,
+        marginTop: -80
+    },
+    categoryPhoto: {
+        width: 80,
+        height: 70,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
+    categoryChecked: {
+        width: 80,
+        height: 85,
+        borderRadius: 8,
+        marginTop: -80
+
+    },
+    category: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        marginRight: -12.6,
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
+    icon: {
+        width: 50,
+        top: 30,
+        position: 'absolute',
+        marginRight: 10,
+        // backgroundColor: '#fff',
+        borderRadius: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     cardHeader: {
         flexDirection: 'row',
