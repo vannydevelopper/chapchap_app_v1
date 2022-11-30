@@ -244,7 +244,7 @@ export default function EcommerceHomeScreen() {
 
                 <TouchableOpacity onPress={onCartPress} style={styles.plus}>
                     <View>
-                        <Text style={styles.plusText}>Les plus proches</Text>
+                        <Text style={styles.plusText}>Les boutiques</Text>
                     </View>
                     <View style={{ marginTop: -8 }}>
                         <View style={{ flexDirection: 'row' }}>
@@ -256,14 +256,17 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                {/* <View>
-                    <View style={styles.productsHeader}>
-                        <Text style={styles.title}>Recommandé pour vous</Text>
+               <TouchableOpacity onPress={productPress} style={styles.plus1}>
+                    <View>
+                        <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
-                </View> */}
-                <View>
-                    <Text style={styles.textRcommande}>Recommandé pour vous</Text>
-                </View>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
                 <View style={styles.products}>
                     {products.map((product, index) => {
                         return (
@@ -359,15 +362,25 @@ export default function EcommerceHomeScreen() {
                 </ScrollView>
             </Modalize>
             <Modalize
+            HeaderComponent={()=>{
+                // return(
+                //     <Text></Text>
+                // )
+            }}
                 ref={ProductmodalizeRef}
                 adjustToContentHeight
+                // handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    // paddingVertical: 20
+                }}
                 handleStyle={{ marginTop: 10 }}
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
                 onClosed={() => {
                     setIsOpen(false)
-                    // handleChange('menu', "")
                     setLoadingForm(true)
                 }}
             >
@@ -383,7 +396,6 @@ export default function EcommerceHomeScreen() {
                 </View>
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <ScrollView>
-
                         <View style={styles.products}>
                             {products.map((product, index) => {
                                 return (
@@ -499,6 +511,7 @@ const styles = StyleSheet.create({
     searchSection1: {
         flexDirection: "row",
         marginTop: -20,
+        marginBottom:10,
         padding: 5,
         borderRadius: 10,
         borderWidth: 1,

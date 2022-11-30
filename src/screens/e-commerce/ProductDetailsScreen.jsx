@@ -252,7 +252,7 @@ export default function ProductDetailsScreen() {
                   </View>
                 </TouchableOpacity>
               </View>
-              <MaterialIcons name="navigate-next" size={24} color="black" />
+              <MaterialIcons style={{marginTop:-40,marginLeft:-30}} name="navigate-next" size={24} color="black" />
 
             </View>
           </TouchableNativeFeedback>
@@ -262,7 +262,7 @@ export default function ProductDetailsScreen() {
             </Text>
           </View> */}
 
-          {!userNote[0] ?
+          {/* {!userNote[0] ?
             <>
               <View style={styles.etoiles}>
                 {new Array(5).fill(0).map((_, index) => {
@@ -382,11 +382,8 @@ export default function ProductDetailsScreen() {
                 )
 
               })}
-              {/* <TouchableWithoutFeedback style={{ marginLeft: 60, marginTop: 7 }}>
-                <Text style={{ color: COLORS.primary, }}>Editer ta Note</Text>
-              </TouchableWithoutFeedback> */}
             </>
-          }
+          } */}
 
 
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
@@ -532,6 +529,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
+    marginBottom:-20
   },
   shopLeft: {
     flexDirection: "row",
@@ -543,10 +541,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     borderRadius: 10,
     justifyContent: 'center',
-    alignItems: "center"
+    alignItems: "center",
+    marginTop:-40
+
   },
   shopOwner: {
-    marginLeft: 10
+    marginLeft: 10,
+    marginTop:-40
   },
   productSeller: {
     fontWeight: "bold"

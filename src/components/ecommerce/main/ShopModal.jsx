@@ -118,7 +118,7 @@ export default function ShopModal({ shop, index, totalLength, fixMargins = false
 
 const styles = StyleSheet.create({
   shop: {
-    marginHorizontal: 10,
+    marginHorizontal:10,
     maxHeight: 150,
     marginTop: 5,
     backgroundColor: 'white',
@@ -126,7 +126,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     maxWidth: 200,
-    marginBottom: 1
+    marginBottom:8,
+    marginRight:8,
   },
   imageCard: {
     borderRadius: 10,
