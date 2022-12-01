@@ -14,6 +14,8 @@ import { useForm } from "../../hooks/useForm";
 import { Modalize } from "react-native-modalize";
 import Shop from "../../components/ecommerce/main/Shop";
 import ShopModal from "../../components/ecommerce/main/ShopModal";
+import * as Location from 'expo-location';
+
 
 export default function EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
@@ -87,6 +89,10 @@ export default function EcommerceHomeScreen() {
         setIsOpen(true)
         ProductmodalizeRef.current?.open()
     }
+    const [data, handleChange, setValue] = useForm({
+        shop: "",
+        product: ""
+    })
     //fetch des sous  categories
     useEffect(() => {
         (async () => {
@@ -131,23 +137,72 @@ export default function EcommerceHomeScreen() {
             }
         })()
     }, [selectedCategorie, selectedsousCategories])
+    // useEffect(() => {
+    //     (async () => {
+    //         try {
+    //             if (firstLoadingProducts == false) {
+    //                 setLoadingProducts(true)
+    //             }
+    //             var url = "/partenaire/ecommerce"
+    //             const shops = await fetchApi(url)
+    //             setShops(shops.result)
+    //         } catch (error) {
+    //             console.log(error)
+    //         } finally {
+    //             setFirstLoadingProducts(false)
+    //             setLoadingProducts(false)
+    //         }
+    //     })()
+    // }, [selectedCategorie, selectedsousCategories])
+    
+    
     useEffect(() => {
-        (async () => {
+        const fecthShops = async (lat, long) => {
             try {
                 if (firstLoadingProducts == false) {
                     setLoadingProducts(true)
                 }
-                var url = "/partenaire/ecommerce"
-                const shops = await fetchApi(url)
-                setShops(shops.result)
-            } catch (error) {
-                console.log(error)
+                if (lat && long) {
+                    if (data.shop) {
+                        return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}&shop=${data.shop}`)
+                    }
+                    else {
+                        return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}`)
+                    }
+                }
+                if (data.shop) {
+                    return await fetchApi(`/partenaire/ecommerce?&shop=${data.shop}`)
+                }
+                else {
+                    return await fetchApi('/partenaire/ecommerce')
+                }
+            }
+            catch (error) {
+                throw error
             } finally {
                 setFirstLoadingProducts(false)
                 setLoadingProducts(false)
             }
-        })()
-    }, [selectedCategorie, selectedsousCategories])
+        }
+        const askLocationFetchRestos = async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                const shops = await fecthShops()
+                setShops(shops.result)
+                setFirstLoadingProducts(false)
+                setLoadingProducts(false)
+                return;
+            }
+            var location = await Location.getCurrentPositionAsync({});
+            const shops = await fecthShops(location.coords.latitude, location.coords.longitude)
+            setShops(shops.result)
+            setFirstLoadingProducts(false)
+            setLoadingProducts(false)
+        }
+        askLocationFetchRestos()
+
+    }, [data.resto])
 
     return (
         <View style={styles.container}>

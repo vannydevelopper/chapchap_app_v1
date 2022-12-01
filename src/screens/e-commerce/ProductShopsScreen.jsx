@@ -107,7 +107,7 @@ export default function ProductShopsScreen() {
                 setLoadingProducts(false)
             }
         })()
-    }, [selectedCategorie, selectedsousCategories])
+    }, [id])
     useEffect(() => {
         (async () => {
             try {
@@ -139,9 +139,7 @@ export default function ProductShopsScreen() {
                     <Text style={{ fontWeight: "bold" }}>{shop.NOM_ORGANISATION}</Text>
                     <View style={{ flexDirection: "row", marginTop: 10 }}>
                         <SimpleLineIcons name="location-pin" size={15} color="black" />
-                        {/* <Text style={{ fontSize: 12 }}> {restaurant.ADRESSE_COMPLETE} </Text> */}
-
-                        <Text style={{ fontSize: 12 }}> Kigobe</Text>
+                        <Text style={{ fontSize: 12 }}> {shop.ADRESSE_COMPLETE} </Text>
                     </View>
                 </View>
                 <AntDesign style={{ marginTop: 10 }} name="hearto" size={40} color="#F29558" />
@@ -157,8 +155,7 @@ export default function ProductShopsScreen() {
                 
                 </TouchableOpacity> */}
                 <View style={styles.carre}>
-                    {/* <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { restaurant.DISTANCE? restaurant.DISTANCE.toFixed(1) :null} Km</Text> */}
-                    <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à 17 Km</Text>
+                    <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { shop.DISTANCE? shop.DISTANCE.toFixed(1) :null} Km</Text>
                 </View>
             </View>
 
@@ -167,31 +164,24 @@ export default function ProductShopsScreen() {
                     {/* {wishlistNumber ?
                         <AntDesign name="star" size={20} color="#EFC519" /> :
                         <AntDesign name="star" size={20} color="#EFC519" />} */}
-                    <AntDesign name="star" size={20} color="#EFC519" />
-                    {/* <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{wishlistNumber?.Nbre}.0</Text> */}
-                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>5.0</Text>
+                   {shop.note.nbre==0 ?
+                        <AntDesign name="staro" size={20} color="#EFC519" /> :
+                        <AntDesign name="star" size={20} color="#EFC519" />}
+                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{shop.note.nbre}.0</Text>
 
                 </View>
                 <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
                     <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
-                    {/* {shop.OUVERT ? <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{restaurant.OUVERT}</Text> : <Text style={{ color: "#797E9A" }}>7h-18h</Text>} */}
-                    <Text style={{ color: "#797E9A" }}>7h-18h</Text>
+                    <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{shop.OUVERT}</Text>
                 </View>
-                <TouchableOpacity onPress={() => { Linking.openURL(`tel:61236061`); }} style={{ flexDirection: "row" }}>
+                <TouchableOpacity onPress={() => { Linking.openURL(`tel:${shop.TELEPHONE}`); }} style={{ flexDirection: "row" }}>
                     <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
-                    <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>61236061</Text>
+                    <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{shop.TELEPHONE}</Text>
                 </TouchableOpacity>
 
             </View>
             <View style={{ marginTop: 10, marginHorizontal: 10 }} >
-
-                {/* {restaurant.PRESENTATION ? <Text style={{ color: "#797E9A" }}>{restaurant.PRESENTATION}</Text> :
-                    <Text style={{ color: "#797E9A" }}>
-                        the best hotel for me, I stayed there for two weeks I really enjoyed its great location. I loved the character of the hotel. The restaurant was fantastic and the staff was friendly. Well maintained rooms, comfortable bed, and great Cafe.
-                    </Text>} */}
-                <Text style={{ color: "#797E9A" }}>
-                    the {shop.NOM_ORGANISATION}, I stayed there for two weeks I really enjoyed its great location. I loved the character of the hotel. The restaurant was fantastic and the staff was friendly. Well maintained rooms, comfortable bed, and great Cafe.
-                </Text>
+                <Text style={{ color: "#797E9A" }}>{shop.PRESENTATION}</Text>
             </View>
             {/* <TouchableOpacity style={styles.plus1}>
                 <View>
@@ -203,8 +193,8 @@ export default function ProductShopsScreen() {
                         <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
                     </View>
                 </View>
-            </TouchableOpacity> */}
-            {/* <ScrollView
+            </TouchableOpacity>
+            <ScrollView
                 style={styles.categorys}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -214,7 +204,7 @@ export default function ProductShopsScreen() {
                         return (
 
                             <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                              
+
                                 <View style={[styles.categoryPhoto,]}>
                                     <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie]} />
                                 </View>
