@@ -14,7 +14,6 @@ export default function AddCart({ menu, onClose, loadingForm }) {
         const [amount, setAmount] = useState(1)
         const [isFocused, setIsFocused] = useState(false)
         const dispatch = useDispatch()
-
         const onDecrement = () => {
                 if (parseInt(amount) == 1) {
                         return false
@@ -59,32 +58,40 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                 {/* <View style={styles.cardPhoto}>
                                 <Image source={{ uri: menu.IMAGE}} style={styles.image} />
                                 </View> */}
+                                <View>
+                                        <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
+                                                <  Image source={{ uri: menu.IMAGE }} style={{ ...styles.imagePrincipal }} />
+                                        </View>
+                                </View>
                                 <View style={{ marginTop: 10 }} >
-                    <Text style={styles.text} numberOfLines={2}>{menu.repas}</Text>
-                </View>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-                   
-                    <View style={{ flexDirection: "row" }}>
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="staro" size={15} color="#EFC519" />
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <AntDesign name="clockcircleo" size={15} color="#797E9A" />
-                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
-                    </View>
-                    <View style={{ marginTop: -5 }}>
-                        <Text style={styles.textFbu}>{menu.PRIX} Fbu</Text>
-                    </View>
-                </View>
-                <View style={{ marginTop: 10 }} >
-                    <Text style={styles.text1} numberOfLines={2}>{menu.categorie}</Text>
-                </View>
-                
-                                {/* <View style={styles.ligne}></View>
-                                <View style={{ marginTop: 10 }}>
-                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
+                                        <Text style={styles.text} numberOfLines={2}>{menu.repas}</Text>
+                                </View>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop:1 }}>
+
+                                        <View style={{ flexDirection: "row" }}>
+                                                <AntDesign name="star" size={15} color="#EFC519" />
+                                                <AntDesign name="star" size={15} color="#EFC519" />
+                                                <AntDesign name="star" size={15} color="#EFC519" />
+                                                <AntDesign name="staro" size={15} color="#EFC519" />
+                                        </View>
+                                        <View style={{ flexDirection: "row" }}>
+                                                <AntDesign name="clockcircleo" size={15} color="#797E9A" />
+                                                <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
+                                        </View>
+                                        <View style={{ marginTop: -5,opacity:0.5 }}>
+                                                <Text style={styles.textFbu}>{menu.PRIX} Fbu</Text>
+                                        </View>
+                                </View>
+                                <View style={{ marginTop: 1}} >
+                                        <Text style={styles.text1} numberOfLines={2}>{menu.categorie}</Text>
+                                </View>
+                                <View style={{ marginTop:1,marginBottom:1 }} >
+                                        <Text style={styles.txtDisplay}>
+                                                {menu.DESCRIPTION ? menu.DESCRIPTION : "Aucun description"}
+                                        </Text>
+                                </View>
+                                <View style={{ marginTop: 1}}>
+                                        <Text style={{ fontSize: 15, fontWeight: "bold", opacity: 0.4 }}>Nombre de plat</Text>
                                 </View>
                                 <View style={styles.moreDetails}>
                                         <View style={styles.amountContainer}>
@@ -106,58 +113,27 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                                         <Text style={styles.amountChangerText}>+</Text>
                                                 </TouchableOpacity>
                                         </View>
-                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                                                <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
-                                        </TouchableOpacity>
-                                </View> */}
-                                 <View style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
-                </View>
-                <View style={styles.moreDetails}>
-                    <View style={styles.amountContainer}>
-                        <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                            <Text style={styles.amountChangerText}>-</Text>
-                        </TouchableOpacity>
-                        <TextInput
-                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                            value={amount.toString()}
-                            onChangeText={onChangeText}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => {
-                                setIsFocused(false)
-                                checkAmount()
-                            }}
-                            keyboardType="decimal-pad"
-                        />
-                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                            <Text style={styles.amountChangerText}>+</Text>
-                        </TouchableOpacity>
-                    </View>
 
-                </View>
-                <View>
-                    <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
+                                </View>
+                                <View >
+                                        <View style={{ flexDirection: "row", justifyContent: 'space-between', marginTop: 8}}>
+                                                <View style={styles.carre}>
+                                                        <AntDesign name="sharealt" size={20} color="black" />
+                                                </View>
+                                                <View style={styles.carre}>
+                                                        <AntDesign name="shoppingcart" size={20} color="black" />
+                                                </View>
+                                                <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                                                        <View style={styles.carre3}>
+                                                                <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
+                                                        </View>
+                                                </TouchableOpacity>
 
-                        <View style={styles.carre}>
-                            <AntDesign name="sharealt" size={20} color="black" />
-                        </View>
-                        <View style={styles.carre}>
-                            <AntDesign name="shoppingcart" size={20} color="black" />
-
-                        </View>
-
-                        <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                            <View style={styles.carre3}>
-                                <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                    </View>
-                </View>
+                                        </View>
+                                </View>
                         </View>
         )
 }
-
 const styles = StyleSheet.create({
         modalContent: {
                 paddingBottom: 20,
@@ -167,6 +143,12 @@ const styles = StyleSheet.create({
                 paddingHorizontal: 15,
                 marginTop: 5,
                 marginHorizontal: 10
+        },
+        txtDisplay: {
+                color: '#191970',
+                fontSize: 12,
+                fontWeight: 'bold',
+                opacity: 0.5
         },
         cardSigne: {
                 padding: 15,
@@ -180,13 +162,14 @@ const styles = StyleSheet.create({
         text1: {
                 color: '#242F68',
                 fontWeight: "bold",
-                fontSize: 16
-            },
-            textFbu: {
+                fontSize: 16,
+                opacity:0.8
+        },
+        textFbu: {
                 color: 'red',
                 fontWeight: "bold",
                 fontSize: 15
-            },
+        },
         cardInput: {
                 padding: 15,
                 height: 50,
@@ -217,7 +200,7 @@ const styles = StyleSheet.create({
                 height: 150,
         },
         moreDetails: {
-                marginTop: 20
+                marginTop:10
         },
         carre: {
                 padding: 15,
@@ -227,8 +210,8 @@ const styles = StyleSheet.create({
                 backgroundColor: '#D7D9E4',
                 borderRadius: 10,
                 // marginTop: 1,
-            },
-            carre2: {
+        },
+        carre2: {
                 padding: 15,
                 height: 50,
                 width: 200,
@@ -236,8 +219,8 @@ const styles = StyleSheet.create({
                 borderColor: '#D8D8D8',
                 borderRadius: 10,
                 // marginTop: 1,
-            },
-            carre3: {
+        },
+        carre3: {
                 padding: 10,
                 height: 50,
                 width: 200,
@@ -250,7 +233,7 @@ const styles = StyleSheet.create({
                 // borderRadius: 5,
                 // backgroundColor: COLORS.ecommerceOrange,
                 // paddingVertical: 15,
-            },
+        },
         amountChanger: {
                 width: 50,
                 height: 50,
@@ -294,37 +277,47 @@ const styles = StyleSheet.create({
         },
         product: {
                 flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    height: 100,
-                    paddingVertical: 15,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                height: 100,
+                paddingVertical: 15,
                 //     borderBottomWidth: 1,
-                    borderBottomColor: '#F1F1F1'
+                borderBottomColor: '#F1F1F1'
 
         },
-        productDetails: {
+        productDetails: 
+        {
                 flex: 1,
                 marginLeft: 30
-      },
-      text: {
-        color:  COLORS.ecommercePrimaryColor,
-        fontWeight: "bold",
-        fontSize: 20
-    },
-      productName: {
-        color: COLORS.ecommercePrimaryColor,
-        fontWeight: "bold",
-        fontSize: 15
-},
-price: {
-        color: COLORS.ecommerceRed,
-        fontWeight: 'bold',
-        fontSize: 16
-},
-productSeller: {
-        color: COLORS.primary,
-        fontSize: 13,
-},
+        },
+        text: {
+                color: COLORS.ecommercePrimaryColor,
+                fontWeight: "bold",
+                fontSize: 20,
+                opacity:0.8
+        },
+        imagePrincipal:
+        {
+                width: '120%',
+                height: 200,
+                alignSelf: 'center',
+                borderBottomLeftRadius: 60,
+                borderBottomRightRadius: 60,
+        },
+        productName: {
+                color: COLORS.ecommercePrimaryColor,
+                fontWeight: "bold",
+                fontSize: 15
+        },
+        price: {
+                color: COLORS.ecommerceRed,
+                fontWeight: 'bold',
+                fontSize: 16
+        },
+        productSeller: {
+                color: COLORS.primary,
+                fontSize: 13,
+        },
         productImage: {
                 flex: 0.5,
                 height: "100%"
@@ -338,13 +331,13 @@ productSeller: {
         container: {
                 padding: 10,
         },
-        cardPhoto:{
-                padding:20,
+        cardPhoto: {
+                padding: 20,
                 // Width:10,
                 // Height:10,
                 // paddingHorizontal:10,
                 // borderRadius:10,
-                 backgroundColor:'red'
+                backgroundColor: 'red'
         },
         ligne: {
                 marginTop: 40,

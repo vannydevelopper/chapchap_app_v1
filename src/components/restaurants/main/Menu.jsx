@@ -94,7 +94,6 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
         modalizeRef.current?.close()
     }
     const MenuInCart = useSelector(restaurantProductSelector(menu.ID_RESTAURANT_MENU))
-
     useEffect(() => {
         if (isOpen) {
             const timer = setTimeout(() => {
@@ -111,12 +110,12 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
                 {/* <Image source={{ uri: menu.IMAGE }} style={styles.image} />
                  */}
                  <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={20}  imageStyle={{ opacity: 0.8 }}>
-                <View style={{ marginTop: 120, marginRight: 0 }}>
+                <View style={{ marginTop: 100, marginRight: 0 }}>
                     <Text style={styles.productName1}>{menu.repas}</Text>
                 </View>
             </ImageBackground>
             </TouchableOpacity>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row",marginLeft:5 }}>
                 <TouchableOpacity
                     onPress={() => {
                         Addishlist(menu.ID_RESTAURANT_MENU)
@@ -124,19 +123,19 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
                     }}
                 >
                     <View style={styles.cardLike}>
-                    {wishlist ? <AntDesign name="heart" size={14} color="#F29558" /> : <AntDesign name="hearto" size={14} color="#F29558" />}
+                    {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
                     <>
-                        <AntDesign name="shoppingcart" size={14} color="#F29558" />
+                        <AntDesign name="shoppingcart" size={24} color="#F29558" />
                         {MenuInCart ? <View style={styles.badge}>
                             <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
                         </View> : null}
                     </>
                 </TouchableOpacity>
             </View>
-            {menu.PRIX ? <Text style={{ fontsize:10,color: COLORS.ecommercePrimaryColor}}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+            {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
             <Portal>
                 <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                     <Modalize
@@ -195,19 +194,19 @@ const styles = StyleSheet.create({
     },
     cardLike: {
         marginTop: 10,
-        width: 25,
-        height: 25,
+        width: 35,
+        height: 35,
         backgroundColor: "#FBD5DA",
-        borderRadius: 5,
+        borderRadius: 10,
         justifyContent: "center",
         alignItems: "center"
     },
     cartBtn: {
         marginTop: 10,
-        width: 25,
-        height: 25,
+        width: 35,
+        height: 35,
         backgroundColor: "#FBD5DA",
-        borderRadius:5,
+        borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
         marginLeft: 8

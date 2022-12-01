@@ -86,106 +86,114 @@ export default function MenuDetailScreen() {
         return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
     }
     return (
-         <>
-        <ScrollView>
-            <View style={{ marginLeft: 30, marginTop: 50, marginHorizontal: 20 }}>
-                <TouchableWithoutFeedback key={1} onPress={() => {
-                    setImageIndex(1)
-                    setShowImageModal(true)
-                }}>
-                    <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
-                        <  Image source={{ uri: product.IMAGE }} style={{ ...styles.imagePrincipal }} />
+        <>
+            <ScrollView >
+                <View style={{ marginLeft: "5%", marginRight: "5%", marginTop: "5%", }}>
+                    <TouchableWithoutFeedback key={1} onPress={() => {
+                        setImageIndex(1)
+                        setShowImageModal(true)
+                    }}>
+                        <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
+                            <  Image source={{ uri: product.IMAGE }} style={{ ...styles.imagePrincipal }} />
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <View style={styles.cardBack}>
+                        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()} >
+                            <Ionicons name="ios-arrow-back-outline" size={30} color={COLORS.ecommercePrimaryColor} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.cartBtn} >
+                            <>
+                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
+                                {MenuInCart ? <View style={styles.badge}>
+                                    <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
+                                </View> : null}
+                            </>
+                        </TouchableOpacity>
                     </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>navigation.goBack()} >
-                <Ionicons name="ios-arrow-back-outline" size={40} color="white" style={{ ...styles.icon, marginTop: 0 }} />
-                </TouchableWithoutFeedback>
-                {MenuInCart ? <View style={styles.badge}>
-                    <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
-                </View> : null}
-                <View style={{ marginTop: 10 }} >
-                    <Text style={styles.text} numberOfLines={2}>{product.repas}</Text>
-                </View>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-                    <View style={{ flexDirection: "row" }}>
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="star" size={15} color="#EFC519" />
-                        <AntDesign name="staro" size={15} color="#EFC519" />
+
+                    <View style={{ marginTop: 10 }} >
+                        <Text style={styles.text} numberOfLines={2}>{product.repas}</Text>
                     </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <AntDesign name="clockcircleo" size={15} color="#797E9A" />
-                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
+                        <View style={{ flexDirection: "row" }}>
+                            <AntDesign name="star" size={15} color="#EFC519" />
+                            <AntDesign name="star" size={15} color="#EFC519" />
+                            <AntDesign name="star" size={15} color="#EFC519" />
+                            <AntDesign name="staro" size={15} color="#EFC519" />
+                        </View>
+                        <View style={{ flexDirection: "row" }}>
+                            <AntDesign name="clockcircleo" size={15} color="#797E9A" />
+                            <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
+                        </View>
+                        <View style={{ marginTop: -5 }}>
+                            <Text style={styles.textFbu}>{product.PRIX} Fbu</Text>
+                        </View>
                     </View>
-                    <View style={{ marginTop: -5 }}>
-                        <Text style={styles.textFbu}>{product.PRIX} Fbu</Text>
+                    <View style={{ marginTop: 10 }} >
+                        <Text style={styles.text1} numberOfLines={2}>{product.categorie}</Text>
+                    </View>
+                    <View style={{ marginTop: 10 }} >
+                        <Text style={styles.txtDisplay}>
+                            {product.DESCRIPTION ? product.DESCRIPTION : "Aucun description"}
+                        </Text>
+                    </View>
+
+                </View>
+                {showImageModal &&
+                    <ImageView
+                        images={IMAGES.map(img => ({ uri: img }))}
+                        imageIndex={imageIndex}
+                        visible={showImageModal}
+                        onRequestClose={() => setShowImageModal(false)}
+                        swipeToCloseEnabled
+                        keyExtractor={(_, index) => index.toString()}
+                    />
+                }
+            </ScrollView >
+            <View style={{ marginLeft: 30, marginHorizontal: 20 }}>
+                <View style={{ marginTop: 10 }}>
+                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
+                </View>
+                <View style={styles.moreDetails}>
+                    <View style={styles.amountContainer}>
+                        <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                            <Text style={styles.amountChangerText}>-</Text>
+                        </TouchableOpacity>
+                        <TextInput
+                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                            value={amount.toString()}
+                            onChangeText={onChangeText}
+                            onFocus={() => setIsFocused(true)}
+                            onBlur={() => {
+                                setIsFocused(false)
+                                checkAmount()
+                            }}
+                            keyboardType="decimal-pad"
+                        />
+                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
+                            <Text style={styles.amountChangerText}>+</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+                <View>
+                    <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
+                        <View style={styles.carre}>
+                            <AntDesign name="sharealt" size={20} color="black" />
+                        </View>
+                        <View style={styles.carre}>
+                            <AntDesign name="shoppingcart" size={20} color="black" />
+                        </View>
+                        <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                            <View style={styles.carre3}>
+                                <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
+                            </View>
+                        </TouchableOpacity>
+
                     </View>
                 </View>
-                <View style={{ marginTop: 10 }} >
-                    <Text style={styles.text1} numberOfLines={2}>{product.categorie}</Text>
-                </View>
-                <View style={{ marginTop: 10 }} >
-                    <Text style={styles.txtDisplay}>
-                        {product.DESCRIPTION?product.DESCRIPTION:"Aucun description"}
-                    </Text>
-                </View>
-                
             </View>
-            {showImageModal &&
-                <ImageView
-                    images={IMAGES.map(img => ({ uri: img }))}
-                    imageIndex={imageIndex}
-                    visible={showImageModal}
-                    onRequestClose={() => setShowImageModal(false)}
-                    swipeToCloseEnabled
-                    keyExtractor={(_, index) => index.toString()}
-                />
-            }
-        </ScrollView >
-        <View style={{ marginLeft: 30, marginHorizontal: 20 }}>
-       <View style={{ marginTop: 10 }}>
-           <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
-       </View>
-       <View style={styles.moreDetails}>
-           <View style={styles.amountContainer}>
-               <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                   <Text style={styles.amountChangerText}>-</Text>
-               </TouchableOpacity>
-               <TextInput
-                   style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                   value={amount.toString()}
-                   onChangeText={onChangeText}
-                   onFocus={() => setIsFocused(true)}
-                   onBlur={() => {
-                       setIsFocused(false)
-                       checkAmount()
-                   }}
-                   keyboardType="decimal-pad"
-               />
-               <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                   <Text style={styles.amountChangerText}>+</Text>
-               </TouchableOpacity>
-           </View>
-
-       </View>
-       <View>
-           <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
-               <View style={styles.carre}>
-                   <AntDesign name="sharealt" size={20} color="black" />
-               </View>
-               <View style={styles.carre}>
-                   <AntDesign name="shoppingcart" size={20} color="black" />
-               </View>
-               <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                   <View style={styles.carre3}>
-                       <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
-                   </View>
-               </TouchableOpacity>
-
-           </View>
-       </View>
-       </View>
-      </>
+        </>
 
 
     )
@@ -222,7 +230,6 @@ const styles = StyleSheet.create({
     badge: {
         minWidth: 25,
         minHeight: 20,
-        paddingHorizontal: 5,
         borderRadius: 20,
         backgroundColor: COLORS.ecommerceRed,
         position: 'absolute',
@@ -263,11 +270,55 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#D8D8D8',
         borderRadius: 10,
-        // marginTop: 1,
-        //     marginTop: 15,
-        // borderRadius: 5,
-        // backgroundColor: COLORS.ecommerceOrange,
-        // paddingVertical: 15,
+
+    },
+    back: {
+        padding: 10,
+        height: 50,
+        width: 50,
+        backgroundColor: '#D7D9E4',
+        // backgroundColor: COLORS.ecommercePrimaryColor,
+        borderRadius: 50,
+
+    },
+    cardBack: {
+        width: "100%",
+        position: 'absolute',
+        // marginRight: 10,
+        borderRadius: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        top: "8%",
+             
+    },
+    cartBtn: {
+        marginTop: 10,
+        width: 45,
+        height: 45,
+        backgroundColor: "#FBD5DA",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    badge: {
+        minWidth: 25,
+        minHeight: 20,
+        paddingHorizontal: 5,
+        borderRadius: 20,
+        backgroundColor: COLORS.ecommerceRed,
+        position: 'absolute',
+        top: -5,
+        right: -10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    badgeText: {
+        textAlign: 'center',
+        fontSize: 10,
+        color: '#FFF',
+        fontWeight: "bold"
     },
     carre: {
         padding: 15,
@@ -338,16 +389,7 @@ const styles = StyleSheet.create({
         marginTop: 30
 
     },
-    icon: {
-        width: 50,
-        top: 30,
-        position: 'absolute',
-        marginRight: 10,
-        // backgroundColor: '#fff',
-        borderRadius: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+
     icon1: {
         width: 50,
         top: 30,
