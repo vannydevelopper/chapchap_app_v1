@@ -349,10 +349,10 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                onClosed={() => {
-                    setIsOpen(false)
-                    setLoadingForm(true)
-                }}
+                // onClosed={() => {
+                //     setIsOpen(false)
+                //     setLoadingForm(true)
+                // }}
             >
                 <ScrollView>
                     <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>catégories</Text>
@@ -383,10 +383,7 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                onClosed={() => {
-                    setIsOpen(false)
-                    setLoadingForm(true)
-                }}
+               
             >
                 <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
                 <View style={styles.searchSection1}>
@@ -432,10 +429,10 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                onClosed={() => {
-                    setIsOpen(false)
-                    setLoadingForm(true)
-                }}
+                // onClosed={() => {
+                //     setIsOpen(false)
+                //     setLoadingForm(true)
+                // }}
             >
                 <Text style={{ marginBottom: 10, marginBottom: 20, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
                 <View style={styles.searchSection1}>
