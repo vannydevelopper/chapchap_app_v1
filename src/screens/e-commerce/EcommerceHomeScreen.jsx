@@ -120,13 +120,27 @@ export default function EcommerceHomeScreen() {
                     setLoadingProducts(true)
                 }
                 var url = "/products"
+                if(data.product)
+                    {
+                        url = `/products?q=${data.product}`
+                    }
                 if (selectedCategorie) {
-                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                    if(data.product)
+                    {
+                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
+                    }
+                    else{
+                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                    }
                 }
                 if (selectedsousCategories) {
-                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+                    if(data.product) {
+                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
+                    }
+                    else{
+                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+                    }
                 }
-
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
             } catch (error) {
@@ -136,7 +150,7 @@ export default function EcommerceHomeScreen() {
                 setLoadingProducts(false)
             }
         })()
-    }, [selectedCategorie, selectedsousCategories])
+    }, [selectedCategorie,,data.product, selectedsousCategories])
     // useEffect(() => {
     //     (async () => {
     //         try {
@@ -238,22 +252,7 @@ export default function EcommerceHomeScreen() {
                     </View>
                 </TouchableOpacity>
                 {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
-                    // <View>
-                    //     <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-                    //         {categories.map((categorie, index) => {
-                    //             return (
-                    //                 <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                    //                     <View style={{ alignContent: "center", alignItems: "center" }}>
-                    //                         <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                    //                             <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                    //                         </View>
-                    //                         <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                    //                     </View>
-                    //                 </TouchableOpacity>
-                    //             )
-                    //         })}
-                    //     </View>
-                    // </View>
+                    
                     <ScrollView
                         style={styles.shops}
                         horizontal
@@ -395,8 +394,8 @@ export default function EcommerceHomeScreen() {
                     <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                     <TextInput
                         style={styles.input}
-                        // value={data.resto}
-                        // onChangeText={(newValue) => handleChange('resto', newValue)}
+                        value={data.shop}
+                        onChangeText={(newValue) => handleChange('shop', newValue)}
                         placeholder="Rechercher "
                     />
                 </View>
@@ -444,8 +443,8 @@ export default function EcommerceHomeScreen() {
                     <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                     <TextInput
                         style={styles.input}
-                        // value={data.menu}
-                        // onChangeText={(newValue) => handleChange('menu', newValue)}
+                        value={data.product}
+                        onChangeText={(newValue) => handleChange('product', newValue)}
                         placeholder="Rechercher "
                     />
                 </View>
