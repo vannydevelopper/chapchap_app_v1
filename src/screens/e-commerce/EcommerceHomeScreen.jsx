@@ -168,8 +168,7 @@ export default function EcommerceHomeScreen() {
     //         }
     //     })()
     // }, [selectedCategorie, selectedsousCategories])
-    
-    
+
     useEffect(() => {
         const fecthShops = async (lat, long) => {
             try {
@@ -198,7 +197,7 @@ export default function EcommerceHomeScreen() {
                 setLoadingProducts(false)
             }
         }
-        const askLocationFetchRestos = async () => {
+        const askLocationFetchShops = async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 console.log('Permission to access location was denied');
@@ -214,9 +213,9 @@ export default function EcommerceHomeScreen() {
             setFirstLoadingProducts(false)
             setLoadingProducts(false)
         }
-        askLocationFetchRestos()
+        askLocationFetchShops()
 
-    }, [data.resto])
+    }, [data.shop])
 
     return (
         <View style={styles.container}>
