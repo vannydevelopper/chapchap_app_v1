@@ -34,7 +34,7 @@ export default function EcommerceCartScreen() {
                   PRODUCTS
             })
       }
-// console.log(products)
+      // console.log(products)
       const navigation = useNavigation()
       const [recommndations, setRecomandations] = useState([])
       const [loadingProducts, setLoadingProducts] = useState(false)
@@ -112,77 +112,118 @@ export default function EcommerceCartScreen() {
                   </View>
             )
       }
+      // return (
+      //       <View style={styles.container}>
+      //             <View style={styles.cardHeader}>
+      //                   <TouchableOpacity onPress={() => navigation.goBack()}>
+      //                         <Ionicons name="arrow-back-sharp" size={24} color="black" />
+      //                   </TouchableOpacity>
+      //                   <TouchableOpacity style={{}} onPress={() => navigation.navigate('EcommerceCartScreen')}>
+      //                         <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+      //                   </TouchableOpacity>
+      //             </View>
+      //             <Text style={styles.titlePrincipal}>Mon panier</Text>
+      //             <View style={styles.products}>
+      //                   <ScrollView>
+      //                         {partenaireProducts.map((partenaire, i) => {
+      //                               var somme = 0
+      //                               var element=0
+      //                               partenaire.PRODUCTS.forEach(product => {
+      //                                     somme += parseInt(product.produit_partenaire.PRIX) * product.QUANTITE
+      //                                     element=element+product.QUANTITE
+      //                               })
+      //                               const parte = partenaire.PRODUCTS[0].produit_partenaire
+      //                               return (
+      //                                     <View style={{ marginTop: 25,backgroundColor: '#F1F1F1',padding:10,borderRadius:10 }}>
+      //                                           <Text style={styles.boutique}>{parte.NOM_ORGANISATION}</Text>
+      //                                           <Text style={styles.somme}>Total : {somme.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+      //                                           <Text style={styles.somme}>Elément : {element} </Text>
+      //                                           {
+      //                                                 partenaire.PRODUCTS.map((product, index) => {
+      //                                                       return (
+      //                                                             <ProductCart
+      //                                                                   product={product}
+      //                                                                   index={index}
+      //                                                                   key={index}
+      //                                                             />
+
+      //                                                       )
+      //                                                 })}
+
+      //                                           <View style={{  marginTop:10,borderRadius:12}}>
+      //                                           {/* backgroundColor: '#F1F1F1' */}
+
+      //                                           </View>
+
+
+      //                                     </View>
+      //                               )
+
+      //                         })
+      //                         }
+      //                   </ScrollView>
+      //             </View>
+      //             <View style={styles.cartFooter}>
+      //                   <View style={styles.cartFooterTotals}>
+      //                         <View style={styles.imageAmount}>
+      //                               <View style={styles.cartImage}>
+      //                                     <Image source={require('../../../assets/images/carts.png')} style={styles.image} />
+      //                               </View>
+      //                               <View style={styles.cartAmount}>
+      //                                     <Text style={styles.amountTitle}>Panier</Text>
+      //                                     <Text style={styles.amount}>{getElements()} élément{getElements() > 1 && 's'}</Text>
+      //                               </View>
+      //                         </View>
+      //                         <View style={styles.prices}>
+      //                               <Text style={styles.amountTitle}>{getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+      //                               <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
+      //                         </View>
+      //                   </View>
+      //                   <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
+      //                         navigation.navigate("ShippingInfoScreen", { service: 1 })
+      //                   }}>
+      //                         <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
+      //                   </TouchableOpacity>
+      //             </View>
+      //       </View>
+      // )
       return (
             <View style={styles.container}>
                   <View style={styles.cardHeader}>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                               <Ionicons name="arrow-back-sharp" size={24} color="black" />
                         </TouchableOpacity>
-                        <TouchableOpacity style={{}} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                              <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </TouchableOpacity>
+
                   </View>
-                  <Text style={styles.titlePrincipal}>Mon panier</Text>
-                  <View style={styles.products}>
-                        <ScrollView>
-                              {partenaireProducts.map((partenaire, i) => {
-                                    var somme = 0
-                                    var element=0
-                                    partenaire.PRODUCTS.forEach(product => {
-                                          somme += parseInt(product.produit_partenaire.PRIX) * product.QUANTITE
-                                          element=element+product.QUANTITE
-                                    })
-                                    const parte = partenaire.PRODUCTS[0].produit_partenaire
+                  <View style={{ marginHorizontal: 10 }}>
+                        <Text style={styles.titlePrincipal}>Mon panier</Text>
+                  </View>
+                  <ScrollView>
+                        <View style={styles.products}>
+
+                              {products.map((product, index) => {
                                     return (
-                                          <View style={{ marginTop: 25,backgroundColor: '#F1F1F1',padding:10,borderRadius:10 }}>
-                                                <Text style={styles.boutique}>{parte.NOM_ORGANISATION}</Text>
-                                                <Text style={styles.somme}>Total : {somme.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
-                                                <Text style={styles.somme}>Elément : {element} </Text>
-                                                {
-                                                      partenaire.PRODUCTS.map((product, index) => {
-                                                            return (
-                                                                  <ProductCart
-                                                                        product={product}
-                                                                        index={index}
-                                                                        key={index}
-                                                                  />
-
-                                                            )
-                                                      })}
-            
-                                                <View style={{  marginTop:10,borderRadius:12}}>
-                                                {/* backgroundColor: '#F1F1F1' */}
-
-                                                </View>
-
-
-                                          </View>
+                                          <ProductCart
+                                                product={product}
+                                                index={index}
+                                                key={index}
+                                          />
                                     )
-
-                              })
-                              }
-                        </ScrollView>
-                  </View>
+                              })}
+                        </View>
+                  </ScrollView>
                   <View style={styles.cartFooter}>
-                        <View style={styles.cartFooterTotals}>
-                              <View style={styles.imageAmount}>
-                                    <View style={styles.cartImage}>
-                                          <Image source={require('../../../assets/images/carts.png')} style={styles.image} />
-                                    </View>
-                                    <View style={styles.cartAmount}>
-                                          <Text style={styles.amountTitle}>Panier</Text>
-                                          <Text style={styles.amount}>{getElements()} élément{getElements() > 1 && 's'}</Text>
-                                    </View>
-                              </View>
-                              <View style={styles.prices}>
-                                    <Text style={styles.amountTitle}>{getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
-                                    <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
-                              </View>
+                        <View style={{ marginVertical: 20 }}>
+                              <Text style={{
+                                    textAlign: 'center', color: COLORS.ecommercePrimaryColor,
+                                    fontWeight: 'bold', fontSize: 15
+                              }}>Total : {getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
                         </View>
                         <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
-                              navigation.navigate("ShippingInfoScreen", { service: 1 })
-                        }}>
-                              <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
+                              navigation.navigate("ShippingInfoScreen", { service: 2 })
+                        }}
+                        >
+                              <Text style={styles.checkoutBtnTitle}>Payer la commande </Text>
                         </TouchableOpacity>
                   </View>
             </View>

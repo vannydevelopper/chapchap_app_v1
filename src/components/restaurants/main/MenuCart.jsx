@@ -65,50 +65,25 @@ export default function MenuCart({ menu, index }) {
         }
     }, [amount])
     return (
-        <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
-            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={15} imageStyle={{ opacity: 0.8 }}>
-                <View style={{ marginTop: 45, marginRight: 80 }}>
-                    <Text style={styles.productName1}>{menu.repas}</Text>
-                </View>
-            </ImageBackground>
+        <View style={[styles.product, index == 0 && { marginTop: -2 }]}>
+            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={15} imageStyle={{ opacity: 0.8 }}/>
             <View style={styles.productDetails}>
                 <View style={styles.detailsHeader}>
                     <View style={styles.productNames}>
+                    <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
+                <MaterialCommunityIcons name="delete" size={24} color= {COLORS.ecommerceRed} />
+            </TouchableOpacity>
                         <Text style={styles.productName}>
                             {menu.repas}
                         </Text>
                         <Text style={styles.productPrix}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
-
-                        {/* <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
-                            <MaterialCommunityIcons name="delete" size={24} color="#777" />
-                        </TouchableOpacity> */}
                     </View>
-                    {/* <Text style={styles.unitPrice}>
-                                                            { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
-                                                            <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} />
-                                                  </Text> */}
                     {menu.MONTANT ? <Text style={styles.unitPrice}>{menu.MONTANT.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
                 </View>
                 <View style={styles.detailsFooter}>
                     {menu.MONTANT ? <Text numberOfLines={1} style={styles.productPrice}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
                     <View style={styles.amountContainer}>
-                        {/* <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                            <Text style={styles.amountChangerText}>-</Text>
-                        </TouchableOpacity>
-                        <TextInput
-                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                            value={amount.toString()}
-                            onChangeText={onChangeText}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => {
-                                setIsFocused(false)
-                                checkAmount()
-                            }}
-                            keyboardType="decimal-pad"
-                        /> */}
-                        {/* <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                            <Text style={styles.amountChangerText}>+</Text>
-                        </TouchableOpacity> */}
+                        
                     </View>
                 </View>
             </View>
@@ -131,9 +106,7 @@ export default function MenuCart({ menu, index }) {
                     <Text style={styles.amountChangerText}>+</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
-                <MaterialCommunityIcons name="delete" size={24} color= {COLORS.ecommerceRed} />
-            </TouchableOpacity>
+           
         </View>
     )
 }
@@ -147,7 +120,7 @@ const styles = StyleSheet.create({
         padding: 5,
         alignItems: "center",
         height: 90,
-        marginTop: 20,
+        marginTop: 10,
 
     },
     productImage: {
@@ -194,11 +167,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     reomoveBtn: {
-        width: 30,
-        height: 30,
-        backgroundColor: '#F1F1F1',
+        // width: 30,
+        // height: 30,
+        // backgroundColor: '#F1F1F1',
         borderRadius: 5,
         marginTop:-8,
+        marginRight:"-170%",
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -226,7 +200,7 @@ const styles = StyleSheet.create({
         padding: 1,
         // marginHorizontal: 10,
         flexDirection: 'row',
-        marginTop: -8
+        marginTop: 40
     },
     input: {
         // borderRadius: 5,

@@ -149,7 +149,7 @@ export default function RestaurantCartScreen() {
                     navigation.navigate("ShippingInfoScreen", { service: 2 })
                 }}
                 >
-                    <Text style={styles.checkoutBtnTitle}>Envoyer la demande</Text>
+                    <Text style={styles.checkoutBtnTitle}>Payer la commande </Text>
                 </TouchableOpacity>
             </View>
         </View>
