@@ -115,8 +115,8 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                         </View>
 
                                 </View>
-                                <View >
-                                        <View style={{ flexDirection: "row", justifyContent: 'space-between', marginTop: 8}}>
+                                <View>
+                                <View style={{ flexDirection: "row", justifyContent: 'space-between', marginTop: 8}}>
                                                 <View style={styles.carre}>
                                                         <AntDesign name="sharealt" size={20} color="black" />
                                                 </View>
@@ -129,7 +129,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                                                         </View>
                                                 </TouchableOpacity>
 
-                                        </View>
+                                 </View>
                                 </View>
                         </View>
         )
@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
                 color: "#1D8585",
                 backgroundColor: '#D7D9E4',
                 borderRadius: 10,
-                // marginTop: 1,
         },
         carre2: {
                 padding: 15,
@@ -218,7 +217,6 @@ const styles = StyleSheet.create({
                 borderWidth: 2,
                 borderColor: '#D8D8D8',
                 borderRadius: 10,
-                // marginTop: 1,
         },
         carre3: {
                 padding: 10,
@@ -228,11 +226,6 @@ const styles = StyleSheet.create({
                 borderWidth: 2,
                 borderColor: '#D8D8D8',
                 borderRadius: 10,
-                // marginTop: 1,
-                //     marginTop: 15,
-                // borderRadius: 5,
-                // backgroundColor: COLORS.ecommerceOrange,
-                // paddingVertical: 15,
         },
         amountChanger: {
                 width: 50,

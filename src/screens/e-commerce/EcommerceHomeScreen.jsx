@@ -429,7 +429,7 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                // onClosed={() => {
+                //onClosed={() => {
                 //     setIsOpen(false)
                 //     setLoadingForm(true)
                 // }}

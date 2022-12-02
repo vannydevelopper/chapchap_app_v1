@@ -110,7 +110,6 @@ export default function MenuDetailScreen() {
                             </>
                         </TouchableOpacity>
                     </View>
-
                     <View style={{ marginTop: 10 }} >
                         <Text style={styles.text} numberOfLines={2}>{product.repas}</Text>
                     </View>
@@ -330,8 +329,7 @@ const styles = StyleSheet.create({
         // marginTop: 1,
     },
     moreDetails: {
-        marginTop: 20,
-        marginBottom: -20
+        marginTop:10
     },
     input: {
         borderRadius: 5,
