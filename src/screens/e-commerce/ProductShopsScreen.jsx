@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback,useRef,useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback, TouchableWithoutFeedback } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
@@ -12,6 +12,11 @@ import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import { Linking } from "react-native";
 import HomeProducts from "../../components/ecommerce/home/HomeProducts";
 import Shops from "../../components/ecommerce/home/Shops";
+import { Modalize } from "react-native-modalize";
+import { useForm } from "../../hooks/useForm";
+import ShopModal from "../../components/ecommerce/main/ShopModal";
+import Product from "../../components/ecommerce/main/Product";
+
 
 export default function ProductShopsScreen() {
     const route = useRoute()
@@ -29,10 +34,20 @@ export default function ProductShopsScreen() {
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
     const [shops, setShops] = useState([])
-
+    const CategoriemodalizeRef = useRef(null)
+    const modalizeRef = useRef(null)
+    const ProductmodalizeRef = useRef(null)
 
     const navigation = useNavigation()
     const { id, shop } = route.params
+    const onCartPress = () => {
+        // setIsOpen(true)
+        modalizeRef.current?.open()
+    }
+    const productPress = () => {
+        // setIsOpen(true)
+        ProductmodalizeRef.current?.open()
+    }
     const fecthProduits = async () => {
         try {
             const response = await fetchApi(`/products/categorie/${id} `, {
@@ -85,7 +100,10 @@ export default function ProductShopsScreen() {
             }
         })()
     }, [selectedCategorie])
-
+    const [data, handleChange, setValue] = useForm({
+        shop: "",
+        product: ""
+    })
     useEffect(() => {
         (async () => {
             try {
@@ -127,13 +145,16 @@ export default function ProductShopsScreen() {
     }, [selectedCategorie, selectedsousCategories])
 
     return (
+        <>
         <ScrollView>
             <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
                 <  Image source={{ uri: shop.LOGO }} style={{ ...styles.imagePrincipal }} />
             </View>
-            <TouchableWithoutFeedback onPress={() => navigation.goBack()} >
-                <Ionicons name="ios-arrow-back-outline" size={40} color="white" style={{ ...styles.icon, marginTop: 20, marginHorizontal: 10 }} />
-            </TouchableWithoutFeedback>
+            <View style={styles.cardBack}>
+                                        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()} >
+                                                <Ionicons name="ios-arrow-back-outline" size={30} color={COLORS.ecommercePrimaryColor} />
+                                        </TouchableOpacity>
+                                </View>
             <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: "column", marginTop: 15 }}>
                     <Text style={{ fontWeight: "bold" }}>{shop.NOM_ORGANISATION}</Text>
@@ -142,18 +163,6 @@ export default function ProductShopsScreen() {
                         <Text style={{ fontSize: 12 }}> {shop.ADRESSE_COMPLETE} </Text>
                     </View>
                 </View>
-                <AntDesign style={{ marginTop: 10 }} name="hearto" size={40} color="#F29558" />
-                {/* <TouchableOpacity
-                    onPress={() => {
-                        Addishlist(restaurant.ID_PARTENAIRE_SERVICE)
-                    }}
-                >
-                    {
-                       wishlist? <AntDesign name="heart" size={40} color="#EFC519" /> :
-                       <AntDesign name="hearto" size={40} color="#EFC519" /> 
-                    }
-                
-                </TouchableOpacity> */}
                 <View style={styles.carre}>
                     <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { shop.DISTANCE? shop.DISTANCE.toFixed(1) :null} Km</Text>
                 </View>
@@ -216,7 +225,7 @@ export default function ProductShopsScreen() {
                 </View>
             </ScrollView> */}
 
-            <TouchableOpacity style={styles.plus}>
+<TouchableOpacity onPress={productPress} style={styles.plus}>
                 <View>
                     <Text style={styles.plusText}>Produits</Text>
                 </View>
@@ -230,7 +239,7 @@ export default function ProductShopsScreen() {
             {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                 <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
-            <TouchableOpacity style={styles.plus}>
+            <TouchableOpacity onPress={onCartPress}  style={styles.plus}>
                 <View>
                     <Text style={styles.plusText}>Les plus proches</Text>
                 </View>
@@ -244,78 +253,100 @@ export default function ProductShopsScreen() {
             {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                 <Shops shops={shops} />
             }
+        </ScrollView>
+        <Modalize
+        ref={modalizeRef}
+        adjustToContentHeight
+        // handlePosition='inside'
+        modalStyle={{
+            borderTopRightRadius: 25,
+            borderTopLeftRadius: 25,
+            // paddingVertical: 20
+        }}
+        handleStyle={{ marginTop: 10 }}
+        scrollViewProps={{
+            keyboardShouldPersistTaps: "handled"
+        }}
+       
+    >
+        <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
+        <View style={styles.searchSection1}>
+            <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+            <TextInput
+                style={styles.input}
+                value={data.shop}
+                onChangeText={(newValue) => handleChange('shop', newValue)}
+                placeholder="Rechercher "
+            />
+        </View>
+        <ScrollView >
 
-
-
-
-
-
-
-
-            {/* <View style={styles.cardHeader}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <View style={styles.productsHeader}>
-                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                            <Text style={styles.title}> Les produits disponibles:</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
-                        {selectedCategorie ? selectedCategorie.NOM : products.NOM_ORGANISATION}
-                    </Text>
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                        <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                    </TouchableOpacity>
-                    <EcommerceBadge />
-                </View>
+            <View style={styles.bout}>
+                {shops.map((shop, index) => {
+                    return (
+                        <ShopModal
+                            shop={shop}
+                            index={index}
+                            totalLength={shops.length}
+                            key={index}
+                        />
+                    )
+                })}
             </View>
-            <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
-                <Text style={styles.titlePrincipal}></Text>
-                {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
-                    <View>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-                            {categories.map((categorie, index) => {
+        </ScrollView>
+    </Modalize>
+    <Modalize
+            HeaderComponent={()=>{
+                // return(
+                //     <Text></Text>
+                // )
+            }}
+                ref={ProductmodalizeRef}
+                adjustToContentHeight
+                // handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    // paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                //onClosed={() => {
+                //     setIsOpen(false)
+                //     setLoadingForm(true)
+                // }}
+            >
+                <Text style={{ marginBottom: 10, marginBottom: 20, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
+                <View style={styles.searchSection1}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        value={data.product}
+                        onChangeText={(newValue) => handleChange('product', newValue)}
+                        placeholder="Rechercher "
+                    />
+                </View>
+                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <ScrollView>
+                        <View style={styles.products}>
+                            {products.map((product, index) => {
                                 return (
-                                    <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                        <View style={{ alignContent: "center", alignItems: "center" }}>
-                                            <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                            </View>
-                                            <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                        </View>
-                                    </TouchableOpacity>
+                                    <Product
+                                        product={product}
+                                        index={index}
+                                        totalLength={products.length}
+                                        key={index}
+                                        fixMargins
+                                    />
                                 )
                             })}
                         </View>
-                    </View>}
-
-
-                {selectedCategorie && ((loadingSubCategories || loadingProducts || loadingSubCategories) ? <SubCategoriesSkeletons /> : <SubCategories
-                    sousCategories={sousCategories}
-                    selectedItemSousCategories={selectedItemSousCategories}
-                    selectedsousCategories={selectedsousCategories}
-                />)}
-
-                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons wrap /> :
-
-                    <View style={styles.products}>
-                        {products.map((product, index) => {
-                            return (
-                                <ProductPartenaire
-                                    product={product}
-                                    index={index}
-                                    totalLength={products.length}
-                                    key={index}
-                                    fixMargins
-                                />
-                            )
-                        })}
-                    </View>}
-            </ScrollView> */}
-
-        </ScrollView>
+                    </ScrollView>
+                }
+            </Modalize>
+   </>
     )
 }
 
@@ -333,6 +364,52 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderBottomLeftRadius: 100,
         borderBottomRightRadius: 100,
+    },
+    back: {
+        padding: 10,
+        height: 50,
+        width: 50,
+        backgroundColor: '#D7D9E4',
+        // backgroundColor: COLORS.ecommercePrimaryColor,
+        borderRadius: 50,
+
+},
+cardBack: {
+        width: "100%",
+        position: 'absolute',
+        // marginRight: 10,
+        borderRadius: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        top: "4%",
+        left: "2%"
+
+},
+    bout: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    searchSection1: {
+        flexDirection: "row",
+        marginTop: -20,
+        marginBottom:10,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        alignItems: 'center',
+        backgroundColor: "white",
+        width: "95%",
+        height: 50,
+        marginHorizontal: 10,
+        paddingHorizontal: 10
+
+    },
+    input: {
+        flex: 1,
+        marginLeft: 10
     },
     carre: {
         padding: 15,

@@ -1,5 +1,5 @@
 import React, { useCallback,useRef, useState, useEffect } from "react";
-import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TouchableWithoutFeedback, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
+import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TouchableWithoutFeedback, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback, TextInput } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
@@ -16,7 +16,11 @@ import { Linking } from "react-native";
 import ImageView from "react-native-image-viewing";
 import * as Location from 'expo-location';
 import { Modalize } from "react-native-modalize";
+import { useForm } from "../../hooks/useForm";
+
 import { CategoriesMenuSkeletons, CategoriesSkeletons, HomeMenuSkeletons, HomeProductsSkeletons, RestaurantSkeletons, restaurantSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import RestaurantHome from "../../components/restaurants/main/RestaurantHome";
+import Menu from "../../components/restaurants/main/Menu";
 
 export default function MenusRestaurantScreen() {
     const route = useRoute()
@@ -32,13 +36,33 @@ export default function MenusRestaurantScreen() {
     const [showImageModal, setShowImageModal] = useState(false)
     const [categories, setCategories] = useState([])
     const [selectedCategorie, setSelectedCategorie] = useState(null)
+    
+    const modalizeRef = useRef(null)
     const CategoriemodalizeRef = useRef(null)
+    const MenumodalizeRef = useRef(null)
 
     const { restaurant } = route.params
     var IMAGES = [
         restaurant.LOGO ? restaurant.LOGO : undefined,
         restaurant.BACKGROUND_IMAGE ? restaurant.BACKGROUND_IMAGE : undefined,
     ]
+    const [data, handleChange, setValue] = useForm({
+        resto: "",
+        menu: ""
+    })
+    const onCartPress = () => {
+        
+        modalizeRef.current?.open()
+    }
+
+    const plusCategories = () => {
+        
+        CategoriemodalizeRef.current?.open()
+    }
+    const menuPress = () => {
+        
+        MenumodalizeRef.current?.open()
+    }
     const Addishlist = async (id) => {
         if (wishlist) {
             try {
@@ -153,10 +177,7 @@ export default function MenusRestaurantScreen() {
         setSelectedCategorie(categorie)
         CategoriemodalizeRef.current?.close()
     }
-    const plusCategories = () => {
-        // setIsOpen(true)
-        CategoriemodalizeRef.current?.open()
-    }
+   
     useEffect(() => {
         (async () => {
             try {
@@ -217,6 +238,7 @@ export default function MenusRestaurantScreen() {
         fecthNombreWishlist()
     }, [wishlist]))
     return (
+        <>
         <ScrollView>
             <TouchableWithoutFeedback key={1} onPress={() => {
                 setImageIndex(1)
@@ -238,18 +260,7 @@ export default function MenusRestaurantScreen() {
                         <Text style={{ fontSize: 12 }}> {restaurant.ADRESSE_COMPLETE} </Text>
                     </View>
                 </View>
-                {/* <AntDesign name="heart" size={40} color="#F29558" /> */}
-                <TouchableOpacity
-                    onPress={() => {
-                        Addishlist(restaurant.ID_PARTENAIRE_SERVICE)
-                    }}
-                >
-                    {
-                       wishlist? <AntDesign name="heart" size={40} color="#EFC519" /> :
-                       <AntDesign name="hearto" size={40} color="#EFC519" /> 
-                    }
                 
-                </TouchableOpacity>
                 <View style={styles.carre}>
                  <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { restaurant.DISTANCE? restaurant.DISTANCE.toFixed(1) :null} Km</Text>
                 </View>
@@ -314,10 +325,18 @@ export default function MenusRestaurantScreen() {
                         </View>
                     </ScrollView>
                 {/* } */}
+                <TouchableOpacity onPress={menuPress} style={styles.plus}>
 
-            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
-                <Text style={{ fontWeight: "bold", fontSize: 17 }}>Notre menu</Text>
-            </View>
+                    <View>
+                        <Text style={styles.plusText}>Menus</Text>
+                    </View>
+                    <View style={{ marginLeft: 100 }}>
+                        <View  style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
             <View style={{}}>
                 {(firstLoadingProducts || loadingProducts) ? <HomeProductsSkeletons wrap /> :
                     menus.length != 0 ?
@@ -345,10 +364,17 @@ export default function MenusRestaurantScreen() {
                          </>
                 }
             </View>
-            <View style={{ marginTop: 20, marginHorizontal: 10 }}>
-                <Text style={{ fontWeight: "bold", fontSize: 17 }}>Restaurant plus proche</Text>
-            </View>
-
+              <TouchableOpacity onPress={onCartPress} style={styles.plus}>
+                    <View>
+                        <Text style={styles.plusText}>Les plus proches</Text>
+                    </View>
+                    <View style={{ marginLeft: 100 }}>
+                        <View  style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
             {(firstLoadingProducts) ? <HomeProductsSkeletons wrap /> :
                 restaurants.length != 0 &&
                 <ScrollView
@@ -384,48 +410,133 @@ export default function MenusRestaurantScreen() {
                     keyExtractor={(_, index) => index.toString()}
                 />
             }
-            <Modalize
-                ref={CategoriemodalizeRef}
-                adjustToContentHeight
-                handlePosition='inside'
-                modalStyle={{
-                    borderTopRightRadius: 25,
-                    borderTopLeftRadius: 25,
-                    paddingVertical: 20
-                }}
-                handleStyle={{ marginTop: 10 }}
-                scrollViewProps={{
-                    keyboardShouldPersistTaps: "handled"
-                }}
-                onClosed={() => {
-                    // setIsOpen(false)
-                    setLoadingForm(true)
-                }}
-            >
-                <ScrollView>
-                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos catégories</Text>
-                    <View style={styles.resto}>
-                        {categories.map((categorie, index) => {
-                            return (
-                                <View style={{ ...styles.categoryModel, margin: 15 }} >
-                                    <View style={styles.actionIcon}>
-                                        <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
-
-                                            {/* <View style={styles.disbaledContainer}>
-                                                    <View style={styles.checkIndicator}>
-                                                        <AntDesign name="check" size={24} color='#000' />
-                                                    </View>
-                                                </View> */}
-                                        </ImageBackground>
-                                    </View>
-                                    <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
-                                </View>
-                            )
-                        })}
-                    </View>
-                </ScrollView>
-            </Modalize>
+            
         </ScrollView>
+        <Modalize
+        ref={modalizeRef}
+        adjustToContentHeight
+        // handlePosition='inside'
+        modalStyle={{
+            borderTopRightRadius: 25,
+            borderTopLeftRadius: 25,
+            // paddingVertical: 20
+        }}
+        handleStyle={{ marginTop: 10 }}
+        scrollViewProps={{
+            keyboardShouldPersistTaps: "handled"
+        }}
+        
+    >
+        <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 40, textAlign: 'center', opacity: 0.7 }}>Nos restaurants</Text>
+        <View style={styles.searchSection1}>
+            <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+            <TextInput
+                style={styles.input}
+                value={data.resto}
+                onChangeText={(newValue) => handleChange('resto', newValue)}
+                placeholder="Rechercher "
+            />
+        </View>
+        <ScrollView >
+
+            <View style={styles.resto}>
+                {restaurants.map((restaurant, index) => {
+                    return (
+                        <RestaurantHome
+                            restaurant={restaurant}
+                            index={index}
+                            totalLength={restaurants.length}
+                            key={index}
+                        />
+                    )
+                })}
+            </View>
+        </ScrollView>
+    </Modalize>
+    <Modalize
+        ref={CategoriemodalizeRef}
+        adjustToContentHeight
+        handlePosition='inside'
+        modalStyle={{
+            borderTopRightRadius: 25,
+            borderTopLeftRadius: 25,
+            paddingVertical: 20
+        }}
+        handleStyle={{ marginTop: 10 }}
+        scrollViewProps={{
+            keyboardShouldPersistTaps: "handled"
+        }}
+        
+    >
+        <ScrollView>
+            <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos catégories</Text>
+            <View style={styles.resto}>
+                {categories.map((categorie, index) => {
+                    return (
+                        <View style={{ ...styles.categoryModel, margin: 15 }} >
+                            <View style={styles.actionIcon}>
+                                <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
+
+                                    {/* <View style={styles.disbaledContainer}>
+                                            <View style={styles.checkIndicator}>
+                                                <AntDesign name="check" size={24} color='#000' />
+                                            </View>
+                                        </View> */}
+                                </ImageBackground>
+                            </View>
+                            <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
+                        </View>
+                    )
+                })}
+            </View>
+        </ScrollView>
+    </Modalize>
+    <Modalize
+        ref={MenumodalizeRef}
+        adjustToContentHeight
+        handleStyle={{ marginTop: 10 }}
+        scrollViewProps={{
+            keyboardShouldPersistTaps: "handled"
+        }}
+       
+    >
+        <Text style={{ marginBottom: 10, marginBottom: 30, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos menus</Text>
+        <View style={styles.searchSection1}>
+            <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+            <TextInput
+                style={styles.input}
+                value={data.menu}
+                onChangeText={(newValue) => handleChange('menu', newValue)}
+                placeholder="Rechercher "
+            />
+        </View>
+        {(firstLoadingMenus) ?
+            <>
+                <HomeMenuSkeletons />
+                <HomeMenuSkeletons />
+                <HomeMenuSkeletons />
+                <HomeMenuSkeletons />
+            </> :
+            <ScrollView>
+
+                <View style={styles.products}>
+
+                    {menus.map((menu, index) => {
+                        return (
+                            <Menu
+                                menu={menu}
+                                index={index}
+                                totalLength={menus.length}
+                                key={index}
+                                fixMargins
+                            />
+                        )
+                    })}
+                </View>
+            </ScrollView>
+        }
+    </Modalize>
+    </>
     )
 }
 
@@ -440,6 +551,27 @@ const styles = StyleSheet.create({
         color: "#1D8585",
         backgroundColor: '#D7D9E4',
         borderRadius: 10,
+    },
+    plus: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        marginBottom: "-3%"
+    },
+    plus1: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "2%",
+        paddingHorizontal: 10,
+        marginBottom: "-1 %"
+    },
+    plusText: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 14,
     },
     emptyFeedback: {
         textAlign: "center",
@@ -464,6 +596,43 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderBottomLeftRadius: 100,
         borderBottomRightRadius: 100,
+    },
+    resto: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+    },
+    searchSection1: {
+        flexDirection: "row",
+        marginTop: -20,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        alignItems: 'center',
+        backgroundColor: "white",
+        width: "95%",
+        height: 50,
+        marginHorizontal: 10,
+        paddingHorizontal: 10
+
+    },
+    searchSection: {
+        flexDirection: "row",
+        marginTop: 10,
+        padding: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        backgroundColor: "#D7D9E4",
+        width: "84%",
+        height: 50,
+        paddingHorizontal: 10
+    },
+    input: {
+        flex: 1,
+        marginLeft: 10
     },
     icon: {
         width: 50,
