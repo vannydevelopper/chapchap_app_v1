@@ -192,7 +192,8 @@ export default function ProductShopsScreen() {
             <View style={{ marginTop: 10, marginHorizontal: 10 }} >
                 <Text style={{ color: "#797E9A" }}>{shop.PRESENTATION}</Text>
             </View>
-            {/* <TouchableOpacity style={styles.plus1}>
+            
+            <TouchableOpacity style={styles.plus1}>
                 <View>
                     <Text style={styles.plusText}>Categories</Text>
                 </View>
@@ -223,7 +224,7 @@ export default function ProductShopsScreen() {
                         )
                     })}
                 </View>
-            </ScrollView> */}
+            </ScrollView>
 
 <TouchableOpacity onPress={productPress} style={styles.plus}>
                 <View>
