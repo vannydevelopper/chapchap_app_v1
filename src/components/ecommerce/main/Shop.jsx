@@ -59,13 +59,12 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
       </TouchableNativeFeedback>
       <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(shop.NOM_ORGANISATION.toLowerCase())}</Text>
       <View style={{ flexDirection: "row", marginHorizontal: -1 }}>
-        {/* {shop.note ?
+        {shop.note.nbre==0 ?
           <AntDesign name="staro" size={14} color="#EFC519" /> :
-          <AntDesign name="star" size={14} color="#EFC519" />} */}
-          <AntDesign name="star" size={14} color="#EFC519" />
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 10 }}>1.0</Text>
+          <AntDesign name="star" size={14} color="#EFC519" />}
+        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 10 }}>{shop.note.nbre}.0</Text>
         <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à 15 Km</Text>
+        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à { shop.DISTANCE? shop.DISTANCE.toFixed(1) :null} Km</Text>
 
         {/* <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop.DISTANCE ? shop.DISTANCE.toFixed(1) : null} Km</Text> */}
       </View>

@@ -117,7 +117,7 @@ export default function RestaurantHomeScreen() {
             }
         })()
     }, [selectedCategorie, data.menu])
-
+    var location 
     useEffect(() => {
         const fecthRestos = async (lat, long) => {
             try {
@@ -155,14 +155,14 @@ export default function RestaurantHomeScreen() {
                 setRestaurants(restaurants.result)
                 return;
             }
-            var location = await Location.getCurrentPositionAsync({});
+            location = await Location.getCurrentPositionAsync({});
             const restaurants = await fecthRestos(location.coords.latitude, location.coords.longitude)
             setLoadingResto(false)
             setRestaurants(restaurants.result)
         }
         askLocationFetchRestos()
 
-    }, [data.resto])
+    }, [data.resto,location])
 
     return (
         <View style={styles.container}>

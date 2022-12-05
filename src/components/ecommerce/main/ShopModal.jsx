@@ -26,30 +26,27 @@ export default function ShopModal({ shop, index, totalLength, fixMargins = false
     height: PRODUCT_HEIGHT,
     // marginLeft: index > 0 ? PRODUCT_MARGIN : (fixMargins ? PRODUCT_MARGIN : 0),
     // marginRight: index == totalLength - 1 ? PRODUCT_MARGIN : (fixMargins ? 0 : 0)
-  
-}
- 
+
+  }
+
   function strUcFirst(a) {
     return (a + '').charAt(0).toUpperCase() + a.substr(1);
   }
   return (
     <View key={index} style={[styles.shop, additionStyles]}>
-      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE,shop:shop })}>
+      <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE, shop: shop })}>
         <View style={styles.imageCard}>
           <Image source={{ uri: shop.LOGO }} style={styles.image} />
         </View>
       </TouchableNativeFeedback>
       <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(shop.NOM_ORGANISATION.toLowerCase())}</Text>
       <View style={{ flexDirection: "row", marginHorizontal: -1 }}>
-        {/* {shop.note ?
+        {shop.note.nbre == 0 ?
           <AntDesign name="staro" size={14} color="#EFC519" /> :
-          <AntDesign name="star" size={14} color="#EFC519" />} */}
-          <AntDesign name="star" size={14} color="#EFC519" />
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 10 }}>1.0</Text>
+          <AntDesign name="star" size={14} color="#EFC519" />}
+        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 10 }}>{shop.note.nbre}.0</Text>
         <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à 15 Km</Text>
-
-        {/* <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop.DISTANCE ? shop.DISTANCE.toFixed(1) : null} Km</Text> */}
+        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop.DISTANCE ? shop.DISTANCE.toFixed(1) : null} Km</Text>
       </View>
     </View>
   )
@@ -118,7 +115,7 @@ export default function ShopModal({ shop, index, totalLength, fixMargins = false
 
 const styles = StyleSheet.create({
   shop: {
-    marginHorizontal:10,
+    marginHorizontal: 10,
     maxHeight: 150,
     marginTop: 5,
     backgroundColor: 'white',
@@ -126,8 +123,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     maxWidth: 200,
-    marginBottom:8,
-    marginRight:8,
+    marginBottom: 8,
+    marginRight: 8,
   },
   imageCard: {
     borderRadius: 10,
