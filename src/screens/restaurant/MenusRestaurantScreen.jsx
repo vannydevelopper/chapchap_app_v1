@@ -440,6 +440,7 @@ export default function MenusRestaurantScreen() {
             <View style={styles.resto}>
                 {restaurants.map((restaurant, index) => {
                     return (
+                       
                         <RestaurantHome
                             restaurant={restaurant}
                             index={index}

@@ -321,6 +321,7 @@ export default function RestaurantHomeScreen() {
                     </View>
                 </ScrollView>
             </Modalize>
+            
             <Modalize
                 ref={CategoriemodalizeRef}
                 adjustToContentHeight
