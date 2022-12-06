@@ -42,6 +42,7 @@ export default function EcommerceHomeScreen() {
 
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
+    
     const fecthCategories = async () => {
         try {
             const response = await fetchApi("/products/categories", {
@@ -260,9 +261,10 @@ export default function EcommerceHomeScreen() {
                         <View style={styles.categories}>
                             {categories.map((categorie, index) => {
                                 return (
+
                                     <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
                                         <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
+                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
                                         </View>
                                         <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                         {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
@@ -395,7 +397,6 @@ export default function EcommerceHomeScreen() {
                     />
                 </View>
                 <ScrollView >
-
                     <View style={styles.bout}>
                         {shops.map((shop, index) => {
                             return (
@@ -465,7 +466,6 @@ export default function EcommerceHomeScreen() {
 
     )
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1
