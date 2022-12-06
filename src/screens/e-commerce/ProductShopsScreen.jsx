@@ -1,4 +1,4 @@
-import React, { useCallback,useRef,useState, useEffect } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback, TouchableWithoutFeedback } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
@@ -48,6 +48,10 @@ export default function ProductShopsScreen() {
         // setIsOpen(true)
         ProductmodalizeRef.current?.open()
     }
+    const plusCategories = () => {
+        // setIsOpen(true)
+        CategoriemodalizeRef.current?.open()
+    }
     const fecthProduits = async () => {
         try {
             const response = await fetchApi(`/products/categorie/${id} `, {
@@ -55,6 +59,8 @@ export default function ProductShopsScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
+    // console.log(categories)
+
         }
         catch (error) {
             console.log(error)
@@ -76,7 +82,6 @@ export default function ProductShopsScreen() {
     }
 
     const selectedItemSousCategories = (souscategorie) => {
-        ss
         setSelectedsousCategories(souscategorie)
     }
 
@@ -143,165 +148,158 @@ export default function ProductShopsScreen() {
             }
         })()
     }, [selectedCategorie, selectedsousCategories])
-
     return (
         <>
-        <ScrollView>
-            <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
-                <  Image source={{ uri: shop.LOGO }} style={{ ...styles.imagePrincipal }} />
-            </View>
-            <View style={styles.cardBack}>
-                                        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()} >
-                                                <Ionicons name="ios-arrow-back-outline" size={30} color={COLORS.ecommercePrimaryColor} />
-                                        </TouchableOpacity>
-                                </View>
-            <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
-                <View style={{ flexDirection: "column", marginTop: 15 }}>
-                    <Text style={{ fontWeight: "bold" }}>{shop.NOM_ORGANISATION}</Text>
-                    <View style={{ flexDirection: "row", marginTop: 10 }}>
-                        <SimpleLineIcons name="location-pin" size={15} color="black" />
-                        <Text style={{ fontSize: 12 }}> {shop.ADRESSE_COMPLETE} </Text>
+            <ScrollView>
+                <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
+                    <  Image source={{ uri: shop.LOGO }} style={{ ...styles.imagePrincipal }} />
+                </View>
+                <View style={styles.cardBack}>
+                    <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()} >
+                        <Ionicons name="ios-arrow-back-outline" size={30} color={COLORS.ecommercePrimaryColor} />
+                    </TouchableOpacity>
+                </View>
+                <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: "column", marginTop: 15 }}>
+                        <Text style={{ fontWeight: "bold" }}>{shop.NOM_ORGANISATION}</Text>
+                        <View style={{ flexDirection: "row", marginTop: 10 }}>
+                            <SimpleLineIcons name="location-pin" size={15} color="black" />
+                            <Text style={{ fontSize: 12 }}> {shop.ADRESSE_COMPLETE} </Text>
+                        </View>
+                    </View>
+                    <View style={styles.carre}>
+                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop.DISTANCE ? shop.DISTANCE.toFixed(1) : null} Km</Text>
                     </View>
                 </View>
-                <View style={styles.carre}>
-                    <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A",right:15 }}>à { shop.DISTANCE? shop.DISTANCE.toFixed(1) :null} Km</Text>
-                </View>
-            </View>
+                <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10, justifyContent: "space-between" }}>
+                    <View style={{ flexDirection: "row" }}>
+                        {shop.note.nbre == 0 ?
+                            <AntDesign name="staro" size={20} color="#EFC519" /> :
+                            <AntDesign name="star" size={20} color="#EFC519" />}
+                        <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{shop.note.nbre}.0</Text>
 
-            <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10, justifyContent: "space-between" }}>
-                <View style={{ flexDirection: "row" }}>
-                    {/* {wishlistNumber ?
-                        <AntDesign name="star" size={20} color="#EFC519" /> :
-                        <AntDesign name="star" size={20} color="#EFC519" />} */}
-                   {shop.note.nbre==0 ?
-                        <AntDesign name="staro" size={20} color="#EFC519" /> :
-                        <AntDesign name="star" size={20} color="#EFC519" />}
-                    <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{shop.note.nbre}.0</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
+                        <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
+                        <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{shop.OUVERT}</Text>
+                    </View>
+                    <TouchableOpacity onPress={() => { Linking.openURL(`tel:${shop.TELEPHONE}`); }} style={{ flexDirection: "row" }}>
+                        <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
+                        <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{shop.TELEPHONE}</Text>
+                    </TouchableOpacity>
 
                 </View>
-                <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
-                    <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
-                    <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{shop.OUVERT}</Text>
+                <View style={{ marginTop: 10, marginHorizontal: 10 }} >
+                    <Text style={{ color: "#797E9A" }}>{shop.PRESENTATION}</Text>
                 </View>
-                <TouchableOpacity onPress={() => { Linking.openURL(`tel:${shop.TELEPHONE}`); }} style={{ flexDirection: "row" }}>
-                    <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
-                    <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{shop.TELEPHONE}</Text>
+                <TouchableOpacity onPress={plusCategories} style={styles.plus1}>
+                    <View>
+                        <Text style={styles.plusText}>Categories</Text>
+                    </View>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
                 </TouchableOpacity>
-
-            </View>
-            <View style={{ marginTop: 10, marginHorizontal: 10 }} >
-                <Text style={{ color: "#797E9A" }}>{shop.PRESENTATION}</Text>
-            </View>
-            
-            <TouchableOpacity style={styles.plus1}>
-                <View>
-                    <Text style={styles.plusText}>Categories</Text>
-                </View>
-                <View style={{ marginTop: -8 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                <ScrollView
+                    style={styles.categorys}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}>
+                    <View style={styles.categories}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                                    <View style={[styles.categoryPhoto]}>
+                                        <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie,{ opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
+                                    </View>
+                                    <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                    {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
+                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                        </View>}
+                                </TouchableOpacity>
+                            )
+                        })}
                     </View>
-                </View>
-            </TouchableOpacity>
-            <ScrollView
-                style={styles.categorys}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-            >
-                <View style={styles.categories}>
-                    {shop.categories.map((categorie, index) => {
-                        return (
+                </ScrollView>
 
-                            <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
+                <TouchableOpacity onPress={productPress} style={styles.plus}>
+                    <View>
+                        <Text style={styles.plusText}>Produits</Text>
+                    </View>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
+                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
-                                <View style={[styles.categoryPhoto,]}>
-                                    <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie]} />
-                                </View>
-                                <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-
-                            </TouchableOpacity>
-                        )
-                    })}
-                </View>
+                <TouchableOpacity onPress={onCartPress} style={styles.plus}>
+                    <View>
+                        <Text style={styles.plusText}>Les plus proches</Text>
+                    </View>
+                    <View style={{ marginTop: -8 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        </View>
+                    </View>
+                </TouchableOpacity>
+                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <Shops shops={shops} />
+                }
             </ScrollView>
+            <Modalize
+                ref={modalizeRef}
+                adjustToContentHeight
+                // handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    // paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
 
-<TouchableOpacity onPress={productPress} style={styles.plus}>
-                <View>
-                    <Text style={styles.plusText}>Produits</Text>
+            >
+                <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
+                <View style={styles.searchSection1}>
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <TextInput
+                        style={styles.input}
+                        value={data.shop}
+                        onChangeText={(newValue) => handleChange('shop', newValue)}
+                        placeholder="Rechercher "
+                    />
                 </View>
-                <View style={{ marginTop: -8 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                <ScrollView >
+
+                    <View style={styles.bout}>
+                        {shops.map((shop, index) => {
+                            return (
+                                <ShopModal
+                                    shop={shop}
+                                    index={index}
+                                    totalLength={shops.length}
+                                    key={index}
+                                />
+                            )
+                        })}
                     </View>
-                </View>
-            </TouchableOpacity>
-            {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
-
-            <TouchableOpacity onPress={onCartPress}  style={styles.plus}>
-                <View>
-                    <Text style={styles.plusText}>Les plus proches</Text>
-                </View>
-                <View style={{ marginTop: -8 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                        <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                    </View>
-                </View>
-            </TouchableOpacity>
-            {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                <Shops shops={shops} />
-            }
-        </ScrollView>
-        <Modalize
-        ref={modalizeRef}
-        adjustToContentHeight
-        // handlePosition='inside'
-        modalStyle={{
-            borderTopRightRadius: 25,
-            borderTopLeftRadius: 25,
-            // paddingVertical: 20
-        }}
-        handleStyle={{ marginTop: 10 }}
-        scrollViewProps={{
-            keyboardShouldPersistTaps: "handled"
-        }}
-       
-    >
-        <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
-        <View style={styles.searchSection1}>
-            <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-            <TextInput
-                style={styles.input}
-                value={data.shop}
-                onChangeText={(newValue) => handleChange('shop', newValue)}
-                placeholder="Rechercher "
-            />
-        </View>
-        <ScrollView >
-
-            <View style={styles.bout}>
-                {shops.map((shop, index) => {
-                    return (
-                        <ShopModal
-                            shop={shop}
-                            index={index}
-                            totalLength={shops.length}
-                            key={index}
-                        />
-                    )
-                })}
-            </View>
-        </ScrollView>
-    </Modalize>
-    <Modalize
-            HeaderComponent={()=>{
-                // return(
-                //     <Text></Text>
-                // )
-            }}
+                </ScrollView>
+            </Modalize>
+            <Modalize
+                HeaderComponent={() => {
+                    // return(
+                    //     <Text></Text>
+                    // )
+                }}
                 ref={ProductmodalizeRef}
                 adjustToContentHeight
                 // handlePosition='inside'
@@ -314,10 +312,10 @@ export default function ProductShopsScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                //onClosed={() => {
-                //     setIsOpen(false)
-                //     setLoadingForm(true)
-                // }}
+            //onClosed={() => {
+            //     setIsOpen(false)
+            //     setLoadingForm(true)
+            // }}
             >
                 <Text style={{ marginBottom: 10, marginBottom: 20, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
                 <View style={styles.searchSection1}>
@@ -347,17 +345,50 @@ export default function ProductShopsScreen() {
                     </ScrollView>
                 }
             </Modalize>
-   </>
+            <Modalize
+                ref={CategoriemodalizeRef}
+                adjustToContentHeight
+                handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                // onClosed={() => {
+                //     setIsOpen(false)
+                //     setLoadingForm(true)
+                // }}
+            >
+                <ScrollView>
+                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>catégories</Text>
+                    <View style={styles.cate}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <View style={{ ...styles.categoryModel, margin: 15 }} >
+                                    <View style={styles.actionIcon}>
+                                        <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage} />
+                                    </View>
+                                    <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
+                                </View>
+                            )
+                        })}
+                    </View>
+                </ScrollView>
+            </Modalize>
+        </>
     )
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    categorys: {
-        marginTop: "0%"
-    },
+    // categorys: {
+    //     marginTop: "10%"
+    // },
     imagePrincipal:
     {
         width: '120%',
@@ -371,14 +402,32 @@ const styles = StyleSheet.create({
         height: 50,
         width: 50,
         backgroundColor: '#D7D9E4',
-        // backgroundColor: COLORS.ecommercePrimaryColor,
         borderRadius: 50,
-
-},
-cardBack: {
+    },
+    actionIcon: {
+        borderRadius: 15,
+        width: 80,
+        height: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignContent: 'center',
+        backgroundColor: '#fff',
+    },
+    categoryImage: {
+        width: '100%',
+        height: '100%',
+    },
+    categoryModel: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    cardBack: {
         width: "100%",
         position: 'absolute',
-        // marginRight: 10,
         borderRadius: 40,
         alignItems: 'center',
         justifyContent: 'center',
@@ -386,8 +435,7 @@ cardBack: {
         justifyContent: "space-between",
         top: "4%",
         left: "2%"
-
-},
+    },
     bout: {
         flexDirection: 'row',
         flexWrap: 'wrap',
@@ -395,7 +443,7 @@ cardBack: {
     searchSection1: {
         flexDirection: "row",
         marginTop: -20,
-        marginBottom:10,
+        marginBottom: 10,
         padding: 5,
         borderRadius: 10,
         borderWidth: 1,
@@ -411,6 +459,10 @@ cardBack: {
     input: {
         flex: 1,
         marginLeft: 10
+    },
+    cate: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
     },
     carre: {
         padding: 15,
@@ -436,7 +488,7 @@ cardBack: {
         paddingVertical: 10,
         marginTop: "1%",
         paddingHorizontal: 10,
-        marginBottom: "-4%"
+        marginBottom: "-1%"
     },
     plusText: {
         color: COLORS.ecommercePrimaryColor,
@@ -447,8 +499,7 @@ cardBack: {
         alignItems: 'center',
         paddingHorizontal: 10,
         backgroundColor: '#fff',
-        paddingBottom: 5,
-        marginTop: -80
+        paddingBottom: 5
     },
     categoryPhoto: {
         width: 80,
@@ -461,7 +512,6 @@ cardBack: {
         height: 85,
         borderRadius: 8,
         marginTop: -80
-
     },
     category: {
         alignItems: 'center',
@@ -532,8 +582,8 @@ cardBack: {
         alignItems: "center",
     },
     DataImageCategorie: {
-        minWidth: 40,
-        minHeight: 40,
+        width: '100%',
+        height: '100%',
         borderRadius: 10,
     },
 })

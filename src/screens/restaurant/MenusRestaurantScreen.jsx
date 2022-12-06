@@ -302,7 +302,7 @@ export default function MenusRestaurantScreen() {
                     </View>
                 </TouchableOpacity>
                 {/* {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <CategoriesMenuSkeletons /> : */}
-                    <ScrollView
+                <ScrollView
                         style={styles.shops}
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -312,14 +312,14 @@ export default function MenusRestaurantScreen() {
                                 return (
 
                                     <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                                    <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                        <Image source={{ uri: categorie.IMAGE }}  />
-                                    </View>
-                                    <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                    {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
-                                        <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
-                                    </View>}
-                                </TouchableOpacity>
+                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? 0.2 : 1 }]} />
+                                        </View>
+                                        <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                        {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
+                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                        </View>}
+                                    </TouchableOpacity>
                                 )
                             })}
                         </View>
@@ -382,9 +382,7 @@ export default function MenusRestaurantScreen() {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                 >
-
                     {
-                    
                     restaurants.map((restaurant, index) => {
                         return (
                             <Restaurant
@@ -454,43 +452,46 @@ export default function MenusRestaurantScreen() {
         </ScrollView>
     </Modalize>
     <Modalize
-        ref={CategoriemodalizeRef}
-        adjustToContentHeight
-        handlePosition='inside'
-        modalStyle={{
-            borderTopRightRadius: 25,
-            borderTopLeftRadius: 25,
-            paddingVertical: 20
-        }}
-        handleStyle={{ marginTop: 10 }}
-        scrollViewProps={{
-            keyboardShouldPersistTaps: "handled"
-        }}
-        
-    >
-        <ScrollView>
-            <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos catégories</Text>
-            <View style={styles.resto}>
-                {categories.map((categorie, index) => {
-                    return (
-                        <View style={{ ...styles.categoryModel, margin: 15 }} >
-                            <View style={styles.actionIcon}>
-                                <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
+                ref={CategoriemodalizeRef}
+                adjustToContentHeight
+                handlePosition='inside'
+                modalStyle={{
+                    borderTopRightRadius: 25,
+                    borderTopLeftRadius: 25,
+                    paddingVertical: 20
+                }}
+                handleStyle={{ marginTop: 10 }}
+                scrollViewProps={{
+                    keyboardShouldPersistTaps: "handled"
+                }}
+                onClosed={() => {
+                    setIsOpen(false)
+                    setLoadingForm(true)
+                }}
+            >
+                <ScrollView>
+                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos catégories</Text>
+                    <View style={styles.resto}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <View style={{ ...styles.categoryModel, margin: 15 }} >
+                                    <View style={styles.actionIcon}>
+                                        <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
 
-                                    {/* <View style={styles.disbaledContainer}>
-                                            <View style={styles.checkIndicator}>
-                                                <AntDesign name="check" size={24} color='#000' />
-                                            </View>
-                                        </View> */}
-                                </ImageBackground>
-                            </View>
-                            <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
-                        </View>
-                    )
-                })}
-            </View>
-        </ScrollView>
-    </Modalize>
+                                            {/* <View style={styles.disbaledContainer}>
+                                                    <View style={styles.checkIndicator}>
+                                                        <AntDesign name="check" size={24} color='#000' />
+                                                    </View>
+                                                </View> */}
+                                        </ImageBackground>
+                                    </View>
+                                    <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
+                                </View>
+                            )
+                        })}
+                    </View>
+                </ScrollView>
+            </Modalize>
     <Modalize
         ref={MenumodalizeRef}
         adjustToContentHeight
@@ -600,6 +601,46 @@ const styles = StyleSheet.create({
     resto: {
         flexDirection: 'row',
         flexWrap: 'wrap',
+    },
+    categoryModel: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        backgroundColor: 'white',
+        borderRadius: 10,
+    },
+    category: {
+        alignItems: 'center',
+        borderRadius: 10,
+        marginLeft: 20,
+        elevation: 10,
+        marginRight: -12.6,
+        backgroundColor: 'white',
+        borderRadius: 10
+    },
+    categoryPhoto: {
+        width: 80,
+        height: 70,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
+    categoryChecked: {
+        width: 80,
+        height: 85,
+        borderRadius: 8,
+        marginTop: -80
+
+    },
+    categoryImage: {
+        width: '100%',
+        height: '100%',
+    },
+    categoryPhotoResto: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
     },
     searchSection1: {
         flexDirection: "row",
@@ -712,6 +753,12 @@ const styles = StyleSheet.create({
         marginTop: -80
 
     },
+    categoryPhotoResto: {
+        width: 100,
+        height: 100,
+        borderRadius: 8,
+        backgroundColor: COLORS.skeleton
+    },
     category: {
         alignItems: 'center',
         borderRadius: 10,
@@ -781,12 +828,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    DataImageCategorie: {
-        // width: '10%',
-        // height:  '50%',
-        alignSelf: 'center',
-
-    },
+    
     plus1: {
         flexDirection: 'row',
         justifyContent: 'space-between',
