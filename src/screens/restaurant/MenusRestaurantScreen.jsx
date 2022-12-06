@@ -467,7 +467,7 @@ export default function MenusRestaurantScreen() {
                 }}
                 onClosed={() => {
                     setIsOpen(false)
-                    setLoadingForm(true)
+                    // setLoadingForm(true)
                 }}
             >
                 <ScrollView>

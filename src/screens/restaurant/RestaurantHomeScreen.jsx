@@ -292,7 +292,7 @@ export default function RestaurantHomeScreen() {
                 }}
                 onClosed={() => {
                     setIsOpen(false)
-                    setLoadingForm(true)
+                    // setLoadingForm(true)
                 }}
             >
                 <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 40, textAlign: 'center', opacity: 0.7 }}>Nos restaurants</Text>
@@ -337,7 +337,7 @@ export default function RestaurantHomeScreen() {
                 }}
                 onClosed={() => {
                     setIsOpen(false)
-                    setLoadingForm(true)
+                    // setLoadingForm(true)
                 }}
             >
                 <ScrollView>
@@ -373,7 +373,7 @@ export default function RestaurantHomeScreen() {
                 onClosed={() => {
                     setIsOpen(false)
                     handleChange('menu', "")
-                    setLoadingForm(true)
+                    // setLoadingForm(true)
                 }}
             >
                 <Text style={{ marginBottom: 10, marginBottom: 30, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Nos menus</Text>
