@@ -13,13 +13,13 @@ import { ecommerceProductSelector } from '../../../store/selectors/ecommerceCart
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
-export default function Product({ product, index,onLoadMore,IsLoadingMore, totalLength, fixMargins = false, onRemove }) {
+export default function HomeProduct({ product, index,onLoadMore,IsLoadingMore, totalLength, fixMargins = false, onRemove }) {
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
-  const PRODUCT_WIDTH = (width / 2) -  10
+  const PRODUCT_WIDTH = (width / 2) - 10
   const PRODUCT_HEIGHT = 270
   const additionStyles = {
     width: PRODUCT_WIDTH,
@@ -242,14 +242,16 @@ export default function Product({ product, index,onLoadMore,IsLoadingMore, total
 
 const styles = StyleSheet.create({
   product: {
-    maxWidth: 240,
-    
-    marginHorizontal: 5,
+    // maxWidth: 200,
+    marginHorizontal: 2,
+    maxHeight: 250,
+    marginTop: 5,
     backgroundColor: 'white',
-    elevation: 15,
+    elevation: 10,
     borderRadius: 10,
-    padding: 5,
-    marginTop:"2%"
+    padding: 10,
+    maxWidth: 250,
+    marginBottom: 20
   },
   imageCard: {
     borderRadius: 8,

@@ -59,7 +59,7 @@ export default function ProductShopsScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-    // console.log(categories)
+            // console.log(categories)
 
         }
         catch (error) {
@@ -152,7 +152,7 @@ export default function ProductShopsScreen() {
         <>
             <ScrollView>
                 <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
-                    <  Image source={{ uri: shop.LOGO }} style={{ ...styles.imagePrincipal }} />
+                    <  Image source={{ uri: shop?.LOGO }} style={{ ...styles.imagePrincipal }} />
                 </View>
                 <View style={styles.cardBack}>
                     <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()} >
@@ -161,47 +161,55 @@ export default function ProductShopsScreen() {
                 </View>
                 <View style={{ marginHorizontal: 10, marginTop: 10, flexDirection: "row", justifyContent: 'space-between' }}>
                     <View style={{ flexDirection: "column", marginTop: 15 }}>
-                        <Text style={{ fontWeight: "bold" }}>{shop.NOM_ORGANISATION}</Text>
-                        <View style={{ flexDirection: "row", marginTop: 10 }}>
-                            <SimpleLineIcons name="location-pin" size={15} color="black" />
-                            <Text style={{ fontSize: 12 }}> {shop.ADRESSE_COMPLETE} </Text>
-                        </View>
+                        <Text style={{ fontWeight: "bold" }}>{shop?.NOM_ORGANISATION}</Text>
+
                     </View>
+                    
                     <View style={styles.carre}>
-                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop.DISTANCE ? shop.DISTANCE.toFixed(1) : null} Km</Text>
+                    <View style={{ flexDirection: "row", marginTop:-5 ,marginLeft:-10,}}>
+                        <SimpleLineIcons name="location-pin" size={15} color="black" />
+                        <Text style={{ fontSize: 12 }}> {shop?.ADRESSE_COMPLETE} </Text>
+                    </View>
+                        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop?.DISTANCE ? shop?.DISTANCE.toFixed(1) : null} Km</Text>
                     </View>
                 </View>
                 <View style={{ flexDirection: "row", marginHorizontal: 10, marginTop: 10, justifyContent: "space-between" }}>
                     <View style={{ flexDirection: "row" }}>
-                        {shop.note.nbre == 0 ?
+                        {shop?.note.nbre == 0 ?
                             <AntDesign name="staro" size={20} color="#EFC519" /> :
                             <AntDesign name="star" size={20} color="#EFC519" />}
-                        <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{shop.note.nbre}.0</Text>
+                        <Text style={{ fontSize: 15, marginLeft: 15, color: "#797E9A", right: 15 }}>{shop?.note.nbre}.0</Text>
 
                     </View>
                     <View style={{ flexDirection: "row", marginHorizontal: 30 }}>
                         <AntDesign name="clockcircleo" size={15} color="#797E9A" style={{ marginTop: 5 }} />
-                        <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{shop.OUVERT}</Text>
+                        <Text style={{ fontSize: 15, marginLeft: 2, color: "#797E9A" }}>{shop?.OUVERT}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => { Linking.openURL(`tel:${shop.TELEPHONE}`); }} style={{ flexDirection: "row" }}>
+                    <TouchableOpacity onPress={() => { Linking.openURL(`tel:${shop?.TELEPHONE}`); }} style={{ flexDirection: "row" }}>
                         <SimpleLineIcons name="call-end" size={15} color="#797E9A" style={{ marginTop: 5 }} />
-                        <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{shop.TELEPHONE}</Text>
+                        <Text style={{ fontSize: 15, marginLeft: 20, color: "#797E9A", right: 15 }}>{shop?.TELEPHONE}</Text>
                     </TouchableOpacity>
 
                 </View>
                 <View style={{ marginTop: 10, marginHorizontal: 10 }} >
-                    <Text style={{ color: "#797E9A" }}>{shop.PRESENTATION}</Text>
+                    <Text style={{ color: "#797E9A" }}>{shop?.PRESENTATION}</Text>
                 </View>
-                <TouchableOpacity onPress={plusCategories} style={styles.plus1}>
+                <TouchableOpacity style={styles.plus1}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
-                    </View>
+                    {
+                        categories.length > 4 &&
+                        <TouchableOpacity onPress={plusCategories}>
+                            <View style={{ marginTop: -8 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
+
                 </TouchableOpacity>
                 <ScrollView
                     style={styles.categorys}
@@ -212,28 +220,34 @@ export default function ProductShopsScreen() {
                             return (
                                 <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
                                     <View style={[styles.categoryPhoto]}>
-                                        <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie,{ opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
+                                        <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
                                     </View>
                                     <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                     {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
-                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
-                                        </View>}
+                                        <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                    </View>}
                                 </TouchableOpacity>
                             )
                         })}
                     </View>
                 </ScrollView>
 
-                <TouchableOpacity onPress={productPress} style={styles.plus}>
+                <TouchableOpacity style={styles.plus2}>
                     <View>
-                        <Text style={styles.plusText}>Produits</Text>
+                        <Text style={styles.plusText}>Articles</Text>
                     </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
-                    </View>
+                    {
+                        products.length > 4 &&
+                        <TouchableOpacity onPress={productPress} >
+                            <View style={{ marginTop: -8 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
+
                 </TouchableOpacity>
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
@@ -242,12 +256,18 @@ export default function ProductShopsScreen() {
                     <View>
                         <Text style={styles.plusText}>Les plus proches</Text>
                     </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
-                    </View>
+                    {
+                        shops.length > 2 &&
+                        <TouchableOpacity onPress={onCartPress} >
+                            <View style={{ marginTop: -8 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
+
                 </TouchableOpacity>
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
@@ -358,10 +378,10 @@ export default function ProductShopsScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                // onClosed={() => {
-                //     setIsOpen(false)
-                //     setLoadingForm(true)
-                // }}
+            // onClosed={() => {
+            //     setIsOpen(false)
+            //     setLoadingForm(true)
+            // }}
             >
                 <ScrollView>
                     <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>catégories</Text>
@@ -472,6 +492,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#D7D9E4',
         borderRadius: 10,
     },
+    plus2: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "2%",
+        paddingHorizontal: 10,
+        marginBottom: "-1%"
+    },
     plus: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -516,9 +545,9 @@ const styles = StyleSheet.create({
     category: {
         alignItems: 'center',
         borderRadius: 10,
-        marginLeft: 20,
-        elevation: 10,
-        marginRight: -12.6,
+        marginLeft: 0,
+        elevation: 3,
+        marginRight: 5,
         backgroundColor: 'white',
         borderRadius: 10
     },

@@ -252,7 +252,16 @@ export default function ProductDetailsScreen() {
                   </View>
                 </TouchableOpacity>
               </View>
-              <MaterialIcons style={{marginTop:-40,marginLeft:-30}} name="navigate-next" size={24} color="black" />
+              {
+                shopProducts.length > 4 &&
+                <View style={{ marginTop: -8 }}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <MaterialIcons style={{ marginTop: -40, marginLeft: -30 }} name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+                    <MaterialIcons style={{ marginTop: -40, marginLeft: -30 }} name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+
+                  </View>
+                </View>
+              }
 
             </View>
           </TouchableNativeFeedback>
@@ -529,7 +538,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    marginBottom:-20
+    marginBottom: -20
   },
   shopLeft: {
     flexDirection: "row",
@@ -542,15 +551,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: "center",
-    marginTop:-40
+    marginTop: -40
 
   },
   shopOwner: {
     marginLeft: 10,
-    marginTop:-40
+    marginTop: -40
   },
   productSeller: {
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: COLORS.ecommercePrimaryColor,
+    fontSize: 14,
   },
   shopAdress: {
     color: '#777',
@@ -616,12 +627,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: "-1%",
+    marginBottom: "-3%",
     paddingVertical: 10,
     paddingHorizontal: 10
   },
   title: {
-    fontWeight: 'bold'
+    color: COLORS.ecommercePrimaryColor,
+    fontSize: 14,
   },
   productImage: {
     width: "100%",

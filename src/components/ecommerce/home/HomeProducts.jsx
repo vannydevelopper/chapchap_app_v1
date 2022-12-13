@@ -5,6 +5,7 @@ import Product from '../main/Product';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from "../../../styles/COLORS";
+import HomeProduct from '../main/HomeProduct';
 
 export default function HomeProducts({ products, selectedCategorie, selectedsousCategories }) {
         const navigation = useNavigation()
@@ -30,7 +31,7 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
                         >
                                 {products.map((product, index) => {
                                         return (
-                                                <Product
+                                                <HomeProduct
                                                         product={product}
                                                         index={index}
                                                         totalLength={products.length}

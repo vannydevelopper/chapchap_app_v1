@@ -33,7 +33,11 @@ export default function EcommerceHomeScreen() {
     const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
     const [loadingProducts, setLoadingProducts] = useState(false)
     const [products, setProducts] = useState([])
+    const [productsCommande, setProductCommandes] = useState([])
+
     const [shops, setShops] = useState([])
+    const [IsLoadingMore, setIsLoadingMore] = useState([])
+    const [offset, setOffset] = useState(0)
     const navigation = useNavigation()
 
     const CategoriemodalizeRef = useRef(null)
@@ -42,7 +46,21 @@ export default function EcommerceHomeScreen() {
 
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
-    
+
+    const LIMIT = 10
+    const onLoadMore = async () => {
+        console.log('fin')
+        try {
+            setIsLoadingMore(true)
+            const newOffset = offset + LIMIT
+            const pts = await getProducts(newOffset)
+            setOffset(newOffset)
+            setProducts(p => [...p, ...pts])
+        } catch (error) {
+        } finally {
+            setIsLoadingMore(false)
+        }
+    }
     const fecthCategories = async () => {
         try {
             const response = await fetchApi("/products/categories", {
@@ -121,24 +139,22 @@ export default function EcommerceHomeScreen() {
                     setLoadingProducts(true)
                 }
                 var url = "/products"
-                if(data.product)
-                    {
-                        url = `/products?q=${data.product}`
-                    }
+                if (data.product) {
+                    url = `/products?q=${data.product}`
+                }
                 if (selectedCategorie) {
-                    if(data.product)
-                    {
+                    if (data.product) {
                         url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
                     }
-                    else{
+                    else {
                         url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
                     }
                 }
                 if (selectedsousCategories) {
-                    if(data.product) {
+                    if (data.product) {
                         url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
                     }
-                    else{
+                    else {
                         url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
                     }
                 }
@@ -151,24 +167,103 @@ export default function EcommerceHomeScreen() {
                 setLoadingProducts(false)
             }
         })()
-    }, [selectedCategorie,,data.product, selectedsousCategories])
-    // useEffect(() => {
-    //     (async () => {
-    //         try {
-    //             if (firstLoadingProducts == false) {
-    //                 setLoadingProducts(true)
-    //             }
-    //             var url = "/partenaire/ecommerce"
-    //             const shops = await fetchApi(url)
-    //             setShops(shops.result)
-    //         } catch (error) {
-    //             console.log(error)
-    //         } finally {
-    //             setFirstLoadingProducts(false)
-    //             setLoadingProducts(false)
-    //         }
-    //     })()
-    // }, [selectedCategorie, selectedsousCategories])
+    }, [selectedCategorie, data.product, selectedsousCategories])
+
+    const getProducts = useCallback(async (offset = 0) => {
+
+        if (firstLoadingProducts == false) {
+            setLoadingProducts(true)
+        }
+        var url = "/products"
+        if (data.product) {
+            url = `/products?q=${data.product}`
+        }
+        if (selectedCategorie) {
+            if (data.product) {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
+            }
+            else {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+            }
+        }
+        if (selectedsousCategories) {
+            if (data.product) {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
+            }
+            else {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+            }
+        }
+        return await fetchApi(url)
+
+
+    }, [selectedCategorie, data.product, selectedsousCategories])
+
+    useFocusEffect(useCallback(() => {
+        (async () => {
+            try {
+                setOffset(0)
+                const produts = await getProducts(0)
+                setProducts(produts.result)
+
+
+                // setLoadingPevs(false)
+                // setLoadingSignalement(false)
+            } catch (error) {
+                console.log(error)
+            }
+            //   setLoadingPevs(false)
+            //   setLoadingSignalement(false)
+        })()
+    }, []))
+
+    const getProductsCommandes = useCallback(async (offset = 0) => {
+
+        if (firstLoadingProducts == false) {
+            setLoadingProducts(true)
+        }
+        var url = "/products/commande"
+        if (data.product) {
+            url = `/products/commande?q=${data.product}`
+        }
+        if (selectedCategorie) {
+            if (data.product) {
+                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
+            }
+            else {
+                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+            }
+        }
+        if (selectedsousCategories) {
+            if (data.product) {
+                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
+            }
+            else {
+                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+            }
+        }
+        return await fetchApi(url)
+
+
+    }, [selectedCategorie, data.product, selectedsousCategories])
+
+    useFocusEffect(useCallback(() => {
+        (async () => {
+            try {
+                setOffset(0)
+                const produts = await getProductsCommandes(0)
+                setProductCommandes(produts.result)
+
+
+                // setLoadingPevs(false)
+                // setLoadingSignalement(false)
+            } catch (error) {
+                console.log(error)
+            }
+            //   setLoadingPevs(false)
+            //   setLoadingSignalement(false)
+        })()
+    }, []))
 
     useEffect(() => {
         const fecthShops = async (lat, long) => {
@@ -229,7 +324,13 @@ export default function EcommerceHomeScreen() {
                 <EcommerceBadge />
             </View>
             {/* <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}> */}
-            <ScrollView style={styles.cardOrginal}>
+            <ScrollView
+                onEndReached={(info) => {
+                    if (!IsLoadingMore) {
+                        onLoadMore()
+                    }
+                }}
+                style={styles.cardOrginal}>
                 <Text style={styles.titlePrincipal}>Achat des produits</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
@@ -240,19 +341,45 @@ export default function EcommerceHomeScreen() {
                         <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                     </View>
                 </View>
-                <TouchableOpacity onPress={plusCategories} style={styles.plus1}>
+                <TouchableOpacity style={styles.plus2}>
+                    <View>
+                        <Text style={styles.plusText}>Boutiques proches</Text>
+                    </View>
+                    {
+                        shops.length > 4 &&
+                        <TouchableOpacity onPress={onCartPress}>
+                            <View style={{ marginTop: -8 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
+                </TouchableOpacity>
+                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
+                    <Shops shops={shops} />
+                }
+                <TouchableOpacity  style={styles.plus1}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
-                    </View>
+                    {
+                        categories.length > 4 &&
+                        <TouchableOpacity onPress={plusCategories}>
+                            <View style={{ marginTop: -8 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
                 </TouchableOpacity>
+
+
                 {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
-                    
+
                     <ScrollView
                         style={styles.shops}
                         horizontal
@@ -261,16 +388,18 @@ export default function EcommerceHomeScreen() {
                         <View style={styles.categories}>
                             {categories.map((categorie, index) => {
                                 return (
-
-                                    <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
-                                        </View>
-                                        <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                        {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
-                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
-                                        </View>}
-                                    </TouchableOpacity>
+                                    <>
+                                        
+                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
+                                            <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
+                                            </View>
+                                            <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                            {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
+                                                <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                            </View>}
+                                        </TouchableOpacity>
+                                    </>
                                 )
                             })}
                         </View>
@@ -282,42 +411,34 @@ export default function EcommerceHomeScreen() {
                     selectedsousCategories={selectedsousCategories}
                 />) : null}
 
-                <TouchableOpacity onPress={productPress} style={styles.plus1}>
+                <TouchableOpacity  style={styles.plus}>
                     <View>
-                        <Text style={styles.plusText}>Les plus achetés</Text>
+                        <Text style={styles.plusText}>Articles plus achetés</Text>
                     </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
-                    </View>
+                    {
+                        productsCommande.length > 4 &&
+                        <TouchableOpacity onPress={productPress}>
+                            <View style={{ marginTop: -8 }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
+                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
                 </TouchableOpacity>
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                    <HomeProducts products={products} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
+                    <HomeProducts products={productsCommande} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
-                <TouchableOpacity onPress={onCartPress} style={styles.plus}>
-                    <View>
-                        <Text style={styles.plusText}>Les boutiques</Text>
-                    </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
-                    </View>
-                </TouchableOpacity>
-                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                    <Shops shops={shops} />
-                }
-               <TouchableOpacity onPress={productPress} style={styles.plus1}>
+
+                <TouchableOpacity onPress={productPress} style={styles.plus1}>
                     <View>
                         <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
                     <View style={{ marginTop: -8 }}>
                         <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
+                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -330,6 +451,8 @@ export default function EcommerceHomeScreen() {
                                 totalLength={products.length}
                                 key={index}
                                 fixMargins
+                                IsLoadingMore={IsLoadingMore}
+                                onLoadMore={onLoadMore}
                             />
                         )
                     })}
@@ -350,10 +473,10 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                // onClosed={() => {
-                //     setIsOpen(false)
-                //     setLoadingForm(true)
-                // }}
+            // onClosed={() => {
+            //     setIsOpen(false)
+            //     setLoadingForm(true)
+            // }}
             >
                 <ScrollView>
                     <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>catégories</Text>
@@ -384,7 +507,7 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-               
+
             >
                 <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
                 <View style={styles.searchSection1}>
@@ -412,11 +535,11 @@ export default function EcommerceHomeScreen() {
                 </ScrollView>
             </Modalize>
             <Modalize
-            HeaderComponent={()=>{
-                // return(
-                //     <Text></Text>
-                // )
-            }}
+                HeaderComponent={() => {
+                    // return(
+                    //     <Text></Text>
+                    // )
+                }}
                 ref={ProductmodalizeRef}
                 adjustToContentHeight
                 // handlePosition='inside'
@@ -429,10 +552,10 @@ export default function EcommerceHomeScreen() {
                 scrollViewProps={{
                     keyboardShouldPersistTaps: "handled"
                 }}
-                //onClosed={() => {
-                //     setIsOpen(false)
-                //     setLoadingForm(true)
-                // }}
+            //onClosed={() => {
+            //     setIsOpen(false)
+            //     setLoadingForm(true)
+            // }}
             >
                 <Text style={{ marginBottom: 10, marginBottom: 20, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
                 <View style={styles.searchSection1}>
@@ -475,7 +598,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
-        marginTop: "-1%",
+        marginTop: "-3%",
         paddingHorizontal: 10,
         marginBottom: "-1%"
     },
@@ -484,7 +607,16 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
-        marginTop: "-2%",
+        marginTop: "1%",
+        paddingHorizontal: 10,
+        marginBottom: "0%"
+    },
+    plus2: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginTop: "-5%",
         paddingHorizontal: 10,
         marginBottom: "5%"
     },
@@ -501,12 +633,12 @@ const styles = StyleSheet.create({
         color: COLORS.ecommercePrimaryColor,
         fontSize: 14,
     },
-    textRcommande:{
+    textRcommande: {
         color: COLORS.ecommercePrimaryColor,
         fontSize: 14,
         paddingHorizontal: 10,
 
-   },
+    },
     categories: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -525,9 +657,9 @@ const styles = StyleSheet.create({
     category: {
         alignItems: 'center',
         borderRadius: 10,
-        marginLeft: 20,
-        elevation: 10,
-        marginRight: -12.6,
+        marginLeft:     0,
+        elevation: 3,
+        marginRight:5,
         backgroundColor: 'white',
         borderRadius: 10
     },
@@ -560,7 +692,7 @@ const styles = StyleSheet.create({
     searchSection1: {
         flexDirection: "row",
         marginTop: -20,
-        marginBottom:10,
+        marginBottom: 10,
         padding: 5,
         borderRadius: 10,
         borderWidth: 1,
@@ -604,6 +736,7 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     cardOrginal: {
+        marginBottom:"1%"
     },
     titlePrincipal: {
         fontSize: 20,
