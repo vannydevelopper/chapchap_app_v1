@@ -10,6 +10,8 @@ import ProductShopsScreen from "../screens/e-commerce/ProductShopsScreen";
 import SearchLivreurScreen from "../screens/e-commerce/SearchLivreurScreen";
 import ShippingInfoScreen from "../screens/e-commerce/ShippingInfoScreen";
 import ShopsScreen from "../screens/e-commerce/ShopsScreen";
+import BoutiqueListeScreen from "../screens/liste_e-commerce/BoutiqueListeScreen";
+import CategorieListeScreen from "../screens/liste_e-commerce/CategorieListeScreen";
 import WishlistTab from "../screens/wishlist/WishlistTab";
 export default function EcommerceNavigator() { 
     
@@ -23,6 +25,9 @@ export default function EcommerceNavigator() {
                                         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
                                         <Stack.Screen name="ShopsScreen" component={ShopsScreen} />
                                         <Stack.Screen name="ProductShopsScreen" component={ProductShopsScreen} />
+
+                                        <Stack.Screen name="BoutiqueListeScreen" component={BoutiqueListeScreen}/>
+                                        <Stack.Screen name="CategorieListeScreen" component={CategorieListeScreen}/>
                               </Stack.Group>
                     </Stack.Navigator>
           )
