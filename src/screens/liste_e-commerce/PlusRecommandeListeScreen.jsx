@@ -1,13 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView } from "react-native";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
+import ShopModal from "../../components/ecommerce/main/ShopModal";
+import Product from "../../components/ecommerce/main/Product";
 
-export default function CategorieListeScreen() {
+export default function PlusRecommandeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
-        const { categories } = route.params
+
+        const { products } = route.params
         return (
                 <View style={styles.container}>
                         <View style={styles.cardHeader}>
@@ -15,7 +18,7 @@ export default function CategorieListeScreen() {
                                         <AntDesign name="arrowleft" size={24} color="black" />
                                 </TouchableOpacity>
                         </View>
-                        <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Catégories</Text>
+                        <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
                         <View style={styles.searchSection1}>
                                 <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                                 <TextInput
@@ -26,18 +29,18 @@ export default function CategorieListeScreen() {
                                 />
                         </View>
                         <ScrollView>
-                                <View style={styles.categories}>
-                                        {categories.map((categorie, index) => {
+                                <View style={styles.products}>
+                                        {products.map((product, index) => {
                                                 return (
-                                                        <TouchableOpacity style={[styles.category,]} key={index}>
-                                                                <View style={styles.categoryPhoto}>
-                                                                        <Image source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage} />
-                                                                </View>
-                                                                <Text style={[{ fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                                        </TouchableOpacity>
+                                                        <Product
+                                                                product={product}
+                                                                index={index}
+                                                                totalLength={products.length}
+                                                                key={index}
+                                                                fixMargins
+                                                        />
                                                 )
                                         })}
-
                                 </View>
                         </ScrollView>
                 </View>
@@ -46,8 +49,7 @@ export default function CategorieListeScreen() {
 
 const styles = StyleSheet.create({
         container: {
-                flex: 1,
-                marginHorizontal:5
+                flex: 1
         },
         cardHeader: {
                 flexDirection: 'row',
@@ -71,35 +73,14 @@ const styles = StyleSheet.create({
                 height: 50,
                 marginHorizontal: 10,
                 paddingHorizontal: 10
+
         },
         input: {
                 flex: 1,
                 marginLeft: 10
         },
-        categories: {
+        products: {
                 flexDirection: 'row',
-                flexWrap: 'wrap',
-        },
-        category: {
-                alignItems: 'center',
-                padding: 10,
-                backgroundColor: 'white',
-                borderRadius: 10,
-                margin: 5,
-                marginTop: 5,
-                backgroundColor: "#F5F4F1",
-        },
-        categoryPhoto: {
-                backgroundColor: COLORS.skeleton,
-                width: 80,
-                height: 70,
-                borderRadius: 8,
-                padding: 3,
-                justifyContent: 'center',
-                alignItems: 'center'
-        },
-        categoryImage: {
-                width: '100%',
-                height: '100%',
-            },
+                flexWrap: 'wrap'
+        }
 })

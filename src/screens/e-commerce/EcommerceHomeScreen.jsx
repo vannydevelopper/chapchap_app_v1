@@ -99,16 +99,17 @@ export default function EcommerceHomeScreen() {
     const plusCategories = () => {
         // setIsOpen(true)
         // CategoriemodalizeRef.current?.open()
-        navigation.navigate("CategorieListeScreen", {categories:categories})
+        navigation.navigate("CategorieListeScreen", { categories: categories })
     }
     const onCartPress = () => {
         // setIsOpen(true)
         // modalizeRef.current?.open()
-        navigation.navigate("BoutiqueListeScreen", {shops:shops})
+        navigation.navigate("BoutiqueListeScreen", { shops: shops })
     }
     const productPress = () => {
-        setIsOpen(true)
-        ProductmodalizeRef.current?.open()
+        // setIsOpen(true)
+        // ProductmodalizeRef.current?.open()
+        navigation.navigate("PlusRecommandeScreen", { products: products })
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",
@@ -343,7 +344,7 @@ export default function EcommerceHomeScreen() {
                         <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                     </View>
                 </View>
-                <TouchableOpacity style={styles.plus2}>
+                <TouchableOpacity style={styles.plus2} onPress={onCartPress}>
                     <View>
                         <Text style={styles.plusText}>Boutiques proches</Text>
                     </View>
@@ -359,13 +360,13 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                <TouchableOpacity style={styles.plus2}>
+                <TouchableOpacity style={styles.plus2}  onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     {
                         categories.length > 0 &&
-                        <TouchableOpacity onPress={plusCategories}>
+                        <TouchableOpacity  onPress={plusCategories}>
                             <View>
                                 <AntDesign name="arrowright" size={24} color="black" />
                             </View>
@@ -406,24 +407,22 @@ export default function EcommerceHomeScreen() {
                     selectedsousCategories={selectedsousCategories}
                 />) : null}
 
-                <TouchableOpacity style={styles.plus}>
-                    <View>
-                        <Text style={styles.plusText}>Articles plus achetés</Text>
-                    </View>
-                    {
-                        productsCommande.length > 0 &&
+                {productsCommande.length > 0 &&
+                    <TouchableOpacity style={styles.plus2}>
+                        <View>
+                            <Text style={styles.plusText}>Articles plus achetés</Text>
+                        </View>
                         <TouchableOpacity onPress={productPress}>
                             <View>
                                 <AntDesign name="arrowright" size={24} color="black" />
                             </View>
                         </TouchableOpacity>
-                    }
-                </TouchableOpacity>
+                    </TouchableOpacity>}
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <HomeProducts products={productsCommande} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
 
-                <TouchableOpacity onPress={productPress} style={styles.plus1}>
+                <TouchableOpacity onPress={productPress} style={styles.plus2}>
                     <View>
                         <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
@@ -653,7 +652,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 5,
         marginTop: 5,
-        backgroundColor:"#F5F4F1",
+        backgroundColor: "#F5F4F1",
 
     },
     categoryPhoto: {
