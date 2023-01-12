@@ -118,7 +118,6 @@ export default function ProductCart({ product, index }) {
         //   )
         return (
             <View style={[styles.product, index == 0 && { marginTop: -2 }]}>
-                
                 <ImageBackground source={{ uri: product.produit_partenaire.IMAGE_1 }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={15} imageStyle={{ opacity: 0.8 }}/>
                 <View style={styles.productDetails}>
                     <View style={styles.detailsHeader}>
