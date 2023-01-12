@@ -243,7 +243,6 @@ export default function Product({ product, index,onLoadMore,IsLoadingMore, total
 const styles = StyleSheet.create({
   product: {
     maxWidth: 240,
-    
     marginHorizontal: 5,
     backgroundColor: 'white',
     elevation: 15,

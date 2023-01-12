@@ -57,14 +57,14 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
           <Image source={{ uri: shop.LOGO }} style={styles.image} />
         </View>
       </TouchableNativeFeedback>
-      <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(shop.NOM_ORGANISATION.toLowerCase())}</Text>
-      <View style={{ flexDirection: "row", marginHorizontal: -1 }}>
+      <Text style={[{ fontWeight: "bold", alignSelf:"center" }, { color: COLORS.ecommercePrimaryColor}]}>{strUcFirst(shop.NOM_ORGANISATION.toLowerCase())}</Text>
+      <View style={{ flexDirection: "row", marginHorizontal:2, justifyContent:"space-between", marginBottom:10 }}>
         {shop.note.nbre==0 ?
           <AntDesign name="staro" size={14} color="#EFC519" /> :
           <AntDesign name="star" size={14} color="#EFC519" />}
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 10 }}>{shop.note.nbre}.0</Text>
-        <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à { shop.DISTANCE? shop.DISTANCE.toFixed(1) :null} Km</Text>
+        <Text style={{color: "#797E9A", right: -2, fontWeight:"bold", fontSize:12 }}>{shop.note.nbre}.0</Text>
+        <Text style={{color: "#797E9A", right: -3, fontWeight: "bold",fontSize:12 }}>.</Text>
+        <Text style={{color: "#797E9A", right: -3, fontWeight:"bold",fontSize:12 }}>à { shop.DISTANCE? shop.DISTANCE.toFixed(1) :null} Km</Text>
 
         {/* <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {shop.DISTANCE ? shop.DISTANCE.toFixed(1) : null} Km</Text> */}
       </View>
@@ -135,18 +135,18 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
 
 const styles = StyleSheet.create({
   shop: {
-    maxHeight: 150,
-    marginTop: 5,
-    backgroundColor: 'white',
-    elevation: 10,
+   maxWidth: 110,
+    maxHeight:150,
+    marginHorizontal: 5,
+    backgroundColor: COLORS.skeleton,
     borderRadius: 10,
-    padding: 10,
-    maxWidth: 200,
-    marginBottom: 20
+    padding: 5,
+    marginTop:"4%",
+    marginBottom:10
   },
   imageCard: {
     borderRadius: 10,
-    height: "75%",
+    height: "68%",
     width: "100%",
     borderRadius: 10,
     backgroundColor: '#FFF',

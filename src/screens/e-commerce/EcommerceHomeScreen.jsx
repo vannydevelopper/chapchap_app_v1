@@ -98,15 +98,18 @@ export default function EcommerceHomeScreen() {
     }
     const plusCategories = () => {
         // setIsOpen(true)
-        CategoriemodalizeRef.current?.open()
+        // CategoriemodalizeRef.current?.open()
+        navigation.navigate("CategorieListeScreen", { categories: categories })
     }
     const onCartPress = () => {
-        setIsOpen(true)
-        modalizeRef.current?.open()
+        // setIsOpen(true)
+        // modalizeRef.current?.open()
+        navigation.navigate("BoutiqueListeScreen", { shops: shops })
     }
     const productPress = () => {
-        setIsOpen(true)
-        ProductmodalizeRef.current?.open()
+        // setIsOpen(true)
+        // ProductmodalizeRef.current?.open()
+        navigation.navigate("PlusRecommandeScreen", { products: products })
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",
@@ -332,7 +335,7 @@ export default function EcommerceHomeScreen() {
                 }}
                 style={styles.cardOrginal}>
                 <Text style={styles.titlePrincipal}>Achat des produits</Text>
-                <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 25, paddingHorizontal: 10 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 12, paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
                         <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                         <Text style={styles.input}>Rechercher.......</Text>
@@ -341,18 +344,15 @@ export default function EcommerceHomeScreen() {
                         <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                     </View>
                 </View>
-                <TouchableOpacity style={styles.plus2}>
+                <TouchableOpacity style={styles.plus2} onPress={onCartPress}>
                     <View>
                         <Text style={styles.plusText}>Boutiques proches</Text>
                     </View>
                     {
-                        shops.length > 4 &&
+                        shops.length > 0 &&
                         <TouchableOpacity onPress={onCartPress}>
-                            <View style={{ marginTop: -8 }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
-                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-                                </View>
+                            <View>
+                                <AntDesign name="arrowright" size={24} color="black" />
                             </View>
                         </TouchableOpacity>
                     }
@@ -360,18 +360,15 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                <TouchableOpacity  style={styles.plus1}>
+                <TouchableOpacity style={{...styles.plus2, marginBottom:3}}  onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     {
-                        categories.length > 4 &&
-                        <TouchableOpacity onPress={plusCategories}>
-                            <View style={{ marginTop: -8 }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
-                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-                                </View>
+                        categories.length > 0 &&
+                        <TouchableOpacity  onPress={plusCategories}>
+                            <View>
+                                <AntDesign name="arrowright" size={24} color="black" />
                             </View>
                         </TouchableOpacity>
                     }
@@ -389,12 +386,11 @@ export default function EcommerceHomeScreen() {
                             {categories.map((categorie, index) => {
                                 return (
                                     <>
-                                        
                                         <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
                                             <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
                                                 <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
                                             </View>
-                                            <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                            <Text style={[{ fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                             {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
                                                 <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
                                             </View>}
@@ -411,35 +407,27 @@ export default function EcommerceHomeScreen() {
                     selectedsousCategories={selectedsousCategories}
                 />) : null}
 
-                <TouchableOpacity  style={styles.plus}>
-                    <View>
-                        <Text style={styles.plusText}>Articles plus achetés</Text>
-                    </View>
-                    {
-                        productsCommande.length > 4 &&
+                {productsCommande.length > 0 &&
+                    <TouchableOpacity style={styles.plus2}>
+                        <View>
+                            <Text style={styles.plusText}>Articles plus achetés</Text>
+                        </View>
                         <TouchableOpacity onPress={productPress}>
-                            <View style={{ marginTop: -8 }}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
-                                    <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-                                </View>
+                            <View>
+                                <AntDesign name="arrowright" size={24} color="black" />
                             </View>
                         </TouchableOpacity>
-                    }
-                </TouchableOpacity>
+                    </TouchableOpacity>}
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <HomeProducts products={productsCommande} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
 
-                <TouchableOpacity onPress={productPress} style={styles.plus1}>
+                <TouchableOpacity onPress={productPress} style={{...styles.plus2, marginBottom:2}}>
                     <View>
                         <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
-                    <View style={{ marginTop: -8 }}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-                        </View>
+                    <View>
+                        <AntDesign name="arrowright" size={24} color="black" />
                     </View>
                 </TouchableOpacity>
                 <View style={styles.products}>
@@ -616,9 +604,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
-        marginTop: "-5%",
+        // marginTop: "-5%",
         paddingHorizontal: 10,
-        marginBottom: "5%"
+        marginBottom: "5%",
+        // backgroundColor:"red"
     },
     plusRecommande: {
         flexDirection: 'row',
@@ -631,7 +620,8 @@ const styles = StyleSheet.create({
     },
     plusText: {
         color: COLORS.ecommercePrimaryColor,
-        fontSize: 14,
+        fontSize: 18,
+        fontWeight: "bold"
     },
     textRcommande: {
         color: COLORS.ecommercePrimaryColor,
@@ -644,7 +634,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 10,
         backgroundColor: '#fff',
-        paddingBottom: 5
+        paddingBottom: 2,
+        // marginTop:-10
     },
     categoryModel: {
         alignItems: 'center',
@@ -656,18 +647,22 @@ const styles = StyleSheet.create({
     },
     category: {
         alignItems: 'center',
-        borderRadius: 10,
-        marginLeft:     0,
-        elevation: 3,
-        marginRight:5,
+        padding: 10,
         backgroundColor: 'white',
-        borderRadius: 10
+        borderRadius: 10,
+        margin: 5,
+        marginTop: 5,
+        backgroundColor: "#F5F4F1",
+
     },
     categoryPhoto: {
+        backgroundColor: COLORS.skeleton,
         width: 80,
         height: 70,
         borderRadius: 8,
-        backgroundColor: COLORS.skeleton
+        padding: 3,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     categoryChecked: {
         width: 80,
@@ -736,10 +731,10 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     cardOrginal: {
-        marginBottom:"1%"
+        marginBottom: "1%"
     },
     titlePrincipal: {
-        fontSize: 20,
+        fontSize: 23,
         fontWeight: "bold",
         marginBottom: 12,
         color: COLORS.ecommercePrimaryColor,
@@ -775,9 +770,9 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     DataImageCategorie: {
-        width: '100%',
-        height: '100%',
         borderRadius: 10,
+        width: '80%',
+        height: '80%',
     },
     cardPhoto1: {
         marginTop: 10,
@@ -812,5 +807,5 @@ const styles = StyleSheet.create({
     products: {
         flexDirection: 'row',
         flexWrap: 'wrap'
-    },
+    }
 })
