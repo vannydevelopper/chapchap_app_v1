@@ -1,4 +1,4 @@
-import React, { useCallback,useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Text, View, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
@@ -46,13 +46,15 @@ export default function RestaurantHomeScreen() {
         menu: ""
     })
     const onCartPress = () => {
-        setIsOpen(true)
-        modalizeRef.current?.open()
+        navigation.navigate("RestaurantProcheScreen", { restaurants: restaurants })
+        // setIsOpen(true)
+        // modalizeRef.current?.open()
     }
 
     const plusCategories = () => {
-        setIsOpen(true)
-        CategoriemodalizeRef.current?.open()
+        navigation.navigate("CategorieMenuScreen",{ categories: categories })
+        // setIsOpen(true)
+        // CategoriemodalizeRef.current?.open()
     }
     const menuPress = () => {
         setIsOpen(true)
@@ -117,7 +119,7 @@ export default function RestaurantHomeScreen() {
             }
         })()
     }, [selectedCategorie, data.menu])
-    var location 
+    var location
     useEffect(() => {
         const fecthRestos = async (lat, long) => {
             try {
@@ -162,7 +164,7 @@ export default function RestaurantHomeScreen() {
         }
         askLocationFetchRestos()
 
-    }, [data.resto,location])
+    }, [data.resto, location])
 
     return (
         <View style={styles.container}>
@@ -174,7 +176,7 @@ export default function RestaurantHomeScreen() {
                 </TouchableOpacity>
                 <RestaurantBadge />
             </View>
-            <Text style={styles.titlePrincipal}>Restaurants</Text>
+            <Text style={styles.titlePrincipal}>Restaurations</Text>
             <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: "1%", paddingHorizontal: 10 }}>
                 <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
                     <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
@@ -187,12 +189,11 @@ export default function RestaurantHomeScreen() {
             <ScrollView>
                 <TouchableOpacity onPress={onCartPress} style={styles.plus}>
                     <View>
-                        <Text style={styles.plusText}>Les plus proches</Text>
+                        <Text style={styles.plusText}>Restaurants  proches</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
-                        <View onPress={onCartPress} style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        <View>
+                            <AntDesign name="arrowright" size={24} color="black" />
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -205,10 +206,9 @@ export default function RestaurantHomeScreen() {
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
-                        <View onPress={plusCategories} style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </View>
+                    <View>
+                                <AntDesign name="arrowright" size={24} color="black" />
+                            </View>
                     </View>
                 </TouchableOpacity>
                 {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <CategoriesMenuSkeletons /> :
@@ -222,13 +222,15 @@ export default function RestaurantHomeScreen() {
                                 return (
 
                                     <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category, index == 0 && { marginLeft: 0 }]} key={index}>
-                                        <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
-                                            <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? 0.2 : 1 }]} />
+                                        <View style={styles.category}>
+                                            <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU ? 0.2 : 1 }]} />
+                                            </View>
+                                            <Text style={[{ fontSize: 15, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                            {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
+                                                <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                            </View>}
                                         </View>
-                                        <Text style={[{ fontSize: 8, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                        {categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU }]}>
-                                            <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
-                                        </View>}
                                     </TouchableOpacity>
                                 )
                             })}
@@ -240,9 +242,8 @@ export default function RestaurantHomeScreen() {
                         <Text style={styles.plusText}>Menus</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
-                        <View onPress={plusCategories} style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} style={{ marginRight: -15 }} />
-                            <MaterialIcons name="navigate-next" size={24} color={COLORS.ecommercePrimaryColor} />
+                        <View>
+                            <AntDesign name="arrowright" size={24} color="black" />
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -254,7 +255,7 @@ export default function RestaurantHomeScreen() {
                         </> :
                         menus.length == 0 ?
                             <>
-                            <LottieView style={{ marginVertical:-40,width: 100, height: 300, alignSelf: "center" }} source={require('../../../assets/lotties/123725-box-empty.json')} autoPlay loop={false} />
+                                <LottieView style={{ marginVertical: -40, width: 100, height: 300, alignSelf: "center" }} source={require('../../../assets/lotties/123725-box-empty.json')} autoPlay loop={false} />
                                 {/* <LottieView style={{ width: 100, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/10000-empty-box.json')} autoPlay loop={false} /> */}
                                 <Text style={styles.emptyFeedback}>Aucun menu</Text>
                             </>
@@ -321,7 +322,7 @@ export default function RestaurantHomeScreen() {
                     </View>
                 </ScrollView>
             </Modalize>
-            
+
             <Modalize
                 ref={CategoriemodalizeRef}
                 adjustToContentHeight
@@ -420,6 +421,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
+    category: {
+        marginLeft: 10
+    },
+
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -446,7 +451,7 @@ const styles = StyleSheet.create({
     cardOrginal: {
     },
     titlePrincipal: {
-        fontSize: 20,
+        fontSize: 23,
         fontWeight: "bold",
         marginBottom: "1%",
         color: COLORS.ecommercePrimaryColor,
@@ -491,8 +496,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 10,
+        // marginTop: "-5%",
         paddingHorizontal: 10,
-        marginBottom: "-1%"
+        marginBottom: "5%",
+        // backgroundColor:"red"
     },
     plus1: {
         flexDirection: 'row',
@@ -505,7 +512,8 @@ const styles = StyleSheet.create({
     },
     plusText: {
         color: COLORS.ecommercePrimaryColor,
-        fontSize: 14,
+        fontSize: 20,
+        fontWeight: "bold"
     },
     cardRecherche: {
         width: 50,
@@ -562,7 +570,7 @@ const styles = StyleSheet.create({
     },
     emptyFeedback: {
         textAlign: "center",
-        marginTop:-50,
+        marginTop: -50,
         color: COLORS.ecommercePrimaryColor,
         fontWeight: "bold",
         opacity: 0.6,
@@ -588,7 +596,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 10,
         backgroundColor: '#fff',
-        paddingBottom: 5
+        paddingBottom: 2,
+        // marginTop:-10
     },
     categoryModel: {
         alignItems: 'center',
@@ -600,18 +609,22 @@ const styles = StyleSheet.create({
     },
     category: {
         alignItems: 'center',
-        borderRadius: 10,
-        marginLeft: 20,
-        elevation: 10,
-        marginRight: -12.6,
+        padding: 10,
         backgroundColor: 'white',
-        borderRadius: 10
+        borderRadius: 10,
+        margin: 5,
+        marginTop: 5,
+        backgroundColor: "#F5F4F1",
+
     },
     categoryPhoto: {
+        backgroundColor: COLORS.skeleton,
         width: 80,
         height: 70,
         borderRadius: 8,
-        backgroundColor: COLORS.skeleton
+        padding: 3,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     categoryChecked: {
         width: 80,

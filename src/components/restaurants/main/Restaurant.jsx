@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     maxHeight: 150,
     marginTop: 5,
     backgroundColor: 'white',
-    elevation: 10,
+    // elevation: 10,
     borderRadius: 10,
     padding: 10,
     maxWidth: 200,

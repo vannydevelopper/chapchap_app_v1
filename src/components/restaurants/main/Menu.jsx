@@ -110,9 +110,6 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
                 {/* <Image source={{ uri: menu.IMAGE }} style={styles.image} />
                  */}
                  <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={20}  imageStyle={{ opacity: 0.8 }}>
-                <View style={{ marginTop: 100, marginRight: 0 }}>
-                    <Text style={styles.productName1}>{menu.repas}</Text>
-                </View>
             </ImageBackground>
             </TouchableOpacity>
             <View style={{ flexDirection: "row",marginLeft:5 }}>
@@ -135,7 +132,9 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
                     </>
                 </TouchableOpacity>
             </View>
+            <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.repas}</Text>
             {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+            
             <Portal>
                 <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                     <Modalize
@@ -170,11 +169,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 12
+        fontSize:15
     }, 
     serviceBackgound: {
-        width: "100%",
-        height: "100%",
+        width: "90%",
+        height: "90%",
          justifyContent: 'center',
     },
     product: {
@@ -183,7 +182,7 @@ const styles = StyleSheet.create({
     },
     imageCard: {
         borderRadius: 8,
-        height: "60%",
+        height: "50%",
         width: "100%"
     },
     image: {

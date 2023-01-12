@@ -26,17 +26,17 @@ export default function RestaurantHome({ restaurant, restaurants, index, totalLe
     <View key={index} style={[styles.shop, additionStyles]}>
       <TouchableNativeFeedback onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant, restaurants: restaurants })}>
         <View style={styles.imageCard}>
-          <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
+          <Image source={{ uri: restaurant.LOGO }} style={styles.image}/>
         </View>
       </TouchableNativeFeedback>
-      <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(restaurant.NOM_ORGANISATION.toLowerCase())}</Text>
+      <Text style={[{ fontSize:20, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(restaurant.NOM_ORGANISATION.toLowerCase())}</Text>
       <View style={{ flexDirection: "row", marginHorizontal: -1 }}>
         {restaurant.note.nbre == 0 ?
           <AntDesign name="staro" size={14} color="#EFC519" /> :
           <AntDesign name="star" size={14} color="#EFC519" />}
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 10 }}> {restaurant.note.nbre}.0 </Text>
-        <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
-        <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A", right: 15 }}>à {restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) : null} Km</Text>
+        <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 10 }}> {restaurant.note.nbre}.0 </Text>
+        <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
+        <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 15 }}>à {restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) : null} Km</Text>
 
       </View>
     </View>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     maxHeight: 150,
     marginTop: 5,
     backgroundColor: 'white',
-    elevation: 10,
+    
     borderRadius: 10,
     padding: 10,
     maxWidth: 200,
