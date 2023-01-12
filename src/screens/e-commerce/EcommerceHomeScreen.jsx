@@ -360,7 +360,7 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                <TouchableOpacity style={styles.plus2}  onPress={plusCategories}>
+                <TouchableOpacity style={{...styles.plus2, marginBottom:3}}  onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
@@ -422,7 +422,7 @@ export default function EcommerceHomeScreen() {
                     <HomeProducts products={productsCommande} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
 
-                <TouchableOpacity onPress={productPress} style={styles.plus2}>
+                <TouchableOpacity onPress={productPress} style={{...styles.plus2, marginBottom:2}}>
                     <View>
                         <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
@@ -634,7 +634,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 10,
         backgroundColor: '#fff',
-        paddingBottom: 5,
+        paddingBottom: 2,
         // marginTop:-10
     },
     categoryModel: {

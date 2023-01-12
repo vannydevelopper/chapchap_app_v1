@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView } from "react-native";
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, ScrollView } from "react-native";
+import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
 import ShopModal from "../../components/ecommerce/main/ShopModal";
+import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
 export default function BoutiqueListeScreen() {
         const navigation = useNavigation()
@@ -14,19 +15,16 @@ export default function BoutiqueListeScreen() {
                 <View style={styles.container}>
                         <View style={styles.cardHeader}>
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                                        <AntDesign name="arrowleft" size={24} color="black" />
+                                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
                                 </TouchableOpacity>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
+                                                <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+                                        </TouchableOpacity>
+                                        <EcommerceBadge />
+                                </View>
                         </View>
-                        <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
-                        <View style={styles.searchSection1}>
-                                <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                                <TextInput
-                                        style={styles.input}
-                                        // value={data.shop}
-                                        // onChangeText={(newValue) => handleChange('shop', newValue)}
-                                        placeholder="Rechercher "
-                                />
-                        </View>
+
                         <ScrollView>
                                 <View style={styles.bout}>
                                         {shops.map((shop, index) => {
@@ -55,7 +53,8 @@ const styles = StyleSheet.create({
                 alignItems: 'center',
                 paddingHorizontal: 10,
                 marginTop: StatusBar.currentHeight,
-                height: 60
+                height: 60,
+                backgroundColor: '#F1F1F1',
         },
         searchSection1: {
                 flexDirection: "row",

@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.skeleton,
     borderRadius: 10,
     padding: 5,
-    marginTop:"2%"
+    marginTop:"4%",
+    marginBottom:10
   },
   imageCard: {
     borderRadius: 10,
