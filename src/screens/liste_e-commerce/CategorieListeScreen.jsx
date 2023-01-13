@@ -24,7 +24,8 @@ export default function CategorieListeScreen() {
                         })
                 
                         setProducts(reponse.result)
-                        // `console.log(reponse.result)
+                        console.log(`/products?category=${categorie.ID_CATEGORIE_PRODUIT}`)
+                        console.log(reponse.result)
 
                 } catch (error) {
                         console.log(error)
