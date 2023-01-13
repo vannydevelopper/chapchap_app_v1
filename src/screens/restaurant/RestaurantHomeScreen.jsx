@@ -52,13 +52,14 @@ export default function RestaurantHomeScreen() {
     }
 
     const plusCategories = () => {
-        navigation.navigate("CategorieMenuScreen",{ categories: categories })
+        navigation.navigate("CategorieMenuScreen", { categories: categories })
         // setIsOpen(true)
         // CategoriemodalizeRef.current?.open()
     }
     const menuPress = () => {
-        setIsOpen(true)
-        MenumodalizeRef.current?.open()
+        navigation.navigate("MenuScreen")
+        // setIsOpen(true)
+        // MenumodalizeRef.current?.open()
     }
     const fecthCategories = async () => {
         try {
@@ -187,7 +188,7 @@ export default function RestaurantHomeScreen() {
                 </View>
             </View>
             <ScrollView>
-                <TouchableOpacity onPress={onCartPress} style={styles.plus}>
+                <TouchableOpacity onPress={onCartPress} style={{ ...styles.plus, marginBottom: 2, marginTop: 10 }}>
                     <View>
                         <Text style={styles.plusText}>Restaurants  proches</Text>
                     </View>
@@ -206,9 +207,9 @@ export default function RestaurantHomeScreen() {
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
-                    <View>
-                                <AntDesign name="arrowright" size={24} color="black" />
-                            </View>
+                        <View>
+                            <AntDesign name="arrowright" size={24} color="black" />
+                        </View>
                     </View>
                 </TouchableOpacity>
                 {(firstLoadingMenus || loadingCategories || loadingMenus || loadingSubCategories) ? <CategoriesMenuSkeletons /> :
@@ -237,7 +238,7 @@ export default function RestaurantHomeScreen() {
                         </View>
                     </ScrollView>
                 }
-                <TouchableOpacity onPress={menuPress} style={styles.plus}>
+                <TouchableOpacity onPress={menuPress} style={{ ...styles.plus, marginBottom: 1 }}>
                     <View>
                         <Text style={styles.plusText}>Menus</Text>
                     </View>
@@ -475,7 +476,7 @@ const styles = StyleSheet.create({
     },
     searchSection: {
         flexDirection: "row",
-        marginTop: 10,
+        marginTop: 5,
         padding: 5,
         borderRadius: 10,
         borderWidth: 1,
@@ -499,6 +500,7 @@ const styles = StyleSheet.create({
         // marginTop: "-5%",
         paddingHorizontal: 10,
         marginBottom: "5%",
+
         // backgroundColor:"red"
     },
     plus1: {
@@ -513,7 +515,8 @@ const styles = StyleSheet.create({
     plusText: {
         color: COLORS.ecommercePrimaryColor,
         fontSize: 20,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        marginTop: 1
     },
     cardRecherche: {
         width: 50,
@@ -567,6 +570,7 @@ const styles = StyleSheet.create({
     resto: {
         flexDirection: 'row',
         flexWrap: 'wrap',
+
     },
     emptyFeedback: {
         textAlign: "center",

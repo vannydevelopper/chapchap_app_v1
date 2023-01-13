@@ -105,7 +105,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
         }
     }, [isOpen])
     return (
-        <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
+        <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 5}]}>
             <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', { product: menu })} style={styles.imageCard}>
                 {/* <Image source={{ uri: menu.IMAGE }} style={styles.image} />
                  */}
@@ -178,12 +178,14 @@ const styles = StyleSheet.create({
     },
     product: {
         maxWidth: 300,
-        marginBottom:-40
+        marginBottom:-40,
+        
     },
     imageCard: {
         borderRadius: 8,
         height: "50%",
-        width: "100%"
+        width: "100%",
+        marginTop:0
     },
     image: {
         height: "100%",

@@ -1,7 +1,8 @@
 import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 import React from "react";
-import Menu from "../components/restaurants/main/Menu";
+
 import CategorieMenuScreen from "../screens/liste_restaurant/CategorieMenuScreen";
+import MenuScreen from "../screens/liste_restaurant/MenuScreen";
 import RestaurantProcheScreen from "../screens/liste_restaurant/RestaurantProcheScreen";
 import AllMenuScreen from "../screens/restaurant/AllMenuScreen";
 import MenuDetailScreen from "../screens/restaurant/MenuDetailScreen";
@@ -26,6 +27,7 @@ export default function RestaurantNavigator(){
 
                         <Stack.Screen name="RestaurantProcheScreen" component={RestaurantProcheScreen}/>
                         <Stack.Screen name="CategorieMenuScreen" component={CategorieMenuScreen}/>
+                        <Stack.Screen name="MenuScreen" component={MenuScreen}/>
                        
                 </Stack.Navigator>
         )

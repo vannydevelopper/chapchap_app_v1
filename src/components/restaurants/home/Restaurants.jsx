@@ -7,7 +7,7 @@ import Restaurant from '../main/Restaurant';
 import { useAnimatedGestureHandler } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Restaurants({ lat ,long ,restaurants }) {
+export default function Restaurants({ lat, long, restaurants }) {
     const navigation = useNavigation()
     return (
         <View style={styles.homeshops}>
@@ -23,8 +23,8 @@ export default function Restaurants({ lat ,long ,restaurants }) {
                             index={index}
                             totalLength={restaurants.length}
                             key={index}
-                            lat={lat} 
-                            long={long} 
+                        // lat={lat} 
+                        // long={long} 
                         />
                     )
                 })}
@@ -35,8 +35,9 @@ export default function Restaurants({ lat ,long ,restaurants }) {
 
 const styles = StyleSheet.create({
     homeshops: {
-        marginBottom:"-6%"
-        // paddingHorizontal:20
+        marginBottom: "-6%",
+
+
 
     },
     shopsHeader: {
@@ -53,5 +54,8 @@ const styles = StyleSheet.create({
     },
     shops: {
         paddingHorizontal: 10,
+        marginTop: 5,
+
+
     }
 })

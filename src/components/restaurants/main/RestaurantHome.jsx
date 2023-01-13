@@ -35,7 +35,7 @@ export default function RestaurantHome({ restaurant, restaurants, index, totalLe
           <AntDesign name="staro" size={14} color="#EFC519" /> :
           <AntDesign name="star" size={14} color="#EFC519" />}
         <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 10 }}> {restaurant.note.nbre}.0 </Text>
-        <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
+        <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}></Text>
         <Text style={{ fontSize: 20, marginLeft: 10, color: "#797E9A", right: 15 }}>à {restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) : null} Km</Text>
 
       </View>
@@ -44,15 +44,16 @@ export default function RestaurantHome({ restaurant, restaurants, index, totalLe
 }
 const styles = StyleSheet.create({
   shop: {
-    marginHorizontal: 10,
-    maxHeight: 150,
-    marginTop: 5,
-    backgroundColor: 'white',
+    // marginHorizontal: 10,
+    // maxHeight: 150,
+    // marginTop: 5,
+    // backgroundColor: 'white',
     
-    borderRadius: 10,
-    padding: 10,
-    maxWidth: 200,
-    marginBottom: 20
+    // borderRadius: 10,
+    // padding: 10,
+    // maxWidth: 200,
+    // marginBottom: 20,
+    // fontSize:40
   },
   imageCard: {
     borderRadius: 10,
