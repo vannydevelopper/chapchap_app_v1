@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
                 paddingHorizontal: 10,
                 marginTop: StatusBar.currentHeight,
                 height: 60,
-                backgroundColor: '#F1F1F1',
+                backgroundColor: '#fff',
         },
         searchSection1: {
                 flexDirection: "row",

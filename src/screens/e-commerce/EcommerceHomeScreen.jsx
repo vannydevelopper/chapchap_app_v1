@@ -109,7 +109,7 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen", { products: products })
+        navigation.navigate("PlusRecommandeScreen")
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",
@@ -163,6 +163,7 @@ export default function EcommerceHomeScreen() {
                 }
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
+                console.log(produits.result)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -650,9 +651,9 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         borderRadius: 10,
-        margin: 5,
+        // margin: 5,
         marginTop: 5,
-        backgroundColor: "#F5F4F1",
+        // backgroundColor: "#F5F4F1",
 
     },
     categoryPhoto: {
