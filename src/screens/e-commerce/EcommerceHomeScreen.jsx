@@ -80,12 +80,15 @@ export default function EcommerceHomeScreen() {
     }, []))
 
     const onCategoryPress = (categorie) => {
+       
+        const ID_CATEGORIE_PRODUIT = categorie.ID_CATEGORIE_PRODUIT
         if (loadingSubCategories || loadingProducts) return false
         if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
             return setSelectedCategorie(null)
         }
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
+        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:ID_CATEGORIE_PRODUIT})
     }
 
     const selectedItemSousCategories = (souscategorie) => {
@@ -99,7 +102,7 @@ export default function EcommerceHomeScreen() {
     const plusCategories = () => {
         // setIsOpen(true)
         // CategoriemodalizeRef.current?.open()
-        navigation.navigate("CategorieListeScreen", { categories: categories })
+        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:null })
     }
     const onCartPress = () => {
         // setIsOpen(true)
@@ -109,7 +112,7 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen", { products: products })
+        navigation.navigate("PlusRecommandeScreen")
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",
@@ -650,9 +653,9 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: 'white',
         borderRadius: 10,
-        margin: 5,
+        // margin: 5,
         marginTop: 5,
-        backgroundColor: "#F5F4F1",
+        // backgroundColor: "#F5F4F1",
 
     },
     categoryPhoto: {
