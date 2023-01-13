@@ -103,19 +103,25 @@ export default function PlusRecommandeScreen() {
                                 <AntDesign name="caretdown" size={16} color="#777" />
                         </TouchableOpacity>
                         <ScrollView>
-                                <View style={styles.products}>
-                                        {products.map((product, index) => {
-                                                return (
-                                                        <Product
-                                                                product={product}
-                                                                index={index}
-                                                                totalLength={products.length}
-                                                                key={index}
-                                                                fixMargins
-                                                        />
-                                                )
-                                        })}
-                                </View>
+                                <>
+                                        {products.length == 0 ? <View style={styles.notResultat}>
+                                                <Text style={styles.textNotfound}>Pas de produits touves</Text>
+                                        </View> :
+
+                                                <View style={styles.products}>
+                                                        {products.map((product, index) => {
+                                                                return (
+                                                                        <Product
+                                                                                product={product}
+                                                                                index={index}
+                                                                                totalLength={products.length}
+                                                                                key={index}
+                                                                                fixMargins
+                                                                        />
+                                                                )
+                                                        })}
+                                                </View>}
+                                </>
                         </ScrollView>
                 </View>
                 <Modalize
@@ -240,5 +246,15 @@ const styles = StyleSheet.create({
         },
         cardName: {
                 marginLeft: 10
+        },
+        notResultat: {
+                padding: 5,
+                marginTop: 10,
+                marginHorizontal: 10
+        },
+        textNotfound: {
+                fontWeight: "bold",
+                fontSize: 18,
+                color: "#777"
         }
 })

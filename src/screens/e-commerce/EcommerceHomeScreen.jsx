@@ -163,7 +163,6 @@ export default function EcommerceHomeScreen() {
                 }
                 const produits = await fetchApi(url)
                 setProducts(produits.result)
-                console.log(produits.result)
             } catch (error) {
                 console.log(error)
             } finally {
