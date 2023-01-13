@@ -1,17 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image } from "react-native";
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import fetchApi from "../../helpers/fetchApi";
 
 export default function CategorieListeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
-        const { categories } = route.params
+        const { categories, selectedCategorie } = route.params
+        const [selected, setSelected] = useState(selectedCategorie)
+
+        const [products, setProducts] = useState([])
+
+        const onCategoryPress = async (categorie) => {
+                console.log(categorie)
+                setSelected(null)
+                try {
+                        const reponse = await fetchApi(`/products?category=${categorie.ID_CATEGORIE_PRODUIT}`, {
+                                method: "GET",
+                                headers: { "Content-Type": "application/json" },
+                        })
+                
+                        setProducts(reponse.result)
+                        // `console.log(reponse.result)
+
+                } catch (error) {
+                        console.log(error)
+                }
+
+
+        }
         return (
                 <View style={styles.container}>
-                         <View style={styles.cardHeader}>
+                        <View style={styles.cardHeader}>
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
                                         <Ionicons name="arrow-back-sharp" size={24} color="black" />
                                 </TouchableOpacity>
@@ -19,18 +42,29 @@ export default function CategorieListeScreen() {
                                         <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
                                                 <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
                                         </TouchableOpacity>
-                                        <EcommerceBadge/>
+                                        <EcommerceBadge />
                                 </View>
                         </View>
-                        <ScrollView>
+                        <ScrollView
+                                style={styles.shops}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                        >
                                 <View style={styles.categories}>
                                         {categories.map((categorie, index) => {
                                                 return (
-                                                        <TouchableOpacity style={[styles.category,]} key={index}>
-                                                                <View style={styles.categoryPhoto}>
+                                                        <TouchableOpacity style={[styles.category,]} onPress={() => onCategoryPress(categorie)} key={index}>
+                                                                {/* <View style={styles.categoryPhoto}>
                                                                         <Image source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage} />
+                                                                </View> */}
+
+                                                                <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selected ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                                        <Image source={{ uri: categorie.IMAGE }} style={[styles.categoryImage, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selected ? 0.2 : 1 }]} />
                                                                 </View>
                                                                 <Text style={[{ fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                                                {categorie.ID_CATEGORIE_PRODUIT == selected && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selected }]}>
+                                                                        <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
+                                                                </View>}
                                                         </TouchableOpacity>
                                                 )
                                         })}
@@ -44,7 +78,7 @@ export default function CategorieListeScreen() {
 const styles = StyleSheet.create({
         container: {
                 flex: 1,
-                marginHorizontal:5
+                marginHorizontal: 5
         },
         cardHeader: {
                 flexDirection: 'row',
@@ -54,7 +88,7 @@ const styles = StyleSheet.create({
                 marginTop: StatusBar.currentHeight,
                 height: 60,
                 backgroundColor: '#fff',
-              },
+        },
         searchSection1: {
                 flexDirection: "row",
                 marginTop: -20,
@@ -83,9 +117,9 @@ const styles = StyleSheet.create({
                 padding: 10,
                 backgroundColor: 'white',
                 borderRadius: 10,
-                margin: 5,
+                // margin: 5,
                 marginTop: 5,
-                backgroundColor: "#F5F4F1",
+                // backgroundColor: "#F5F4F1",
         },
         categoryPhoto: {
                 backgroundColor: COLORS.skeleton,
@@ -99,5 +133,12 @@ const styles = StyleSheet.create({
         categoryImage: {
                 width: '100%',
                 height: '100%',
-            },
+        },
+        categoryChecked: {
+                width: 80,
+                height: 85,
+                borderRadius: 8,
+                marginTop: -80
+
+        },
 })
