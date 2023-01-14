@@ -16,6 +16,11 @@ import Shop from "../../components/ecommerce/main/Shop";
 import ShopModal from "../../components/ecommerce/main/ShopModal";
 import * as Location from 'expo-location';
 
+/**
+ * Screen de home pour afficher les boutiques, les categories et les produits recommande pour vous
+ * @author Inconnu mais corriger par Vanny Boy <vanny@mediabox.bi>
+ * @returns 
+ */
 
 export default function EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
@@ -410,11 +415,11 @@ export default function EcommerceHomeScreen() {
                         </View>
                     </ScrollView>
                 }
-                {selectedCategorie ? ((loadingSubCategories || loadingProducts) ? <SubCategoriesSkeletons /> : <SubCategories
+                {/* {selectedCategorie ? ((loadingSubCategories || loadingProducts) ? <SubCategoriesSkeletons /> : <SubCategories
                     sousCategories={sousCategories}
                     selectedItemSousCategories={selectedItemSousCategories}
                     selectedsousCategories={selectedsousCategories}
-                />) : null}
+                />) : null} */}
 
                 {productsCommande.length > 0 &&
                     <TouchableOpacity style={styles.plus2}>

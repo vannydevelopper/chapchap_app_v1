@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image, ActivityIndicator } from "react-native";
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
@@ -7,6 +7,12 @@ import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import fetchApi from "../../helpers/fetchApi";
 import { Modalize } from "react-native-modalize";
 import Product from "../../components/ecommerce/main/Product";
+
+/**
+ * Screen pour affiches les produits par categories avec une filtre par categories
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @returns 
+ */
 
 export default function CategorieListeScreen() {
         const navigation = useNavigation()
@@ -23,7 +29,6 @@ export default function CategorieListeScreen() {
 
         const [LoadingProducts, setLoadingProducts] = useState(true)
         const [loadingCategories, setLoadingCatagories] = useState(true)
-        const [loadingProduits, setLoadingProduits] = useState(false)
 
         const deselectionner = null
 
@@ -61,7 +66,7 @@ export default function CategorieListeScreen() {
                 (async () => {
                         try {
                                 if (LoadingProducts == false) {
-                                        setLoadingProduits(true)
+                                        setLoadingProducts(true)
                                 }
                                 var url = "/products"
                                 if (selectedOneCategorie) {
@@ -75,7 +80,7 @@ export default function CategorieListeScreen() {
                                 console.log(error)
                         }
                         finally {
-                                setLoadingProduits(false)
+                                setLoadingProducts(false)
                         }
                 })()
         }, [selectedOneCategorie])
@@ -108,6 +113,9 @@ export default function CategorieListeScreen() {
                                 </TouchableOpacity>}
 
                                 <ScrollView>
+                                       {LoadingProducts ? <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <ActivityIndicator animating={true} size="large" color={"black"} />
+                                        </View> :
                                         <>
                                                 {products.length == 0 ? <View style={styles.notResultat}>
                                                         <Text style={styles.textNotfound}>Pas de produits touves</Text>
@@ -126,7 +134,7 @@ export default function CategorieListeScreen() {
                                                                         )
                                                                 })}
                                                         </View>}
-                                        </>
+                                        </>}
                                 </ScrollView>
                         </View>
                         <Modalize

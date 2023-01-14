@@ -26,9 +26,8 @@ export default function PlusRecommandeScreen() {
 
         const [isOpen, setIsOpen] = useState(false)
 
-        const [LoadingProducts, setLoadingProducts] = useState(false)
+        const [LoadingProducts, setLoadingProducts] = useState(true)
         const [products, setProducts] = useState([])
-        const [loadingProduits, setLoadingProduits] = useState(false)
 
         const CategoriemodalizeRef = useRef()
 
@@ -62,7 +61,9 @@ export default function PlusRecommandeScreen() {
         useEffect(() => {
                 (async () => {
                         try {
-                                setLoadingProduits(true)
+                                if (LoadingProducts == false) {
+                                        setLoadingProducts(true)
+                                }
                                 var url = "/products"
                                 if (selectedCategorie) {
                                         url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
@@ -74,7 +75,7 @@ export default function PlusRecommandeScreen() {
                                 console.log(error)
                         }
                         finally {
-                                setLoadingProduits(false)
+                                setLoadingProducts(false)
                         }
                 })()
         }, [selectedCategorie])
