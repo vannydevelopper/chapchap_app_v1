@@ -81,14 +81,13 @@ export default function EcommerceHomeScreen() {
 
     const onCategoryPress = (categorie) => {
        
-        const ID_CATEGORIE_PRODUIT = categorie.ID_CATEGORIE_PRODUIT
         if (loadingSubCategories || loadingProducts) return false
         if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
             return setSelectedCategorie(null)
         }
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
-        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:ID_CATEGORIE_PRODUIT})
+        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:categorie})
     }
 
     const selectedItemSousCategories = (souscategorie) => {
@@ -389,7 +388,7 @@ export default function EcommerceHomeScreen() {
                             {categories.map((categorie, index) => {
                                 return (
                                     <>
-                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
+                                        {/* <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
                                             <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
                                                 <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
                                             </View>
@@ -397,6 +396,13 @@ export default function EcommerceHomeScreen() {
                                             {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
                                                 <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
                                             </View>}
+                                        </TouchableOpacity> */}
+
+                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
+                                            <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
+                                            </View>
+                                            <Text style={[{ fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                         </TouchableOpacity>
                                     </>
                                 )
