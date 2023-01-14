@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, Image } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, Image, ActivityIndicator } from "react-native";
 import { AntDesign, FontAwesome, Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
@@ -20,15 +20,13 @@ export default function PlusRecommandeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
 
-        // const { products } = route.params
-
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
         const [loadingCategories, setLoadingCatagories] = useState(true)
 
         const [isOpen, setIsOpen] = useState(false)
 
-        const [LoadingProducts, setLoadingProducts] = useState(true)
+        const [LoadingProducts, setLoadingProducts] = useState(false)
         const [products, setProducts] = useState([])
         const [loadingProduits, setLoadingProduits] = useState(false)
 
@@ -64,9 +62,7 @@ export default function PlusRecommandeScreen() {
         useEffect(() => {
                 (async () => {
                         try {
-                                if (LoadingProducts == false) {
-                                        setLoadingProduits(true)
-                                }
+                                setLoadingProduits(true)
                                 var url = "/products"
                                 if (selectedCategorie) {
                                         url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
@@ -103,25 +99,28 @@ export default function PlusRecommandeScreen() {
                                 <AntDesign name="caretdown" size={16} color="#777" />
                         </TouchableOpacity>
                         <ScrollView>
-                                <>
-                                        {products.length == 0 ? <View style={styles.notResultat}>
-                                                <Text style={styles.textNotfound}>Pas de produits touves</Text>
-                                        </View> :
+                                {LoadingProducts ? <View style={{ flex: 1, justifyContent: 'center' }}>
+                                        <ActivityIndicator animating={true} size="large" color={"black"} />
+                                </View> :
+                                        <>
+                                                {products.length == 0 ? <View style={styles.notResultat}>
+                                                        <Text style={styles.textNotfound}>Pas de produits touves</Text>
+                                                </View> :
 
-                                                <View style={styles.products}>
-                                                        {products.map((product, index) => {
-                                                                return (
-                                                                        <Product
-                                                                                product={product}
-                                                                                index={index}
-                                                                                totalLength={products.length}
-                                                                                key={index}
-                                                                                fixMargins
-                                                                        />
-                                                                )
-                                                        })}
-                                                </View>}
-                                </>
+                                                        <View style={styles.products}>
+                                                                {products.map((product, index) => {
+                                                                        return (
+                                                                                <Product
+                                                                                        product={product}
+                                                                                        index={index}
+                                                                                        totalLength={products.length}
+                                                                                        key={index}
+                                                                                        fixMargins
+                                                                                />
+                                                                        )
+                                                                })}
+                                                        </View>}
+                                        </>}
                         </ScrollView>
                 </View>
                 <Modalize
