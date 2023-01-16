@@ -21,7 +21,7 @@ export default function PlusRecommandeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
 
-        const { selectedOneCategorie} = route.params
+        const { selectedOneCategorie } = route.params
 
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
@@ -63,7 +63,7 @@ export default function PlusRecommandeScreen() {
 
         useEffect(() => {
                 if (selectedOneCategorie) {
-                        setSelectedCategorie(selectedOneCategorie?.ID_CATEGORIE_PRODUIT)
+                        setSelectedCategorie(selectedOneCategorie)
                 }
         }, [])
 
@@ -110,20 +110,10 @@ export default function PlusRecommandeScreen() {
                                 </View>
                         </View>
 
-                        {(selectedCategorie && selectedOneCategorie == null) && <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
+                        <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
                                 <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
                                 <AntDesign name="caretdown" size={16} color="#777" />
-                        </TouchableOpacity>}
-
-                        {(selectedCategorie == null && selectedOneCategorie == null) && <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
-                                <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
-                                <AntDesign name="caretdown" size={16} color="#777" />
-                        </TouchableOpacity>}
-
-                        {(selectedOneCategorie) && <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
-                                <Text style={styles.inputText}>{selectedOneCategorie ? selectedOneCategorie.NOM : "Selectionner"}</Text>
-                                <AntDesign name="caretdown" size={16} color="#777" />
-                        </TouchableOpacity>}
+                        </TouchableOpacity>
 
 
                         <ScrollView>
@@ -284,5 +274,5 @@ const styles = StyleSheet.create({
                 fontSize: 18,
                 color: "#777"
         },
-       
+
 })
