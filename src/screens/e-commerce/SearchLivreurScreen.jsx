@@ -34,7 +34,6 @@ export default function SearchLivreurScreen() {
           })
 
           const voirDetails = () =>{
-                console.log("bonjour")
                 navigation.navigate("DetailCommandeScreen", {commande:commande})
           }
 

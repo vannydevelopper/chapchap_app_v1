@@ -23,6 +23,8 @@ export default function DetailCommandeScreen() {
   const { commande } = route.params
 
   const [commandes, setCommandes] = useState([])
+  const [commandeEntente, setCommandeEntente] = useState([])
+  console.log(commandeEntente.DATE_COMMANDE)
   const [total, setTotal] = useState(null)
   const [code, setCode] = useState(null)
   const [loadingDetailsProducts, setLoadingDetailsProducts] = useState(true)
@@ -60,6 +62,7 @@ const handleCommandePress = commande => {
       try {
         const response = await getCommandes()
         setCommandes(response.result.details)
+        setCommandeEntente(response.result)
         setTotal(response.result.TOTAL)
         setCode(response.result.CODE_UNIQUE)
       } catch (error) {
@@ -81,10 +84,18 @@ const handleCommandePress = commande => {
         </TouchableOpacity>
       </View>
       <View style={styles.cardCommande}>
-         <Text style={styles.titlePrincipal}>Commande </Text>
-         <View>
-            <Text style={styles.titlePrincipal}>{code}</Text>
-         </View>
+            <Text style={{...styles.titlePrincipal, fontWeight:"bold"}}>{code}</Text>
+            <View style={styles.insertLigne}></View>
+            <View style={styles.cardTitleHeader}>
+              <Text style={styles.titleName}>Date d'insertion</Text>
+              <Text style={styles.titlePrincipal}>{commandeEntente.DATE_COMMANDE}</Text>
+            </View>
+            <View style={styles.insertLigne}></View>
+            <View style={styles.cardTitleHeader}>
+              <Text style={styles.titleName}>Date de livraison</Text>
+              <Text style={styles.titlePrincipal}>{commandeEntente.DATE_LIVRAISON}</Text>
+            </View>
+            <View style={{...styles.insertLigne, marginBottom:5}}></View>
       </View>
       
 
@@ -183,11 +194,7 @@ const styles = StyleSheet.create({
     height: 60,
   },
   titlePrincipal: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: COLORS.ecommercePrimaryColor,
-    marginHorizontal: 10
+    marginBottom: 5,
   },
   menuOpener: {
     marginTop: 25
@@ -295,7 +302,17 @@ const styles = StyleSheet.create({
     overflow: "hidden"
   },
   cardCommande:{
-    flexDirection:"row",
-    justifyContent:"space-between"
+    marginHorizontal:10
+  },
+  insertLigne:{
+    borderBottomWidth:1,
+    borderBottomColor:"#ddd"
+  },
+  titleName:{
+    fontWeight: "bold",
+  },
+  cardTitleHeader:{
+    marginTop:5,
+    marginBottom:5
   }
 })
