@@ -117,7 +117,7 @@ export default function PlusRecommandeScreen() {
 
 
                         <ScrollView>
-                                {LoadingProducts ? <View style={{ flex: 1, justifyContent: 'center' }}>
+                                {LoadingProducts ? <View style={{ marginTop:30}}>
                                         <ActivityIndicator animating={true} size="large" color={"black"} />
                                 </View> :
                                         <>

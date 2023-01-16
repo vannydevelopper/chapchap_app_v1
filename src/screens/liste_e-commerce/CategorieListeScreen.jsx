@@ -19,9 +19,10 @@ export default function CategorieListeScreen() {
         const route = useRoute()
 
         const [categories, setCategories] = useState([])
+        const [loadingCategories, setLoadingCategories] = useState(true)
 
         const onCategoryPress = (categorie) => {
-                navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:categorie})
+                navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: categorie })
         }
 
         useEffect(() => {
@@ -36,9 +37,9 @@ export default function CategorieListeScreen() {
                         catch (error) {
                                 console.log(error)
                         }
-                        // finally {
-                        //         setLoadingCatagories(false)
-                        // }
+                        finally {
+                                setLoadingCategories(false)
+                        }
                 })()
         }, [])
 
@@ -60,6 +61,9 @@ export default function CategorieListeScreen() {
                                         </View>
                                 </View>
                                 <ScrollView>
+                                        {loadingCategories ? <View style={{ flex: 1, justifyContent: 'center' }}>
+                                                <ActivityIndicator animating={true} size="large" color={"black"} />
+                                        </View>:
                                         <View style={styles.catego}>
                                                 {categories.map((categorie, index) => {
                                                         return (
@@ -72,7 +76,7 @@ export default function CategorieListeScreen() {
                                                         )
                                                 })}
 
-                                        </View> 
+                                        </View>}
                                 </ScrollView>
 
 
