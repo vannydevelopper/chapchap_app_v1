@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, Image, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TouchableNativeFeedback, ActivityIndicator, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import ProductCart from "../../components/ecommerce/main/ProductCart";
 import { ecommerceCartSelector } from "../../store/selectors/ecommerceCartSelectors";
@@ -25,10 +25,11 @@ export default function DetailCommandeScreen() {
   const [commandes, setCommandes] = useState([])
   const [total, setTotal] = useState(null)
   const [code, setCode] = useState(null)
+  const [loadingDetailsProducts, setLoadingDetailsProducts] = useState(true)
+
 
 
   let element = 0
-  const [loadingProducts, setLoadingProducts] = useState(false)
   const getStatusColor = idStatus => {
     if(idStatus == 3) {
               return COLORS.ecommercePrimaryColor
@@ -61,15 +62,12 @@ const handleCommandePress = commande => {
         setCommandes(response.result.details)
         setTotal(response.result.TOTAL)
         setCode(response.result.CODE_UNIQUE)
-        // console.log(response.result)
-
-
       } catch (error) {
         console.log(error)
       }
-      //   finally {
-      //             setLoading(false)
-      //   }
+        finally {
+          setLoadingDetailsProducts(false)
+        }
     })()
   }, []))
   return (
@@ -82,7 +80,17 @@ const handleCommandePress = commande => {
           <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
         </TouchableOpacity>
       </View>
-      <Text style={styles.titlePrincipal}>commande:{code}</Text>
+      <View style={styles.cardCommande}>
+         <Text style={styles.titlePrincipal}>Commande </Text>
+         <View>
+            <Text style={styles.titlePrincipal}>{code}</Text>
+         </View>
+      </View>
+      
+
+      {loadingDetailsProducts ? <View style={{ flex: 1, marginTop:10 }}>
+          <ActivityIndicator animating={true} size="large" color={"black"} />
+      </View>:
       <View style={styles.products}>
         <FlatList
           data={commandes}
@@ -97,16 +105,13 @@ const handleCommandePress = commande => {
               <DetailCart
               product={command}
               commande={commande}
-
               index={index}
               key={index}
             />
             )
           })}
         />
-        
-
-      </View>
+      </View>}
       <View style={styles.cartFooter}>
         <View style={styles.cartFooterTotals}>
           <View style={styles.imageAmount}>
@@ -120,7 +125,7 @@ const handleCommandePress = commande => {
           </View>
           <View style={styles.prices}>
             <Text style={styles.amountTitle}> {commande.TOTAL.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")}  Fbu</Text>
-            <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
+            {/* <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text> */}
           </View>
         </View>
         <View style={styles.cardStatus}>
@@ -289,4 +294,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     overflow: "hidden"
   },
+  cardCommande:{
+    flexDirection:"row",
+    justifyContent:"space-between"
+  }
 })

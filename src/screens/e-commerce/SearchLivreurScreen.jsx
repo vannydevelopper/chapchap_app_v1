@@ -33,6 +33,11 @@ export default function SearchLivreurScreen() {
                     },
           })
 
+          const voirDetails = () =>{
+                console.log("bonjour")
+                navigation.navigate("DetailCommandeScreen", {commande:commande})
+          }
+
           useEffect(() => {
                     (async () => {
                               try {
@@ -167,7 +172,7 @@ export default function SearchLivreurScreen() {
                                                                       <Ionicons name="close" size={30} color="#777" />
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback useForeground>
+                                                  <TouchableNativeFeedback useForeground onPress={voirDetails}>
                                                             <View style={[styles.nextBtn]}>
                                                                       <Text style={[styles.navigationBtnText]}>
                                                                                 Voir la commande

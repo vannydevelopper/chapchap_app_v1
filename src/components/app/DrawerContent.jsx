@@ -17,7 +17,6 @@ export default function DrawerContent({ state, navigation, descriptors }) {
 
   const [partenaires, setPartenaires] = useState([])
   const [commandes, setCommandes] = useState([])
-  console.log(commandes.NBRE)
 
 
   const user = useSelector(userSelector)
@@ -105,7 +104,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
         </TouchableNativeFeedback>
         {showServiceCommands && <View style={styles.services}>
 
-              <TouchableOpacity index={1} onPress={() => navigation.navigate("CommandeEmiseScreen",{ID_SERVICE:1})} style={{ borderRadius: 10 }}>
+              <TouchableOpacity index={1} onPress={() => navigation.navigate("CommandeEmiseScreen")} style={{ borderRadius: 10 }}>
                 <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
                   <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                     Achats des produit
@@ -118,7 +117,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                   </View>: null}
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity index={2} onPress={() => navigation.navigate("RestaurantEmiseScreen",{ID_SERVICE:2})} style={{ borderRadius: 10 }}>
+              <TouchableOpacity index={2} onPress={() => navigation.navigate("RestaurantEmiseScreen")} style={{ borderRadius: 10 }}>
                 <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
                   <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                     Restaurant
