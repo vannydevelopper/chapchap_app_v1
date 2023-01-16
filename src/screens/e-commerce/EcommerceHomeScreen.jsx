@@ -92,7 +92,7 @@ export default function EcommerceHomeScreen() {
         }
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
-        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:categorie})
+        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:categorie})
     }
 
     const selectedItemSousCategories = (souscategorie) => {
@@ -106,7 +106,7 @@ export default function EcommerceHomeScreen() {
     const plusCategories = () => {
         // setIsOpen(true)
         // CategoriemodalizeRef.current?.open()
-        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:null })
+        navigation.navigate("CategorieListeScreen")
     }
     const onCartPress = () => {
         // setIsOpen(true)
@@ -116,7 +116,7 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen")
+        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null})
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",
@@ -367,6 +367,7 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
+                
                 <TouchableOpacity style={{...styles.plus2, marginBottom:3}}  onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
@@ -404,8 +405,8 @@ export default function EcommerceHomeScreen() {
                                         </TouchableOpacity> */}
 
                                         <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
-                                            <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
+                                            <View style={styles.categoryPhoto}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
                                             </View>
                                             <Text style={[{ fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                         </TouchableOpacity>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, Image, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image, ActivityIndicator } from "react-native";
 import { AntDesign, FontAwesome, Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
@@ -12,6 +12,7 @@ import { TouchableNativeFeedback } from "react-native-web";
 
 /**
  * screens pour afficher le produits recommandez pour vous avec une filtre des cotegories
+ * screens pour afficher le produits avec une filtre par rapport a la categories deja selectionner 
  * @author Vanny Boy <vanny@mediabox.bi>
  * @returns 
  */
@@ -19,6 +20,8 @@ import { TouchableNativeFeedback } from "react-native-web";
 export default function PlusRecommandeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
+
+        const { selectedOneCategorie} = route.params
 
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
@@ -59,6 +62,12 @@ export default function PlusRecommandeScreen() {
         }, [])
 
         useEffect(() => {
+                if (selectedOneCategorie) {
+                        setSelectedCategorie(selectedOneCategorie?.ID_CATEGORIE_PRODUIT)
+                }
+        }, [])
+
+        useEffect(() => {
                 (async () => {
                         try {
                                 if (LoadingProducts == false) {
@@ -80,6 +89,12 @@ export default function PlusRecommandeScreen() {
                 })()
         }, [selectedCategorie])
 
+        useEffect(() => {
+                (async () => {
+
+                })()
+        }, [])
+
 
         return (<>
                 <View style={styles.container}>
@@ -94,18 +109,30 @@ export default function PlusRecommandeScreen() {
                                         <EcommerceBadge />
                                 </View>
                         </View>
-                        <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
 
+                        {(selectedCategorie && selectedOneCategorie == null) && <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
                                 <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
                                 <AntDesign name="caretdown" size={16} color="#777" />
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
+
+                        {(selectedCategorie == null && selectedOneCategorie == null) && <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
+                                <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
+                                <AntDesign name="caretdown" size={16} color="#777" />
+                        </TouchableOpacity>}
+
+                        {(selectedOneCategorie) && <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
+                                <Text style={styles.inputText}>{selectedOneCategorie ? selectedOneCategorie.NOM : "Selectionner"}</Text>
+                                <AntDesign name="caretdown" size={16} color="#777" />
+                        </TouchableOpacity>}
+
+
                         <ScrollView>
                                 {LoadingProducts ? <View style={{ flex: 1, justifyContent: 'center' }}>
                                         <ActivityIndicator animating={true} size="large" color={"black"} />
                                 </View> :
                                         <>
                                                 {products.length == 0 ? <View style={styles.notResultat}>
-                                                        <Text style={styles.textNotfound}>Pas de produits touves</Text>
+                                                        <Text style={styles.textNotfound}>Pas de produits touvez</Text>
                                                 </View> :
 
                                                         <View style={styles.products}>
@@ -256,5 +283,6 @@ const styles = StyleSheet.create({
                 fontWeight: "bold",
                 fontSize: 18,
                 color: "#777"
-        }
+        },
+       
 })
