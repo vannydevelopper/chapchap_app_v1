@@ -15,6 +15,7 @@ import fetchApi, { API_URL } from "../../helpers/fetchApi";
 import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import { useRef } from "react";
 import DetailCart from "../../components/ecommerce/main/DetailCart";
+import moment from 'moment'
 
 export default function DetailCommandeScreen() {
   const products = useSelector(ecommerceCartSelector)
@@ -24,7 +25,6 @@ export default function DetailCommandeScreen() {
 
   const [commandes, setCommandes] = useState([])
   const [commandeEntente, setCommandeEntente] = useState([])
-  console.log(commandeEntente.DATE_COMMANDE)
   const [total, setTotal] = useState(null)
   const [code, setCode] = useState(null)
   const [loadingDetailsProducts, setLoadingDetailsProducts] = useState(true)
@@ -33,19 +33,19 @@ export default function DetailCommandeScreen() {
 
   let element = 0
   const getStatusColor = idStatus => {
-    if(idStatus == 3) {
-              return COLORS.ecommercePrimaryColor
+    if (idStatus == 3) {
+      return COLORS.ecommercePrimaryColor
     }
-    if(idStatus == 4) {
-              return COLORS.primary
+    if (idStatus == 4) {
+      return COLORS.primary
     }
-    return  '#B9BDCA'
-}
-const handleCommandePress = commande => {
-  // navigation.navigate('DetailCommandeScreen', { commande })
-  navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
+    return '#B9BDCA'
+  }
+  const handleCommandePress = commande => {
+    // navigation.navigate('DetailCommandeScreen', { commande })
+    navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
 
-}
+  }
   const getCommandes = async () => {
     try {
       return await fetchApi(`/commandes/detail/${commande.ID_COMMANDE}`, {
@@ -68,9 +68,9 @@ const handleCommandePress = commande => {
       } catch (error) {
         console.log(error)
       }
-        finally {
-          setLoadingDetailsProducts(false)
-        }
+      finally {
+        setLoadingDetailsProducts(false)
+      }
     })()
   }, []))
   return (
@@ -83,46 +83,89 @@ const handleCommandePress = commande => {
           <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
         </TouchableOpacity>
       </View>
+      <ScrollView>
       <View style={styles.cardCommande}>
-            <Text style={{...styles.titlePrincipal, fontWeight:"bold"}}>{code}</Text>
-            <View style={styles.insertLigne}></View>
-            <View style={styles.cardTitleHeader}>
-              <Text style={styles.titleName}>Date d'insertion</Text>
-              <Text style={styles.titlePrincipal}>{commandeEntente.DATE_COMMANDE}</Text>
-            </View>
-            <View style={styles.insertLigne}></View>
-            <View style={styles.cardTitleHeader}>
-              <Text style={styles.titleName}>Date de livraison</Text>
-              <Text style={styles.titlePrincipal}>{commandeEntente.DATE_LIVRAISON}</Text>
-            </View>
-            <View style={{...styles.insertLigne, marginBottom:5}}></View>
-      </View>
-      
+        <ScrollView>
+        <Text style={{ ...styles.titlePrincipal, fontWeight: "bold" }}>{code}</Text>
+        <View style={styles.insertLigne}></View>
+        { commandeEntente.N0M ?<>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Nom</Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.N0M} {commandeEntente.PRENOM}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>:null}
+       {commandeEntente.ADRESSE ? <>
+       <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Adresse</Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.ADRESSE}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>:null}
 
-      {loadingDetailsProducts ? <View style={{ flex: 1, marginTop:10 }}>
-          <ActivityIndicator animating={true} size="large" color={"black"} />
-      </View>:
-      <View style={styles.products}>
-        <FlatList
-          data={commandes}
-          keyExtractor={(item, index) => index}
-          showsVerticalScrollIndicator={false}
+        {commandeEntente.ADDRESSE_PICKER ? <>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Depart</Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.ADDRESSE_PICKER}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>:null}
+        {commandeEntente.ADRESSE_DEST ?<>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Destination</Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.ADRESSE_DEST}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>:null}
+       {commandeEntente.STATUT_DESCRIPTION ? <>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Status </Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.STATUT_DESCRIPTION}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>: null}
+        {commandeEntente.CATEGORIE_DESCRIPTION ?<>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Moyen de transport</Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.CATEGORIE_DESCRIPTION}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>:null}
+        {commandeEntente.MONTANT ?<>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Montant de transport</Text>
+          <Text style={styles.titlePrincipal}>{commandeEntente.MONTANT}</Text>
+        </View>
+        <View style={styles.insertLigne}></View>
+        </>:null}
+        {commandeEntente.DATE_LIVRAISON ?<>
+        <View style={styles.cardTitleHeader}>
+          <Text style={styles.titleName}>Date de livraison</Text>
+          <Text style={styles.titlePrincipal}>{moment(commandeEntente.DATE_LIVRAISON).format('DD-MM-YYYY HH:mm:ss')}</Text>
+        </View>
+        <View style={{ ...styles.insertLigne, marginBottom: 5 }}></View>
+        </>:null}
+        
+        </ScrollView>
+      </View>
+
+
+      {loadingDetailsProducts ? <View style={{ flex: 1, marginTop: 10 }}>
+        <ActivityIndicator animating={true} size="large" color={"black"} />
+      </View> :
+        <View style={styles.products}>
           
-          // refreshControl={<RefreshControl
-          //   colors={[COLORS.ecommercePrimaryColor]} refreshing={refreshing}
-          //   onRefresh={onRefresh} />}
-          renderItem={(({ item: command, index }) => {
-            return (
-              <DetailCart
-              product={command}
-              commande={commande}
-              index={index}
-              key={index}
-            />
-            )
-          })}
-        />
-      </View>}
+            {commandes.map((commande,index)=>{
+               return (
+                <DetailCart
+                  product={commande}
+                  index={index}
+                  key={index}
+                />
+              )
+            })}
+        </View>}
+        </ScrollView>
       <View style={styles.cartFooter}>
         <View style={styles.cartFooterTotals}>
           <View style={styles.imageAmount}>
@@ -154,7 +197,7 @@ const handleCommandePress = commande => {
               <View style={[styles.nextBtn]}>
                 <Text style={[styles.navigationBtnText]}>
                   Voir le statut
-                </Text>    
+                </Text>
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -179,11 +222,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   products: {
-    paddingHorizontal: 10,
     marginHorizontal: 10,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 10
+    padding: 10,
+    marginBottom:"50%"
   },
   cardHeader: {
     flexDirection: 'row',
@@ -301,18 +344,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     overflow: "hidden"
   },
-  cardCommande:{
-    marginHorizontal:10
+  cardCommande: {
+    paddingHorizontal: 10,
+    marginHorizontal: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom:20,
+    marginTop:20
   },
-  insertLigne:{
-    borderBottomWidth:1,
-    borderBottomColor:"#ddd"
+  insertLigne: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd"
   },
-  titleName:{
+  titleName: {
     fontWeight: "bold",
+    color: COLORS.ecommercePrimaryColor,
   },
-  cardTitleHeader:{
-    marginTop:5,
-    marginBottom:5
+  cardTitleHeader: {
+    marginTop: 5,
+    marginBottom: 5
   }
 })
