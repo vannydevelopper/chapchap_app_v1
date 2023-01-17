@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, Image } from "react-native";
+import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image, ActivityIndicator } from "react-native";
 import { AntDesign, FontAwesome, Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
@@ -9,9 +9,11 @@ import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import fetchApi from "../../helpers/fetchApi";
 import { Modalize } from "react-native-modalize";
 import { TouchableNativeFeedback } from "react-native-web";
+import * as Location from 'expo-location';
 
 /**
  * screens pour afficher le produits recommandez pour vous avec une filtre des cotegories
+ * screens pour afficher le produits avec une filtre par rapport a la categories deja selectionner 
  * @author Vanny Boy <vanny@mediabox.bi>
  * @returns 
  */
@@ -20,7 +22,8 @@ export default function PlusRecommandeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
 
-        // const { products } = route.params
+        const { selectedOneCategorie, ID_PARTENAIRE_SERVICE } = route.params
+        console.log(ID_PARTENAIRE_SERVICE)
 
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
@@ -30,7 +33,8 @@ export default function PlusRecommandeScreen() {
 
         const [LoadingProducts, setLoadingProducts] = useState(true)
         const [products, setProducts] = useState([])
-        const [loadingProduits, setLoadingProduits] = useState(false)
+
+        const [shops, setShops] = useState([])
 
         const CategoriemodalizeRef = useRef()
 
@@ -62,10 +66,16 @@ export default function PlusRecommandeScreen() {
         }, [])
 
         useEffect(() => {
+                if (selectedOneCategorie) {
+                        setSelectedCategorie(selectedOneCategorie)
+                }
+        }, [])
+
+        useEffect(() => {
                 (async () => {
                         try {
                                 if (LoadingProducts == false) {
-                                        setLoadingProduits(true)
+                                        setLoadingProducts(true)
                                 }
                                 var url = "/products"
                                 if (selectedCategorie) {
@@ -78,10 +88,42 @@ export default function PlusRecommandeScreen() {
                                 console.log(error)
                         }
                         finally {
-                                setLoadingProduits(false)
+                                setLoadingProducts(false)
                         }
                 })()
         }, [selectedCategorie])
+
+        useEffect(() => {
+                const fecthShops = async (lat, long) => {
+                        try {
+                                if (lat && long) {
+                                        return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}`)
+                                }
+                                else {
+                                        return await fetchApi('/partenaire/ecommerce')
+                                }
+                        }
+                        catch (error) {
+                                throw error
+                        }
+                        // finally {
+
+                        // }
+                }
+                const askLocationFetchShops = async () => {
+                        let { status } = await Location.requestForegroundPermissionsAsync();
+                        if (status !== 'granted') {
+                                console.log('Permission to access location was denied');
+                                const shops = await fecthShops()
+                                setShops(shops.result)
+                                return;
+                        }
+                        var location = await Location.getCurrentPositionAsync({});
+                        const shops = await fecthShops(location.coords.latitude, location.coords.longitude)
+                        setShops(shops.result)
+                }
+                askLocationFetchShops()
+        }, [])
 
 
         return (<>
@@ -97,31 +139,36 @@ export default function PlusRecommandeScreen() {
                                         <EcommerceBadge />
                                 </View>
                         </View>
-                        <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
 
+                        <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
                                 <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
                                 <AntDesign name="caretdown" size={16} color="#777" />
                         </TouchableOpacity>
-                        <ScrollView>
-                                <>
-                                        {products.length == 0 ? <View style={styles.notResultat}>
-                                                <Text style={styles.textNotfound}>Pas de produits touves</Text>
-                                        </View> :
 
-                                                <View style={styles.products}>
-                                                        {products.map((product, index) => {
-                                                                return (
-                                                                        <Product
-                                                                                product={product}
-                                                                                index={index}
-                                                                                totalLength={products.length}
-                                                                                key={index}
-                                                                                fixMargins
-                                                                        />
-                                                                )
-                                                        })}
-                                                </View>}
-                                </>
+
+                        <ScrollView>
+                                {LoadingProducts ? <View style={{ marginTop: 30 }}>
+                                        <ActivityIndicator animating={true} size="large" color={"black"} />
+                                </View> :
+                                        <>
+                                                {products.length == 0 ? <View style={styles.notResultat}>
+                                                        <Text style={styles.textNotfound}>Pas de produits touvez</Text>
+                                                </View> :
+
+                                                        <View style={styles.products}>
+                                                                {products.map((product, index) => {
+                                                                        return (
+                                                                                <Product
+                                                                                        product={product}
+                                                                                        index={index}
+                                                                                        totalLength={products.length}
+                                                                                        key={index}
+                                                                                        fixMargins
+                                                                                />
+                                                                        )
+                                                                })}
+                                                        </View>}
+                                        </>}
                         </ScrollView>
                 </View>
                 <Modalize
@@ -256,5 +303,6 @@ const styles = StyleSheet.create({
                 fontWeight: "bold",
                 fontSize: 18,
                 color: "#777"
-        }
+        },
+
 })

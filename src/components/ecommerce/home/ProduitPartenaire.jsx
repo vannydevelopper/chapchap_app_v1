@@ -15,6 +15,10 @@ export default function ProduitPartenaire({ productPartenaires, ID_PARTENAIRE_SE
     const navigation = useNavigation()
     const [shops, setShops] = useState([])
 
+    const AllBoutique = () => {
+        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null, ID_PARTENAIRE_SERVICE:ID_PARTENAIRE_SERVICE  })
+    }
+
     useEffect(() => {
         (async () => {
             try {
@@ -34,7 +38,16 @@ export default function ProduitPartenaire({ productPartenaires, ID_PARTENAIRE_SE
     }, [])
     return (
         <View style={styles.homeProducts}>
-            <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: ID_PARTENAIRE_SERVICE ,shop:shops})}
+            <View>
+                <TouchableOpacity style={styles.productsHeader} onPress={AllBoutique}>
+                  <Text  style={styles.plusText}>Dans ce boutique</Text>
+                  <View>
+                      <AntDesign name="arrowright" size={24} color="black" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            {/* <TouchableNativeFeedback 
+            // onPress={() => navigation.navigate('ProductShopsScreen', { id: ID_PARTENAIRE_SERVICE ,shop:shops})}
 
                 accessibilityRole="button"
                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
@@ -60,7 +73,7 @@ export default function ProduitPartenaire({ productPartenaires, ID_PARTENAIRE_SE
 
                 </View>
 
-            </TouchableNativeFeedback>
+            </TouchableNativeFeedback> */}
 
 
             <ScrollView
@@ -90,8 +103,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: "5%",
-        marginBottom: "-3%",
+        paddingVertical: 10,
+        // marginTop: "-5%",
+        paddingHorizontal: 10,
+        marginBottom: "5%",
+        // backgroundColor:"red"
 
     },
     title: {
@@ -100,5 +116,10 @@ const styles = StyleSheet.create({
     },
     products: {
         paddingHorizontal: 10,
-    }
+    },
+    plusText: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 18,
+        fontWeight: "bold"
+    },
 })

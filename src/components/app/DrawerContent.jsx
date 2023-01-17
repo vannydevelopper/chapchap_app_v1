@@ -16,6 +16,7 @@ import fetchApi from "../../helpers/fetchApi";
 export default function DrawerContent({ state, navigation, descriptors }) {
 
   const [partenaires, setPartenaires] = useState([])
+  const [commandes, setCommandes] = useState([])
 
 
   const user = useSelector(userSelector)
@@ -46,9 +47,27 @@ export default function DrawerContent({ state, navigation, descriptors }) {
     }
   }
 
+
   useFocusEffect(useCallback(() => {
     fectPartenaires()
   }, []))
+
+  useFocusEffect(useCallback(() => {
+    (async () => {
+            try {
+                    const response = await fetchApi("/commandes/count",{
+                      method: "GET",
+                      headers: { "Content-Type": "application/json" },
+                    })
+                    setCommandes(response.result)
+            } catch (error) {
+                    console.log(error)
+            } 
+            // finally {
+            //         setLoading(false)
+            // }
+    })()
+}, []))
 
   return (
     <View style={styles.drawerContent}>
@@ -85,14 +104,20 @@ export default function DrawerContent({ state, navigation, descriptors }) {
         </TouchableNativeFeedback>
         {showServiceCommands && <View style={styles.services}>
 
-              <TouchableOpacity index={1} onPress={() => navigation.navigate("CommandeEmiseScreen",{ID_SERVICE:1})} style={{ borderRadius: 10 }}>
+              <TouchableOpacity index={1} onPress={() => navigation.navigate("CommandeEmiseScreen")} style={{ borderRadius: 10 }}>
                 <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
                   <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                     Achats des produit
                   </Text>
+                  {commandes.length > 0 ?<View style={styles.actionBadge}>
+                    <View></View>
+                    <Text style={styles.actionBadgeText}>
+                       {commandes[0].NBRE}
+                    </Text>
+                  </View>: null}
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity index={2} onPress={() => navigation.navigate("RestaurantEmiseScreen",{ID_SERVICE:2})} style={{ borderRadius: 10 }}>
+              <TouchableOpacity index={2} onPress={() => navigation.navigate("RestaurantEmiseScreen")} style={{ borderRadius: 10 }}>
                 <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
                   <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                     Restaurant
@@ -235,5 +260,24 @@ const styles = StyleSheet.create({
     color: '#777',
     marginLeft: 10,
     fontSize: 13
-  }
+  },
+ 
+  actionBadge: {
+    minWidth: 20,
+    minHeight: 18,
+    backgroundColor: "red",
+    borderRadius: 100,
+    position: 'absolute',
+    right: 3,
+    // top: -9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 3
+},
+actionBadgeText: {
+  color: '#FFF',
+  fontSize: 12,
+  marginTop: -2,
+  fontWeight: "bold"
+}
 })

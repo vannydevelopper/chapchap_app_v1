@@ -16,6 +16,11 @@ import Shop from "../../components/ecommerce/main/Shop";
 import ShopModal from "../../components/ecommerce/main/ShopModal";
 import * as Location from 'expo-location';
 
+/**
+ * Screen de home pour afficher les boutiques, les categories et les produits recommande pour vous
+ * @author Inconnu mais corriger par Vanny Boy <vanny@mediabox.bi>
+ * @returns 
+ */
 
 export default function EcommerceHomeScreen() {
     const { height } = useWindowDimensions()
@@ -49,7 +54,6 @@ export default function EcommerceHomeScreen() {
 
     const LIMIT = 10
     const onLoadMore = async () => {
-        console.log('fin')
         try {
             setIsLoadingMore(true)
             const newOffset = offset + LIMIT
@@ -81,14 +85,13 @@ export default function EcommerceHomeScreen() {
 
     const onCategoryPress = (categorie) => {
        
-        const ID_CATEGORIE_PRODUIT = categorie.ID_CATEGORIE_PRODUIT
         if (loadingSubCategories || loadingProducts) return false
         if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
             return setSelectedCategorie(null)
         }
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
-        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:ID_CATEGORIE_PRODUIT})
+        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:categorie})
     }
 
     const selectedItemSousCategories = (souscategorie) => {
@@ -102,7 +105,7 @@ export default function EcommerceHomeScreen() {
     const plusCategories = () => {
         // setIsOpen(true)
         // CategoriemodalizeRef.current?.open()
-        navigation.navigate("CategorieListeScreen", { categories: categories, selectedCategorie:null })
+        navigation.navigate("CategorieListeScreen")
     }
     const onCartPress = () => {
         // setIsOpen(true)
@@ -112,7 +115,7 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen")
+        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null, ID_PARTENAIRE_SERVICE:null})
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",
@@ -180,7 +183,7 @@ export default function EcommerceHomeScreen() {
         if (firstLoadingProducts == false) {
             setLoadingProducts(true)
         }
-        var url = "/products"
+        var url = "/     "
         if (data.product) {
             url = `/products?q=${data.product}`
         }
@@ -363,6 +366,7 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
+                
                 <TouchableOpacity style={{...styles.plus2, marginBottom:3}}  onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
@@ -389,7 +393,7 @@ export default function EcommerceHomeScreen() {
                             {categories.map((categorie, index) => {
                                 return (
                                     <>
-                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
+                                        {/* <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
                                             <View style={[styles.categoryPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
                                                 <Image source={{ uri: categorie.IMAGE }} style={[styles.DataImageCategorie, , { opacity: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? 0.2 : 1 }]} />
                                             </View>
@@ -397,6 +401,13 @@ export default function EcommerceHomeScreen() {
                                             {categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT && <View style={[styles.categoryChecked, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT }]}>
                                                 <AntDesign style={{ marginTop: 20, marginLeft: 20, color: COLORS.ecommercePrimaryColor }} name="check" size={40} color='#000' />
                                             </View>}
+                                        </TouchableOpacity> */}
+
+                                        <TouchableOpacity onPress={() => onCategoryPress(categorie)} style={[styles.category,]} key={index}>
+                                            <View style={styles.categoryPhoto}>
+                                                <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
+                                            </View>
+                                            <Text style={[{ fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                                         </TouchableOpacity>
                                     </>
                                 )
@@ -404,11 +415,11 @@ export default function EcommerceHomeScreen() {
                         </View>
                     </ScrollView>
                 }
-                {selectedCategorie ? ((loadingSubCategories || loadingProducts) ? <SubCategoriesSkeletons /> : <SubCategories
+                {/* {selectedCategorie ? ((loadingSubCategories || loadingProducts) ? <SubCategoriesSkeletons /> : <SubCategories
                     sousCategories={sousCategories}
                     selectedItemSousCategories={selectedItemSousCategories}
                     selectedsousCategories={selectedsousCategories}
-                />) : null}
+                />) : null} */}
 
                 {productsCommande.length > 0 &&
                     <TouchableOpacity style={styles.plus2}>

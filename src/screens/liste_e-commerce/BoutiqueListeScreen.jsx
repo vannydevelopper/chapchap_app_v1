@@ -6,6 +6,12 @@ import { COLORS } from "../../styles/COLORS"
 import ShopModal from "../../components/ecommerce/main/ShopModal";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 
+/**
+ * Screen pour afficher tous les boutiques des e-commerce
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @returns 
+ */
+
 export default function BoutiqueListeScreen() {
         const navigation = useNavigation()
         const route = useRoute()

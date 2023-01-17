@@ -9,10 +9,16 @@ import { useEffect } from "react";
 import fetchApi from "../../helpers/fetchApi";
 import moment from "moment/moment";
 
+/**
+ * screen pour afficher les status pour les commandes
+ * @author Darcy <darcy@mediabox.bi> modifier par Vanny Boy <vanny@mediabox.bi>
+ * @returns 
+ */
+
 export default function SearchLivreurScreen() {
           const navigation = useNavigation()
           const route = useRoute()
-          const { commande,service } = route.params
+          const { commande } = route.params
           const [status, setStatus] = useState([])
           const [loadingStatus, setLoadingStatus] = useState(true)
           const [currentStatus, setCurrentStatus] = useState(null)
@@ -27,28 +33,20 @@ export default function SearchLivreurScreen() {
                     },
           })
 
+          const voirDetails = () =>{
+                navigation.navigate("DetailCommandeScreen", {commande:commande})
+          }
+
           useEffect(() => {
                     (async () => {
                               try {
-                                 if(service==1)
-                                 {
-                                    var stts = await fetchApi(`/commandes/status/${commande.ID_COMMANDE}`, {
-                                        cacheData: false,
-                                        checkInCacheFirst: false
-                              })
-                                 }
-                                 else if(service==2)
-                                 {
-                                    var stts = await fetchApi(`/commandes/status/resto/${commande.ID_COMMANDE}`, {
-                                        cacheData: false,
-                                        checkInCacheFirst: false
-                              })
-                                 }
-                                        
+                                        const stts = await fetchApi(`/commandes/status/${commande.ID_COMMANDE}`, {
+                                                  cacheData: false,
+                                                  checkInCacheFirst: false
+                                        })
                                         const current = stts.result.find(st => st.ID_STATUT == commande.ID_STATUT)
                                         const pedding = stts.result.find(st => st.ID_STATUT == current.NEXT_ID_STATUT)
                                         setCurrentStatus(current)
-                                       
                                         setPeddingStatus(pedding)
                                         setStatus(stts.result)
                               } catch (error) {
@@ -76,7 +74,7 @@ export default function SearchLivreurScreen() {
                                         <Text style={styles.titlePrincipal}>
                                                   { currentStatus?.NEXT_STATUS }
                                         </Text>
-                                        {currentStatus?.ID_STATUT == 4 ? <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/check.json')} autoPlay loop={false} /> :
+                                        {currentStatus.ID_STATUT == 4 ? <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/check.json')} autoPlay loop={false} /> :
                                         <LottieView style={{ width: 100, height: 100, alignSelf: "center" }} source={require('../../../assets/lotties/loading.json')} autoPlay loop={true} />}
                               </View>
                               <View style={styles.cardStatus}>
@@ -173,10 +171,7 @@ export default function SearchLivreurScreen() {
                                                                       <Ionicons name="close" size={30} color="#777" />
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback useForeground onPress={() => {
-                                                            // navigation.navigate('EcommerceHomeScreen')
-                                                            navigation.goBack()
-                                                  }}>
+                                                  <TouchableNativeFeedback useForeground onPress={voirDetails}>
                                                             <View style={[styles.nextBtn]}>
                                                                       <Text style={[styles.navigationBtnText]}>
                                                                                 Voir la commande
