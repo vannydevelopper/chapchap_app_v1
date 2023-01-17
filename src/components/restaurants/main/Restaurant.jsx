@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     maxWidth: 200,
-    marginBottom: 20
+    marginBottom: 20,
+    
   },
   imageCard: {
     borderRadius: 10,
@@ -58,13 +59,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+   
   },
   image: {
     height: "100%",
     width: "100%",
     borderRadius: 10,
     resizeMode: 'contain',
+    
+    
   },
   shopName: {
     color: COLORS.ecommercePrimaryColor,

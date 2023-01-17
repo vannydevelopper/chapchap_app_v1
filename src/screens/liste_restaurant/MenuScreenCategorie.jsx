@@ -7,21 +7,19 @@ import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import Menu from "../../components/restaurants/main/Menu";
 import { Modalize } from "react-native-modalize";
 import fetchApi from "../../helpers/fetchApi";
-import { ActivityIndicator } from "react-native-paper";
 
-export default function MenuScreen() {
+export default function MenuScreenCategorie() {
     const navigation = useNavigation()
     const MenumodalizeRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
     const [categories, setCategories] = useState([])
-    const [selectedCategorie, setselectedCategorie] = useState(null)
-    const [loadingMenus, setLoadingMenus] = useState(true)
+    const [select, setSelect] = useState(null)
     const route = useRoute()
-    const {onSelectecategorie} = route.params
-    //console.log(onSelectecategorie)
+    const categorie = route.params
+    //console.log(categorie.categorie.NOM)
     const [menus, setMenus] = useState([])
 
-    //const route = useRoute()
+    // const route = useRoute()
     const openmodalize = () => {
         setIsOpen(true)
         MenumodalizeRef.current?.open()
@@ -30,14 +28,8 @@ export default function MenuScreen() {
     const selectedMenu = (categorie) => {
         MenumodalizeRef.current?.close()
         //console.log(categorie)
-        setselectedCategorie(categorie)
+        setSelect(categorie)
     }
-
-    useEffect(() => {
-        if (onSelectecategorie) {
-            setselectedCategorie(onSelectecategorie)
-        }
-    }, [])
 
     useEffect(() => {
         (async () => {
@@ -56,26 +48,20 @@ export default function MenuScreen() {
     }, [])
 
     useEffect(() => {
-
         (async () => {
             try {
-
                 var url = "/resto/menu"
-                if (selectedCategorie) {
-                    url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                if (select) {
+                    url = `/resto/menu?category=${select?.ID_CATEGORIE_MENU}`
                 }
                 const menus = await fetchApi(url)
                 setMenus(menus.result)
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setLoadingMenus(false)
             }
-
-
+            catch (error) {
+                console.log(error)
+            }
         })()
-
-    }, [selectedCategorie])
+    }, [select])
 
     return (
         <>
@@ -93,36 +79,35 @@ export default function MenuScreen() {
 
                     </View>
                 </View>
-
                 <TouchableOpacity onPress={openmodalize} style={styles.modelCard} >
-                    <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
+
+                    <Text style={styles.inputText}>{select ? select.NOM : categorie.categorie.NOM}</Text>
                     <AntDesign name="caretdown" size={16} color="#777" />
+
+
                 </TouchableOpacity>
 
 
 
 
                 <ScrollView>
-                    {loadingMenus ?
-                        <View style={{ marginTop: 30 }}>
-                            <ActivityIndicator size={"large"} color="#777" />
-                        </View>
-                        : menus.length == 0 ? <View style={styles.notMenu}>
-                            <Text style={styles.textNotFound}>Aucun menu trouvez</Text>
-                        </View> :
-                            <View style={styles.products}>
-                                {menus.map((menu, index) => {
-                                    return (
-                                        <Menu
-                                            menu={menu}
-                                            index={index}
-                                            totalLength={menus.length}
-                                            key={index}
-                                            fixMargins
-                                        />
-                                    )
-                                })}
-                            </View>}
+                    {menus.length == 0 ? <View style={styles.notMenu}>
+                        <Text style={styles.textNotFound}>Aucun menu trouvez</Text>
+                    </View> :
+                        <View style={styles.products}>
+
+                            {menus.map((menu, index) => {
+                                return (
+                                    <Menu
+                                        menu={menu}
+                                        index={index}
+                                        totalLength={menus.length}
+                                        key={index}
+                                        fixMargins
+                                    />
+                                )
+                            })}
+                        </View>}
                 </ScrollView>
 
 

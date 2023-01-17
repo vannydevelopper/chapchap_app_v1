@@ -19,7 +19,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
     const navigation = useNavigation()
     const { width } = useWindowDimensions()
     const PRODUCT_MARGIN = 10
-    const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
+    const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 5
     const PRODUCT_HEIGHT = 270
     const additionStyles = {
         width: PRODUCT_WIDTH,
@@ -109,7 +109,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
             <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', { product: menu })} style={styles.imageCard}>
                 {/* <Image source={{ uri: menu.IMAGE }} style={styles.image} />
                  */}
-                 <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={20}  imageStyle={{ opacity: 0.8 }}>
+                 <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]}  marginTop={2} mag borderRadius={15}  imageStyle={{ opacity: 0.8 }}>
             </ImageBackground>
             </TouchableOpacity>
             <View style={{ flexDirection: "row",marginLeft:5 }}>
@@ -172,20 +172,23 @@ const styles = StyleSheet.create({
         fontSize:15
     }, 
     serviceBackgound: {
-        width: "90%",
-        height: "90%",
+        width: "100%",
+        height: "100%",
          justifyContent: 'center',
+         
     },
     product: {
         maxWidth: 300,
-        marginBottom:-40,
+        marginBottom:-40
+        // flex:1
         
     },
     imageCard: {
         borderRadius: 8,
         height: "50%",
         width: "100%",
-        marginTop:0
+        marginTop:0,
+       
     },
     image: {
         height: "100%",

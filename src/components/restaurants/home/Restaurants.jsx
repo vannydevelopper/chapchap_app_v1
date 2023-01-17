@@ -36,6 +36,8 @@ export default function Restaurants({ lat, long, restaurants }) {
 const styles = StyleSheet.create({
     homeshops: {
         marginBottom: "-6%",
+        marginTop:-11,
+        
 
 
 
@@ -53,8 +55,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     shops: {
-        paddingHorizontal: 10,
-        marginTop: 5,
+        paddingHorizontal:2,
+        marginTop:0,
+        
 
 
     }

@@ -15,7 +15,7 @@ import { restaurantProductSelector } from '../../../store/selectors/restaurantCa
 import { useCallback } from 'react';
 import fetchApi from '../../../helpers/fetchApi';
 
-export default function MenuPartenaire({ menu, index, totalLength, fixMargins = false, onRemove }) {
+export default function MenuPartenaire({ menu,menus, index, totalLength, fixMargins = false, onRemove }) {
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
@@ -107,7 +107,7 @@ export default function MenuPartenaire({ menu, index, totalLength, fixMargins = 
   }, [isOpen])
   return (
     <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 10 }]}>
-      <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', { product: menu })} style={styles.imageCard}>
+      <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', { product: menu,menus:menus })} style={styles.imageCard}>
         <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={-10} marginTop={2} mag borderRadius={20} imageStyle={{ opacity: 0.8 }}>
           <View style={{ marginTop: 120, marginRight: 0 }}>
             <Text style={styles.productName1}>{menu.repas}</Text>

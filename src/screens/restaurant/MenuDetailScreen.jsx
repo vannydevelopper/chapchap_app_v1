@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -8,7 +8,8 @@ import { restaurantProductSelector } from '../../store/selectors/restaurantCartS
 import { addMenuAction } from "../../store/actions/restaurantCartActions";
 import { useSelector } from 'react-redux';
 import ImageView from "react-native-image-viewing";
-
+import fetchApi from "../../helpers/fetchApi";
+import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
 
 export default function MenuDetailScreen() {
 
@@ -17,10 +18,17 @@ export default function MenuDetailScreen() {
     const dispatch = useDispatch()
     const [imageIndex, setImageIndex] = useState(0)
     const [showImageModal, setShowImageModal] = useState(false)
-    const { product } = route.params
+    const { product, menus } = route.params
+    console.log(product)
+    const [selectedRestaurant, setselectedRestaurant] = useState([])
+    const [selectedCategorieMenu, setselectedCategorieMenu] = useState([])
     const MenuInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
 
     const [amount, setAmount] = useState(1)
+    const menuPress = () => {
+        navigation.navigate("MenuScreen", { onSelectecategorie: false })
+
+    }
     if (MenuInCart) {
         const l = MenuInCart.QUANTITE
         useState(l => parseInt(l))
@@ -85,6 +93,54 @@ export default function MenuDetailScreen() {
     const isValid = () => {
         return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
     }
+    useEffect(() => {
+        (async () => {
+
+            try {
+                var url = `/resto/menu/restaurant/${product.ID_PARTENAIRE_SERVICE}`
+                const menuRestaurant = await fetchApi(url)
+                setselectedRestaurant(menuRestaurant.result)
+               // console.log(selectedRestaurant)
+            } catch (error) {
+                console.log(error)
+            }
+
+
+        })()
+
+    }, [product.ID_PARTENAIRE_SERVICE])
+
+
+
+    useEffect(() => { 
+        (async () => {
+
+            try {
+               const categorieMenu = await fetchApi(`/resto/menu?category=${product?.ID_CATEGORIE_MENU}`)
+
+                setselectedCategorieMenu(categorieMenu.result)
+                //console.log(selectedCategorieMenu)
+            } catch (error) {
+                console.log(error)
+            }
+
+
+        })()
+
+    }, [product.ID_CATEGORIE_MENU])
+
+    const menuSimilaire = () => {
+
+
+
+        navigation.navigate("MenuScreen",{onSelectecategorie:product})
+    }
+    const menuResto = () => {
+
+     navigation.navigate("MenuScreen",{onSelectecategorie:selectedRestaurant})
+    }
+    
+
     return (
         <>
             <ScrollView >
@@ -122,10 +178,10 @@ export default function MenuDetailScreen() {
                         </View>
                         <View style={{ flexDirection: "row" }}>
                             <AntDesign name="clockcircleo" size={15} color="#797E9A" />
-                            <Text style={{ fontSize: 10, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
+                            <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
                         </View>
                         <View style={{ marginTop: -5 }}>
-                            <Text style={styles.textFbu}>{product.PRIX} Fbu</Text>
+                            <Text style={styles.textFbu}>{product.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
                         </View>
                     </View>
                     <View style={{ marginTop: 10 }} >
@@ -136,6 +192,66 @@ export default function MenuDetailScreen() {
                             {product.DESCRIPTION ? product.DESCRIPTION : "Aucun description"}
                         </Text>
                     </View>
+                    <TouchableOpacity onPress={menuSimilaire}>
+                        <View style={{ ...styles.plus, marginBottom: 1 }}>
+                            <Text style={styles.plusText}>Similaires</Text>
+                            <View style={{ marginLeft: 100 }}>
+                                <View>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    <ScrollView
+                        style={styles.shops}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        {selectedCategorieMenu.map((menu, index) => {
+                            return (
+                                <MenuPartenaire
+                                    menu={menu}
+                                    menus={menus}
+                                    index={index}
+                                    totalLength={selectedCategorieMenu.length}
+                                    key={index}
+                                    fixMargins
+                                />
+                            )
+                        })}
+                    </ScrollView>
+
+
+                    <TouchableOpacity onPress={menuResto} >
+                        <View style={{ ...styles.plus, marginBottom: 1 }}>
+                            <Text style={styles.plusText}>Dans ce restaurant</Text>
+                            <View style={{ marginLeft: 100 }}>
+                                <View>
+                                    <AntDesign name="arrowright" size={24} color="black" />
+                                </View>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+
+                    <ScrollView
+                        style={styles.shops}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                    >
+                        {selectedRestaurant.map((menu, index) => {
+                            return (
+                                <MenuPartenaire
+                                    menu={menu}
+                                    menus={menus}
+                                    index={index}
+                                    totalLength={selectedRestaurant.length}
+                                    key={index}
+                                    fixMargins
+                                />
+                            )
+                        })}
+                    </ScrollView>
+
 
                 </View>
                 {showImageModal &&
@@ -150,11 +266,11 @@ export default function MenuDetailScreen() {
                 }
             </ScrollView >
             <View style={{ marginLeft: 30, marginHorizontal: 20 }}>
-                <View style={{ marginTop: 10 }}>
+                {/* <View style={{ marginTop: 10 }}>
                     <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
-                </View>
+                </View> */}
                 <View style={styles.moreDetails}>
-                    <View style={styles.amountContainer}>
+                    {/* <View style={styles.amountContainer}>
                         <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
                             <Text style={styles.amountChangerText}>-</Text>
                         </TouchableOpacity>
@@ -172,21 +288,25 @@ export default function MenuDetailScreen() {
                         <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
                             <Text style={styles.amountChangerText}>+</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
 
                 </View>
                 <View>
-                    <View style={{ flexDirection: "row", justifyContent: 'space-around', marginTop: 40 }}>
-                        <View style={styles.carre}>
-                            <AntDesign name="sharealt" size={20} color="black" />
-                        </View>
-                        <View style={styles.carre}>
-                            <AntDesign name="shoppingcart" size={20} color="black" />
-                        </View>
-                        <TouchableOpacity style={[{ opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                            <View style={styles.carre3}>
-                                <Text style={{ textAlign: 'center', color: 'white', fontWeight: "bold" }}>Ajouter au panier</Text>
-                            </View>
+                    <View style={styles.productFooter}>
+                        <Text style={styles.productPrice}>{product.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+
+                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} disabled={!isValid()} onPress={onAddToCart}>
+                            <>
+                                <View>
+                                    <Ionicons name="cart" size={24} color="#fff" />
+                                </View>
+                                <Text style={styles.addCartBtnTitle}>
+                                    Ajouter au panier
+                                </Text>
+                                {/* <View style={styles.badge}>
+                                    <Text style={styles.badgeText} numberOfLines={1}></Text>
+                                </View>  */}
+                            </>
                         </TouchableOpacity>
 
                     </View>
@@ -203,8 +323,33 @@ const styles = StyleSheet.create({
         width: '120%',
         height: 280,
         alignSelf: 'center',
-        borderBottomLeftRadius: 60,
-        borderBottomRightRadius: 60,
+        //borderBottomLeftRadius: 60,
+        //borderBottomRightRadius: 60,
+    },
+    plus: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        // marginTop: "-5%",
+        paddingHorizontal: 10,
+        marginBottom: "5%",
+
+        // backgroundColor:"red"
+    },
+    shops: {
+        paddingHorizontal: 10,
+    },
+    plusText: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 20,
+        fontWeight: "bold",
+        marginTop: 1
+    },
+    addCartBtnTitle: {
+        textAlign: 'center',
+        color: '#fff',
+        fontWeight: 'bold'
     },
     text: {
         color: '#242F68',
@@ -214,7 +359,9 @@ const styles = StyleSheet.create({
     addCartBtnTitle: {
         textAlign: 'center',
         color: '#fff',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginTop: -25,
+        fontSize: 15
     },
     text1: {
         color: '#242F68',
@@ -222,9 +369,9 @@ const styles = StyleSheet.create({
         fontSize: 16
     },
     textFbu: {
-        color: 'red',
+        color: 'black',
         fontWeight: "bold",
-        fontSize: 15
+        fontSize: 25
     },
     badge: {
         minWidth: 25,
@@ -290,7 +437,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         top: "8%",
-             
+
     },
     cartBtn: {
         marginTop: 10,
@@ -329,7 +476,7 @@ const styles = StyleSheet.create({
         // marginTop: 1,
     },
     moreDetails: {
-        marginTop:10
+        marginTop: 10
     },
     input: {
         borderRadius: 5,
@@ -412,5 +559,46 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         left: 270,
         position: 'absolute',
+    },
+    addCartBtn: {
+        borderRadius: 30,
+        backgroundColor: COLORS.ecommerceOrange,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    addCartBtnTitle: {
+        textAlign: 'center',
+        color: '#fff',
+        fontWeight: 'bold'
+    },
+    badge: {
+        minWidth: 25,
+        minHeight: 20,
+        borderRadius: 20,
+        paddingHorizontal: 3,
+        backgroundColor: COLORS.ecommerceRed,
+        position: 'absolute',
+        top: -10,
+        right: 0,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    badgeText: {
+        textAlign: 'center',
+        fontSize: 10,
+        color: '#FFF',
+        fontWeight: "bold"
+    },
+    productFooter: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 10,
+    },
+    productPrice: {
+        fontWeight: "bold",
+        fontSize: 22
     },
 })

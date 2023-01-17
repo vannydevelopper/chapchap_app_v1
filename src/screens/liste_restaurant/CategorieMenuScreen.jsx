@@ -11,6 +11,10 @@ export default function CategorieMenuScreen() {
     const navigation = useNavigation()
     const route = useRoute()
     const { categories } = route.params
+    const onCategoryPress = (categorie) => {
+
+       navigation.navigate("MenuScreen",{onSelectecategorie:categorie})
+    }
     //console.log(categories)
     return (
         <View style={styles.container}>
@@ -31,6 +35,7 @@ export default function CategorieMenuScreen() {
                 <View style={styles.resto}>
                     {categories.map((categorie, index) => {
                         return (
+                            <TouchableOpacity onPress={() => onCategoryPress(categorie)}>
                             <View style={{ ...styles.category, margin: 15 }} >
                                 <View style={styles.categoryPhoto}>
                                     <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
@@ -40,6 +45,7 @@ export default function CategorieMenuScreen() {
                                 </View>
                                 <Text style={[{ fontSize: 14, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
                             </View>
+                            </TouchableOpacity>
                         )
                     })}
                 </View>

@@ -21,7 +21,6 @@ export default function RestaurantHomeScreen() {
     const [loadingResto, setLoadingResto] = useState(true)
     const [categories, setCategories] = useState([])
     const [selectedCategorie, setSelectedCategorie] = useState(null)
-
     const modalizeRef = useRef(null)
     const CategoriemodalizeRef = useRef(null)
     const MenumodalizeRef = useRef(null)
@@ -57,7 +56,7 @@ export default function RestaurantHomeScreen() {
         // CategoriemodalizeRef.current?.open()
     }
     const menuPress = () => {
-        navigation.navigate("MenuScreen")
+        navigation.navigate("MenuScreen", { onSelectecategorie: false })
         // setIsOpen(true)
         // MenumodalizeRef.current?.open()
     }
@@ -81,13 +80,9 @@ export default function RestaurantHomeScreen() {
 
     const onCategoryPress = (categorie) => {
 
-        if (loadingSubCategories || loadingMenus) return false
-        if (categorie.ID_CATEGORIE_MENU == selectedCategorie?.ID_CATEGORIE_MENU) {
-            return setSelectedCategorie(null)
-        }
-        setSelectedCategorie(categorie)
-        setSelectedsousCategories(null)
-        CategoriemodalizeRef.current?.close()
+
+
+        navigation.navigate("MenuScreen", { onSelectecategorie: categorie })
     }
     useEffect(() => {
         (async () => {
@@ -178,7 +173,7 @@ export default function RestaurantHomeScreen() {
                 <RestaurantBadge />
             </View>
             <Text style={styles.titlePrincipal}>Restaurations</Text>
-            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: "1%", paddingHorizontal: 10 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: -10, paddingHorizontal: 10, marginTop: -15 }}>
                 <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
                     <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                     <Text style={styles.input}>Rechercher.......</Text>
@@ -188,9 +183,9 @@ export default function RestaurantHomeScreen() {
                 </View>
             </View>
             <ScrollView>
-                <TouchableOpacity onPress={onCartPress} style={{ ...styles.plus, marginBottom: 2, marginTop: 10 }}>
+                <TouchableOpacity onPress={onCartPress} style={{ ...styles.plus1 }}>
                     <View>
-                        <Text style={styles.plusText}>Restaurants  proches</Text>
+                        <Text style={styles.plusText}>Restaurants</Text>
                     </View>
                     <View style={{ marginLeft: 100 }}>
                         <View>
@@ -433,7 +428,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: StatusBar.currentHeight,
         height: 60,
-        marginBottom: "-3%"
+        marginBottom: "-3%",
+
     },
     menuOpener: {
     },
@@ -456,7 +452,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: "1%",
         color: COLORS.ecommercePrimaryColor,
-        marginHorizontal: 10
+        marginHorizontal: 10,
+
     },
 
     searchSection1: {
@@ -476,7 +473,7 @@ const styles = StyleSheet.create({
     },
     searchSection: {
         flexDirection: "row",
-        marginTop: 5,
+        marginTop: 20,
         padding: 5,
         borderRadius: 10,
         borderWidth: 1,
@@ -517,6 +514,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold",
         marginTop: 1
+    },
+    plusText1: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 20,
+        fontWeight: "bold",
+
     },
     cardRecherche: {
         width: 50,
