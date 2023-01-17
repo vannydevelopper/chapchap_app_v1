@@ -22,7 +22,7 @@ export default function CategorieListeScreen() {
         const [loadingCategories, setLoadingCategories] = useState(true)
 
         const onCategoryPress = (categorie) => {
-                navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: categorie })
+                navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: categorie, ID_PARTENAIRE_SERVICE:null })
         }
 
         useEffect(() => {

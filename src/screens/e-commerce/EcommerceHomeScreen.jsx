@@ -54,7 +54,6 @@ export default function EcommerceHomeScreen() {
 
     const LIMIT = 10
     const onLoadMore = async () => {
-        console.log('fin')
         try {
             setIsLoadingMore(true)
             const newOffset = offset + LIMIT
@@ -116,7 +115,7 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null})
+        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null, ID_PARTENAIRE_SERVICE:null})
     }
     const [data, handleChange, setValue] = useForm({
         shop: "",

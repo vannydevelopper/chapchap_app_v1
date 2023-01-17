@@ -9,6 +9,7 @@ import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import fetchApi from "../../helpers/fetchApi";
 import { Modalize } from "react-native-modalize";
 import { TouchableNativeFeedback } from "react-native-web";
+import * as Location from 'expo-location';
 
 /**
  * screens pour afficher le produits recommandez pour vous avec une filtre des cotegories
@@ -21,7 +22,8 @@ export default function PlusRecommandeScreen() {
         const navigation = useNavigation()
         const route = useRoute()
 
-        const { selectedOneCategorie } = route.params
+        const { selectedOneCategorie, ID_PARTENAIRE_SERVICE } = route.params
+        console.log(ID_PARTENAIRE_SERVICE)
 
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
@@ -31,6 +33,8 @@ export default function PlusRecommandeScreen() {
 
         const [LoadingProducts, setLoadingProducts] = useState(true)
         const [products, setProducts] = useState([])
+
+        const [shops, setShops] = useState([])
 
         const CategoriemodalizeRef = useRef()
 
@@ -90,9 +94,35 @@ export default function PlusRecommandeScreen() {
         }, [selectedCategorie])
 
         useEffect(() => {
-                (async () => {
+                const fecthShops = async (lat, long) => {
+                        try {
+                                if (lat && long) {
+                                        return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}`)
+                                }
+                                else {
+                                        return await fetchApi('/partenaire/ecommerce')
+                                }
+                        }
+                        catch (error) {
+                                throw error
+                        }
+                        // finally {
 
-                })()
+                        // }
+                }
+                const askLocationFetchShops = async () => {
+                        let { status } = await Location.requestForegroundPermissionsAsync();
+                        if (status !== 'granted') {
+                                console.log('Permission to access location was denied');
+                                const shops = await fecthShops()
+                                setShops(shops.result)
+                                return;
+                        }
+                        var location = await Location.getCurrentPositionAsync({});
+                        const shops = await fecthShops(location.coords.latitude, location.coords.longitude)
+                        setShops(shops.result)
+                }
+                askLocationFetchShops()
         }, [])
 
 
@@ -117,7 +147,7 @@ export default function PlusRecommandeScreen() {
 
 
                         <ScrollView>
-                                {LoadingProducts ? <View style={{ marginTop:30}}>
+                                {LoadingProducts ? <View style={{ marginTop: 30 }}>
                                         <ActivityIndicator animating={true} size="large" color={"black"} />
                                 </View> :
                                         <>

@@ -39,7 +39,7 @@ export default function ProductDetailsScreen() {
   const user = useSelector(userSelector)
   //console.log(user.result.ID_USER)
   const { product } = route.params
-  console.log(product)
+  // console.log(product.produit_partenaire.ID_PARTENAIRE_SERVICE)
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
@@ -232,6 +232,7 @@ export default function ProductDetailsScreen() {
           <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
             <Text style={styles.productDescription}>{product.produit_partenaire.DESCRIPTION}</Text>
           </View>
+
           <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: product.produit_partenaire.ID_PARTENAIRE_SERVICE })}>
             <View style={styles.shop}>
               <View style={styles.shopLeft}>
@@ -263,149 +264,19 @@ export default function ProductDetailsScreen() {
                   </View>
                 </View>
               }
-
             </View>
           </TouchableNativeFeedback>
-          {/* <View>
-            <Text>
-              {JSON.stringify({ note })}
-            </Text>
-          </View> */}
-
-          {/* {!userNote[0] ?
-            <>
-              <View style={styles.etoiles}>
-                {new Array(5).fill(0).map((_, index) => {
-                  return (
-                    <TouchableWithoutFeedback onPress={() => onetoilePress(index + 1)}>
-                      <View >
-                        {note && note >= index + 1 ? <FontAwesome name="star" size={20} color={COLORS.primaryPicker} /> :
-
-                          <FontAwesome name="star-o" size={20} color="black" />}
-                      </View>
-                    </TouchableWithoutFeedback>
-                  )
-                })}
-              </View>
-              {note && <View style={styles.inputCard}>
-                <View>
-                  <OutlinedTextField
-                    label="Commentaire"
-                    fontSize={14}
-                    baseColor={COLORS.smallBrown}
-                    tintColor={COLORS.primary}
-                    containerStyle={{ borderRadius: 20 }}
-                    multiline={true}
-                    value={commentaire}
-                    onChangeText={(t) => Setcommentaire(t)}
-
-                    autoCompleteType='off'
-                    returnKeyType="next"
-                    blurOnSubmit={false}
-                  />
-                </View>
-
-              </View>}
-              {note && <TouchableWithoutFeedback
-                onPress={enregistrement}
-              >
-                <View style={[styles.button,]}>
-                  <Text style={styles.buttonText} >Enregistrer</Text>
-
-                </View>
-              </TouchableWithoutFeedback>}
-              {produitnote.map((note, index) => {
-                return (
-                  <View key={index} style={{ marginTop: 15 }}>
-                    <View style={styles.notecard}>
-                      <View style={styles.Cardnote} >
-                        <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
-                      </View>
-                      <View style={styles.rateHeader}>
-                        <View style={styles.rateTitles}>
-                          <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
-                          <Text style={{ color: '#777', marginRight: 10 }}>
-                            {moment(note.produit_note.DATE).format('DD-M-YYYY')}
-                          </Text>
-                        </View>
-                        <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
-                          {new Array(5).fill(0).map((_, index) => {
-                            return (
-                              <TouchableWithoutFeedback >
-                                <View >
-                                  {note.produit_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
-
-                                    <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
-
-                                </View>
-                              </TouchableWithoutFeedback>
-                            )
-                          })}
-                        </View>
-                      </View>
-                    </View>
-
-                    <View style={{ marginLeft: 60, marginTop: 7 }}>
-                      <Text>{note.produit_note.COMENTAIRE}</Text>
-                    </View>
-                  </View>
-                )
-
-              })}
-            </> :
-            <>
-              {produitnote.map((note, index) => {
-                return (
-                  <View key={index} style={{ marginTop: 15 }}>
-                    <View style={styles.notecard}>
-                      <View style={styles.Cardnote} >
-                        <Image source={{ uri: note.utilisateur.IMAGE }} style={styles.userImage} />
-                      </View>
-                      <View style={styles.rateHeader}>
-                        <View style={styles.rateTitles}>
-                          <Text style={{ fontWeight: 'bold', opacity: 0.6 }}>{note.utilisateur.NOM}  {note.utilisateur.PRENOM}</Text>
-                          <Text style={{ color: '#777', marginRight: 10 }}>
-                            {moment(note.produit_note.DATE).format('DD-M-YYYY')}
-                          </Text>
-                        </View>
-                        <View style={[styles.etoiles, { justifyContent: 'flex-start', paddingHorizontal: 0, marginTop: 3 }]}>
-                          {new Array(5).fill(0).map((_, index) => {
-                            return (
-                              <TouchableWithoutFeedback >
-                                <View >
-                                  {note.produit_note.NOTE >= index + 1 ? <FontAwesome name="star" size={15} color={COLORS.primaryPicker} style={{ marginLeft: 2 }} /> :
-
-                                    <FontAwesome name="star-o" size={15} color="black" style={{ marginLeft: 2 }} />}
-
-                                </View>
-                              </TouchableWithoutFeedback>
-                            )
-                          })}
-                        </View>
-                      </View>
-                    </View>
-
-                    <View style={{ marginLeft: 60, marginTop: 7 }}>
-                      <Text>{note.produit_note.COMENTAIRE}</Text>
-                    </View>
-                  </View>
-                )
-
-              })}
-            </>
-          } */}
-
 
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
             <>
-              <View
-                accessibilityRole="button"
-                background={TouchableNativeFeedback.Ripple('#c9c5c5')}
-              >
-                <View style={styles.productsHeader}>
-                  <Text style={styles.title}>Similaires</Text>
-                </View>
+              <View>
+                <TouchableOpacity style={styles.productsHeader}>
+                  <Text  style={styles.plusText}>Similaires</Text>
+                  <View>
+                      <AntDesign name="arrowright" size={24} color="black" />
+                  </View>
+                </TouchableOpacity>
               </View>
               <View style={styles.products}>
                 {similarProducs.map((product, index) => {
@@ -539,7 +410,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingVertical: 10,
     paddingHorizontal: 10,
-    marginBottom: -20
+    marginBottom: -5
   },
   shopLeft: {
     flexDirection: "row",
@@ -628,10 +499,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: "-1%",
-    marginBottom: "-3%",
     paddingVertical: 10,
-    paddingHorizontal: 10
+    // marginTop: "-5%",
+    paddingHorizontal: 10,
+    marginBottom: "5%",
+    // backgroundColor:"red"
   },
   title: {
     color: COLORS.ecommercePrimaryColor,
@@ -732,5 +604,10 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#FFF',
     fontWeight: "bold"
-  }
+  },
+  plusText: {
+    color: COLORS.ecommercePrimaryColor,
+    fontSize: 18,
+    fontWeight: "bold"
+},
 })
