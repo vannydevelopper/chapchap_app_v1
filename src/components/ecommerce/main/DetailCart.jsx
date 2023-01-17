@@ -6,15 +6,16 @@ import { useDispatch } from 'react-redux'
 import { addProductAction, removeProductAction } from '../../../store/actions/ecommerceCartActions'
 import { COLORS } from '../../../styles/COLORS'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'
 
 export default function DetailCart({ product, index }) {
         const totalPrice = product.PRIX * product.QUANTITE
-
+        const navigation = useNavigation()
         return (
                 <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
-                        <View style={styles.productImage}>
+                        <TouchableOpacity style={styles.productImage} onPress={() => navigation.push('ProductDetailsScreen', { product: product })}>
                                 <Image source={{ uri: product.IMAGE_1 }} style={styles.image} />
-                        </View>
+                        </TouchableOpacity>
                         <View style={styles.productDetails}>
                                 <View style={styles.detailsHeader}>
                                         <View style={styles.productNames}>

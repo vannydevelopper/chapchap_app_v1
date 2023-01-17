@@ -184,7 +184,7 @@ export default function EcommerceHomeScreen() {
         if (firstLoadingProducts == false) {
             setLoadingProducts(true)
         }
-        var url = "/products"
+        var url = "/     "
         if (data.product) {
             url = `/products?q=${data.product}`
         }

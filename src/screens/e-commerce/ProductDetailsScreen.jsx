@@ -39,6 +39,7 @@ export default function ProductDetailsScreen() {
   const user = useSelector(userSelector)
   //console.log(user.result.ID_USER)
   const { product } = route.params
+  console.log(product)
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
