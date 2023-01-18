@@ -50,9 +50,9 @@ export default function EcommerceHomeScreen() {
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
 
-    const LIMIT = 10
+    const LIMIT = 4
 
-    const isCloseToBottom = useCallback(({layoutMeasurement, contentOffset, contentSize}) => {
+    const isCloseToBottom = useCallback(({ layoutMeasurement, contentOffset, contentSize }) => {
         const paddingToBottom = 20;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
     }, []);
@@ -61,9 +61,15 @@ export default function EcommerceHomeScreen() {
         try {
             setIsLoadingMore(true)
             const newOffset = offset + LIMIT
-            const pts = await getProducts(newOffset)
-            setOffset(newOffset)
-            setProducts(p => [...p, ...pts.result])
+            if(newOffset < 8){
+                const pts = await getProducts(newOffset)
+                setOffset(newOffset)
+                setProducts(p => [...p, ...pts.result])
+            }
+            else{
+                setIsLoadingMore(false)
+            }
+               
         } catch (error) {
             console.log(error)
         } finally {
@@ -89,14 +95,14 @@ export default function EcommerceHomeScreen() {
     }, []))
 
     const onCategoryPress = (categorie) => {
-       
+
         if (loadingSubCategories || loadingProducts) return false
         if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
             return setSelectedCategorie(null)
         }
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
-        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:categorie})
+        navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: categorie })
     }
 
     const selectedItemSousCategories = (souscategorie) => {
@@ -120,7 +126,7 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null, ID_PARTENAIRE_SERVICE:null})
+        navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: null, ID_PARTENAIRE_SERVICE: null })
     }
     //fetch des sous  categories
     useEffect(() => {
@@ -144,23 +150,23 @@ export default function EcommerceHomeScreen() {
 
 
     const getProducts = useCallback(async (offset = 0) => {
-        try{
+        try {
             if (firstLoadingProducts == false) {
                 setLoadingProducts(true)
             }
-            var url = `/products?limit=10&offset=${offset}&`
+            var url = `/products?limit=${LIMIT}&offset=${offset}&`
             if (selectedCategorie) {
-                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&limit=10&offset=${offset}&`
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&limit=${LIMIT}&offset=${offset}&`
             }
             if (selectedsousCategories) {
                 url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
             }
             return await fetchApi(url)
         }
-        catch(error){
+        catch (error) {
             console.log(error)
         }
-      
+
     }, [selectedCategorie, selectedsousCategories])
 
     useFocusEffect(useCallback(() => {
@@ -255,7 +261,7 @@ export default function EcommerceHomeScreen() {
                 <EcommerceBadge />
             </View>
             <ScrollView
-                onScroll={({nativeEvent}) => {
+                onScroll={({ nativeEvent }) => {
                     if (isCloseToBottom(nativeEvent) && !IsLoadingMore) {
                         onLoadMore()
                     }
@@ -288,14 +294,14 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                
-                <TouchableOpacity style={{...styles.plus2, marginBottom:3}}  onPress={plusCategories}>
+
+                <TouchableOpacity style={{ ...styles.plus2, marginBottom: 3 }} onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     {
                         categories.length > 0 &&
-                        <TouchableOpacity  onPress={plusCategories}>
+                        <TouchableOpacity onPress={plusCategories}>
                             <View>
                                 <AntDesign name="arrowright" size={24} color="black" />
                             </View>
@@ -358,7 +364,7 @@ export default function EcommerceHomeScreen() {
                     <HomeProducts products={productsCommande} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
 
-                <TouchableOpacity onPress={productPress} style={{...styles.plus2, marginBottom:2}}>
+                <TouchableOpacity onPress={productPress} style={{ ...styles.plus2, marginBottom: 2 }}>
                     <View>
                         <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
@@ -381,9 +387,9 @@ export default function EcommerceHomeScreen() {
                     })}
                 </View>
 
-                <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10, opacity: IsLoadingMore ? 1 : 0}}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10, opacity: IsLoadingMore ? 1 : 0 }}>
                     <ActivityIndicator animating={true} size="large" color={"#000"} />
-                </View> 
+                </View>
             </ScrollView>
         </View>
 
