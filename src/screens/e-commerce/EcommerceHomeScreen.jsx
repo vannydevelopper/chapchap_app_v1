@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
+import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
 import { DrawerActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
@@ -41,26 +41,32 @@ export default function EcommerceHomeScreen() {
     const [productsCommande, setProductCommandes] = useState([])
 
     const [shops, setShops] = useState([])
-    const [IsLoadingMore, setIsLoadingMore] = useState([])
+    const [IsLoadingMore, setIsLoadingMore] = useState(false)
     const [offset, setOffset] = useState(0)
     const navigation = useNavigation()
 
     const CategoriemodalizeRef = useRef(null)
-    const modalizeRef = useRef(null)
-    const ProductmodalizeRef = useRef(null)
 
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
 
     const LIMIT = 10
+
+    const isCloseToBottom = useCallback(({ layoutMeasurement, contentOffset, contentSize }) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    }, []);
+
+
     const onLoadMore = async () => {
         try {
             setIsLoadingMore(true)
             const newOffset = offset + LIMIT
             const pts = await getProducts(newOffset)
             setOffset(newOffset)
-            setProducts(p => [...p, ...pts])
+            setProducts(p => [...p, ...pts.result])
         } catch (error) {
+            console.log(error)
         } finally {
             setIsLoadingMore(false)
         }
@@ -84,14 +90,14 @@ export default function EcommerceHomeScreen() {
     }, []))
 
     const onCategoryPress = (categorie) => {
-       
+
         if (loadingSubCategories || loadingProducts) return false
         if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
             return setSelectedCategorie(null)
         }
         setSelectedCategorie(categorie)
         setSelectedsousCategories(null)
-        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:categorie})
+        navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: categorie })
     }
 
     const selectedItemSousCategories = (souscategorie) => {
@@ -115,12 +121,8 @@ export default function EcommerceHomeScreen() {
     const productPress = () => {
         // setIsOpen(true)
         // ProductmodalizeRef.current?.open()
-        navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:null, ID_PARTENAIRE_SERVICE:null})
+        navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: null, ID_PARTENAIRE_SERVICE: null })
     }
-    const [data, handleChange, setValue] = useForm({
-        shop: "",
-        product: ""
-    })
     //fetch des sous  categories
     useEffect(() => {
         (async () => {
@@ -141,72 +143,26 @@ export default function EcommerceHomeScreen() {
         })()
     }, [selectedCategorie])
 
-    useEffect(() => {
-        (async () => {
-            try {
-                if (firstLoadingProducts == false) {
-                    setLoadingProducts(true)
-                }
-                var url = "/products"
-                if (data.product) {
-                    url = `/products?q=${data.product}`
-                }
-                if (selectedCategorie) {
-                    if (data.product) {
-                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
-                    }
-                    else {
-                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
-                    }
-                }
-                if (selectedsousCategories) {
-                    if (data.product) {
-                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
-                    }
-                    else {
-                        url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
-                    }
-                }
-                const produits = await fetchApi(url)
-                setProducts(produits.result)
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setFirstLoadingProducts(false)
-                setLoadingProducts(false)
-            }
-        })()
-    }, [selectedCategorie, data.product, selectedsousCategories])
 
     const getProducts = useCallback(async (offset = 0) => {
-
-        if (firstLoadingProducts == false) {
-            setLoadingProducts(true)
-        }
-        var url = "/     "
-        if (data.product) {
-            url = `/products?q=${data.product}`
-        }
-        if (selectedCategorie) {
-            if (data.product) {
-                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
+        try {
+            if (firstLoadingProducts == false) {
+                setLoadingProducts(true)
             }
-            else {
-                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+            var url = `/products?limit=${LIMIT}&offset=${offset}&`
+            if (selectedCategorie) {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&limit=${LIMIT}&offset=${offset}&`
             }
-        }
-        if (selectedsousCategories) {
-            if (data.product) {
-                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
-            }
-            else {
+            if (selectedsousCategories) {
                 url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
             }
+            return await fetchApi(url)
         }
-        return await fetchApi(url)
+        catch (error) {
+            console.log(error)
+        }
 
-
-    }, [selectedCategorie, data.product, selectedsousCategories])
+    }, [selectedCategorie, selectedsousCategories])
 
     useFocusEffect(useCallback(() => {
         (async () => {
@@ -214,15 +170,9 @@ export default function EcommerceHomeScreen() {
                 setOffset(0)
                 const produts = await getProducts(0)
                 setProducts(produts.result)
-
-
-                // setLoadingPevs(false)
-                // setLoadingSignalement(false)
             } catch (error) {
                 console.log(error)
             }
-            //   setLoadingPevs(false)
-            //   setLoadingSignalement(false)
         })()
     }, []))
 
@@ -232,29 +182,16 @@ export default function EcommerceHomeScreen() {
             setLoadingProducts(true)
         }
         var url = "/products/commande"
-        if (data.product) {
-            url = `/products/commande?q=${data.product}`
-        }
         if (selectedCategorie) {
-            if (data.product) {
-                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&q=${data.product}`
-            }
-            else {
-                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
-            }
+            url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
         }
         if (selectedsousCategories) {
-            if (data.product) {
-                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}&q=${data.product}`
-            }
-            else {
-                url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
-            }
+            url = `/products/commande?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
         }
         return await fetchApi(url)
 
 
-    }, [selectedCategorie, data.product, selectedsousCategories])
+    }, [selectedCategorie, selectedsousCategories])
 
     useFocusEffect(useCallback(() => {
         (async () => {
@@ -262,15 +199,9 @@ export default function EcommerceHomeScreen() {
                 setOffset(0)
                 const produts = await getProductsCommandes(0)
                 setProductCommandes(produts.result)
-
-
-                // setLoadingPevs(false)
-                // setLoadingSignalement(false)
             } catch (error) {
                 console.log(error)
             }
-            //   setLoadingPevs(false)
-            //   setLoadingSignalement(false)
         })()
     }, []))
 
@@ -281,22 +212,14 @@ export default function EcommerceHomeScreen() {
                     setLoadingProducts(true)
                 }
                 if (lat && long) {
-                    if (data.shop) {
-                        return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}&shop=${data.shop}`)
-                    }
-                    else {
-                        return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}`)
-                    }
-                }
-                if (data.shop) {
-                    return await fetchApi(`/partenaire/ecommerce?&shop=${data.shop}`)
+                    return await fetchApi(`/partenaire/ecommerce?lat=${lat}&long=${long}`)
                 }
                 else {
                     return await fetchApi('/partenaire/ecommerce')
                 }
             }
             catch (error) {
-                throw error
+                console.log(error)
             } finally {
                 setFirstLoadingProducts(false)
                 setLoadingProducts(false)
@@ -320,7 +243,7 @@ export default function EcommerceHomeScreen() {
         }
         askLocationFetchShops()
 
-    }, [data.shop])
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -332,14 +255,14 @@ export default function EcommerceHomeScreen() {
                 </TouchableOpacity>
                 <EcommerceBadge />
             </View>
-            {/* <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}> */}
             <ScrollView
-                onEndReached={(info) => {
-                    if (!IsLoadingMore) {
+                onScroll={({ nativeEvent }) => {
+                    if (isCloseToBottom(nativeEvent) && !IsLoadingMore && offset <= 40) {
                         onLoadMore()
                     }
                 }}
                 style={styles.cardOrginal}>
+
                 <Text style={styles.titlePrincipal}>Achat des produits</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 12, paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
@@ -366,14 +289,14 @@ export default function EcommerceHomeScreen() {
                 {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
                     <Shops shops={shops} />
                 }
-                
-                <TouchableOpacity style={{...styles.plus2, marginBottom:3}}  onPress={plusCategories}>
+
+                <TouchableOpacity style={{ ...styles.plus2, marginBottom: 3 }} onPress={plusCategories}>
                     <View>
                         <Text style={styles.plusText}>Categories</Text>
                     </View>
                     {
                         categories.length > 0 &&
-                        <TouchableOpacity  onPress={plusCategories}>
+                        <TouchableOpacity onPress={plusCategories}>
                             <View>
                                 <AntDesign name="arrowright" size={24} color="black" />
                             </View>
@@ -436,7 +359,7 @@ export default function EcommerceHomeScreen() {
                     <HomeProducts products={productsCommande} selectedCategorie={selectedCategorie} selectedsousCategories={selectedsousCategories} />}
 
 
-                <TouchableOpacity onPress={productPress} style={{...styles.plus2, marginBottom:2}}>
+                <TouchableOpacity onPress={productPress} style={{ ...styles.plus2, marginBottom: 2 }}>
                     <View>
                         <Text style={styles.plusText}>Recommandé pour  vous </Text>
                     </View>
@@ -454,139 +377,15 @@ export default function EcommerceHomeScreen() {
                                 key={index}
                                 fixMargins
                                 IsLoadingMore={IsLoadingMore}
-                                onLoadMore={onLoadMore}
                             />
                         )
                     })}
                 </View>
 
-
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10, opacity: IsLoadingMore ? 1 : 0 }}>
+                    <ActivityIndicator animating={true} size="large" color={"#000"} />
+                </View>
             </ScrollView>
-            <Modalize
-                ref={CategoriemodalizeRef}
-                adjustToContentHeight
-                handlePosition='inside'
-                modalStyle={{
-                    borderTopRightRadius: 25,
-                    borderTopLeftRadius: 25,
-                    paddingVertical: 20
-                }}
-                handleStyle={{ marginTop: 10 }}
-                scrollViewProps={{
-                    keyboardShouldPersistTaps: "handled"
-                }}
-            // onClosed={() => {
-            //     setIsOpen(false)
-            //     setLoadingForm(true)
-            // }}
-            >
-                <ScrollView>
-                    <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>catégories</Text>
-                    <View style={styles.cate}>
-                        {categories.map((categorie, index) => {
-                            return (
-                                <View style={{ ...styles.categoryModel, margin: 15 }} >
-                                    <View style={styles.actionIcon}>
-                                        <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage} />
-                                    </View>
-                                    <Text style={[{ fontSize: 10, fontWeight: "bold" }, { color: "#797E9A" }]}>{categorie.NOM}</Text>
-                                </View>
-                            )
-                        })}
-                    </View>
-                </ScrollView>
-            </Modalize>
-            <Modalize
-                ref={modalizeRef}
-                adjustToContentHeight
-                // handlePosition='inside'
-                modalStyle={{
-                    borderTopRightRadius: 25,
-                    borderTopLeftRadius: 25,
-                    // paddingVertical: 20
-                }}
-                handleStyle={{ marginTop: 10 }}
-                scrollViewProps={{
-                    keyboardShouldPersistTaps: "handled"
-                }}
-
-            >
-                <Text style={{ marginTop: 10, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, marginBottom: 30, textAlign: 'center', opacity: 0.7 }}>Boutiques</Text>
-                <View style={styles.searchSection1}>
-                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                    <TextInput
-                        style={styles.input}
-                        value={data.shop}
-                        onChangeText={(newValue) => handleChange('shop', newValue)}
-                        placeholder="Rechercher "
-                    />
-                </View>
-                <ScrollView >
-                    <View style={styles.bout}>
-                        {shops.map((shop, index) => {
-                            return (
-                                <ShopModal
-                                    shop={shop}
-                                    index={index}
-                                    totalLength={shops.length}
-                                    key={index}
-                                />
-                            )
-                        })}
-                    </View>
-                </ScrollView>
-            </Modalize>
-            <Modalize
-                HeaderComponent={() => {
-                    // return(
-                    //     <Text></Text>
-                    // )
-                }}
-                ref={ProductmodalizeRef}
-                adjustToContentHeight
-                // handlePosition='inside'
-                modalStyle={{
-                    borderTopRightRadius: 25,
-                    borderTopLeftRadius: 25,
-                    // paddingVertical: 20
-                }}
-                handleStyle={{ marginTop: 10 }}
-                scrollViewProps={{
-                    keyboardShouldPersistTaps: "handled"
-                }}
-            //onClosed={() => {
-            //     setIsOpen(false)
-            //     setLoadingForm(true)
-            // }}
-            >
-                <Text style={{ marginBottom: 10, marginBottom: 20, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Produits</Text>
-                <View style={styles.searchSection1}>
-                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-                    <TextInput
-                        style={styles.input}
-                        value={data.product}
-                        onChangeText={(newValue) => handleChange('product', newValue)}
-                        placeholder="Rechercher "
-                    />
-                </View>
-                {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons /> :
-                    <ScrollView>
-                        <View style={styles.products}>
-                            {products.map((product, index) => {
-                                return (
-                                    <Product
-                                        product={product}
-                                        index={index}
-                                        totalLength={products.length}
-                                        key={index}
-                                        fixMargins
-                                    />
-                                )
-                            })}
-                        </View>
-                    </ScrollView>
-                }
-            </Modalize>
         </View>
 
     )

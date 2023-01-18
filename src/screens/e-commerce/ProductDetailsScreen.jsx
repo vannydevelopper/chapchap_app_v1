@@ -32,6 +32,7 @@ export default function ProductDetailsScreen() {
   const [shopProducts, setShopProducts] = useState([])
   const [produitnote, Setproduitnote] = useState([])
   const [userNote, SetuserNote] = useState([])
+  const [categoSelectionnner, setCategoSelectionnner] = useState(null)
 
   //console.log(shopProducts)
   const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
@@ -39,7 +40,7 @@ export default function ProductDetailsScreen() {
   const user = useSelector(userSelector)
   //console.log(user.result.ID_USER)
   const { product } = route.params
-  // console.log(product.produit_partenaire.ID_PARTENAIRE_SERVICE)
+  // console.log(product)
   const modalizeRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [loadingForm, setLoadingForm] = useState(true)
@@ -79,6 +80,15 @@ export default function ProductDetailsScreen() {
 
   }
 
+  const ProduitsSimilaires = () => {
+    setCategoSelectionnner({
+      NOM:product.categorie.NOM,
+      // ID_CATEGORIE_PRODUIT:product.categorie.ID_CATEGORIE_PRODUIT,
+      
+    })
+    navigation.navigate("PlusRecommandeScreen", {selectedOneCategorie:product.categorie.ID_CATEGORIE_PRODUIT, ID_PARTENAIRE_SERVICE:product.produit_partenaire.ID_PARTENAIRE_SERVICE })
+  }
+
   const fecthProduits = async () => {
     try {
       const response = await fetchApi(`/products/products/${product.produit_partenaire.ID_PARTENAIRE_SERVICE}`, {
@@ -106,7 +116,6 @@ export default function ProductDetailsScreen() {
         var url = `/products?category=${product.categorie.ID_CATEGORIE_PRODUIT}`
         const produits = await fetchApi(url)
         setSimilarProducts(produits.result)
-        //console.log(product)
       } catch (error) {
         console.log(error)
       } finally {
@@ -114,6 +123,7 @@ export default function ProductDetailsScreen() {
       }
     })()
   }, [])
+
   useEffect(() => {
     if (isOpen) {
       const timer = setTimeout(() => {
@@ -124,46 +134,31 @@ export default function ProductDetailsScreen() {
       }
     }
   }, [isOpen])
-  const enregistrement = async () => {
+  // const enregistrement = async () => {
 
-    try {
+  //   try {
 
-      setLoading(true)
-      const res = await fetchApi("/products/note", {
-        method: 'POST',
-        body: JSON.stringify({
-          ID_PRODUIT_PARTENAIRE: product.produit.ID_PRODUIT_PARTENAIRE,
-          NOTE: note,
-          COMMENTAIRE: commentaire,
+  //     setLoading(true)
+  //     const res = await fetchApi("/products/note", {
+  //       method: 'POST',
+  //       body: JSON.stringify({
+  //         ID_PRODUIT_PARTENAIRE: product.produit.ID_PRODUIT_PARTENAIRE,
+  //         NOTE: note,
+  //         COMMENTAIRE: commentaire,}),
 
+  //       headers: { "Content-Type": "application/json" },
+  //     })
+  //     Setproduitnote(n => [res.result, ...n])
+  //     //navigation.navigate("produitDetailScreen")
+  //   }
+  //   catch (error) {
+  //     console.log(error)
 
-        }),
-
-        headers: { "Content-Type": "application/json" },
-
-
-      })
-
-      Setproduitnote(n => [res.result, ...n])
-      //navigation.navigate("produitDetailScreen")
-
-
-
-    }
-
-
-    catch (error) {
-      console.log(error)
-
-    } finally {
-      setLoading(false)
-      Setcommentaire("")
-
-
-    }
-
-
-  }
+  //   } finally {
+  //     setLoading(false)
+  //     Setcommentaire("")
+  //   }
+  // }
   useEffect(() => {
     (async () => {
       try {
@@ -176,8 +171,6 @@ export default function ProductDetailsScreen() {
       }
     })()
   }, [])
-
-
 
 
   useEffect(() => {
@@ -271,7 +264,7 @@ export default function ProductDetailsScreen() {
           {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
             <>
               <View>
-                <TouchableOpacity style={styles.productsHeader}>
+                <TouchableOpacity style={styles.productsHeader} onPress={ProduitsSimilaires}>
                   <Text  style={styles.plusText}>Similaires</Text>
                   <View>
                       <AntDesign name="arrowright" size={24} color="black" />

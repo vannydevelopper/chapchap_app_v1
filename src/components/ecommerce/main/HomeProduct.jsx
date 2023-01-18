@@ -19,7 +19,7 @@ export default function HomeProduct({ product, index,onLoadMore,IsLoadingMore, t
   const navigation = useNavigation()
   const { width } = useWindowDimensions()
   const PRODUCT_MARGIN = 10
-  const PRODUCT_WIDTH = (width / 2) - 10
+  const PRODUCT_WIDTH = (width / 2) - 15
   const PRODUCT_HEIGHT = 270
   const additionStyles = {
     width: PRODUCT_WIDTH,
