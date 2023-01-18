@@ -50,26 +50,21 @@ export default function EcommerceHomeScreen() {
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
 
-    const LIMIT = 4
+    const LIMIT = 10
 
     const isCloseToBottom = useCallback(({ layoutMeasurement, contentOffset, contentSize }) => {
         const paddingToBottom = 20;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
     }, []);
 
+
     const onLoadMore = async () => {
         try {
             setIsLoadingMore(true)
             const newOffset = offset + LIMIT
-            if(newOffset < 8){
-                const pts = await getProducts(newOffset)
-                setOffset(newOffset)
-                setProducts(p => [...p, ...pts.result])
-            }
-            else{
-                setIsLoadingMore(false)
-            }
-               
+            const pts = await getProducts(newOffset)
+            setOffset(newOffset)
+            setProducts(p => [...p, ...pts.result])
         } catch (error) {
             console.log(error)
         } finally {
@@ -262,7 +257,7 @@ export default function EcommerceHomeScreen() {
             </View>
             <ScrollView
                 onScroll={({ nativeEvent }) => {
-                    if (isCloseToBottom(nativeEvent) && !IsLoadingMore) {
+                    if (isCloseToBottom(nativeEvent) && !IsLoadingMore && offset <= 40) {
                         onLoadMore()
                     }
                 }}
