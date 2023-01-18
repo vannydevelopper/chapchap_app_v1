@@ -135,7 +135,7 @@ export default function PlusRecommandeScreen() {
                                 }
                         }
                         catch (error) {
-                                throw error
+                                console.log(error)
                         }
                         // finally {
 

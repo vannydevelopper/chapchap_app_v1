@@ -33,7 +33,6 @@ export default function ProductDetailsScreen() {
   const [produitnote, Setproduitnote] = useState([])
   const [userNote, SetuserNote] = useState([])
   const [categoSelectionnner, setCategoSelectionnner] = useState(null)
-  console.log(categoSelectionnner)
 
   //console.log(shopProducts)
   const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
@@ -135,46 +134,31 @@ export default function ProductDetailsScreen() {
       }
     }
   }, [isOpen])
-  const enregistrement = async () => {
+  // const enregistrement = async () => {
 
-    try {
+  //   try {
 
-      setLoading(true)
-      const res = await fetchApi("/products/note", {
-        method: 'POST',
-        body: JSON.stringify({
-          ID_PRODUIT_PARTENAIRE: product.produit.ID_PRODUIT_PARTENAIRE,
-          NOTE: note,
-          COMMENTAIRE: commentaire,
+  //     setLoading(true)
+  //     const res = await fetchApi("/products/note", {
+  //       method: 'POST',
+  //       body: JSON.stringify({
+  //         ID_PRODUIT_PARTENAIRE: product.produit.ID_PRODUIT_PARTENAIRE,
+  //         NOTE: note,
+  //         COMMENTAIRE: commentaire,}),
 
+  //       headers: { "Content-Type": "application/json" },
+  //     })
+  //     Setproduitnote(n => [res.result, ...n])
+  //     //navigation.navigate("produitDetailScreen")
+  //   }
+  //   catch (error) {
+  //     console.log(error)
 
-        }),
-
-        headers: { "Content-Type": "application/json" },
-
-
-      })
-
-      Setproduitnote(n => [res.result, ...n])
-      //navigation.navigate("produitDetailScreen")
-
-
-
-    }
-
-
-    catch (error) {
-      console.log(error)
-
-    } finally {
-      setLoading(false)
-      Setcommentaire("")
-
-
-    }
-
-
-  }
+  //   } finally {
+  //     setLoading(false)
+  //     Setcommentaire("")
+  //   }
+  // }
   useEffect(() => {
     (async () => {
       try {
@@ -187,8 +171,6 @@ export default function ProductDetailsScreen() {
       }
     })()
   }, [])
-
-
 
 
   useEffect(() => {
