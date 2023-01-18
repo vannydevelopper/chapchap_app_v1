@@ -14,6 +14,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import fetchApi from "../../../helpers/fetchApi";
 
 export default function Product({ product, index,onLoadMore,IsLoadingMore, totalLength, fixMargins = false, onRemove }) {
+  console.log(product)
   const [wishlist, setWishlist] = useState(false)
   const [selectedSize, setSelectedSize] = useState(null)
   const navigation = useNavigation()

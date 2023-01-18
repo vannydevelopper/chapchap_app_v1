@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { StyleSheet, Text, View, StatusBar, TouchableOpacity, TextInput, ScrollView, ImageBackground, Image, ActivityIndicator } from "react-native";
 import { AntDesign, FontAwesome, Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
 import ShopModal from "../../components/ecommerce/main/ShopModal";
 import Product from "../../components/ecommerce/main/Product";
@@ -10,6 +10,7 @@ import fetchApi from "../../helpers/fetchApi";
 import { Modalize } from "react-native-modalize";
 import { TouchableNativeFeedback } from "react-native-web";
 import * as Location from 'expo-location';
+import ProduitPartenaire from "../../components/ecommerce/home/ProduitPartenaire";
 
 /**
  * screens pour afficher le produits recommandez pour vous avec une filtre des cotegories
@@ -23,10 +24,10 @@ export default function PlusRecommandeScreen() {
         const route = useRoute()
 
         const { selectedOneCategorie, ID_PARTENAIRE_SERVICE } = route.params
-        console.log(ID_PARTENAIRE_SERVICE)
 
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
+        console.log(selectedCategorie)
         const [loadingCategories, setLoadingCatagories] = useState(true)
 
         const [isOpen, setIsOpen] = useState(false)
@@ -37,16 +38,46 @@ export default function PlusRecommandeScreen() {
         const [shops, setShops] = useState([])
 
         const CategoriemodalizeRef = useRef()
+        const RestaurantmodalizeRef = useRef()
 
         const fetchCategories = async () => {
                 setIsOpen(true)
                 CategoriemodalizeRef.current?.open()
         }
 
+        const fetchRestaurant = () => {
+                setIsOpen(true)
+                RestaurantmodalizeRef.current?.open()
+        }
+
         const onCategoryPress = (categorie) => {
                 setSelectedCategorie(categorie)
                 CategoriemodalizeRef.current.close()
         }
+
+
+        const fecthProduits = async () => {
+                try {
+                        if (ID_PARTENAIRE_SERVICE) {
+                                const response = await fetchApi(`/products/products/${ID_PARTENAIRE_SERVICE}`, {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+                                })
+
+                                setProducts(response.result)
+                        }
+                }
+
+                catch (error) {
+                        console.log(error)
+                }
+                //  finally {
+                //   setLoadingShopProducts(false)
+                // }
+        }
+        useFocusEffect(useCallback(() => {
+                fecthProduits()
+        }, []))
 
         useEffect(() => {
                 (async () => {
@@ -126,6 +157,8 @@ export default function PlusRecommandeScreen() {
         }, [])
 
 
+
+
         return (<>
                 <View style={styles.container}>
                         <View style={styles.cardHeader}>
@@ -140,10 +173,17 @@ export default function PlusRecommandeScreen() {
                                 </View>
                         </View>
 
-                        <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
-                                <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
-                                <AntDesign name="caretdown" size={16} color="#777" />
-                        </TouchableOpacity>
+                        {ID_PARTENAIRE_SERVICE ? null
+                        // <TouchableOpacity style={styles.cardResto} onPress={fetchRestaurant}>
+                        //         <Ionicons name="restaurant-outline" size={28} color="white" />
+                        // </TouchableOpacity>
+                         :
+                                <TouchableOpacity style={styles.modelCard} onPress={fetchCategories}>
+                                        <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
+                                        <AntDesign name="caretdown" size={16} color="#777" />
+                                </TouchableOpacity>
+                        }
+
 
 
                         <ScrollView>
@@ -170,6 +210,8 @@ export default function PlusRecommandeScreen() {
                                                         </View>}
                                         </>}
                         </ScrollView>
+
+
                 </View>
                 <Modalize
                         ref={CategoriemodalizeRef}
@@ -203,6 +245,46 @@ export default function PlusRecommandeScreen() {
                                                                         {/* <MaterialCommunityIcons name="radiobox-blank" size={24} color="black" /> */}
                                                                         <View style={styles.cardName}>
                                                                                 <Text numberOfLines={1} style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor }}>{categorie.NOM}</Text>
+                                                                        </View>
+
+                                                                </TouchableOpacity>
+                                                        </View>
+                                                )
+                                        })}
+
+                                </ScrollView>
+                        </ScrollView>
+                </Modalize>
+                <Modalize
+                        ref={RestaurantmodalizeRef}
+                        adjustToContentHeight
+                        handlePosition='inside'
+                        modalStyle={{
+                                borderTopRightRadius: 25,
+                                borderTopLeftRadius: 25,
+                                paddingVertical: 20
+                        }}
+                        handleStyle={{ marginTop: 10 }}
+                        scrollViewProps={{
+                                keyboardShouldPersistTaps: "handled"
+                        }}
+                        onClosed={() => {
+                                setIsOpen(false)
+                                //     setLoadingForm(true)
+                        }}
+                >
+                        <ScrollView>
+                                <Text style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Restaurant</Text>
+                                <ScrollView>
+                                        {shops.map((shop, index) => {
+                                                return (
+                                                        <View key={index}>
+                                                                <TouchableOpacity style={styles.modalItem}>
+                                                                        <View style={styles.categoryPhoto}>
+                                                                                <Image source={{ uri: shop.LOGO }} style={styles.DataImageCategorie} />
+                                                                        </View>
+                                                                        <View style={styles.cardName}>
+                                                                                <Text numberOfLines={1} style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor }}>{shop.NOM_ORGANISATION}</Text>
                                                                         </View>
 
                                                                 </TouchableOpacity>
@@ -304,5 +386,16 @@ const styles = StyleSheet.create({
                 fontSize: 18,
                 color: "#777"
         },
+        cardResto: {
+                width: 50,
+                height: 50,
+                borderRadius: 10,
+                backgroundColor: COLORS.ecommerceRed,
+                marginTop: 8,
+                justifyContent: "center",
+                alignContent: "center",
+                alignItems: "center",
+                marginHorizontal: 10
+        }
 
 })
