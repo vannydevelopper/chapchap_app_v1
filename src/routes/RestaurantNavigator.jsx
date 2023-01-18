@@ -5,9 +5,11 @@ import CategorieMenuScreen from "../screens/liste_restaurant/CategorieMenuScreen
 import MenuScreen from "../screens/liste_restaurant/MenuScreen";
 import MenuScreenCategorie from "../screens/liste_restaurant/MenuScreenCategorie";
 import RestaurantProcheScreen from "../screens/liste_restaurant/RestaurantProcheScreen";
+
 import AllMenuScreen from "../screens/restaurant/AllMenuScreen";
 import MenuDetailScreen from "../screens/restaurant/MenuDetailScreen";
 import MenusRestaurantScreen from "../screens/restaurant/MenusRestaurantScreen";
+import RechercheScreen from "../screens/restaurant/RechercheScreen";
 import RestaurantCartScreen from "../screens/restaurant/RestaurantCartScreen";
 import RestaurantHomeScreen from "../screens/restaurant/RestaurantHomeScreen";
 import RestaurantScreen from "../screens/restaurant/RestaurantScreen";
@@ -30,6 +32,7 @@ export default function RestaurantNavigator(){
                         <Stack.Screen name="CategorieMenuScreen" component={CategorieMenuScreen}/>
                         <Stack.Screen name="MenuScreen" component={MenuScreen}/>
                         <Stack.Screen name="MenuScreenCategorie" component={MenuScreenCategorie}/>
+                        <Stack.Screen name="RechercheScreen" component={RechercheScreen} />
                        
                 </Stack.Navigator>
         )

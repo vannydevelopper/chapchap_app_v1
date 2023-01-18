@@ -215,7 +215,7 @@ export default function ProductDetailsScreen() {
             <View>
               <TouchableOpacity style={styles.category} >
                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
-                <Text style={styles.categoryName} numberOfLines={2}>{product.categorie.NOM}</Text>
+                {/* <Text style={styles.categoryName} numberOfLines={2}>{product.categorie.NOM}</Text> */}
 
               </TouchableOpacity>
               <View style={styles.productNames}>
@@ -245,7 +245,7 @@ export default function ProductDetailsScreen() {
 
                     <Text style={styles.productSeller}>
                       {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
-                      {/* <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} /> */}
+                      
                     </Text>
 
                     <Text style={styles.shopAdress}>

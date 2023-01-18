@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import ImageView from "react-native-image-viewing";
 import fetchApi from "../../helpers/fetchApi";
 import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
+import Menu from "../../components/restaurants/main/Menu";
 
 export default function MenuDetailScreen() {
 
@@ -19,7 +20,7 @@ export default function MenuDetailScreen() {
     const [imageIndex, setImageIndex] = useState(0)
     const [showImageModal, setShowImageModal] = useState(false)
     const { product, menus } = route.params
-    console.log(product)
+    //console.log(product)
     const [selectedRestaurant, setselectedRestaurant] = useState([])
     const [selectedCategorieMenu, setselectedCategorieMenu] = useState([])
     const MenuInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
@@ -100,7 +101,7 @@ export default function MenuDetailScreen() {
                 var url = `/resto/menu/restaurant/${product.ID_PARTENAIRE_SERVICE}`
                 const menuRestaurant = await fetchApi(url)
                 setselectedRestaurant(menuRestaurant.result)
-               // console.log(selectedRestaurant)
+                // console.log(selectedRestaurant)
             } catch (error) {
                 console.log(error)
             }
@@ -112,11 +113,11 @@ export default function MenuDetailScreen() {
 
 
 
-    useEffect(() => { 
+    useEffect(() => {
         (async () => {
 
             try {
-               const categorieMenu = await fetchApi(`/resto/menu?category=${product?.ID_CATEGORIE_MENU}`)
+                const categorieMenu = await fetchApi(`/resto/menu?category=${product?.ID_CATEGORIE_MENU}`)
 
                 setselectedCategorieMenu(categorieMenu.result)
                 //console.log(selectedCategorieMenu)
@@ -133,13 +134,13 @@ export default function MenuDetailScreen() {
 
 
 
-        navigation.navigate("MenuScreen",{onSelectecategorie:product})
+        navigation.navigate("MenuScreen", { onSelectecategorie: product })
     }
     const menuResto = () => {
 
-     navigation.navigate("MenuScreen",{onSelectecategorie:selectedRestaurant})
+        navigation.navigate("MenuScreen", { onSelectecategorie: selectedRestaurant })
     }
-    
+
 
     return (
         <>
@@ -192,6 +193,49 @@ export default function MenuDetailScreen() {
                             {product.DESCRIPTION ? product.DESCRIPTION : "Aucun description"}
                         </Text>
                     </View>
+
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal:5, marginTop: 10 }}>
+                        <View>
+                            <TouchableOpacity style={styles.category} >
+                                <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
+
+
+                            </TouchableOpacity>
+                            <View style={styles.productNames}>
+                                <Text style={styles.productName}>
+                                    <Text>{product.repas}</Text>
+                                </Text>
+                            </View>
+
+                        </View>
+                        <View style={styles.shareBtn}>
+                            <AntDesign name="sharealt" size={20} color={COLORS.primary} />
+                        </View>
+                    </View>
+                    <View style={styles.shop}>
+                        <View style={styles.shopLeft}>
+                            <View style={styles.shopIcon}>
+                                {true ? <Entypo name="shop" size={24} color={COLORS.primary} /> :
+                                    <FontAwesome name="user" size={24} color={COLORS.primary} />}
+                            </View>
+
+                            <TouchableOpacity >
+                                <View style={styles.shopOwner}>
+
+                                    <Text style={styles.productSeller}>
+                                        <Text>{product.NOM_ORGANISATION}</Text>
+
+                                    </Text>
+
+                                    <Text style={styles.shopAdress}>
+
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                            
+                        </View>
+                    </View>
+
                     <TouchableOpacity onPress={menuSimilaire}>
                         <View style={{ ...styles.plus, marginBottom: 1 }}>
                             <Text style={styles.plusText}>Similaires</Text>
@@ -209,7 +253,7 @@ export default function MenuDetailScreen() {
                     >
                         {selectedCategorieMenu.map((menu, index) => {
                             return (
-                                <MenuPartenaire
+                                <Menu
                                     menu={menu}
                                     menus={menus}
                                     index={index}
@@ -240,7 +284,7 @@ export default function MenuDetailScreen() {
                     >
                         {selectedRestaurant.map((menu, index) => {
                             return (
-                                <MenuPartenaire
+                                <Menu
                                     menu={menu}
                                     menus={menus}
                                     index={index}
@@ -325,6 +369,57 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         //borderBottomLeftRadius: 60,
         //borderBottomRightRadius: 60,
+    },
+    shop: {
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: "space-between",
+        marginVertical: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        marginBottom: -5,
+        marginTop:17,
+        paddingHorizontal:5
+    },
+    shopLeft: {
+        flexDirection: "row",
+        alignItems: 'center'
+    },
+    shopIcon: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#F1F1F1',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: "center",
+        marginTop: -40
+
+    },
+    productSeller: {
+        fontWeight: "bold",
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 14,
+        marginLeft: 15
+    },
+    shopAdress: {
+        color: '#777',
+        fontSize: 13
+    },
+    shareBtn: {
+        padding: 15,
+        height: 50,
+        width: 50,
+        color: "#1D8585",
+        backgroundColor: '#D7D9E4',
+        borderRadius: 100
+    },
+    productNames: {
+        marginTop: 5
+    },
+    productName: {
+        fontWeight: "bold",
+        fontSize: 18,
+        color: COLORS.ecommercePrimaryColor
     },
     plus: {
         flexDirection: 'row',
@@ -436,7 +531,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: "row",
         justifyContent: "space-between",
-        top: "8%",
+        top: "1%",
 
     },
     cartBtn: {

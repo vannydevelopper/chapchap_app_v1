@@ -23,9 +23,12 @@ export default function ResearchTab() {
 
     const [firstLoadingMenus, setFirstLoadingMenus] = useState(true)
     const [loadingMenus, setLoadingMenus] = useState(false)
-
     const { height } = useWindowDimensions()
-    const [search, SetSearch]=useState(null)
+    // const [search, SetSearch]=useState(null)
+
+    const route=useRoute()
+    const {search}=route.params
+    // console.log(search)
     const  contextValues={
         products,
         menus,
@@ -62,6 +65,7 @@ export default function ResearchTab() {
             }
         })()
     }, [search])
+ 
 
     //POUR LES MENUS
     useEffect(() => {
@@ -97,44 +101,18 @@ export default function ResearchTab() {
                     {/* <EcommerceBadge /> */}
                 </View>
                 {/* <Text style={styles.titlePrincipal}>Liste des produits</Text> */}
-      <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10,marginBottom:10 }}>
-        <View style={styles.searchSection}>
-          <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
-          <TextInput
-                            style={styles.input}
-                            placeholder="Recherche..."
-                            value={search}
-                            onChangeText={(EX) =>SetSearch(EX)}
-                            onSubmitEditing={() => {
-                                navigation.navigate("ResearchTab", { research: data.research })
-                                // handleChange('research',)
-                            }}
-                            blurOnSubmit={false}
-                            returnKeyType="default"
-                        />
-        </View>
-        <View style={styles.cardRecherche}>
-          <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
-        </View>
-      </View>
+     
+      <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10, marginTop: 5 }}>
+                <TouchableOpacity  style={styles.searchSection} >
+                    <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
+                    <Text style={styles.input}>{search?search:"Rechercher"}</Text>
+                </TouchableOpacity>
+                <View style={styles.cardRecherche}>
+                    <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                </View>
+            </View>
                 <TopBar.Navigator
-                    // screenOptions={{
-                    //     tabBarScrollEnabled: true,
-                    //     tabBarStyle: styles.tabBar,
-                    //     tabBarPressColor: 'transparent',
-                    //     tabBarIndicatorStyle: {
-                    //         height: 40,
-                    //         backgroundColor: '#fff',
-                    //         borderRadius: 30,
-                    //         marginBottom: 5,
-                    //         marginHorizontal: 5
-                    //     },
-                    //     tabBarLabelStyle: {
-                    //         color: '#000',
-                    //         textTransform: 'none',
-                    //         fontWeight: 'bold',
-                    //     }
-                    // }}
+                   
                     screenOptions={{
                         tabBarStyle: styles.tabBar,
                         tabBarLabelStyle: {
