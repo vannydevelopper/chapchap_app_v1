@@ -61,7 +61,6 @@ export default function ProductShopsScreen() {
             })
             setCategories(response.result)
             // console.log(categories)
-
         }
         catch (error) {
             console.log(error)
