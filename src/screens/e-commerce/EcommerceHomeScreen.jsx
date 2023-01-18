@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
+import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
 import { DrawerActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
@@ -41,26 +41,31 @@ export default function EcommerceHomeScreen() {
     const [productsCommande, setProductCommandes] = useState([])
 
     const [shops, setShops] = useState([])
-    const [IsLoadingMore, setIsLoadingMore] = useState([])
+    const [IsLoadingMore, setIsLoadingMore] = useState(false)
     const [offset, setOffset] = useState(0)
     const navigation = useNavigation()
 
     const CategoriemodalizeRef = useRef(null)
-    const modalizeRef = useRef(null)
-    const ProductmodalizeRef = useRef(null)
 
     const [isOpen, setIsOpen] = useState(false)
     const [loadingForm, setLoadingForm] = useState(true)
 
     const LIMIT = 10
+
+    const isCloseToBottom = useCallback(({layoutMeasurement, contentOffset, contentSize}) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    }, []);
+
     const onLoadMore = async () => {
         try {
             setIsLoadingMore(true)
             const newOffset = offset + LIMIT
             const pts = await getProducts(newOffset)
             setOffset(newOffset)
-            setProducts(p => [...p, ...pts])
+            setProducts(p => [...p, ...pts.result])
         } catch (error) {
+            console.log(error)
         } finally {
             setIsLoadingMore(false)
         }
@@ -137,45 +142,25 @@ export default function EcommerceHomeScreen() {
         })()
     }, [selectedCategorie])
 
-    useEffect(() => {
-        (async () => {
-            try {
-                if (firstLoadingProducts == false) {
-                    setLoadingProducts(true)
-                }
-                var url = "/products"
-                if (selectedCategorie) {
-                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
-                }
-                if (selectedsousCategories) {
-                    url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
-                }
-                const produits = await fetchApi(url)
-                setProducts(produits.result)
-            } catch (error) {
-                console.log(error)
-            } finally {
-                setFirstLoadingProducts(false)
-                setLoadingProducts(false)
-            }
-        })()
-    }, [selectedCategorie, selectedsousCategories])
 
     const getProducts = useCallback(async (offset = 0) => {
-
-        if (firstLoadingProducts == false) {
-            setLoadingProducts(true)
+        try{
+            if (firstLoadingProducts == false) {
+                setLoadingProducts(true)
+            }
+            var url = `/products?limit=10&offset=${offset}&`
+            if (selectedCategorie) {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&limit=10&offset=${offset}&`
+            }
+            if (selectedsousCategories) {
+                url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
+            }
+            return await fetchApi(url)
         }
-        var url = "/"
-        if (selectedCategorie) {
-            url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+        catch(error){
+            console.log(error)
         }
-        if (selectedsousCategories) {
-            url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}&subCategory=${selectedsousCategories?.ID_PRODUIT_SOUS_CATEGORIE}`
-        }
-        return await fetchApi(url)
-
-
+      
     }, [selectedCategorie, selectedsousCategories])
 
     useFocusEffect(useCallback(() => {
@@ -269,14 +254,14 @@ export default function EcommerceHomeScreen() {
                 </TouchableOpacity>
                 <EcommerceBadge />
             </View>
-            {/* <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[2]}> */}
             <ScrollView
-                onEndReached={(info) => {
-                    if (!IsLoadingMore) {
+                onScroll={({nativeEvent}) => {
+                    if (isCloseToBottom(nativeEvent) && !IsLoadingMore) {
                         onLoadMore()
                     }
                 }}
                 style={styles.cardOrginal}>
+
                 <Text style={styles.titlePrincipal}>Achat des produits</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 12, paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
@@ -391,13 +376,14 @@ export default function EcommerceHomeScreen() {
                                 key={index}
                                 fixMargins
                                 IsLoadingMore={IsLoadingMore}
-                                onLoadMore={onLoadMore}
                             />
                         )
                     })}
                 </View>
 
-
+                <View style={{justifyContent: 'center', alignItems: 'center', marginBottom: 10, opacity: IsLoadingMore ? 1 : 0}}>
+                    <ActivityIndicator animating={true} size="large" color={"#000"} />
+                </View> 
             </ScrollView>
         </View>
 

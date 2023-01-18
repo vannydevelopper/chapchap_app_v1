@@ -27,7 +27,6 @@ export default function PlusRecommandeScreen() {
 
         const [categories, setCategories] = useState([])
         const [selectedCategorie, setSelectedCategorie] = useState(null)
-        console.log(selectedCategorie)
         const [loadingCategories, setLoadingCatagories] = useState(true)
 
         const [isOpen, setIsOpen] = useState(false)
