@@ -7,10 +7,10 @@ export const addProductAction = (product, count, combinaison) => {
                     payload: { ...product, QUANTITE: count , combinaison}
           }
 }
-export const removeProductAction = (ID_PRODUIT_PARTENAIRE) => {
+export const removeProductAction = (ID_PRODUIT) => {
           return {
                     type: REMOVE_COMMAND_ACTION,
-                    payload: ID_PRODUIT_PARTENAIRE
+                    payload: ID_PRODUIT
           }
 }
 

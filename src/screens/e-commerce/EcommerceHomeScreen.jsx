@@ -96,11 +96,15 @@ export default function EcommerceHomeScreen() {
           return (
                     <View style={styles.container}>
                               <View style={styles.cardHeader}>
-                                        <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
-                                                  <View style={styles.menuOpenerLine} />
-                                                  <View style={[styles.menuOpenerLine, { width: 15 }]} />
-                                                  <View style={[styles.menuOpenerLine, { width: 25 }]} />
-                                        </TouchableOpacity>
+                                        <TouchableNativeFeedback 
+                                                  onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+                                                  background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                                                  <View style={styles.menuOpener}>
+                                                            <View style={styles.menuOpenerLine} />
+                                                            <View style={[styles.menuOpenerLine, { width: 15 }]} />
+                                                            <View style={[styles.menuOpenerLine, { width: 25 }]} />
+                                                  </View>
+                                        </TouchableNativeFeedback>
                                         <EcommerceBadge />
                               </View>
                               <ScrollView
@@ -255,6 +259,7 @@ const styles = StyleSheet.create({
                     flexWrap: 'wrap',
           },
           menuOpener: {
+                    padding: 10
           },
           menuOpenerLine: {
                     height: 3,

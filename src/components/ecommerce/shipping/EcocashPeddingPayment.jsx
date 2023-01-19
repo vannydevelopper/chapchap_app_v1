@@ -7,11 +7,12 @@ import { Portal } from "react-native-portalize"
 import { COLORS } from "../../../styles/COLORS"
 import io from 'socket.io-client'
 import fetchApi, { API_URL } from "../../../helpers/fetchApi"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { userSelector } from "../../../store/selectors/userSelector"
 import LottieView from 'lottie-react-native';
 import { useNavigation } from "@react-navigation/native"
 import Loading from "../../app/Loading"
+import { resetCartAction } from "../../../store/actions/ecommerceCartActions"
 
 export default function EcocashPeddingPayment({ onClose, idCommande,service }) {
           const socket = useRef(io(API_URL)).current
@@ -20,13 +21,16 @@ export default function EcocashPeddingPayment({ onClose, idCommande,service }) {
           const [isConfirmed, setIsConfirmed] = useState(false)
           const navigation = useNavigation()
           const [loading, setLoading]  = useState(false)
+          const dispatch = useDispatch()
           
           const onNextPress = async () => {
                     try {
                               setLoading(true)
-                              const commande = await fetchApi(`/commandes/${idCommande}`)
+                              // const commande = await fetchApi(`/commandes/${idCommande}`)
                               onClose()
-                              navigation.navigate("SearchLivreurScreen", { commande: commande.result,service:service })
+                              navigation.navigate('HomeScreen')
+                              dispatch(resetCartAction())
+                              // navigation.navigate("SearchLivreurScreen", { commande: commande.result,service:service })
                     } catch (error) {
                               console.log(error)
                     } finally {
@@ -50,7 +54,7 @@ export default function EcocashPeddingPayment({ onClose, idCommande,service }) {
           useEffect(() => {
                     socket.on('connect', () => {
                               console.log('connected')
-                              socket.emit('join', { userId: user.result.ID_USER });
+                              socket.emit('join', { userId: user.ID_USER });
                     })
                     socket.on('ECOCASH_CONFIRMED', message => {
                               console.log(message)

@@ -5,10 +5,10 @@ export const RESET_CART_ACTION = 'RESET_CART_ACTION'
 export function ecommerceCartReducer(products = [], action) {
           switch (action.type) {
                     case ADD_COMMAND_ACTION:
-                              const product = products.find(command => command.produit.ID_PRODUIT_PARTENAIRE == action.payload.produit.ID_PRODUIT_PARTENAIRE)
+                              const product = products.find(command => command.produit.ID_PRODUIT == action.payload.produit.ID_PRODUIT)
                               if(product) {
                                         const newCommands = products.map(commande => {
-                                                  if(commande.produit.ID_PRODUIT_PARTENAIRE == product.produit.ID_PRODUIT_PARTENAIRE) {
+                                                  if(commande.produit.ID_PRODUIT == product.produit.ID_PRODUIT) {
                                                             return {...commande, QUANTITE: action.payload.QUANTITE, combinaison: action.payload.combinaison}
                                                   }
                                                   return commande

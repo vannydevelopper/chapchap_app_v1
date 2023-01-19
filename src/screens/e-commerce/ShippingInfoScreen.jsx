@@ -12,8 +12,7 @@ export default function ShippingInfoScreen() {
 
           const navigation = useNavigation()
           const route = useRoute()
-          const {service} = route.params
-        //   console.log(service)
+          const { service } = route.params
 
           const [data, handleChange] = useForm({
                     nom: "",
@@ -63,6 +62,13 @@ export default function ShippingInfoScreen() {
           return (
                     <View style={styles.container}>
                               <ScrollView keyboardShouldPersistTap="handled">
+                                        <View style={styles.cardHeader}>
+                                                  <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#c9c5c5', true)} onPress={() => navigation.goBack()}>
+                                                            <View style={styles.headerBtn}>
+                                                                      <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                                                            </View>
+                                                  </TouchableNativeFeedback>
+                                        </View>
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>
                                                             Livraison
@@ -79,7 +85,7 @@ export default function ShippingInfoScreen() {
                                                             <Image source={require("../../../assets/images/map.png")} style={styles.map} />
                                                             <OutlinedTextField
                                                                       label="Adresse"
-                                                                      fontSize={14}
+                                                                      fontSize={12}
                                                                       baseColor={COLORS.smallBrown}
                                                                       tintColor={COLORS.primary}
                                                                       lineWidth={0.5}
@@ -107,7 +113,7 @@ export default function ShippingInfoScreen() {
                                                             </Text>
                                                             <OutlinedTextField
                                                                       label="Nom"
-                                                                      fontSize={14}
+                                                                      fontSize={12}
                                                                       baseColor={COLORS.smallBrown}
                                                                       tintColor={COLORS.primary}
                                                                       lineWidth={0.5}
@@ -131,7 +137,7 @@ export default function ShippingInfoScreen() {
                                                             />
                                                             <OutlinedTextField
                                                                       label="Prénom"
-                                                                      fontSize={14}
+                                                                      fontSize={12}
                                                                       baseColor={COLORS.smallBrown}
                                                                       tintColor={COLORS.primary}
                                                                       lineWidth={0.5}
@@ -155,7 +161,7 @@ export default function ShippingInfoScreen() {
                                                             />
                                                             <OutlinedTextField
                                                                       label="Numéro de téléphone"
-                                                                      fontSize={14}
+                                                                      fontSize={12}
                                                                       baseColor={COLORS.smallBrown}
                                                                       tintColor={COLORS.primary}
                                                                       lineWidth={0.5}
@@ -181,12 +187,7 @@ export default function ShippingInfoScreen() {
                                                   </View>
                                         </View>
                                         <View style={styles.navigation}>
-                                                  <TouchableNativeFeedback useForeground onPress={() => navigation.goBack()}>
-                                                            <View style={styles.cancelBtn}>
-                                                                      <Ionicons name="close" size={30} color="#777" />
-                                                            </View>
-                                                  </TouchableNativeFeedback>
-                                                  <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data, service:service })}>
+                                                  <TouchableNativeFeedback useForeground disabled={!isValidate()} onPress={() => navigation.navigate('PaymentScreen', { shipping_info: data, service })}>
                                                             <View style={[styles.nextBtn, !isValidate() && { opacity: 0.5 }]}>
                                                                       <Text style={[styles.navigationBtnText]}>
                                                                                 Suivant
@@ -213,7 +214,6 @@ const styles = StyleSheet.create({
           },
           header: {
                     marginBottom: 20,
-                    marginTop: StatusBar.currentHeight + 20
           },
           titleDesc: {
                     color: '#777',
@@ -252,8 +252,7 @@ const styles = StyleSheet.create({
                     minWidth: 200,
                     overflow: "hidden",
                     backgroundColor: COLORS.ecommerceOrange,
-                    borderRadius: 30,
-                    marginLeft: 10
+                    borderRadius: 30
           },
           navigationBtnText: {
                     textAlign: "center",
@@ -270,5 +269,16 @@ const styles = StyleSheet.create({
                     alignItems: "center",
                     backgroundColor: '#ddd',
                     overflow: "hidden"
-          }
+          },
+          cardHeader: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    marginTop: StatusBar.currentHeight,
+                    height: 60,
+          },
+          headerBtn: {
+                    padding: 10
+          },
 })
