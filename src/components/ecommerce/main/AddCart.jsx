@@ -1,92 +1,114 @@
 import { useCallback, useEffect, useState } from "react"
 import { ActivityIndicator, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { FontAwesome5 } from '@expo/vector-icons'; 
+import { FontAwesome5 } from '@expo/vector-icons';
 import { COLORS } from "../../../styles/COLORS"
 import { useDispatch } from "react-redux";
 import { addProductAction } from "../../../store/actions/ecommerceCartActions";
-import { color } from "react-native-reanimated";
-// import { useFocusEffect } from "@react-navigation/native";
-export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm, onClose }) {
-          // console.log(SIZES.length)
-          const [selectedSize, setSelectedSize] = useState(null)
-          const [selectedColor, setSelectedColor] = useState(null)
-          const [selectedColors, setSelectedColors] = useState(null)
-          const [Colors, setColors] = useState(null)
-          const [amount, setAmount] = useState(0)
+import useFetch from '../../../hooks/useFetch'
+
+export default function AddCart({ product, loadingForm, onClose }) {
+          const [amount, setAmount] = useState(1)
           const [isFocused, setIsFocused] = useState(false)
           const dispatch = useDispatch()
-
-          const onDecrement = () => {
-                    if(parseInt(amount) == 1) {
-                              return false
-                    }
-                    if(parseInt(amount) <= 0) {
-                              return 1
-                    }
-                    setAmount(l => parseInt(l) - 1)
-          }
-          const onIncrement = () => {
-            if (selectedColor.QUANTITE_RESTANTE) {
-              if(amount == selectedColor.QUANTITE_RESTANTE) {
-                return false
-      }
-      setAmount(l => parseInt(l) +1)
-              
-            }
-                    
-          }
+          const [loadingVariants, variants] = useFetch(`/products/variants/${product.produit.ID_PRODUIT}`)
+          const [selectedCombinaison, setSelectedCombinaison] = useState(null)
+          /**
+           * Contient  un tableau des valeurs des variantes qui sont sélectionnés
+           */
+          const [selectedValues, setSelectedValues] = useState([])
 
           const onChangeText = am => {
                     setAmount(am)
           }
-          const checkAmount = () => {
-            if(selectedColor.QUANTITE_RESTANTE)
-            {
-              setAmount(parseInt(amount) ? (parseInt(amount) >= selectedColor.QUANTITE_RESTANTE ? selectedColors.QUANTITE_RESTANTE : parseInt(amount)) : 1)
-
-            }
-          }
-
           const onAddToCart = () => {
                     onClose()
-                    
-                    dispatch(addProductAction(product, amount,selectedColor ,selectedSize))
+                    dispatch(addProductAction(product, amount, selectedCombinaison))
           }
- const onDecrementOther = () => {
-                if (parseInt(amount) == 1) {
-                        return false
-                }
-                if (parseInt(amount) <= 0) {
-                        return 1
-                }
-                setAmount(l => parseInt(l) - 1)
-        }
+          const onDecrementOther = () => {
+                    if (parseInt(amount) == 1) {
+                              return false
+                    }
+                    if (parseInt(amount) <= 0) {
+                              return 1
+                    }
+                    setAmount(l => parseInt(l) - 1)
+          }
 
-        const onIncrementOther = () => {
-                if (amount == 10) {
-                        return false
-                }
-                setAmount(l => parseInt(l) + 1)
-        }
+          const onIncrementOther = () => {
+                    if (amount == selectedCombinaison.QUANTITE) {
+                              return false
+                    }
+                    setAmount(l => parseInt(l) + 1)
+          }
+          const checkAmount = useCallback(() => {
+                    setAmount(parseInt(amount) ? (parseInt(amount) >= selectedCombinaison.QUANTITE ? selectedCombinaison.QUANTITE : parseInt(amount)) : 1)
+          }, [selectedCombinaison])
 
-        // const onChangeText = am => {
-        //         setAmount(am)
-        // }
-        const checkAmountOther = () => {
-                setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
-        }
-
-        // const onAddToCart = () => {
-        //         onClose()
-        //         dispatch(addMenuAction(menu, amount))
-        // }
           let isnum = /^\d+$/.test(amount);
-          const isValid = () => {
-                    return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= selectedColor.QUANTITE_RESTANTE) : false
+
+          const isValid = useCallback(() => {
+                    return isnum ? (parseInt(amount) > 0 && parseInt(amount) <= selectedCombinaison.QUANTITE) : false
+          }, [selectedCombinaison, amount])
+
+          const isValueSelected = useCallback(idValue => {
+                    if(selectedValues.length > 0) {
+                              const isThere = selectedValues.find(v => v.ID_VALUE == idValue)
+                              return isThere ? true : false
+                    }
+                    return false
+          }, [selectedValues])
+
+          const handleValuePress = value => {
+                    if(isValueSelected(value.ID_VALUE)) return false
+                    const isVariantSelected = selectedValues.find(v => v.ID_VARIANT == value.ID_VARIANT)
+                    if(isVariantSelected) {
+                              const removedVariant = selectedValues.filter(v => v.ID_VALUE != isVariantSelected.ID_VALUE)
+                              setSelectedValues([...removedVariant, value])
+                    } else {
+                              setSelectedValues(c => [...c, value])
+                    }
           }
-          const isValidOther = () => {
-            return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
-    }
+
+          const getPrice = useCallback(() => {
+                    if(selectedCombinaison) {
+                              return selectedCombinaison.PRIX
+                    }
+                    return product.produit_partenaire.PRIX
+          }, [selectedCombinaison])
+
+          useEffect(() => {
+                    if(!loadingVariants) {
+                              const combinaisons = variants.result.combinaisons
+                              if(combinaisons) {
+                                        const defaultCombinaison = combinaisons[0]
+                                        if(defaultCombinaison.values && defaultCombinaison.values.length > 0) {
+                                                  const variantsValues = [].concat(...variants.result.variants.map(variant => variant.values));
+                                                  const values = defaultCombinaison.values.map(value => {
+                                                            const otherKeys = variantsValues.find(v => v.ID_VALUE == value.ID_VALUE)
+                                                            return {
+                                                                      ...value,
+                                                                      ...otherKeys
+                                                            }
+                                                  })
+                                                  setSelectedValues(values)
+                                        }
+                              }
+                    }
+          }, [variants, loadingVariants])
+
+          useEffect(() => {
+                    if(!loadingVariants) {
+                              const combinaisons = variants.result.combinaisons
+                              if(combinaisons && selectedValues.length > 0) {
+                                        const combinaison = combinaisons.find(comb => {
+                                                  const valueIds = comb.values.map(value => value.ID_VALUE);
+                                                  const selectedValuesIds =selectedValues.map(value => value.ID_VALUE)
+                                                  return valueIds.sort().toString() === selectedValuesIds.sort().toString();
+                                        })
+                                        setSelectedCombinaison(combinaison || null)
+                              }
+                    }
+          }, [loadingVariants, variants, selectedValues])
           return (
                     loadingForm ? <ActivityIndicator
                               animating
@@ -94,121 +116,88 @@ export default function AddCart({ colors,onSizePress,SIZES,product, loadingForm,
                               color='#777'
                               style={{ alignSelf: 'center', marginBottom: 15, marginTop: 20 }}
                     /> :
-                    <View style={styles.container}>
-                              {/* <Text style={styles.title}>Ajouter au panier</Text> */}
-                              <View style={styles.product}>
-                                        <View style={styles.productImage}>
-                                                  <Image source={{ uri: product.produit_partenaire.IMAGE_1 }} style={styles.image} />
+                              <View style={styles.container}>
+                                        <View style={styles.product}>
+                                                  <View style={styles.productImage}>
+                                                            <Image source={{ uri: product.produit.IMAGE }} style={styles.image} />
+                                                  </View>
+                                                  <View style={styles.productDetails}>
+                                                            <Text numberOfLines={3} style={styles.productName}>
+                                                                      {product.produit.NOM}
+                                                            </Text>
+                                                            <Text style={styles.productSeller}>
+                                                                      {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
+                                                            </Text>
+                                                            <Text style={styles.price}>
+                                                                      { getPrice().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} FBU
+                                                            </Text>
+                                                  </View>
                                         </View>
-                                        <View style={styles.productDetails}>
-                                                  <Text numberOfLines={3} style={styles.productName}>
-                                                            {product.produit.NOM} ·
-                                                            <Text numberOfLines={3} style={styles.productName}> { product.produit_partenaire.NOM }</Text>
+                                        {loadingVariants ? <View style={styles.loadingBlock}>
+                                                  <Text style={styles.loadingText}>Chargement</Text>
+                                                  <ActivityIndicator animating={true} size="small" style={{ marginLeft: 10 }} color='#777' />
+                                        </View> :
+                                        <>
+                                        <View style={styles.variantsSection}>
+                                                  {variants.result.variants.length > 0 ? <View style={styles.variants}>
+                                                            {variants.result.variants.map((variant, index) => {
+                                                                      return (
+                                                                                <View style={styles.variant} key={index}>
+                                                                                          <Text style={styles.variantName}>{ variant.VARIANT_NAME }</Text>
+                                                                                          {variant.values && variant.values.length > 0 ?  <View style={styles.variantValues}>
+                                                                                                    {variant.values.map((value, index) => {
+                                                                                                              return (
+                                                                                                                        <TouchableOpacity
+                                                                                                                                  disabled={isValueSelected(value.ID_VALUE)}
+                                                                                                                                  key={index}
+                                                                                                                                  style={[styles.variantValue, index == 0 && { marginLeft: 0 }, isValueSelected(value.ID_VALUE) && { borderColor: 'blue' }]}
+                                                                                                                                  onPress={() => handleValuePress(value)}>
+                                                                                                                                  <Text style={styles.variantValueText}>{ value.VALUE_NAME }</Text>
+                                                                                                                        </TouchableOpacity>
+                                                                                                              )
+                                                                                                    })}
+                                                                                          </View> : null}
+                                                                                </View>
+                                                                      )
+                                                            })}
+                                                  </View> : null}
+                                        </View>
+                                        {(!selectedCombinaison || selectedCombinaison && selectedCombinaison.QUANTITE <= 0) ? <Text style={styles.noProductFeeback}>
+                                                  Produit non disponible en stock pour le moment
+                                        </Text>  :
+                                        <View style={styles.moreDetails}>
+                                                  <Text style={styles.avalaibleFeedback}>
+                                                            Disponible en stock: {selectedCombinaison.QUANTITE} pièce{selectedCombinaison.QUANTITE > 1 && 's'}
                                                   </Text>
-                                                  <Text style={styles.productSeller}>
-                                                            { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
-                                                            {/* <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} /> */}
-                                                  </Text>
-                                                  {product.produit_partenaire.PRIX ? <Text style={styles.price}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } Fbu</Text> : null}
-                                        </View>
-                              </View>
-                              {SIZES.length!=0?
-                              <>
-                              <View style={styles.moreDetails}>
-                                        <Text style={styles.subTitle}>Taille</Text>
-                                        <View style={[styles.sizes]}>
-                                                  {
-                                                  SIZES?.map((size, index) =>
-                                                   <TouchableOpacity style={[styles.size, index == 0 && { marginLeft: 0 }, size.id == selectedSize?.id && { backgroundColor: COLORS.ecommercePrimaryColor }]} key={index} onPress={() => 
-                                                   {
-                                                    setSelectedSize(size)
-                                                    setSelectedColor(null)
-                                                    onChangeText(0)
-                                                    onSizePress(size)
-                                                  }
-                                                   }>
-                                                            <Text style={[styles.sizeText, size.id == selectedSize?.id && { color: '#FFF' }]}>{ size.name }</Text>
-                                                  </TouchableOpacity>)}
-                                        </View>
-                              </View>
-                              {selectedSize&&<View style={styles.moreDetails}>
-                                        <Text style={styles.subTitle}>couleur</Text>
-                                        <View style={[styles.sizes]}>
-                                                  {colors.map((color, index) =>
-                                                   <TouchableOpacity style={[styles.color, index == 0 && { marginLeft: 0 }, color.ID_COULEUR == selectedColor?.ID_COULEUR && { backgroundColor: COLORS.ecommercePrimaryColor }]} key={index} onPress={() => 
-                                                   {
-                                                    setSelectedColor(color)
-                                                    // onSizePress(color)
-                                                  }
-                                                   }>
-                                                            <Text style={[styles.colorText, color.ID_COULEUR == selectedColor?.ID_COULEUR && { color: '#FFF' }]}>{ color.COULEUR }</Text>
-                                                  </TouchableOpacity>)}
-                                        </View>
-                              </View>}
-                              <View style={styles.moreDetails}>
-                                        <Text style={[styles.subTitle, ]}>Quantité</Text>
-                                        
-                                        {selectedColor?<Text style={{ fontSize: 12, color: '#777', marginBottom: 5 }}>
-                                          Disponible: {selectedColor.QUANTITE_RESTANTE}  
-                                        </Text>:<Text style={{ fontSize: 12, color: '#777', marginBottom: 5 }}>
-                                          Disponible: 0 
-                                        </Text>}
-                                        <View style={styles.amountContainer}>
-                                                  <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                                                            <Text style={styles.amountChangerText}>-</Text>
+                                                  <View style={styles.amountContainer}>
+                                                            <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrementOther} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                                      <Text style={styles.amountChangerText}>-</Text>
+                                                            </TouchableOpacity>
+                                                            <TextInput
+                                                                      style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                                                                      value={amount.toString()}
+                                                                      onChangeText={onChangeText}
+                                                                      onFocus={() => setIsFocused(true)}
+                                                                      onBlur={() => {
+                                                                                setIsFocused(false)
+                                                                                checkAmount()
+                                                                      }}
+                                                                      keyboardType="decimal-pad"
+                                                            />
+                                                            <TouchableOpacity
+                                                                      style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= selectedCombinaison.QUANTITE) && { opacity: 0.5 }]}
+                                                                      onPress={onIncrementOther}
+                                                                      disabled={(!/^\d+$/.test(amount) || amount >= selectedCombinaison.QUANTITE)
+                                                                      }>
+                                                                      <Text style={styles.amountChangerText}>+</Text>
+                                                            </TouchableOpacity>
+                                                  </View>
+                                                  <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                                                            <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
                                                   </TouchableOpacity>
-                                                  <TextInput
-                                                            style={[styles.input, isFocused && { borderColor: COLORS.primary}]}
-                                                            value={amount.toString()}
-                                                            onChangeText={onChangeText}
-                                                            onFocus={() => setIsFocused(true)}
-                                                            onBlur={() => {
-                                                                      setIsFocused(false)
-                                                                      checkAmount()
-                                                            }}
-                                                            keyboardType="decimal-pad"
-                                                  />
-                                                 { selectedColor?<TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= selectedColor.QUANTITE_RESTANTE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= selectedColor.QUANTITE_RESTANTE)}>
-                                                            <Text style={styles.amountChangerText}>+</Text>
-                                                  </TouchableOpacity>:
-                                                  <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                                                  <Text style={styles.amountChangerText}>+</Text>
-                                        </TouchableOpacity>}
-                                        </View>
-                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
-                                                  <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
-                                        </TouchableOpacity>
+                                        </View> }
+                                        </>}
                               </View>
-                              </>:<View>
-                              <View style={{ marginTop: 10 }}>
-                                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de {product.produit.NOM} </Text>
-                                </View>
-                                <View style={styles.moreDetails}>
-                                        <View style={styles.amountContainer}>
-                                                <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrementOther} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                                                        <Text style={styles.amountChangerText}>-</Text>
-                                                </TouchableOpacity>
-                                                <TextInput
-                                                        style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                                                        value={amount.toString()}
-                                                        onChangeText={onChangeText}
-                                                        onFocus={() => setIsFocused(true)}
-                                                        onBlur={() => {
-                                                                setIsFocused(false)
-                                                                checkAmountOther()
-                                                        }}
-                                                        keyboardType="decimal-pad"
-                                                />
-                                                <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrementOther} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                                                        <Text style={styles.amountChangerText}>+</Text>
-                                                </TouchableOpacity>
-                                        </View>
-                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValidOther() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValidOther()}>
-                                                <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
-                                        </TouchableOpacity>
-                                </View>
-                                </View>}
-                    </View>
           )
 }
 
@@ -239,7 +228,7 @@ const styles = StyleSheet.create({
                     width: "100%",
                     height: "100%",
                     borderRadius: 10,
-                    alignContent: 'center'
+                    resizeMode: 'contain'
           },
           productDetails: {
                     flex: 1,
@@ -260,7 +249,7 @@ const styles = StyleSheet.create({
                     fontSize: 16
           },
           moreDetails: {
-                    marginTop: 20
+                    marginTop: 10
           },
           subTitle: {
                     color: COLORS.ecommercePrimaryColor,
@@ -281,15 +270,15 @@ const styles = StyleSheet.create({
                     marginLeft: 10
           },
           color: {
-            width: 100,
-            height: 50,
-            borderRadius: 10,
-            backgroundColor: '#F1F1F1',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginLeft: 10
-  },
-          
+                    width: 100,
+                    height: 50,
+                    borderRadius: 10,
+                    backgroundColor: '#F1F1F1',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft: 10
+          },
+
           sizeText: {
                     color: COLORS.ecommercePrimaryColor,
                     fontWeight: 'bold',
@@ -335,6 +324,47 @@ const styles = StyleSheet.create({
                     textAlign: 'center',
                     color: '#fff',
                     fontWeight: 'bold'
+          },
+          variantName: {
+                    fontWeight: 'bold',
+                    marginTop: 5
+          },
+          variantValues: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    marginTop: 2
+          },
+          variantValue: {
+                    paddingVertical: 10,
+                    paddingHorizontal: 15,
+                    borderRadius: 8,
+                    borderWidth: 1,
+                    borderColor: '#E1EAF3',
+                    marginLeft: 5
+          },
+          variantValueText: {
+                    fontSize: 13
+          },
+          loadingBlock: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 10
+          },
+          loadingText: {
+                    color: '#777'
+          },
+          noProductFeeback: {
+                    fontSize: 12,
+                    marginTop: 10,
+                    color: 'red',
+                    fontWeight: "bold",
+                    opacity: 0.7
+          },
+          avalaibleFeedback: {
+                    color: '#777',
+                    fontSize: 12,
+                    marginBottom: 2
           }
-          
+
 })

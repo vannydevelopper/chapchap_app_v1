@@ -9,7 +9,7 @@ export function ecommerceCartReducer(products = [], action) {
                               if(product) {
                                         const newCommands = products.map(commande => {
                                                   if(commande.produit.ID_PRODUIT_PARTENAIRE == product.produit.ID_PRODUIT_PARTENAIRE) {
-                                                            return {...commande, QUANTITE: action.payload.QUANTITE}
+                                                            return {...commande, QUANTITE: action.payload.QUANTITE, combinaison: action.payload.combinaison}
                                                   }
                                                   return commande
                                         })
@@ -17,7 +17,7 @@ export function ecommerceCartReducer(products = [], action) {
                               }
                               return [...products, action.payload]
                     case REMOVE_COMMAND_ACTION:
-                              return products.filter((command, index) => command.produit.ID_PRODUIT_PARTENAIRE != action.payload)
+                              return products.filter((command, index) => command.produit.ID_PRODUIT != action.payload)
                     case RESET_CART_ACTION:
                               return []
                     default:
