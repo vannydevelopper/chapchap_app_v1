@@ -8,7 +8,7 @@ export default function Categories({ categories }) {
           const navigation = useNavigation()
           return (
                               <>
-                                        <TouchableNativeFeedback onPress={() => navigation.navigate('ShopsScreen', { shops })}
+                                        <TouchableNativeFeedback onPress={() => navigation.navigate('CategorieListeScreen', { categories })}
                                                   accessibilityRole="button"
                                                   background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                                         >
