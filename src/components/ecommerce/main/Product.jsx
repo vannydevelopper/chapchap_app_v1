@@ -57,22 +57,18 @@ export default function Product({ product, index, totalLength, fixMargins = fals
                     //  console.log(id)
                     if (wishlist) {
                               try {
-
                                         const newWishlist = await fetchApi(`/wishlist/suppression/${id}`, {
                                                   method: "DELETE",
                                         })
                                         if (onRemove) {
                                                   onRemove(id)
                                         }
-
                                         setWishlist(false)
 
                               } catch (error) {
                                         console.log(error)
                               }
-
                     }
-
                     else {
                               try {
                                         const form = new FormData()

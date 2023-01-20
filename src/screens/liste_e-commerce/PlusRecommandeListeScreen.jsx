@@ -10,7 +10,6 @@ import fetchApi from "../../helpers/fetchApi";
 import { Modalize } from "react-native-modalize";
 import { TouchableNativeFeedback } from "react-native-web";
 import * as Location from 'expo-location';
-import ProduitPartenaire from "../../components/ecommerce/home/ProduitPartenaire";
 
 /**
  * screens pour afficher le produits recommandez pour vous avec une filtre des cotegories

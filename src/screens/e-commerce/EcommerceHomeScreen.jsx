@@ -135,13 +135,13 @@ export default function EcommerceHomeScreen() {
                                         {loadingShops ? <HomeProductsSkeletons /> : <Shops shops={shops.result} />}
                                         {loadingCategories ? <CategoriesSkeletons /> : <Categories categories={categories.result} />}
                                         {loadingProducts ? <HomeProductsSkeletons /> :
-                                                  productsCommande.length > 0 ? <HomeProducts products={productsCommande} /> : null
+                                                  productsCommande.length > 0 ? <HomeProducts products={productsCommande} title="Les plus achetés" /> : null
                                         }
-                                        <TouchableNativeFeedback onPress={productPress}>
-                                                  <View style={styles.plus2}>
-                                                            <Text style={styles.plusText}>Recommandé pour vous</Text>
+                                        <View onPress={productPress}>
+                                                  <View style={styles.section}>
+                                                            <Text style={styles.secionTitle}>Recommandé pour vous</Text>
                                                   </View>
-                                        </TouchableNativeFeedback>
+                                        </View>
                                         <View style={styles.products}>
                                                   {products.map((product, index) => {
                                                             return (
@@ -168,33 +168,17 @@ const styles = StyleSheet.create({
           container: {
                     flex: 1
           },
-          plus1: {
+          section: {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    marginTop: 10,
                     paddingVertical: 10,
-                    marginTop: "-3%",
-                    paddingHorizontal: 10,
-                    marginBottom: "-1%"
+                    paddingHorizontal: 10
           },
-          plus: {
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingVertical: 10,
-                    marginTop: "1%",
-                    paddingHorizontal: 10,
-                    marginBottom: "0%"
-          },
-          plus2: {
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingVertical: 10,
-                    paddingHorizontal: 10,
-                    marginTop: 10
-          },
-          plusText: {
+          secionTitle: {
+                    color: COLORS.ecommercePrimaryColor,
+                    fontSize: 17,
                     fontWeight: "bold"
           },
           categories: {

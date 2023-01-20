@@ -8,7 +8,7 @@ export default function Categories({ categories }) {
           const navigation = useNavigation()
           return (
                               <>
-                                        <TouchableNativeFeedback onPress={() => navigation.navigate('ShopsScreen', { shops })}
+                                        <TouchableNativeFeedback onPress={() => navigation.navigate('CategorieListeScreen', { categories })}
                                                   accessibilityRole="button"
                                                   background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                                         >
@@ -24,7 +24,10 @@ export default function Categories({ categories }) {
                                         >
                                                   {categories.map((category, index) => {
                                                             return (
-                                                                      <TouchableWithoutFeedback onPress={() => navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: category })} key={index}>
+                                                                      <TouchableWithoutFeedback 
+                                                                                onPress={() => navigation.navigate('AllProductsScreen', {
+                                                                                          category
+                                                                                })} key={index}>
                                                                                 <View style={[styles.category]}>
                                                                                           <View style={styles.categoryPhoto}>
                                                                                                     <Image source={{ uri: category.IMAGE }} style={styles.image} />
@@ -49,7 +52,9 @@ const styles = StyleSheet.create({
                     marginTop: 10
           },
           title: {
-                    fontWeight: 'bold'
+                    color: COLORS.ecommercePrimaryColor,
+                    fontSize: 17,
+                    fontWeight: "bold"
           },
           category: {
                     alignItems: 'center',

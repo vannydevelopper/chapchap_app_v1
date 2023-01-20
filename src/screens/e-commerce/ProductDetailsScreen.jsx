@@ -4,7 +4,6 @@ import { Image, View, StyleSheet, Text, TouchableOpacity, TouchableNativeFeedbac
 import { Ionicons, AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 import { useNavigation, useRoute } from "@react-navigation/native";
-import ProduitPartenaire from "../../components/ecommerce/home/ProduitPartenaire";
 import fetchApi from "../../helpers/fetchApi";
 import { useSelector } from "react-redux";
 import { userSelector } from "../../store/selectors/userSelector"
@@ -24,23 +23,30 @@ import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skel
 import ProductImages from "../../components/ecommerce/details/ProductImages";
 import moment from "moment/moment";
 import Loading from "../../components/app/Loading";
+import HomeProducts from "../../components/ecommerce/home/HomeProducts";
+import useFetch from "../../hooks/useFetch";
+
+moment.updateLocale('fr', {
+          calendar: {
+                    sameDay: "[Aujourd'hui]",
+                    lastDay: '[Hier]',
+                    nextDay: 'DD-M-YYYY',
+                    lastWeek: 'DD-M-YYYY',
+                    sameElse: 'DD-M-YYYY',
+          },
+})
+
 export default function ProductDetailsScreen() {
           const navigation = useNavigation()
           const route = useRoute()
-
-          const [loadingShopProducts, setLoadingShopProducts] = useState(true)
-          const [shopProducts, setShopProducts] = useState([])
           const [produitnote, Setproduitnote] = useState([])
           const [userNote, SetuserNote] = useState([])
-          const [categoSelectionnner, setCategoSelectionnner] = useState(null)
-
-          //console.log(shopProducts)
-          const [loadingSimilarProducts, setLoadingSimilarProducts] = useState(true)
-          const [similarProducs, setSimilarProducts] = useState([])
-          const user = useSelector(userSelector)
-          //console.log(user.result.ID_USER)
           const { product } = route.params
-          // console.log(product)
+
+          const [loadingShopProducts, shopProducts] = useFetch(`/products?partenaireService=${product.produit_partenaire.ID_PARTENAIRE_SERVICE}`)
+          const [loadingSimilarProducts, similarProducs] = useFetch(`/products?category=${product.categorie.ID_CATEGORIE_PRODUIT}`)
+
+          const user = useSelector(userSelector)
           const modalizeRef = useRef(null)
           const [isOpen, setIsOpen] = useState(false)
           const [loadingForm, setLoadingForm] = useState(true)
@@ -48,21 +54,11 @@ export default function ProductDetailsScreen() {
           const [note, Setnote] = useState(null)
           const [commentaire, Setcommentaire] = useState(null)
           const productInCart = useSelector(ecommerceProductSelector(product.produit_partenaire.ID_PARTENAIRE_SERVICE))
-          // console.log(product)
+
           const onCartPress = () => {
                     setIsOpen(true)
                     modalizeRef.current?.open()
           }
-          moment.updateLocale('fr', {
-                    calendar: {
-                              sameDay: "[Aujourd'hui]",
-                              lastDay: '[Hier]',
-                              nextDay: 'DD-M-YYYY',
-                              lastWeek: 'DD-M-YYYY',
-                              sameElse: 'DD-M-YYYY',
-                    },
-          })
-
           const onCloseAddToCart = () => {
                     modalizeRef.current?.close()
           }
@@ -72,57 +68,6 @@ export default function ProductDetailsScreen() {
                     product.produit_partenaire.IMAGE_2 ? product.produit_partenaire.IMAGE_2 : undefined,
                     product.produit_partenaire.IMAGE_3 ? product.produit_partenaire.IMAGE_3 : undefined,
           ]
-
-          const onetoilePress = (note) => {
-
-                    Setnote(note)
-
-
-          }
-
-          const ProduitsSimilaires = () => {
-                    setCategoSelectionnner({
-                              NOM: product.categorie.NOM,
-                              // ID_CATEGORIE_PRODUIT:product.categorie.ID_CATEGORIE_PRODUIT,
-
-                    })
-                    navigation.navigate("PlusRecommandeScreen", { selectedOneCategorie: product.categorie.ID_CATEGORIE_PRODUIT, ID_PARTENAIRE_SERVICE: product.produit_partenaire.ID_PARTENAIRE_SERVICE })
-          }
-
-          const fecthProduits = async () => {
-                    try {
-                              const response = await fetchApi(`/products/products/${product.produit_partenaire.ID_PARTENAIRE_SERVICE}`, {
-                                        method: "GET",
-                                        headers: { "Content-Type": "application/json" },
-                              })
-
-                              setShopProducts(response.result)
-
-                    }
-
-                    catch (error) {
-                              console.log(error)
-                    } finally {
-                              setLoadingShopProducts(false)
-                    }
-          }
-          useFocusEffect(useCallback(() => {
-                    fecthProduits()
-          }, []))
-
-          useEffect(() => {
-                    (async () => {
-                              try {
-                                        var url = `/products?category=${product.categorie.ID_CATEGORIE_PRODUIT}`
-                                        const produits = await fetchApi(url)
-                                        setSimilarProducts(produits.result)
-                              } catch (error) {
-                                        console.log(error)
-                              } finally {
-                                        setLoadingSimilarProducts(false)
-                              }
-                    })()
-          }, [])
 
           useEffect(() => {
                     if (isOpen) {
@@ -134,31 +79,7 @@ export default function ProductDetailsScreen() {
                               }
                     }
           }, [isOpen])
-          // const enregistrement = async () => {
 
-          //   try {
-
-          //     setLoading(true)
-          //     const res = await fetchApi("/products/note", {
-          //       method: 'POST',
-          //       body: JSON.stringify({
-          //         ID_PRODUIT_PARTENAIRE: product.produit.ID_PRODUIT_PARTENAIRE,
-          //         NOTE: note,
-          //         COMMENTAIRE: commentaire,}),
-
-          //       headers: { "Content-Type": "application/json" },
-          //     })
-          //     Setproduitnote(n => [res.result, ...n])
-          //     //navigation.navigate("produitDetailScreen")
-          //   }
-          //   catch (error) {
-          //     console.log(error)
-
-          //   } finally {
-          //     setLoading(false)
-          //     Setcommentaire("")
-          //   }
-          // }
           useEffect(() => {
                     (async () => {
                               try {
@@ -190,15 +111,23 @@ export default function ProductDetailsScreen() {
                     <>
                               {loading && <Loading />}
                               <View style={{ marginTop: 0, flex: 1 }}>
-                                        {/* {showImageModal && <ImagesGallery images={IMAGES.filter(image => image)} showImageModal={showImageModal} setShowImageModal={setShowImageModal} />} */}
                                         <View style={styles.cardHeader}>
-                                                  <TouchableOpacity onPress={() => navigation.goBack()}>
-                                                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                                                  </TouchableOpacity>
+                                                  <TouchableNativeFeedback
+                                                            style={{}}
+                                                            onPress={() => navigation.goBack()}
+                                                            background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                                                            <View style={styles.headerBtn}>
+                                                                      <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                                                            </View>
+                                                  </TouchableNativeFeedback>
                                                   <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                            <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                                                                      <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                                                            </TouchableOpacity>
+                                                            <TouchableNativeFeedback
+                                                                      style={{}}
+                                                                      background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                                                                      <View style={styles.headerBtn}>
+                                                                                <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+                                                                      </View>
+                                                            </TouchableNativeFeedback>
                                                             <EcommerceBadge />
                                                   </View>
                                         </View>
@@ -212,7 +141,7 @@ export default function ProductDetailsScreen() {
                                                                       </TouchableOpacity>
                                                                       <View style={styles.productNames}>
                                                                                 <Text style={styles.productName}>
-                                                                                          { product.produit.NOM }
+                                                                                          {product.produit.NOM}
                                                                                 </Text>
                                                                       </View>
                                                             </View>
@@ -240,41 +169,19 @@ export default function ProductDetailsScreen() {
                                                                                           </Text>
                                                                                 </View>
                                                                       </View>
-                                                                      {
-                                                                                shopProducts.length > 4 &&
-                                                                                <View style={{ marginTop: -8 }}>
-                                                                                          <View style={{ flexDirection: 'row' }}>
-                                                                                                    <MaterialIcons style={{ marginTop: -40, marginLeft: -30 }} name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-                                                                                                    <MaterialIcons style={{ marginTop: -40, marginLeft: -30 }} name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-                                                                                          </View>
-                                                                                </View>
-                                                                      }
                                                             </View>
                                                   </TouchableNativeFeedback>
-                                                  {/* {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />} */}
-                                                  {(loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
-                                                            <>
-                                                                      <TouchableNativeFeedback onPress={ProduitsSimilaires}>
-                                                                                <View style={styles.productsHeader} >
-                                                                                          <Text style={styles.plusText}>Similaires</Text>
-                                                                                          <AntDesign name="arrowright" size={24} color="black" />
-                                                                                </View>
-                                                                      </TouchableNativeFeedback>
-                                                                      <View style={styles.products}>
-                                                                                {similarProducs.map((product, index) => {
-                                                                                          return (
-                                                                                                    <Product
-                                                                                                              product={product}
-                                                                                                              index={index}
-                                                                                                              totalLength={shopProducts.length}
-                                                                                                              key={index}
-                                                                                                              fixMargins
-                                                                                                    />
-                                                                                          )
-                                                                                })}
-                                                                      </View>
-                                                            </>}
-
+                                                  {loadingSimilarProducts ? <HomeProductsSkeletons /> : <HomeProducts
+                                                            products={similarProducs.result}
+                                                            title="Similaires"
+                                                            category={product.categorie}
+                                                  />}
+                                                  {loadingShopProducts ? <HomeProductsSkeletons /> : <HomeProducts
+                                                            products={shopProducts.result}
+                                                            title={`Plus à ${product.partenaire.NOM_ORGANISATION}`}
+                                                            category={product.categorie}
+                                                            shop={product.produit_partenaire}
+                                                  />}
                                         </ScrollView>
                               </View>
                               <View style={styles.productFooter}>
@@ -585,4 +492,7 @@ const styles = StyleSheet.create({
                     fontSize: 17,
                     fontWeight: "bold"
           },
+          headerBtn: {
+                    padding: 10
+          }
 })

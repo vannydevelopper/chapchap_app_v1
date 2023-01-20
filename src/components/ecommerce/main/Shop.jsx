@@ -31,7 +31,7 @@ export default function Shop({ shop, index, totalLength, fixMargins = false }) {
                     return (a + '').charAt(0).toUpperCase() + a.substr(1);
           }
           return (
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: shop.ID_PARTENAIRE_SERVICE, shop: shop })}>
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('ShopScreen', { id: shop.ID_PARTENAIRE_SERVICE, shop: shop })}>
                               <View key={index} style={[styles.shop, additionStyles]}>
                                         <View style={styles.imageCard}>
                                                   <Image source={{ uri: shop.LOGO }} style={styles.image} />

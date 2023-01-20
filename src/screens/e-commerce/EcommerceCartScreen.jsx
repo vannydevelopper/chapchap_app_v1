@@ -78,6 +78,7 @@ export default function EcommerceCartScreen() {
                                                   <TouchableNativeFeedback
                                                             accessibilityRole="button"
                                                             background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                                                            disabled
                                                   >
                                                             <View style={styles.productsHeader}>
                                                                       <Text style={[styles.title, { fontSize: 16 }]}>Recommandés pour vous</Text>

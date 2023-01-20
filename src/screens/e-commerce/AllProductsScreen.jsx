@@ -1,27 +1,35 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
-import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import Product from "../../components/ecommerce/main/Product";
 import fetchApi from "../../helpers/fetchApi";
 import { useRoute } from "@react-navigation/native";
 import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-import SubCategories from "../../components/ecommerce/home/SubCategories";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import { Ionicons, AntDesign, MaterialIcons, Entypo, SimpleLineIcons } from '@expo/vector-icons';
+import CategoriesModalize from "../../components/ecommerce/allProducts/CategoriesModalize";
+import ShopsModalize from "../../components/ecommerce/allProducts/ShopsModalize";
 
 export default function AllProductsScreen() {
           const route = useRoute()
-          const { selectedCategorie: defautSelectedCategorie, selectedsousCategories: defautSelectedsousCategories } = route.params
+          const { category, shop } = route.params
 
           const [loadingCategories, setLoadingCatagories] = useState(true)
+          const [loadingRestos, setLoadingRestos] = useState(true)
+
           const [categories, setCategories] = useState([])
-          const [selectedCategorie, setSelectedCategorie] = useState(defautSelectedCategorie)
+          const [restos, setRestos] = useState([])
 
+          const [selectedCategory, setSelectedCategory] = useState(category)
+          const [selectedResto, setSelectedResto] = useState(shop)
 
-          const [loadingSubCategories, setLoadingSubCategories] = useState(false)
-          const [sousCategories, SetSousCategories] = useState([])
-          const [selectedsousCategories, setSelectedsousCategories] = useState(defautSelectedsousCategories)
+          const categoriesModalizeRef = useRef()
+          const restosModalizeRef = useRef()
+
+          const [loadingForm, setLoadingForm] = useState(true)
+          const [isOpen, setIsOpen] = useState(false)
+          const [isRestoOpen, setIsRestoOpen] = useState(false)
 
           const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
           const [loadingProducts, setLoadingProducts] = useState(false)
@@ -43,43 +51,44 @@ export default function AllProductsScreen() {
                               setLoadingCatagories(false)
                     }
           }
+
+          const fetchRestos = async () => {
+                    try {
+                              const response = await fetchApi("/partenaire/ecommerce", {
+                                        method: "GET",
+                                        headers: { "Content-Type": "application/json" },
+                              })
+                              setRestos(response.result)
+                    }
+                    catch (error) {
+                              console.log(error)
+                    } finally {
+                              setLoadingRestos(false)
+                    }
+          }
           useFocusEffect(useCallback(() => {
                     fecthProduits()
+                    fetchRestos()
           }, []))
 
-          const onCategoryPress = (categorie) => {
-                    if (loadingSubCategories || loadingProducts) return false
-                    if (categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT) {
-                              return setSelectedCategorie(null)
-                    }
-                    setSelectedCategorie(categorie)
-                    setSelectedsousCategories(null)
-          }
-
-          const selectedItemSousCategories = (souscategorie) => {
-                    setSelectedsousCategories(souscategorie)
-          }
-
-
-          //fetch des sous  categories
           useEffect(() => {
-                    (async () => {
-                              try {
-                                        setLoadingSubCategories(true)
-                                        if (selectedCategorie?.ID_CATEGORIE_PRODUIT) {
-                                                  const subCategories = await fetchApi(`/products/sub_categories/${selectedCategorie?.ID_CATEGORIE_PRODUIT}`, {
-                                                            method: "GET",
-                                                            headers: { "Content-Type": "application/json" },
-                                                  })
-                                                  SetSousCategories(subCategories.result)
-                                        }
-                              } catch (error) {
-                                        console.log(error)
-                              } finally {
-                                        setLoadingSubCategories(false)
+                    if (isOpen) {
+                              const timer = setTimeout(() => {
+                                        setLoadingForm(false)
+                              })
+                              return () => {
+                                        clearTimeout(timer)
                               }
-                    })()
-          }, [selectedCategorie])
+                    }
+                    if (isRestoOpen) {
+                              const timer = setTimeout(() => {
+                                        setLoadingForm(false)
+                              })
+                              return () => {
+                                        clearTimeout(timer)
+                              }
+                    }
+          }, [isOpen, isRestoOpen])
 
           useEffect(() => {
                     (async () => {
@@ -87,9 +96,16 @@ export default function AllProductsScreen() {
                                         if (firstLoadingProducts == false) {
                                                   setLoadingProducts(true)
                                         }
-                                        var url = "/products"
-                                        if (selectedCategorie) {
-                                                  url = `/products?category=${selectedCategorie?.ID_CATEGORIE_PRODUIT}`
+                                        var queries = []
+                                        var url = "/products?"
+                                        if (selectedCategory) {
+                                                  queries.push(`category=${selectedCategory?.ID_CATEGORIE_PRODUIT}`)
+                                        }
+                                        if (selectedResto) {
+                                                  queries.push(`partenaireService=${selectedResto?.ID_PARTENAIRE_SERVICE}`)
+                                        }
+                                        if(queries.length > 0) {
+                                                  url += queries.join('&')
                                         }
                                         const produits = await fetchApi(url)
                                         setProducts(produits.result)
@@ -100,59 +116,104 @@ export default function AllProductsScreen() {
                                         setLoadingProducts(false)
                               }
                     })()
-          }, [selectedCategorie, selectedsousCategories])
-
-
-
-
+          }, [selectedCategory, selectedResto])
 
           return (
+                    <>
+                    <CategoriesModalize
+                              categoriesModalizeRef={categoriesModalizeRef}
+                              categories={categories}
+                              selectedCategory={selectedCategory}
+                              setSelectedCategory={setSelectedCategory}
+                              loadingForm={loadingForm}
+                              setLoadingForm={setLoadingForm}
+                              loadingCategories={loadingCategories}
+                              isOpen={isOpen}
+                              setIsOpen={setIsOpen}
+                    />
+                    <ShopsModalize
+                              restosModalizeRef={restosModalizeRef}
+                              restos={restos}
+                              selectedResto={selectedResto}
+                              setSelectedResto={setSelectedResto}
+                              loadingForm={loadingForm}
+                              setLoadingForm={setLoadingForm}
+                              loadingRestos={loadingRestos}
+                              isRestoOpen={isRestoOpen}
+                              setIsRestoOpen={setIsRestoOpen}
+                    />
                     <View style={styles.container}>
                               <View style={styles.cardHeader}>
                                         <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                  <TouchableOpacity onPress={() => navigation.goBack()}>
-                                                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                                                  </TouchableOpacity>
-                                                  <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
-                                                            { selectedCategorie ? selectedCategorie.NOM : "Les plus achetés" }
-                                                  </Text>
+                                                  <TouchableNativeFeedback
+                                                            style={{}}
+                                                            onPress={() => navigation.goBack()}
+                                                            background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                                                            <View style={styles.headerBtn}>
+                                                                      <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                                                            </View>
+                                                  </TouchableNativeFeedback>
                                         </View>
                                         <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                                  <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                                                            <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                                                  </TouchableOpacity>
+                                                  <TouchableNativeFeedback
+                                                            style={{}}
+                                                            onPress={() => navigation.goBack()}
+                                                            background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                                                            <View style={styles.headerBtn}>
+                                                                      <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+                                                            </View>
+                                                  </TouchableNativeFeedback>
                                                   <EcommerceBadge />
                                         </View>
                               </View>
                               <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
                                         <Text style={styles.titlePrincipal}></Text>
-                                        {(loadingCategories || firstLoadingProducts) ? <CategoriesSkeletons /> :
-                                                  <View>
-                                                            <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-                                                                      {categories.map((categorie, index) => {
-                                                                                return (
-                                                                                          <TouchableOpacity key={index} onPress={() => onCategoryPress(categorie)}>
-                                                                                                    <View style={{ alignContent: "center", alignItems: "center" }}>
-                                                                                                              <View style={[styles.cardPhoto, { backgroundColor: categorie.ID_CATEGORIE_PRODUIT == selectedCategorie?.ID_CATEGORIE_PRODUIT ? COLORS.handleColor : "#DFE1E9" }]}>
-                                                                                                                        <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                                                                                              </View>
-                                                                                                              <Text style={[{ fontSize: 12, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                                                                                                    </View>
-                                                                                          </TouchableOpacity>
-                                                                                )
-                                                                      })}
+                                        <View>
+                                                  <View style={styles.quickFilters}>
+                                                            <View style={styles.filterCategoryShop}>
+                                                                      <TouchableNativeFeedback useForeground onPress={() => {
+                                                                                categoriesModalizeRef.current.open()
+                                                                                setIsOpen(true)
+                                                                      }}>
+                                                                                <View style={styles.quickFilterBtn}>
+                                                                                          <View style={styles.quickFilterBtnHeader}>
+                                                                                                    <Entypo name="shopping-cart" size={20} color={COLORS.primary} />
+                                                                                                    <Text style={styles.quickFilterTitle}>
+                                                                                                              {selectedCategory ? selectedCategory.NOM : 'Catégories'}
+                                                                                                              <Entypo name="chevron-small-down" size={12} color="#777" />
+                                                                                                    </Text>
+                                                                                          </View>
+                                                                                </View>
+                                                                      </TouchableNativeFeedback>
+                                                                      <TouchableNativeFeedback useForeground onPress={() => {
+                                                                                restosModalizeRef.current.open()
+                                                                                setIsRestoOpen(true)
+                                                                      }}>
+                                                                                <View style={[styles.quickFilterBtn, { marginLeft: 10}]}>
+                                                                                          <View style={styles.quickFilterBtnHeader}>
+                                                                                                    <Entypo name="shop" size={20} color={COLORS.primary} />
+                                                                                                    <Text style={styles.quickFilterTitle}>
+                                                                                                              {selectedResto ? selectedResto.NOM_ORGANISATION : 'Restaurants'}
+                                                                                                              <Entypo name="chevron-small-down" size={12} color="#777" />
+                                                                                                    </Text>
+                                                                                          </View>
+                                                                                </View>
+                                                                      </TouchableNativeFeedback>
                                                             </View>
-                                                  </View>}
-
-
-                                        {selectedCategorie && ((loadingSubCategories || loadingProducts || loadingSubCategories) ? <SubCategoriesSkeletons /> : <SubCategories
-                                                  sousCategories={sousCategories}
-                                                  selectedItemSousCategories={selectedItemSousCategories}
-                                                  selectedsousCategories={selectedsousCategories}
-                                        />)}
-
-                                        {(firstLoadingProducts || loadingCategories || loadingProducts || loadingSubCategories) ? <HomeProductsSkeletons wrap /> :
-
+                                                            <View>
+                                                                      <TouchableNativeFeedback useForeground>
+                                                                                <View style={styles.filterBtn}>
+                                                                                          <SimpleLineIcons name="equalizer" size={24} color={COLORS.primary} style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                                                                                </View>
+                                                                      </TouchableNativeFeedback>
+                                                            </View>
+                                                  </View>
+                                        </View>
+                                        {(loadingProducts || firstLoadingProducts) ? <HomeProductsSkeletons wrap noTitle /> :
+                                                  products.length == 0 ? <View style={styles.emptyContainer}>
+                                                            <Image source={require('../../../assets/images/no-money.png')} style={styles.emptyImage} />
+                                                            <Text style={styles.emptyFeedback}>Aucun résultat trouvé</Text>
+                                                  </View> :
                                                   <View style={styles.products}>
                                                             {products.map((product, index) => {
                                                                       return (
@@ -167,8 +228,8 @@ export default function AllProductsScreen() {
                                                             })}
                                                   </View>}
                               </ScrollView>
-
                     </View>
+                    </>
           )
 }
 
@@ -206,7 +267,8 @@ const styles = StyleSheet.create({
           },
           products: {
                     flexDirection: 'row',
-                    flexWrap: 'wrap'
+                    flexWrap: 'wrap',
+                    paddingBottom: 10
           },
           titlePrincipal: {
                     fontSize: 0,
@@ -230,4 +292,63 @@ const styles = StyleSheet.create({
                     minHeight: 40,
                     borderRadius: 10,
           },
+          headerBtn: {
+                    padding: 10
+          },
+          quickFilters:  {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 10,
+                    marginBottom: 10
+          },
+          filterCategoryShop: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+          },
+          quickFilterBtn: {
+                    padding: 10,
+                    borderRadius: 8,
+                    borderWidth: 0.5,
+                    borderColor: '#aaa',
+                    minWidth: 120,
+                    borderRadius: 8,
+                    overflow: 'hidden'
+          },
+          filterBtn: {
+                    padding: 10,
+                    paddingHorizontal: 20,
+                    borderRadius: 8,
+                    borderWidth: 0.5,
+                    borderColor: '#aaa',
+                    overflow: 'hidden'
+          },
+          quickFilterBtnHeader: {
+                    flexDirection: 'row',
+                    alignItems: 'center'
+          },
+          quickFilterTitle: {
+                    fontSize: 12,
+                    marginLeft: 5,
+                    color: '#777'
+          },
+          quickFilterValue: {
+                    fontSize: 12
+          },
+          emptyContainer: {
+                    justifyContent: "center",
+                    alignItems: "center"
+          },
+          emptyImage: {
+                    width: 200,
+                    height: 200
+          },
+          emptyFeedback: {
+                    fontWeight: 'bold',
+                    marginVertical: 10,
+                    marginTop: 30,
+                    fontSize: 16,
+                    color: COLORS.ecommercePrimaryColor,
+                    paddingHorizontal: 10
+          }
 })
