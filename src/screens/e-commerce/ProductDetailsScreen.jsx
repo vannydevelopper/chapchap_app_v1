@@ -209,12 +209,10 @@ export default function ProductDetailsScreen() {
                                                                       <TouchableOpacity style={styles.category} >
                                                                                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
                                                                                 <Text style={styles.categoryName} numberOfLines={2}>{product.categorie.NOM}</Text>
-
                                                                       </TouchableOpacity>
                                                                       <View style={styles.productNames}>
                                                                                 <Text style={styles.productName}>
-                                                                                          {product.produit.NOM}
-                                                                                          <Text numberOfLines={2} style={styles.productName}> {product.produit_partenaire.NOM}</Text>
+                                                                                          { product.produit.NOM }
                                                                                 </Text>
                                                                       </View>
                                                             </View>
@@ -225,7 +223,6 @@ export default function ProductDetailsScreen() {
                                                   <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
                                                             <Text style={styles.productDescription}>{product.produit_partenaire.DESCRIPTION}</Text>
                                                   </View>
-
                                                   <TouchableNativeFeedback onPress={() => navigation.navigate('ProductShopsScreen', { id: product.produit_partenaire.ID_PARTENAIRE_SERVICE })}>
                                                             <View style={styles.shop}>
                                                                       <View style={styles.shopLeft}>
@@ -233,19 +230,15 @@ export default function ProductDetailsScreen() {
                                                                                           {true ? <Entypo name="shop" size={24} color={COLORS.primary} /> :
                                                                                                     <FontAwesome name="user" size={24} color={COLORS.primary} />}
                                                                                 </View>
-                                                                                <TouchableOpacity >
-                                                                                          <View style={styles.shopOwner}>
-
-                                                                                                    <Text style={styles.productSeller}>
-                                                                                                              {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
-                                                                                                              {/* <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} /> */}
-                                                                                                    </Text>
-
-                                                                                                    <Text style={styles.shopAdress}>
-                                                                                                              {product.partenaire.ADRESSE_COMPLETE ? product.partenaire.ADRESSE_COMPLETE : "Particulier"}
-                                                                                                    </Text>
-                                                                                          </View>
-                                                                                </TouchableOpacity>
+                                                                                <View style={styles.shopOwner}>
+                                                                                          <Text style={styles.productSeller}>
+                                                                                                    {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
+                                                                                                    {/* <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} /> */}
+                                                                                          </Text>
+                                                                                          <Text style={styles.shopAdress}>
+                                                                                                    {product.partenaire.ADRESSE_COMPLETE ? product.partenaire.ADRESSE_COMPLETE : "Particulier"}
+                                                                                          </Text>
+                                                                                </View>
                                                                       </View>
                                                                       {
                                                                                 shopProducts.length > 4 &&
@@ -253,24 +246,20 @@ export default function ProductDetailsScreen() {
                                                                                           <View style={{ flexDirection: 'row' }}>
                                                                                                     <MaterialIcons style={{ marginTop: -40, marginLeft: -30 }} name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
                                                                                                     <MaterialIcons style={{ marginTop: -40, marginLeft: -30 }} name="navigate-next" size={24} color={COLORS.ecommerceOrange} />
-
                                                                                           </View>
                                                                                 </View>
                                                                       }
                                                             </View>
                                                   </TouchableNativeFeedback>
-
-                                                  {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />}
-                                                  {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
+                                                  {/* {(loadingShopProducts || loadingSimilarProducts) ? <HomeProductsSkeletons /> : <ProduitPartenaire productPartenaires={shopProducts} ID_PARTENAIRE_SERVICE={product.produit_partenaire.ID_PARTENAIRE_SERVICE} />} */}
+                                                  {(loadingSimilarProducts) ? <HomeProductsSkeletons wrap /> :
                                                             <>
-                                                                      <View>
-                                                                                <TouchableOpacity style={styles.productsHeader} onPress={ProduitsSimilaires}>
+                                                                      <TouchableNativeFeedback onPress={ProduitsSimilaires}>
+                                                                                <View style={styles.productsHeader} >
                                                                                           <Text style={styles.plusText}>Similaires</Text>
-                                                                                          <View>
-                                                                                                    <AntDesign name="arrowright" size={24} color="black" />
-                                                                                          </View>
-                                                                                </TouchableOpacity>
-                                                                      </View>
+                                                                                          <AntDesign name="arrowright" size={24} color="black" />
+                                                                                </View>
+                                                                      </TouchableNativeFeedback>
                                                                       <View style={styles.products}>
                                                                                 {similarProducs.map((product, index) => {
                                                                                           return (
@@ -311,8 +300,8 @@ export default function ProductDetailsScreen() {
                                                             adjustToContentHeight
                                                             handlePosition='inside'
                                                             modalStyle={{
-                                                                      borderTopRightRadius: 25,
-                                                                      borderTopLeftRadius: 25,
+                                                                      borderTopRightRadius: 10,
+                                                                      borderTopLeftRadius: 10,
                                                                       paddingVertical: 20
                                                             }}
                                                             handleStyle={{ marginTop: 10 }}
@@ -400,10 +389,8 @@ const styles = StyleSheet.create({
                     flexDirection: "row",
                     alignItems: 'center',
                     justifyContent: "space-between",
-                    marginVertical: 10,
                     paddingVertical: 10,
                     paddingHorizontal: 10,
-                    marginBottom: -5
           },
           shopLeft: {
                     flexDirection: "row",
@@ -415,13 +402,11 @@ const styles = StyleSheet.create({
                     backgroundColor: '#F1F1F1',
                     borderRadius: 10,
                     justifyContent: 'center',
-                    alignItems: "center",
-                    marginTop: -40
+                    alignItems: "center"
 
           },
           shopOwner: {
                     marginLeft: 10,
-                    marginTop: -40
           },
           productSeller: {
                     fontWeight: "bold",
@@ -493,10 +478,7 @@ const styles = StyleSheet.create({
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     paddingVertical: 10,
-                    // marginTop: "-5%",
                     paddingHorizontal: 10,
-                    marginBottom: "5%",
-                    // backgroundColor:"red"
           },
           title: {
                     color: COLORS.ecommercePrimaryColor,
@@ -600,7 +582,7 @@ const styles = StyleSheet.create({
           },
           plusText: {
                     color: COLORS.ecommercePrimaryColor,
-                    fontSize: 18,
+                    fontSize: 17,
                     fontWeight: "bold"
           },
 })
