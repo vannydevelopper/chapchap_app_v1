@@ -3,11 +3,8 @@ import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
-import ProductPartenaire from "../../components/ecommerce/main/ProductPartenaire";
 import fetchApi from "../../helpers/fetchApi";
 import { useRoute } from "@react-navigation/native";
-import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-import SubCategories from "../../components/ecommerce/home/SubCategories";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import Shop from "../../components/ecommerce/main/Shop";
 

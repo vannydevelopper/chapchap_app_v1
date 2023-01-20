@@ -5,9 +5,8 @@ import Product from '../main/Product';
 import { HomeProductsSkeletons } from '../skeletons/Skeletons';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from "../../../styles/COLORS";
-import HomeProduct from '../main/HomeProduct';
 
-export default function HomeProducts({ products, selectedCategorie, selectedsousCategories }) {
+export default function HomeProducts({ products, category, shop, title = "Tous les produits" }) {
           const navigation = useNavigation()
           return (
                     <View style={styles.homeProducts}>
@@ -15,23 +14,23 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
                                         accessibilityRole="button"
                                         background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                                         onPress={() => navigation.navigate('AllProductsScreen', {
-                                                  selectedCategorie: selectedCategorie, selectedsousCategories: selectedsousCategories
+                                                  category, shop
                                         })}
                               >
                                         <View style={styles.productsHeader}>
-                                                  <Text style={styles.title}>Les plus populaires</Text>
+                                                  <Text style={styles.title}>{ title }</Text>
                                                   <MaterialIcons name="navigate-next" size={24} color="black" />
                                         </View>
                               </TouchableNativeFeedback>
-
                               <ScrollView
                                         style={styles.products}
                                         horizontal
                                         showsHorizontalScrollIndicator={false}
+                                        contentContainerStyle={{ paddingBottom: 10, paddingHorizontal: 10 }}
                               >
                                         {products.map((product, index) => {
                                                   return (
-                                                            <HomeProduct
+                                                            <Product
                                                                       product={product}
                                                                       index={index}
                                                                       totalLength={products.length}
@@ -47,10 +46,6 @@ export default function HomeProducts({ products, selectedCategorie, selectedsous
 
 const styles = StyleSheet.create({
           homeProducts: {
-                    // elevation:5,
-                    // borderRadius:1,
-                    // backgroundColor:"white",
-                    // marginVertical:2
           },
           productsHeader: {
                     flexDirection: 'row',
@@ -73,9 +68,11 @@ const styles = StyleSheet.create({
                     fontSize: 14,
           },
           title: {
-                    fontWeight: 'bold'
+                    color: COLORS.ecommercePrimaryColor,
+                    fontSize: 17,
+                    fontWeight: "bold"
           },
           products: {
-                    paddingHorizontal: 10,
+                    // paddingHorizontal: 10,
           }
 })

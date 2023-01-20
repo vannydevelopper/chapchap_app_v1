@@ -60,7 +60,9 @@ const styles = StyleSheet.create({
                     fontSize: 14,
           },
           title: {
-                    fontWeight: 'bold'
+                    color: COLORS.ecommercePrimaryColor,
+                    fontSize: 17,
+                    fontWeight: "bold"
           },
           shops: {
                     paddingHorizontal: 10,

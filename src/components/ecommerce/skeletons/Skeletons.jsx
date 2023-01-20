@@ -87,11 +87,11 @@ export const RestaurantSkeletons = () => {
                     </View>
           )
 }
-export const HomeProductsSkeletons = ({ wrap = false }) => {
+export const HomeProductsSkeletons = ({ wrap = false, noTitle = false }) => {
           const { width } = useWindowDimensions()
           const PRODUCT_MARGIN = 10
           const PRODUCT_WIDTH = (width / 2) - PRODUCT_MARGIN - 10
-          const PRODUCT_HEIGHT = 270
+          const PRODUCT_HEIGHT = 200
           const additionStyles = {
                     width: PRODUCT_WIDTH,
                     height: PRODUCT_HEIGHT,
@@ -100,7 +100,7 @@ export const HomeProductsSkeletons = ({ wrap = false }) => {
           }
           return (
                     <>
-                              <View style={{ ...styles.title, height: 15, width: '25%', backgroundColor: '#d9ddde', marginLeft: 10, marginTop: 20, borderRadius: 5, marginBottom: 10 }} />
+                              {!noTitle && <View style={{ ...styles.title, height: 15, width: '25%', backgroundColor: '#d9ddde', marginLeft: 10, marginTop: 20, borderRadius: 5, marginBottom: 10 }} />}
                               <View style={[{ flexDirection: "row", alignItems: "center" }, wrap && { flexWrap: "wrap" }]}>
                                         {(new Array(10).fill(0)).map((category, index) => {
                                                   return (
