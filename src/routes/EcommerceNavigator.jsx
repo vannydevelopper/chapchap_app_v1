@@ -6,7 +6,7 @@ import EcommerceCartScreen from "../screens/e-commerce/EcommerceCartScreen";
 import EcommerceHomeScreen from "../screens/e-commerce/EcommerceHomeScreen";
 import PaymentScreen from "../screens/e-commerce/PaymentScreen";
 import ProductDetailsScreen from "../screens/e-commerce/ProductDetailsScreen";
-import ProductShopsScreen from "../screens/e-commerce/ProductShopsScreen";
+import ShopScreen from "../screens/e-commerce/ShopScreen";
 import SearchLivreurScreen from "../screens/e-commerce/SearchLivreurScreen";
 import ShippingInfoScreen from "../screens/e-commerce/ShippingInfoScreen";
 import ShopsScreen from "../screens/e-commerce/ShopsScreen";
@@ -25,7 +25,7 @@ export default function EcommerceNavigator() {
                                         <Stack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen} />
                                         <Stack.Screen name="AllProductsScreen" component={AllProductsScreen} />
                                         <Stack.Screen name="ShopsScreen" component={ShopsScreen} />
-                                        <Stack.Screen name="ProductShopsScreen" component={ProductShopsScreen} />
+                                        <Stack.Screen name="ShopScreen" component={ShopScreen} />
 
                                         <Stack.Screen name="BoutiqueListeScreen" component={BoutiqueListeScreen}/>
                                         <Stack.Screen name="CategorieListeScreen" component={CategorieListeScreen}/>
