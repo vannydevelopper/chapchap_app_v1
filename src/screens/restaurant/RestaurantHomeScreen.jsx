@@ -30,8 +30,6 @@ export default function RestaurantHomeScreen() {
     const [loadingSubCategories, setLoadingSubCategories] = useState(false)
     const [sousCategories, SetSousCategories] = useState([])
     const [selectedsousCategories, setSelectedsousCategories] = useState(null)
-
-
     const [firstLoadingMenus, setFirstLoadingMenus] = useState(true)
     const [loadingMenus, setLoadingMenus] = useState(false)
     const [menus, setMenus] = useState([])
@@ -67,6 +65,7 @@ export default function RestaurantHomeScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
+            console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -151,6 +150,7 @@ export default function RestaurantHomeScreen() {
                 const restaurants = await fecthRestos()
                 setLoadingResto(false)
                 setRestaurants(restaurants.result)
+                console.log()
                 return;
             }
             location = await Location.getCurrentPositionAsync({});
@@ -164,6 +164,8 @@ export default function RestaurantHomeScreen() {
 
     return (
         <View style={styles.container}>
+            
+            <ScrollView>
             <View style={styles.cardHeader}>
                 <TouchableOpacity style={styles.menuOpener} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
                     <View style={styles.menuOpenerLine} />
@@ -173,8 +175,8 @@ export default function RestaurantHomeScreen() {
                 <RestaurantBadge />
             </View>
             <Text style={styles.titlePrincipal}>Restaurations</Text>
-            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: -10, paddingHorizontal: 10, marginTop: -15 }}>
-                <TouchableOpacity onPress={() => navigation.navigate("ResearchTab")} style={styles.searchSection} >
+            <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", paddingHorizontal: 10, marginTop: 5 }}>
+                <TouchableOpacity onPress={() => navigation.navigate("RechercheScreen")} style={styles.searchSection} >
                     <FontAwesome name="search" size={24} color={COLORS.ecommercePrimaryColor} />
                     <Text style={styles.input}>Rechercher.......</Text>
                 </TouchableOpacity>
@@ -182,7 +184,6 @@ export default function RestaurantHomeScreen() {
                     <SimpleLineIcons name="equalizer" size={24} color="white" style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
                 </View>
             </View>
-            <ScrollView>
                 <TouchableOpacity onPress={onCartPress} style={{ ...styles.plus1 }}>
                     <View>
                         <Text style={styles.plusText}>Restaurants</Text>
@@ -246,7 +247,6 @@ export default function RestaurantHomeScreen() {
                 {
                     (firstLoadingMenus || loadingMenus) ?
                         <>
-                            <HomeMenuSkeletons />
                             <HomeMenuSkeletons />
                         </> :
                         menus.length == 0 ?
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: StatusBar.currentHeight,
         height: 60,
-        marginBottom: "-3%",
+        
 
     },
     menuOpener: {
