@@ -183,7 +183,7 @@ export default function MenusRestaurantScreen() {
                 if (firstLoadingProducts == false) {
                     setLoadingProducts(true)
                 }
-                var url = `/resto/menu/restaurant/${restaurant.ID_PARTENAIRE_SERVICE} `
+                var url = `${restaurant.ID_PARTENAIRE_SERVICE} `
                 const menu = await fetchApi(url)
                 setMenus(menu.result)
 
@@ -342,6 +342,7 @@ export default function MenusRestaurantScreen() {
                                 showsHorizontalScrollIndicator={false}
                             >
                                 {menus.map((menu, index) => {
+                                    
                                     return (
                                         <MenuPartenaire
                                             menu={menu}

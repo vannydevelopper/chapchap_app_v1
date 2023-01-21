@@ -101,7 +101,7 @@ export default function MenuDetailScreen() {
                 var url = `/resto/menu/restaurant/${product.ID_PARTENAIRE_SERVICE}`
                 const menuRestaurant = await fetchApi(url)
                 setselectedRestaurant(menuRestaurant.result)
-                // console.log(selectedRestaurant)
+                console.log(selectedRestaurant)
             } catch (error) {
                 console.log(error)
             }
