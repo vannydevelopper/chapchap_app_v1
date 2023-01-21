@@ -61,8 +61,8 @@ export default function ConnexionScreen() {
                                         body: JSON.stringify(user),
                                         headers: { "Content-Type": "application/json" },
                               });
-                              await AsyncStorage.setItem("user", JSON.stringify(userData));
-                              dispatch(setUserAction(userData))
+                              await AsyncStorage.setItem("user", JSON.stringify(userData.result));
+                              dispatch(setUserAction(userData.result))
                     }
 
                     catch (error) {

@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import cache from "../utils/cache";
 export const API_URL = false
           ? "http://app.mediabox.bi:1805"
-          : "http://192.168.43.84:3000";
+          : "http://192.168.43.51:3000";
          
 /**
  * consomer une api avec les options par défaut
@@ -32,7 +32,7 @@ export default async function fetchApi(url, options = initialOptions) {
           if (user) {
                     options = {
                               ...options,
-                              headers: { ...options.headers, authorization: `bearer ${user.result.token}` },
+                              headers: { ...options.headers, authorization: `bearer ${user.token}` },
                     };
           }
           const response = await fetch(API_URL + url, {

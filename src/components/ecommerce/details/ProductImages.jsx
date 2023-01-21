@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
           pagination: {
                     flexDirection: "row",
                     alignSelf: "center",
-                    marginBottom: 10,
+                    marginVertical: 10,
                     justifyContent: "space-between"
           },
           paginationDot: {

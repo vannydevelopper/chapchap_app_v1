@@ -89,8 +89,8 @@ export default function InscriptionScreen() {
                                 }),
                                 headers: { "Content-Type": "application/json" },
                         })
-                        await AsyncStorage.setItem("user", JSON.stringify(res));
-                        dispatch(setUserAction(res));
+                        await AsyncStorage.setItem("user", JSON.stringify(res.result));
+                        dispatch(setUserAction(res.result));
                 }
                 catch (error) {
                         console.log(error)

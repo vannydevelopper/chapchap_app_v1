@@ -12,10 +12,12 @@ import { Portal } from "react-native-portalize"
 import fetchApi from '../../../helpers/fetchApi'
 import Loading from '../../app/Loading'
 import { restaurantCartSelector } from '../../../store/selectors/restaurantCartSelectors'
+import ServicesIDS from '../../../constants/ServicesIDS'
+import { ECONET_PHONE_NUMBER_STARTS } from '../../../constants/MOBILE_NUMBER_STARTS'
 
 
 
-export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, service, commandes, resto, onFInish }) {
+export default function EcocashModalize({ info, loadingForm, onClose, shipping_info, service,  onFInish }) {
     const [loading, setLoading] = useState(false)
           const [data, handleChange] = useForm({
                     tel: ""
@@ -34,38 +36,52 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
           const products = useSelector(ecommerceCartSelector)
           const restaurants = useSelector(restaurantCartSelector)
 
-          if (products) {
-                    var getAmount = useCallback(() => {
-                              var total = 0
+          const getTotal = () => {
+                    var total = 0
+                    if(service == ServicesIDS.ecommerce) {
                               products.forEach(product => {
-                                        total += parseInt(product.produit_partenaire.PRIX) * product.QUANTITE
+                                        total += product.combinaison ? product.combinaison.PRIX * product.QUANTITE : product.produit_partenaire.PRIX * product.QUANTITE
                               })
-                              return total
-                    }, [products])
+                    }
+                    return total
           }
-
-          if (restaurants) {
-                    var getAmount = useCallback(() => {
-                              var total = 0
-                              restaurants.forEach(restaurant => {
-                                        total += parseInt(restaurant.PRIX) * restaurant.QUANTITE
-                              })
-                              return total
-                    }, [restaurants])
-          }
-
-
-
           const onPay = async () => {
                     try {
                               Keyboard.dismiss()
                               setLoading(true)
                               setErrors({})
                               let isnum = /^\d+$/.test(data.tel);
-                              if (!isnum) {
+                              const phoneStart = data.tel.substring(0, 2)
+                              if (!isnum || !ECONET_PHONE_NUMBER_STARTS.includes(phoneStart)) {
                                         return setError("tel", ["Numéro de téléphone invalide"])
                               }
-                              if (service == 2) {
+                              if (service == ServicesIDS.ecommerce) {
+                                        const orders = products.map(product => {
+                                                  return {
+                                                            QUANTITE: product.QUANTITE,
+                                                            PRIX: product.combinaison.PRIX,
+                                                            ID_COMBINATION: product.combinaison.ID_COMBINATION,
+                                                            ID_PRODUIT: product.produit.ID_PRODUIT,
+                                                            ID_PARTENAIRE_SERVICE: product.produit_partenaire.ID_PARTENAIRE_SERVICE
+                                                  }
+                                        })
+                                        const commande = await fetchApi('/commandes/clients', {
+                                                  method: "POST",
+                                                  body: JSON.stringify({
+                                                            numero: data.tel,
+                                                            shipping_info: {
+                                                                      TELEPHONE: shipping_info.tel,
+                                                                      NOM: shipping_info.nom,
+                                                                      PRENOM: shipping_info.prenom,
+                                                                      ADRESSE: shipping_info.address,
+                                                            },
+                                                            service: service,
+                                                            commandes: orders
+                                                  }),
+                                                  headers: { "Content-Type": "application/json" },
+                                        })
+                                        onFInish(commande.result)
+                              } else if (service == ServicesIDS.resto) {
                                         const commande = await fetchApi('/commandes/clients/restaurant', {
                                                   method: "POST",
                                                   body: JSON.stringify({
@@ -77,30 +93,12 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                                                                       ADRESSE: shipping_info.address,
                                                             },
                                                             service: service,
-                                                            resto
-                                                  }),
-                                                  headers: { "Content-Type": "application/json" },
-                                        })
-                                        onFInish(commande.result)
-                              } else if (service == 1) {
-                                        const commande = await fetchApi('/commandes/clients', {
-                                                  method: "POST",
-                                                  body: JSON.stringify({
-                                                            numero: data.tel,
-                                                            shipping_info: {
-                                                                      TELEPHONE: shipping_info.tel,
-                                                                      N0M: shipping_info.nom,
-                                                                      PRENOM: shipping_info.prenom,
-                                                                      ADRESSE: shipping_info.address,
-                                                            },
-                                                            service: service,
-                                                            commandes
+                                                            // resto
                                                   }),
                                                   headers: { "Content-Type": "application/json" },
                                         })
                                         onFInish(commande.result)
                               }
-
                     } catch (error) {
                               console.log(error)
                               if(error.httpStatus == "UNPROCESSABLE_ENTITY") {
@@ -110,8 +108,6 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                               setLoading(false)
                     }
           }
-
-          const totalAmount = getAmount() + 0
           return (
                     loadingForm ? <ActivityIndicator
                               animating
@@ -145,7 +141,7 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                                         <View style={styles.orderInfo}>
                                                   <View style={styles.orderPriceItem}>
                                                             <Text style={styles.orderPriceItemTitle}>Frais de la commande</Text>
-                                                            <Text style={styles.orderPriceItemValue}>{getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+                                                            <Text style={styles.orderPriceItemValue}>{getTotal().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
                                                   </View>
                                                   <View style={styles.orderPriceItem}>
                                                             <Text style={styles.orderPriceItemTitle}>Frais de livraison</Text>
@@ -154,12 +150,12 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                                                   <View style={styles.orderPriceItem}>
                                                             <Text style={styles.orderPriceItemTitle}>Total</Text>
                                                             <Text style={styles.orderTotal}>
-                                                                      {getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu
+                                                                      {getTotal().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu
                                                             </Text>
                                                   </View>
                                         </View>
                                         <TouchableOpacity style={[styles.payBtn, !isValidate() && { opacity: 0.5 }]} disabled={!isValidate()} onPress={onPay}>
-                                                  <Text style={styles.payBtnTitle}>PAYER ({getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu)</Text>
+                                                  <Text style={styles.payBtnTitle}>PAYER ({getTotal().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu)</Text>
                                         </TouchableOpacity>
                               </View>
           )

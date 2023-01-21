@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
 import { COLORS } from '../../styles/COLORS'
-import { MaterialIcons, Ionicons } from '@expo/vector-icons'; 
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Portal } from 'react-native-portalize';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -22,25 +22,25 @@ export default function PaymentScreen() {
                     available: true,
                     subTitle: "79878227",
                     image: require('../../../assets/images/ecocash.png')
-          },{
+          }, {
                     id: 2,
                     name: "LUMICAsh",
                     available: false,
                     subTitle: "68345975",
                     image: require('../../../assets/images/lumicash.jpg'),
-          },{
+          }, {
                     id: 3,
                     name: "Bancobu Enoti",
                     available: false,
                     subTitle: "",
                     image: require('../../../assets/images/enoti.png')
-          },{
+          }, {
                     id: 4,
                     name: "IBB M+",
                     available: false,
                     subTitle: "",
                     image: require('../../../assets/images/ibb.png')
-          },{
+          }, {
                     id: 5,
                     name: "VISA / MASTERCARD",
                     available: false,
@@ -49,10 +49,10 @@ export default function PaymentScreen() {
           }]
 
           const hash = str => {
-                    if(!str || str == '') return str
-                    const toHash = str.substr(0, str.length-2)
+                    if (!str || str == '') return str
+                    const toHash = str.substr(0, str.length - 2)
                     const hash = toHash.replace(/[a-zA-Z0-9]/g, '*')
-                    const rest = str.substr(str.length-2, 2)
+                    const rest = str.substr(str.length - 2, 2)
                     return `${hash}${rest}`
           }
 
@@ -66,25 +66,25 @@ export default function PaymentScreen() {
           const [commande, setCommande] = useState(null)
 
           const { shipping_info, service } = route.params
-    
+
           const products = useSelector(ecommerceCartSelector)
           const restaurants = useSelector(restaurantCartSelector)
-        
-          if(products){
-                var commandes = products.map(product => ({
-                        ID_PRODUIT_STOCK: product.stock.ID_PRODUIT_STOCK,
-                        QUANTITE: product.QUANTITE,
-                        PRIX: product.produit_partenaire.PRIX
-              }))
+
+          if (products) {
+                    var commandes = products.map(product => ({
+                              ID_PRODUIT_STOCK: product.stock.ID_PRODUIT_STOCK,
+                              QUANTITE: product.QUANTITE,
+                              PRIX: product.produit_partenaire.PRIX
+                    }))
           }
-          if(restaurants){
-                var resto = restaurants.map(restaurant => ({
-                        ID_RESTAURANT_MENU: restaurant.ID_RESTAURANT_MENU,
-                        QUANTITE: restaurant.QUANTITE,
-                        MONTANT: restaurant.PRIX
-              }))
+          if (restaurants) {
+                    var resto = restaurants.map(restaurant => ({
+                              ID_RESTAURANT_MENU: restaurant.ID_RESTAURANT_MENU,
+                              QUANTITE: restaurant.QUANTITE,
+                              MONTANT: restaurant.PRIX
+                    }))
           }
-          
+
 
           const onMethodPress = method => {
                     setIsOpen(true)
@@ -103,7 +103,7 @@ export default function PaymentScreen() {
           }
 
           useEffect(() => {
-                    if(isOpen) {
+                    if (isOpen) {
                               const timer = setTimeout(() => {
                                         setLoadingForm(false)
                               })
@@ -114,8 +114,15 @@ export default function PaymentScreen() {
           }, [isOpen])
           return (
                     <View style={styles.container}>
-                              { ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} idCommande={commande?.ID_COMMANDE} service={service} />}
+                              {ecocashIsPending && <EcocashPeddingPayment onClose={() => setEcocashIsPending(false)} idCommande={commande?.ID_COMMANDE} service={service} />}
                               <ScrollView keyboardShouldPersistTap="handled">
+                                        <View style={styles.cardHeader}>
+                                                  <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#c9c5c5', true)} onPress={() => navigation.goBack()}>
+                                                            <View style={styles.headerBtn}>
+                                                                      <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                                                            </View>
+                                                  </TouchableNativeFeedback>
+                                        </View>
                                         <View style={styles.header}>
                                                   <Text style={styles.title}>
                                                             Payer avec
@@ -123,7 +130,7 @@ export default function PaymentScreen() {
                                         </View>
                                         <View style={styles.methods}>
                                                   {METHODS.map((method, index) => {
-                                                            return(
+                                                            return (
                                                                       <TouchableNativeFeedback disabled={!method.available} key={method.id} useForeground onPress={() => onMethodPress(method)}>
                                                                                 <View style={[styles.method, !method.available && { opacity: 0.3 }, index == 0 && { marginTop: 0 }]} >
                                                                                           <View style={styles.methodRightSide}>
@@ -131,9 +138,9 @@ export default function PaymentScreen() {
                                                                                                               <Image source={method.image} style={styles.image} />
                                                                                                     </View>
                                                                                                     <View style={styles.methodNames}>
-                                                                                                              <Text style={styles.methodTitle}>{ method.name.toUpperCase() }</Text>
-                                                                                                              {method.available ? <Text style={styles.subTitle}>{ hash(method.subTitle) }</Text> : 
-                                                                                                              <Text style={styles.unavailableFeedback}>Non disponible</Text>}
+                                                                                                              <Text style={styles.methodTitle}>{method.name.toUpperCase()}</Text>
+                                                                                                              {method.available ? <Text style={styles.subTitle}>{hash(method.subTitle)}</Text> :
+                                                                                                                        <Text style={styles.unavailableFeedback}>Non disponible</Text>}
                                                                                                     </View>
                                                                                           </View>
                                                                                           <MaterialIcons name="navigate-next" size={24} color="black" style={{ fontWeight: "bold" }} />
@@ -157,8 +164,8 @@ export default function PaymentScreen() {
                                                             adjustToContentHeight
                                                             handlePosition='inside'
                                                             modalStyle={{
-                                                                      borderTopRightRadius: 25,
-                                                                      borderTopLeftRadius: 25,
+                                                                      borderTopRightRadius: 10,
+                                                                      borderTopLeftRadius: 10,
                                                                       paddingVertical: 20
                                                             }}
                                                             handleStyle={{ marginTop: 10 }}
@@ -170,7 +177,14 @@ export default function PaymentScreen() {
                                                                       setLoadingForm(true)
                                                             }}
                                                   >
-                                                            <EcocashModalize info={METHODS[0]} loadingForm={loadingForm} onClose={onCloseModalize} shipping_info={shipping_info} commandes={commandes} resto={resto} service={service} onFInish={onEcocashFinish} />
+                                                            <EcocashModalize
+                                                                      info={METHODS[0]}
+                                                                      loadingForm={loadingForm}
+                                                                      onClose={onCloseModalize}
+                                                                      shipping_info={shipping_info}
+                                                                      service={service}
+                                                                      onFInish={onEcocashFinish}
+                                                            />
                                                   </Modalize>
                                         </GestureHandlerRootView>
                               </Portal>
@@ -191,8 +205,7 @@ const styles = StyleSheet.create({
                     lineHeight: 33,
           },
           header: {
-                    marginBottom: 20,
-                    marginTop: StatusBar.currentHeight + 20
+                    marginBottom: 20
           },
           method: {
                     flexDirection: "row",
@@ -257,5 +270,16 @@ const styles = StyleSheet.create({
                     alignItems: "center",
                     backgroundColor: '#ddd',
                     overflow: "hidden"
-          }
+          },
+          cardHeader: {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    marginTop: StatusBar.currentHeight,
+                    height: 60,
+          },
+          headerBtn: {
+                    padding: 10
+          },
 })

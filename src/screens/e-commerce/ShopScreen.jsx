@@ -1,159 +1,111 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { Text, View, useWindowDimensions, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { COLORS } from "../../styles/COLORS";
-import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
-import ProductPartenaire from "../../components/ecommerce/main/ProductPartenaire";
-import fetchApi from "../../helpers/fetchApi";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import React from "react";
+import { useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { MaterialTabBar, MaterialTabItem, Tabs } from 'react-native-collapsible-tab-view'
+import { useEffect } from "react";
+import ShopCollapsableHeader, { HEADER_HEIGHT } from "../../components/ecommerce/shop/ShopCollapsableHeader";
 import { useRoute } from "@react-navigation/native";
-import { CategoriesSkeletons, HomeProductsSkeletons, SubCategoriesSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
-import SubCategories from "../../components/ecommerce/home/SubCategories";
-import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
-import Shop from "../../components/ecommerce/main/Shop";
+const TopTab = createMaterialTopTabNavigator()
 
-export default function ShopsScreen( ) {
-    const route = useRoute()
-    const { selectedCategorie: defautSelectedCategorie, selectedsousCategories: defautSelectedsousCategories } = route.params
+export default function ShopScreen() {
+          const [activeIndex, setActiveIndex] = useState(0)
+          const route = useRoute()
+          const { shop } = route.params
 
-    const [loadingCategories, setLoadingCatagories] = useState(true)
-    const [categories, setCategories] = useState([])
-    const [selectedCategorie, setSelectedCategorie] = useState(defautSelectedCategorie)
+          const Header = () => {
+                    return <ShopCollapsableHeader shop={shop} />
+          }
+          const renderItem = React.useCallback(({ index }) => {
+                    return (
+                              <View style={[styles.box, index % 2 === 0 ? styles.boxB : styles.boxA]} />
+                    )
+          }, [])
+          const DATA = [0, 1, 2, 3, 4]
 
-    const [loadingSubCategories, setLoadingSubCategories] = useState(false)
-    const [sousCategories, SetSousCategories] = useState([])
-    const [selectedsousCategories, setSelectedsousCategories] = useState(defautSelectedsousCategories)
+          const tabBar = props => (
+                    <MaterialTabItem
+                              {...props}
+                    />
+          )
 
-    const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
-    const [loadingProducts, setLoadingProducts] = useState(false)
-    const [products, setProducts] = useState([])
-
-    const navigation = useNavigation()
-    const { shops } = route.params
-    console.log(products)
-
-
-    return (
-        <View style={styles.container}>
-
-            <View style={styles.cardHeader}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-
-                        <View style={styles.productsHeader}>
-                            <Ionicons name="arrow-back-sharp" size={24} color="black" /><Text>   </Text>
-                            <Text style={styles.title}>Les boutiques</Text>
-
-                        </View>
-                    </TouchableOpacity>
-                    <Text style={{ fontWeight: "bold", color: '#777', fontSize: 16, marginLeft: 10 }}>
-                        {selectedCategorie ? selectedCategorie.NOM : products.NOM_ORGANISATION}
-                    </Text>
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                        <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                    </TouchableOpacity>
-                    <EcommerceBadge />
-                </View>
-            </View>
-            <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
-                <Text style={styles.titlePrincipal}></Text>
-                <View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 10, backgroundColor: '#fff', paddingBottom: 10 }}>
-
-                    </View>
-                </View>
-
-
-            <View style={styles.products}>
-                    {shops.map((shop, index) => {
-                        return (
-                            <Shop
-                                shop={shop}
-                                index={index}
-                                totalLength={shops.length}
-                                key={index}
-                            />
-                        )
-                    })}
-
-                </View>
-            </ScrollView>
-
-        </View>
-    )
+          return (
+                    <Tabs.Container
+                              renderHeader={Header}
+                              headerHeight={HEADER_HEIGHT}
+                              TabBarComponent={props => {
+                                        return <MaterialTabBar
+                                                  {...props}
+                                                  indicatorStyle={{ backgroundColor: '#949494', height: 2, elevation: 0, borderBottomWidth: 0 }}
+                                                  inactiveColor='#777'
+                                                  tabStyle={{ elevation: 0, height: "100%" }}
+                                                  style={{ elevation: 0, paddingHorizontal: 10, height: 60 }}
+                                                  labelStyle={{ color: 'red', fontWeight: 'bold', paddingHorizontal: 10 }}
+                                                  scrollEnabled
+                                                  contentContainerStyle={{ elevation: 0 }}
+                                        />
+                              }}
+                              onIndexChange={index => setActiveIndex(index)}
+                    >
+                              <Tabs.Tab name="produits" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
+                                        <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#000' : "#777"}]}>Produits</Text>
+                              </View>}>
+                                        <Tabs.ScrollView>
+                                                  <View style={[styles.box, styles.boxA]} />
+                                                  <View style={[styles.box, styles.boxB]} />
+                                        </Tabs.ScrollView>
+                              </Tabs.Tab>
+                              <Tabs.Tab name="commandes" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
+                                        <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#777' : "#000"}]}>Suivis</Text>
+                              </View>}>
+                                        <Tabs.ScrollView>
+                                                  <View style={[styles.box, styles.boxA]} />
+                                                  <View style={[styles.box, styles.boxB]} />
+                                        </Tabs.ScrollView>
+                              </Tabs.Tab>
+                              <Tabs.Tab name="supp" label="A propos">
+                                        <Tabs.ScrollView>
+                                                  <View style={[styles.box, styles.boxA]} />
+                                                  <View style={[styles.box, styles.boxB]} />
+                                        </Tabs.ScrollView>
+                              </Tabs.Tab>
+                    </Tabs.Container>
+          )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    title: {
-        fontWeight: 'bold'
-    },
-    cardHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 10,
-
-        marginTop: StatusBar.currentHeight,
-        height: 60
-    },
-    menuOpener: {
-        marginTop: 25
-    },
-    menuOpenerLine: {
-        height: 3,
-        width: 30,
-        backgroundColor: COLORS.ecommercePrimaryColor,
-        marginTop: 5
-    },
-    shopsHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        // marginTop: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 10
-    },
-
-
-    productsHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-
-    },
-    products: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom:10
-
-    },
-    titlePrincipal: {
-        fontSize: 0,
-        fontWeight: "bold",
-        marginBottom: 0,
-        color: COLORS.ecommercePrimaryColor,
-        marginHorizontal: 10
-    },
-    cardPhoto: {
-        marginTop: 10,
-        width: 50,
-        height: 50,
-        //backgroundColor: "#242F68",
-        backgroundColor: "#DFE1E9",
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    DataImageCategorie: {
-        minWidth: 40,
-        minHeight: 40,
-        borderRadius: 10,
-    },
+          box: {
+                    height: 250,
+                    width: '100%',
+                    marginTop: 10
+          },
+          boxA: {
+                    backgroundColor: 'white',
+          },
+          boxB: {
+                    backgroundColor: '#D8D8D8',
+          },
+          header: {
+                    height: HEADER_HEIGHT,
+                    width: '100%',
+                    backgroundColor: '#2196f3',
+          },
+          actionBadge: {
+                minWidth: 20,
+                minHeight: 18,
+                backgroundColor: "#000",
+                borderRadius: 100,
+                position: 'absolute',
+                right: -25,
+                // top: -9,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingHorizontal: 3
+            },
+            actionBadgeText: {
+                color: '#FFF',
+                fontSize: 12,
+                marginTop: -2,
+                fontWeight: "bold"
+              }
 })

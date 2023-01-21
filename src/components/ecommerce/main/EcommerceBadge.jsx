@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSpring, withTiming } from "react-native-reanimated";
 import { useSelector } from "react-redux";
 import { ecommerceCartSelector } from "../../../store/selectors/ecommerceCartSelectors";
@@ -12,7 +12,6 @@ import { useEffect } from "react";
 export default function EcommerceBadge() {
           const navigation = useNavigation()
           const productsInCart = useSelector(ecommerceCartSelector)
-        //    console.log(productsInCart)
           const scale = useSharedValue(1)
           const scaleAnimatedStyles = useAnimatedStyle(() => ({
                     transform: [{ scale: scale.value }]
@@ -30,20 +29,24 @@ export default function EcommerceBadge() {
           }, [productsInCart])
           
           return (
-                    <TouchableOpacity style={{}} onPress={onPress}>
+                    <TouchableNativeFeedback
+                              style={{}}
+                              onPress={onPress} 
+                              background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
                               <Animated.View style={[styles.btn, scaleAnimatedStyles]}>
                                         <Ionicons name="cart-outline" size={30} color={COLORS.ecommercePrimaryColor} />
                                         {productsInCart.length > 0 ? <View style={styles.badge}>
                                                   <Text style={styles.badgeText} numberOfLines={1}>{ productsInCart.length }</Text>
                                         </View> : null}
                               </Animated.View>
-                    </TouchableOpacity>
+                    </TouchableNativeFeedback>
           )
 }
 
 const styles = StyleSheet.create({
           btn: {
-                    marginRight: 5
+                    marginRight: 5,
+                    padding: 10
           },
           badge: {
                     minWidth: 25,
@@ -52,8 +55,8 @@ const styles = StyleSheet.create({
                     paddingHorizontal: 3,
                     backgroundColor: COLORS.ecommerceRed,
                     position: 'absolute',
-                    top: -5,
-                    right: -10,
+                    top: 5,
+                    right: 0,
                     justifyContent: "center",
                     alignItems: "center",
           },

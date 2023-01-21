@@ -1,16 +1,16 @@
 import { ADD_COMMAND_ACTION, REMOVE_COMMAND_ACTION, RESET_CART_ACTION } from "../reducers/ecommerceCartReducer"
 
 
-export const addProductAction = (product, count,selectedColor ,selectedSize) => {
+export const addProductAction = (product, count, combinaison) => {
           return {
                     type: ADD_COMMAND_ACTION,
-                    payload: { ...product, QUANTITE: count ,COLOR:selectedColor,SIZE:selectedSize}
+                    payload: { ...product, QUANTITE: count , combinaison}
           }
 }
-export const removeProductAction = (ID_PRODUIT_PARTENAIRE) => {
+export const removeProductAction = (ID_PRODUIT) => {
           return {
                     type: REMOVE_COMMAND_ACTION,
-                    payload: ID_PRODUIT_PARTENAIRE
+                    payload: ID_PRODUIT
           }
 }
 
