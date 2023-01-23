@@ -20,7 +20,7 @@ export default function MenuDetailScreen() {
     const [imageIndex, setImageIndex] = useState(0)
     const [showImageModal, setShowImageModal] = useState(false)
     const { product, menus } = route.params
-    //console.log(product)
+    console.log(product)
     const [selectedRestaurant, setselectedRestaurant] = useState([])
     const [selectedCategorieMenu, setselectedCategorieMenu] = useState([])
     const MenuInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
@@ -203,7 +203,7 @@ export default function MenuDetailScreen() {
                             </TouchableOpacity>
                             <View style={styles.productNames}>
                                 <Text style={styles.productName}>
-                                    <Text>{product.repas}</Text>
+                                    <Text>{product.NOM_CATEGORIE}</Text>
                                 </Text>
                             </View>
 
@@ -399,7 +399,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: COLORS.ecommercePrimaryColor,
         fontSize: 14,
-        marginLeft: 15
+        marginLeft: 15,
+        marginTop:-10
     },
     shopAdress: {
         color: '#777',
