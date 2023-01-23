@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
                     shadowColor: '#919191',
                     borderRadius: 10,
                     padding: 5,
+                    marginTop:10
           },
           imageCard: {
                     borderRadius: 8,

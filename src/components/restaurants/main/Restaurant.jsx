@@ -21,54 +21,59 @@ export default function Restaurant({ note, restaurant, restaurants, index, total
     return (a + '').charAt(0).toUpperCase() + a.substr(1);
   }
   return (
-    <View key={index} style={[styles.shop, additionStyles]}>
-      <TouchableNativeFeedback onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant, restaurants: restaurants })}>
+    <TouchableNativeFeedback onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant, restaurants: restaurants })}>
+      <View key={index} style={[styles.shop, additionStyles]}>
         <View style={styles.imageCard}>
           <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
         </View>
-      </TouchableNativeFeedback>
-      <Text style={[{ fontSize: 17, fontWeight: "bold" }, { color: "#797E9A" }]}>{strUcFirst(restaurant.NOM_ORGANISATION.toLowerCase())}</Text>
-      <View style={{ flexDirection: "row", marginHorizontal: -1 }}>
-        {restaurant.note ?
-          <AntDesign name="staro" size={20} color="#EFC519" /> :
-          <AntDesign name="star" size={20} color="#EFC519" />}
-        <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 10 }}>{restaurant.note.nbre}.0</Text>
-        <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
-        <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 15 }}>à {restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) : null} Km</Text>
+        <View style={styles.shopDetail}>
+          <Text style={styles.shopName} numberOfLines={2}>
+            {strUcFirst(restaurant.NOM_ORGANISATION.toLowerCase())}
+          </Text>
+        </View>
+        <View style={styles.shopDetail}>
+          <Text style={styles.shopCategory} numberOfLines={2}>
+          Restaurant
+          </Text>
+        </View> 
+
+        <View style={{ flexDirection: "row", marginHorizontal: -1 }}>
+          {restaurant.note ?
+            <AntDesign name="staro" size={20} color="#EFC519" /> :
+            <AntDesign name="star" size={20} color="#EFC519" />}
+          <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 10 }}>{restaurant.note.nbre}.0</Text>
+          <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 12, top: -10, fontWeight: "bold" }}>.</Text>
+          <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 15 }}>à {restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) : null} Km</Text>
+        </View>
       </View>
-    </View>
+    </TouchableNativeFeedback>
   )
 }
 const styles = StyleSheet.create({
   shop: {
-    maxHeight: 150,
-    marginTop: 5,
-    backgroundColor: 'white',
-    // elevation: 10,
+    maxWidth: 160,
+    marginHorizontal: 5,
+    backgroundColor: '#F5F4F1',
     borderRadius: 10,
-    padding: 10,
-    maxWidth: 200,
-    marginBottom: 20,
-    
+    padding: 10
+
   },
   imageCard: {
-    borderRadius: 10,
-    height: "75%",
+    height: "55%",
     width: "100%",
     borderRadius: 10,
     backgroundColor: '#FFF',
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-   
+    alignItems: 'center'
   },
   image: {
     height: "100%",
     width: "100%",
     borderRadius: 10,
     resizeMode: 'contain',
-    
-    
+
+
   },
   shopName: {
     color: COLORS.ecommercePrimaryColor,
@@ -80,5 +85,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#777',
     fontSize: 12
+  },
+  shopDetail: {
+    flex: 1,
+    justifyContent: "center"
   }
 })

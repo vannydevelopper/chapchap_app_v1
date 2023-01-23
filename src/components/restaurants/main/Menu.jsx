@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Image, StyleSheet,ImageBackground, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
+import { Image, StyleSheet, ImageBackground, Text, TouchableOpacity, useWindowDimensions, View, TouchableNativeFeedback } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { Portal } from 'react-native-portalize';
@@ -15,7 +15,7 @@ import { restaurantProductSelector } from '../../../store/selectors/restaurantCa
 import { useCallback } from 'react';
 import fetchApi from '../../../helpers/fetchApi';
 
-export default function Menu({ menu, index, totalLength, fixMargins = false ,onRemove }) {
+export default function Menu({ menu, index, totalLength, fixMargins = false, onRemove }) {
     const navigation = useNavigation()
     const { width } = useWindowDimensions()
     const PRODUCT_MARGIN = 10
@@ -105,61 +105,69 @@ export default function Menu({ menu, index, totalLength, fixMargins = false ,onR
         }
     }, [isOpen])
     return (
-        <View key={index} style={[styles.product, additionStyles, fixMargins && { marginTop: 5}]}>
-            <TouchableOpacity onPress={() => navigation.push('MenuDetailScreen', { product: menu })} style={styles.imageCard}>
-                {/* <Image source={{ uri: menu.IMAGE }} style={styles.image} />
-                 */}
-                 <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]}  marginTop={2} mag borderRadius={15}  imageStyle={{ opacity: 0.8 }}>
-            </ImageBackground>
-            </TouchableOpacity>
-            <View style={{ flexDirection: "row",marginLeft:5 }}>
-                <TouchableOpacity
-                    onPress={() => {
-                        Addishlist(menu.ID_RESTAURANT_MENU)
-                        setWishlist(true)
-                    }}
-                >
-                    <View style={styles.cardLike}>
-                    {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
-                    <>
-                        <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                        {MenuInCart ? <View style={styles.badge}>
-                            <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
-                        </View> : null}
-                    </>
-                </TouchableOpacity>
-            </View>
-            <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.repas}</Text>
-            {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
-            
-            <Portal>
-                <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
-                    <Modalize
-                        ref={modalizeRef}
-                        adjustToContentHeight
-                        handlePosition='inside'
-                        modalStyle={{
-                            borderTopRightRadius: 25,
-                            borderTopLeftRadius: 25,
-                            paddingVertical: 20
-                        }}
-                        handleStyle={{ marginTop: 10 }}
-                        scrollViewProps={{
-                            keyboardShouldPersistTaps: "handled"
-                        }}
-                        onClosed={() => {
-                            setIsOpen(false)
-                            setLoadingForm(true)
+        <TouchableNativeFeedback onPress={() => navigation.push('MenuDetailScreen', { product: menu })}>
+            <View key={index} style={[styles.product, additionStyles]}>
+                <View style={styles.imageCard}>
+                    <Image source={{ uri: menu.IMAGE }} style={styles.image} />
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            Addishlist(menu.ID_RESTAURANT_MENU)
+                            setWishlist(true)
                         }}
                     >
-                        <AddCart menu={menu} loadingForm={loadingForm} onClose={onCloseAddToCart} />
-                    </Modalize>
-                </GestureHandlerRootView>
-            </Portal>
-        </View>
+                        <View style={styles.cardLike}>
+                            {wishlist ? <AntDesign name="heart" size={24} color="#F29558" /> : <AntDesign name="hearto" size={24} color="#F29558" />}
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.cartBtn} onPress={onCartPress}>
+                        <>
+                            <AntDesign name="shoppingcart" size={24} color="#F29558" />
+                            {MenuInCart ? <View style={styles.badge}>
+                                <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
+                            </View> : null}
+                        </>
+                    </TouchableOpacity>
+                </View>
+                <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.repas}</Text>
+                {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+
+                <Portal>
+                    <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
+                        <Modalize
+                            ref={modalizeRef}
+                            adjustToContentHeight
+                            handlePosition='inside'
+                            modalStyle={{
+                                borderTopRightRadius: 25,
+                                borderTopLeftRadius: 25,
+                                paddingVertical: 20
+                            }}
+                            handleStyle={{ marginTop: 10 }}
+                            scrollViewProps={{
+                                keyboardShouldPersistTaps: "handled"
+                            }}
+                            onClosed={() => {
+                                setIsOpen(false)
+                                setLoadingForm(true)
+                            }}
+                        >
+                            <AddCart menu={menu} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                        </Modalize>
+                    </GestureHandlerRootView>
+                </Portal>
+            </View>
+        </TouchableNativeFeedback>
+
+        // <View >
+
+        //     </TouchableOpacity>
+        //     <View style={{ flexDirection: "row",marginLeft:5 }}>
+
+        //     </View>
+
+        // </View>
 
     )
 }
@@ -169,26 +177,24 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         fontWeight: 'bold',
-        fontSize:15
-    }, 
+        fontSize: 15
+    },
     serviceBackgound: {
         width: "100%",
         height: "100%",
-         justifyContent: 'center',
-         
+        justifyContent: 'center',
+
     },
     product: {
         maxWidth: 300,
-        marginBottom:-40
+        marginBottom: -40
         // flex:1
-        
+
     },
     imageCard: {
         borderRadius: 8,
-        height: "50%",
-        width: "100%",
-        marginTop:0,
-       
+        height: "60%",
+        width: "100%"
     },
     image: {
         height: "100%",

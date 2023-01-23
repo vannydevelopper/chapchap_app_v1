@@ -6,11 +6,24 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import Restaurant from '../main/Restaurant';
 import { useAnimatedGestureHandler } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
+import { COLORS } from "../../../styles/COLORS";
 
 export default function Restaurants({ lat, long, restaurants }) {
     const navigation = useNavigation()
     return (
-        <View style={styles.homeshops}>
+        <>
+            <TouchableNativeFeedback
+                onPress={() => navigation.navigate("RestaurantProcheScreen", { restaurants: restaurants })}
+                accessibilityRole="button"
+                background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+            >
+                <View style={styles.shopsHeader}>
+                    <Text style={styles.title}>Restaurants</Text>
+                    <MaterialIcons name="navigate-next" size={24} color="black" />
+                </View>
+
+            </TouchableNativeFeedback>
+
             <ScrollView
                 style={styles.shops}
                 horizontal
@@ -29,36 +42,28 @@ export default function Restaurants({ lat, long, restaurants }) {
                     )
                 })}
             </ScrollView>
-        </View>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
     homeshops: {
         marginBottom: "-6%",
-        marginTop:-11,
-        
-
-
-
+        marginTop: -11,
     },
     shopsHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 10,
         paddingVertical: 10,
-        paddingHorizontal: 10,
-        // marginTop:-80
-    },
+        paddingHorizontal: 10
+},
     title: {
-        fontWeight: 'bold'
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 17,
+        fontWeight: "bold"
     },
     shops: {
-        paddingHorizontal:2,
-        marginTop:0,
-        
-
-
-    }
+        paddingHorizontal: 10,
+}
 })

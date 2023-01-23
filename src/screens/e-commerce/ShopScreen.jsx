@@ -6,11 +6,17 @@ import { MaterialTabBar, MaterialTabItem, Tabs } from 'react-native-collapsible-
 import { useEffect } from "react";
 import ShopCollapsableHeader, { HEADER_HEIGHT } from "../../components/ecommerce/shop/ShopCollapsableHeader";
 import { useRoute } from "@react-navigation/native";
+import fetchApi from "../../helpers/fetchApi";
+import Product from "../../components/ecommerce/main/Product";
+import ProductsTabScreen from "./tabs/ProductsTabScreen";
+import DetailsShopTabScreen from "./tabs/DetailsShopTabScreen";
 const TopTab = createMaterialTopTabNavigator()
 
 export default function ShopScreen() {
           const [activeIndex, setActiveIndex] = useState(0)
           const route = useRoute()
+          const [products, setProducts] = useState([])
+          const[loadingShopProducts,setLoadingShopProducts] = useState(true)
           const { shop } = route.params
 
           const Header = () => {
@@ -28,6 +34,7 @@ export default function ShopScreen() {
                               {...props}
                     />
           )
+
 
           return (
                     <Tabs.Container
@@ -50,10 +57,8 @@ export default function ShopScreen() {
                               <Tabs.Tab name="produits" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
                                         <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#000' : "#777"}]}>Produits</Text>
                               </View>}>
-                                        <Tabs.ScrollView>
-                                                  <View style={[styles.box, styles.boxA]} />
-                                                  <View style={[styles.box, styles.boxB]} />
-                                        </Tabs.ScrollView>
+
+                                 <ProductsTabScreen shop={shop}/>
                               </Tabs.Tab>
                               <Tabs.Tab name="commandes" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
                                         <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#777' : "#000"}]}>Suivis</Text>
@@ -64,10 +69,11 @@ export default function ShopScreen() {
                                         </Tabs.ScrollView>
                               </Tabs.Tab>
                               <Tabs.Tab name="supp" label="A propos">
-                                        <Tabs.ScrollView>
+                                      <DetailsShopTabScreen shop={shop}/>
+                                        {/* <Tabs.ScrollView>
                                                   <View style={[styles.box, styles.boxA]} />
                                                   <View style={[styles.box, styles.boxB]} />
-                                        </Tabs.ScrollView>
+                                        </Tabs.ScrollView> */}
                               </Tabs.Tab>
                     </Tabs.Container>
           )
