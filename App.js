@@ -4,8 +4,10 @@ import { Provider } from 'react-redux';
 import { store } from './src/store'
 import { Host } from 'react-native-portalize';
 import { StatusBar } from 'expo-status-bar';
+import { LogBox } from 'react-native';
 
 
+LogBox.ignoreLogs(["flexWrap: `wrap``"]);
 export default function App() {
           return (
                     <>

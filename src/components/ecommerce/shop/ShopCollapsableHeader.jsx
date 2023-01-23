@@ -5,6 +5,13 @@ import { EvilIcons } from '@expo/vector-icons';
 import { Portal } from "react-native-portalize";
 
 export const HEADER_HEIGHT = 262;
+/**
+ * composant pour afficher les produits par rapport de la boutique
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @date 23/1/2023
+ * @param {*} param0 
+ * @returns 
+ */
 export default function ShopCollapsableHeader({ shop }) {
         const optionModalizeRef = useRef()
 
