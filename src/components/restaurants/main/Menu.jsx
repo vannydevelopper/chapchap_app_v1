@@ -108,7 +108,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false, onR
         <TouchableNativeFeedback onPress={() => navigation.push('MenuDetailScreen', { product: menu })}>
             <View key={index} style={[styles.product, additionStyles]}>
                 <View style={styles.imageCard}>
-                    <Image source={{ uri: menu.IMAGE }} style={styles.image} />
+                    <Image source={{ uri: menu.produit.IMAGE }} style={styles.image} />
                 </View>
                 <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
@@ -130,8 +130,8 @@ export default function Menu({ menu, index, totalLength, fixMargins = false, onR
                         </>
                     </TouchableOpacity>
                 </View>
-                <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.repas}</Text>
-                {menu.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+                <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.produit.NOM}</Text>
+                {menu.produit_partenaire.PRIX ? <Text style={{ color: "#F29558", fontWeight: "bold" }}>{menu.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
 
                 <Portal>
                     <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
@@ -186,11 +186,14 @@ const styles = StyleSheet.create({
 
     },
     product: {
-        maxWidth: 300,
-        marginBottom: -40
-        // flex:1
-
-    },
+        maxWidth: 240,
+        backgroundColor: 'white',
+        elevation: 5,
+        shadowColor: '#919191',
+        borderRadius: 10,
+        padding: 5,
+        marginTop:10
+},
     imageCard: {
         borderRadius: 8,
         height: "60%",

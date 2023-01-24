@@ -1,27 +1,51 @@
-import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, StatusBar, TextInput, ScrollView } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, StatusBar,TouchableWithoutFeedback, ActivityIndicator, TouchableNativeFeedback, TextInput, ScrollView } from "react-native";
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
 import Menu from "../../components/restaurants/main/Menu";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import fetchApi from "../../helpers/fetchApi";
 
 export default function CategorieMenuScreen() {
 
     const navigation = useNavigation()
     const route = useRoute()
-    const { categories } = route.params
-    const onCategoryPress = (categorie) => {
+    // const { categories } = route.params
 
-       navigation.navigate("MenuScreen",{onSelectecategorie:categorie})
-    }
-    //console.log(categories)
+    const [categories, setCategories] = useState([])
+    const [loadingCategories, setLoadingCategories] = useState(true)
+
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const reponse = await fetchApi("/resto/menu/categories", {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                })
+                setCategories(reponse.result)
+            }
+            catch (error) {
+                console.log(error)
+            }
+            finally {
+                setLoadingCategories(false)
+            }
+        })()
+    }, [])
+
     return (
         <View style={styles.container}>
             <View style={styles.cardHeader}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                </TouchableOpacity>
+                <TouchableNativeFeedback
+                    style={{}}
+                    onPress={() => navigation.goBack()}
+                    background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                    <View style={{ padding: 10 }}>
+                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                    </View>
+                </TouchableNativeFeedback>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
                         <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
@@ -32,23 +56,29 @@ export default function CategorieMenuScreen() {
 
             <ScrollView>
 
-                <View style={styles.resto}>
-                    {categories.map((categorie, index) => {
-                        return (
-                            <TouchableOpacity onPress={() => onCategoryPress(categorie)}>
-                            <View style={{ ...styles.category, margin: 15 }} >
-                                <View style={styles.categoryPhoto}>
-                                    <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
+                {loadingCategories ? <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <ActivityIndicator animating={true} size="large" color={"black"} />
+                </View> :
 
-
-                                    </ImageBackground>
-                                </View>
-                                <Text style={[{ fontSize: 14, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
-                            </View>
-                            </TouchableOpacity>
-                        )
-                    })}
-                </View>
+                    <View style={styles.resto}>
+                        {categories.map((categorie, index) => {
+                            return (
+                                <TouchableWithoutFeedback
+                                    onPress={() => navigation.navigate('MenuScreen', {
+                                        categorie
+                                    })} key={index}
+                                >
+                                    <View style={{ ...styles.category, margin: 15 }} >
+                                        <View style={styles.categoryPhoto}>
+                                            <ImageBackground source={{ uri: categorie.IMAGE }} borderRadius={15} style={styles.categoryImage}>
+                                            </ImageBackground>
+                                        </View>
+                                        <Text style={[{ fontSize: 14, fontWeight: "bold" }, { color: COLORS.ecommercePrimaryColor }]}>{categorie.NOM}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        })}
+                    </View>}
             </ScrollView>
 
         </View>
@@ -72,7 +102,9 @@ const styles = StyleSheet.create({
     },
     resto: {
         flexDirection: 'row',
+        alignItems: 'center',
         flexWrap: 'wrap',
+        justifyContent: 'space-around'
     },
     categoryImage: {
         width: '100%',

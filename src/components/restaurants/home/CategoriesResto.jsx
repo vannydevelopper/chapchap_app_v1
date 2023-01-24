@@ -8,7 +8,7 @@ export default function CategoriesResto({categories}) {
         const navigation = useNavigation()
         return (
                 <>
-                        <TouchableNativeFeedback onPress={() => navigation.navigate("CategorieMenuScreen", { categories: categories })}
+                        <TouchableNativeFeedback onPress={() => navigation.navigate("CategorieMenuScreen", { categories })}
                                 accessibilityRole="button"
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
                         >
@@ -26,7 +26,7 @@ export default function CategoriesResto({categories}) {
                                         return (
                                                 <TouchableWithoutFeedback
                                                         onPress={() => navigation.navigate('MenuScreen', {
-                                                                onSelectecategorie: categorie
+                                                                categorie
                                                         })} key={index}>
                                                         <View style={[styles.category]}>
                                                                 <View style={styles.categoryPhoto}>

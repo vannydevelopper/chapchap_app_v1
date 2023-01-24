@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { Text, View, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, FlatList, TouchableNativeFeedback } from "react-native";
+import { Text, View, ImageBackground, StatusBar, StyleSheet, Image, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, FlatList, TouchableNativeFeedback } from "react-native";
 import { EvilIcons, MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 import fetchApi from "../../helpers/fetchApi";
 import { DrawerActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
@@ -23,30 +23,11 @@ export default function RestaurantHomeScreen() {
     const [categories, setCategories] = useState([])
     const [loadingCategories, setLoadingCatagories] = useState(true)
     const [menus, setMenus] = useState([])
-    const [loadingMenus, setLoadingMenus] = useState(false)
     const [firstLoadingMenus, setFirstLoadingMenus] = useState(true)
+    const [IsLoadingMore, setIsLoadingMore] = useState(false)
+    const [offset, setOffset] = useState(0)
 
-
-
-
-
-
-    const [selectedCategorie, setSelectedCategorie] = useState(null)
-    const modalizeRef = useRef(null)
-    const CategoriemodalizeRef = useRef(null)
-    const MenumodalizeRef = useRef(null)
-
-    const [isOpen, setIsOpen] = useState(false)
-    const [loadingForm, setLoadingForm] = useState(true)
-    const [loadingSubCategories, setLoadingSubCategories] = useState(false)
-    const [sousCategories, SetSousCategories] = useState([])
-    const [selectedsousCategories, setSelectedsousCategories] = useState(null)
-
-
-
-
-    const [chargementRestos, setLoadingRestos] = useState(true)
-
+    const LIMIT = 10
     const navigation = useNavigation()
 
     const [data, handleChange, setValue] = useForm({
@@ -54,16 +35,27 @@ export default function RestaurantHomeScreen() {
         menu: ""
     })
 
+    const isCloseToBottom = useCallback(({ layoutMeasurement, contentOffset, contentSize }) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+    }, []);
 
-    const plusCategories = () => {
-        navigation.navigate("CategorieMenuScreen", { categories: categories })
-        // setIsOpen(true)
-        // CategoriemodalizeRef.current?.open()
+    const onLoadMore = async () => {
+        try {
+            setIsLoadingMore(true)
+            const newOffset = offset + LIMIT
+            const men = await getMenus(newOffset)
+            setOffset(newOffset)
+            setMenus(m => [...m, ...men.result])
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoadingMore(false)
+        }
     }
+
     const menuPress = () => {
         navigation.navigate("MenuScreen", { onSelectecategorie: false })
-        // setIsOpen(true)
-        // MenumodalizeRef.current?.open()
     }
     const fecthCategories = async () => {
         try {
@@ -72,7 +64,6 @@ export default function RestaurantHomeScreen() {
                 headers: { "Content-Type": "application/json" },
             })
             setCategories(response.result)
-            console.log(response.result)
         }
         catch (error) {
             console.log(error)
@@ -80,47 +71,46 @@ export default function RestaurantHomeScreen() {
             setLoadingCatagories(false)
         }
     }
+
+
+    const getMenus = useCallback(async (offset = 0) => {
+        try {
+            var url = `/resto/menu?limit=${LIMIT}&offset=${offset}&`
+            return await fetchApi(url)
+        }
+        catch (error) {
+            console.log(error)
+        }
+    })
+
+    useFocusEffect(useCallback(() => {
+        (async () => {
+            try {
+                setOffset(0)
+                const menus = await getMenus(0)
+                setMenus(menus.result)
+                console.log(menus.result)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setFirstLoadingMenus(false)
+            }
+        })()
+    }, []))
+
+
+
     useFocusEffect(useCallback(() => {
         fecthCategories()
     }, []))
 
     const onCategoryPress = (categorie) => {
-
-
-
         navigation.navigate("MenuScreen", { onSelectecategorie: categorie })
     }
-    useEffect(() => {
-        (async () => {
 
-            try {
-                if (firstLoadingMenus == false) {
-                    setLoadingMenus(true)
-                }
-                if (data.menu) {
-                    var url = `/resto/menu?q=${data.menu}`
-                }
-                else {
-                    var url = "/resto/menu"
-                }
-                if (selectedCategorie) {
-                    if (data.menu) {
-                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}&q=${data.menu}`
-                    }
-                    else {
-                        url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
-                    }
-                }
-                const menus = await fetchApi(url)
-                setMenus(menus.result)
-            }
-            finally {
-                setFirstLoadingMenus(false)
-                // handleChange('menu', '')
-                setLoadingMenus(false)
-            }
-        })()
-    }, [selectedCategorie, data.menu])
+
+
+
     var location
     useEffect(() => {
         const fecthRestos = async (lat, long) => {
@@ -179,7 +169,14 @@ export default function RestaurantHomeScreen() {
                 </TouchableOpacity>
                 <RestaurantBadge />
             </View>
-            <ScrollView>
+            <ScrollView
+                onScroll={({ nativeEvent }) => {
+                    if (isCloseToBottom(nativeEvent) && !IsLoadingMore && offset <= 40) {
+                        onLoadMore()
+                    }
+                }}
+                style={styles.cardOrginal}
+            >
                 <Text style={styles.titlePrincipal}>Restaurations</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", alignContent: "center", justifyContent: "space-between", marginBottom: 12, paddingHorizontal: 10 }}>
                     <TouchableOpacity onPress={() => navigation.navigate("RechercheScreen")} style={styles.searchSection} >
@@ -202,33 +199,35 @@ export default function RestaurantHomeScreen() {
                     </View>
                 </View>
 
-               {(firstLoadingMenus || loadingMenus) ? 
-               <>
-                    <HomeMenuSkeletons />
-                </>:
-                
-                menus.length == 0 ?
-                <>
-                    <LottieView style={{ marginVertical: -40, width: 100, height: 300, alignSelf: "center" }} source={require('../../../assets/lotties/123725-box-empty.json')} autoPlay loop={false} />
-                    {/* <LottieView style={{ width: 100, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/10000-empty-box.json')} autoPlay loop={false} /> */}
-                    <Text style={styles.emptyFeedback}>Aucun menu</Text>
-                </>:
+                {firstLoadingMenus ?
+                    <>
+                        <HomeMenuSkeletons />
+                    </> :
 
-                <View style={styles.products}>
-                    {menus.map((menu, index) => {
-                        return (
-                            <Menu
-                                menu={menu}
-                                index={index}
-                                totalLength={menus.length}
-                                key={index}
-                                fixMargins
-                            />
-                        )
-                    })}
-                </View>}
+                    menus.length == 0 ?
+                        <>
+                            <LottieView style={{ marginVertical: -40, width: 100, height: 300, alignSelf: "center" }} source={require('../../../assets/lotties/123725-box-empty.json')} autoPlay loop={false} />
+                            {/* <LottieView style={{ width: 100, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/10000-empty-box.json')} autoPlay loop={false} /> */}
+                            <Text style={styles.emptyFeedback}>Aucun menu</Text>
+                        </> :
 
-
+                        <View style={styles.products}>
+                            {menus.map((menu, index) => {
+                                return (
+                                    <Menu
+                                        menu={menu}
+                                        index={index}
+                                        totalLength={menus.length}
+                                        key={index}
+                                        fixMargins
+                                        IsLoadingMore={IsLoadingMore}
+                                    />
+                                )
+                            })}
+                        </View>}
+                <View style={{ justifyContent: 'center', alignItems: 'center', marginBottom: 10, opacity: IsLoadingMore ? 1 : 0 }}>
+                    <ActivityIndicator animating={true} size="large" color={"#000"} />
+                </View>
             </ScrollView>
         </View>
     )
@@ -237,9 +236,6 @@ export default function RestaurantHomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    },
-    category: {
-        marginLeft: 10
     },
 
     cardHeader: {
@@ -259,36 +255,12 @@ const styles = StyleSheet.create({
         marginTop: 5,
         borderRadius: 10
     },
-    imgBackground: {
-        flex: 1,
-        width: '100%',
-        height: "100%"
-    },
-    cardOrginal: {
-    },
     titlePrincipal: {
         fontSize: 23,
         fontWeight: "bold",
         marginBottom: "1%",
         color: COLORS.ecommercePrimaryColor,
         marginHorizontal: 10,
-
-    },
-
-    searchSection1: {
-        flexDirection: "row",
-        marginTop: -20,
-        padding: 5,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#ddd",
-        alignItems: 'center',
-        backgroundColor: "white",
-        width: "95%",
-        height: 50,
-        marginHorizontal: 10,
-        paddingHorizontal: 10
-
     },
     searchSection: {
         flexDirection: "row",
@@ -308,38 +280,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 10
     },
-    plus: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        // marginTop: "-5%",
-        paddingHorizontal: 10,
-        marginBottom: "5%",
-
-        // backgroundColor:"red"
-    },
-    plus1: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        marginTop: "2%",
-        paddingHorizontal: 10,
-        marginBottom: "-1 %"
-    },
-    plusText: {
-        color: COLORS.ecommercePrimaryColor,
-        fontSize: 20,
-        fontWeight: "bold",
-        marginTop: 1
-    },
-    plusText1: {
-        color: COLORS.ecommercePrimaryColor,
-        fontSize: 20,
-        fontWeight: "bold",
-
-    },
     cardRecherche: {
         width: 50,
         height: 50,
@@ -350,49 +290,10 @@ const styles = StyleSheet.create({
         alignContent: "center",
         alignItems: "center"
     },
-    DataImageCategorie: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 10,
-    },
-    cardPhoto1: {
-        marginTop: 10,
-        width: 50,
-        height: 50,
-        backgroundColor: "#DFE1E9",
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    cardPhoto: {
-        marginTop: 10,
-        width: 60,
-        height: 60,
-        //backgroundColor: "#242F68",
-        backgroundColor: "#DFE1E9",
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    productsHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 10
-    },
-    title: {
-        fontWeight: 'bold'
-    },
     products: {
         flexDirection: 'row',
-        flexWrap: 'wrap'
-    },
-    resto: {
-        flexDirection: 'row',
         flexWrap: 'wrap',
-
+        alignItems: 'center'
     },
     emptyFeedback: {
         textAlign: "center",
@@ -401,104 +302,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         opacity: 0.6,
         fontSize: 16
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignContent: 'center',
-        alignItems: 'center',
-        paddingHorizontal: 15,
-        marginTop: 20
-    },
-    title: {
-        color: '#333',
-        fontWeight: 'bold',
-        marginVertical: 10,
-        fontSize: 15
-    },
-
-    categories: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 10,
-        backgroundColor: '#fff',
-        paddingBottom: 2,
-        // marginTop:-10
-    },
-    categoryModel: {
-        alignItems: 'center',
-        borderRadius: 10,
-        marginLeft: 20,
-        elevation: 10,
-        backgroundColor: 'white',
-        borderRadius: 10,
-    },
-    category: {
-        alignItems: 'center',
-        padding: 10,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 5,
-        marginTop: 5,
-        backgroundColor: "#F5F4F1",
-
-    },
-    categoryPhoto: {
-        backgroundColor: COLORS.skeleton,
-        width: 80,
-        height: 70,
-        borderRadius: 8,
-        padding: 3,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    categoryChecked: {
-        width: 80,
-        height: 85,
-        borderRadius: 8,
-        marginTop: -80
-
-    },
-    categoryPhotoResto: {
-        width: 100,
-        height: 100,
-        borderRadius: 8,
-        backgroundColor: COLORS.skeleton
-    },
-    categoryText: {
-        borderRadius: 5,
-        width: 40,
-        height: 6,
-        backgroundColor: COLORS.skeleton,
-        marginTop: 5
-    },
-    actionIcon: {
-        borderRadius: 15,
-        width: 80,
-        height: 80,
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center',
-        backgroundColor: '#fff',
-    },
-    disbaledContainer: {
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        borderRadius: 15
-    },
-    categoryImage: {
-        width: '100%',
-        height: '100%',
-    },
-    actionTitle: {
-        marginTop: 5,
-        color: '#000',
-        opacity: 0.6,
-        fontWeight: 'bold'
     },
     section: {
         flexDirection: 'row',
@@ -512,6 +315,9 @@ const styles = StyleSheet.create({
         color: COLORS.ecommercePrimaryColor,
         fontSize: 17,
         fontWeight: "bold"
+    },
+    cardOrginal: {
+        marginBottom: "1%"
     },
 
 })

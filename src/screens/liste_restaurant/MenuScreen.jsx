@@ -1,213 +1,264 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, StatusBar, TextInput, ScrollView } from "react-native";
-import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { StyleSheet, Text, View, TouchableOpacity, ImageBackground, Image, StatusBar, TouchableNativeFeedback, TextInput, ScrollView } from "react-native";
+import { Ionicons, AntDesign, MaterialIcons, Entypo, SimpleLineIcons } from '@expo/vector-icons';
+import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import Menu from "../../components/restaurants/main/Menu";
 import { Modalize } from "react-native-modalize";
 import fetchApi from "../../helpers/fetchApi";
 import { ActivityIndicator } from "react-native-paper";
+import CategoriesResto from "../../components/restaurants/home/CategoriesResto";
+import CategoriesModalizeResto from "../../components/restaurants/AllMenu/CategoriesModalizeResto";
+import { HomeMenuSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import * as Location from 'expo-location';
+import RestosModalize from "../../components/restaurants/AllMenu/RestosModalize";
 
 export default function MenuScreen() {
     const navigation = useNavigation()
-    const MenumodalizeRef = useRef(null)
-    const [isOpen, setIsOpen] = useState(false)
-    const [categories, setCategories] = useState([])
-    const [selectedCategorie, setselectedCategorie] = useState(null)
-    const [loadingMenus, setLoadingMenus] = useState(true)
     const route = useRoute()
-    const {onSelectecategorie} = route.params
-    //console.log(onSelectecategorie)
-    const [menus, setMenus] = useState([])
+    const { categorie } = route.params
 
-    //const route = useRoute()
-    const openmodalize = () => {
-        setIsOpen(true)
-        MenumodalizeRef.current?.open()
-    }
+    const [loadingCategories, setLoadingCatagories] = useState(true)
+    const [loadingRestos, setLoadingRestos] = useState(true)
 
-    const selectedMenu = (categorie) => {
-        MenumodalizeRef.current?.close()
-        //console.log(categorie)
-        setselectedCategorie(categorie)
-    }
+    const [categories, setCategories] = useState([])
+    const [restos, setRestos] = useState([])
 
-    useEffect(() => {
-        if (onSelectecategorie) {
-            setselectedCategorie(onSelectecategorie)
+    const [selectedCategory, setSelectedCategory] = useState(categorie)
+    // const [selectedResto, setSelectedResto] = useState(shop)
+
+    const categoriesModalizeRef = useRef()
+    const restosModalizeRef = useRef()
+
+    const [loadingForm, setLoadingForm] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
+    const [isRestoOpen, setIsRestoOpen] = useState(false)
+
+    const [firstLoadingProducts, setFirstLoadingProducts] = useState(true)
+    const [loadingProducts, setLoadingProducts] = useState(false)
+    const [products, setProducts] = useState([])
+
+
+
+    const fecthProduits = async () => {
+        try {
+            const response = await fetchApi("/resto/menu/categories", {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+            })
+            setCategories(response.result)
         }
-    }, [])
+        catch (error) {
+            console.log(error)
+        } finally {
+            setLoadingCatagories(false)
+        }
+    }
 
-    useEffect(() => {
-        (async () => {
-            try {
+    useFocusEffect(useCallback(() => {
+        fecthProduits()
+    }, []))
 
-                const reponse = await fetchApi(`/resto/menu/categories`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                })
-                setCategories(reponse.result)
-
-            } catch (error) {
+    useEffect(()=>{
+        (async()=>{
+            try{
+                var url = "/resto/menu"
+                if(selectedCategory){
+                    var url = `/resto/menu?category=${selectedCategory.ID_CATEGORIE_MENU}`
+                }
+                const reponse = await fetchApi(url)
+                setProducts(reponse.result)
+            }
+            catch(error){
                 console.log(error)
             }
         })()
-    }, [])
+    },[selectedCategory])
 
     useEffect(() => {
+        if (isOpen) {
+            const timer = setTimeout(() => {
+                setLoadingForm(false)
+            })
+            return () => {
+                clearTimeout(timer)
+            }
+        }
+        if (isRestoOpen) {
+            const timer = setTimeout(() => {
+                setLoadingForm(false)
+            })
+            return () => {
+                clearTimeout(timer)
+            }
+        }
+    }, [isOpen, isRestoOpen])
 
-        (async () => {
+
+
+
+    var location
+    useEffect(() => {
+        const fecthRestos = async (lat, long) => {
             try {
-
-                var url = "/resto/menu"
-                if (selectedCategorie) {
-                    url = `/resto/menu?category=${selectedCategorie?.ID_CATEGORIE_MENU}`
+                if (lat && long) {
+                    return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}`)
+                } else {
+                    return await fetchApi('/partenaire/service/resto')
                 }
-                const menus = await fetchApi(url)
-                setMenus(menus.result)
-            } catch (error) {
+            }
+            catch (error) {
                 console.log(error)
             } finally {
-                setLoadingMenus(false)
+                setLoadingRestos(false)
             }
+        }
+        const askLocationFetchRestos = async () => {
 
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+                const restaurants = await fecthRestos()
+                setLoadingRestos(false)
+                setRestos(restaurants.result)
+                return;
+            }
+            location = await Location.getCurrentPositionAsync({});
+            const restaurants = await fecthRestos(location.coords.latitude, location.coords.longitude)
+            setLoadingRestos(false)
+            setRestos(restaurants.result)
+        }
+        askLocationFetchRestos()
 
-        })()
+    }, [location])
 
-    }, [selectedCategorie])
 
     return (
         <>
-            <View>
+            <CategoriesModalizeResto
+                categoriesModalizeRef={categoriesModalizeRef}
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                loadingForm={loadingForm}
+                setLoadingForm={setLoadingForm}
+                loadingCategories={loadingCategories}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+            />
+            <RestosModalize
+                restosModalizeRef={restosModalizeRef}
+                restos={restos}
+                // selectedResto={selectedResto}
+                // setSelectedResto={setSelectedResto}
+                loadingForm={loadingForm}
+                setLoadingForm={setLoadingForm}
+                loadingRestos={loadingRestos}
+                isRestoOpen={isRestoOpen}
+                setIsRestoOpen={setIsRestoOpen}
+            />
+
+            <View style={styles.container}>
                 <View style={styles.cardHeader}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                    </TouchableOpacity>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <TouchableOpacity style={{ marginRight: 20 }} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                            <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                        </TouchableOpacity>
-
+                        <TouchableNativeFeedback
+                            style={{}}
+                            onPress={() => navigation.goBack()}
+                            background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                            <View style={styles.headerBtn}>
+                                <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <TouchableNativeFeedback
+                            style={{}}
+                            onPress={() => navigation.goBack()}
+                            background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                            <View style={styles.headerBtn}>
+                                <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+                            </View>
+                        </TouchableNativeFeedback>
                         <EcommerceBadge />
-
                     </View>
                 </View>
-
-                <TouchableOpacity onPress={openmodalize} style={styles.modelCard} >
-                    <Text style={styles.inputText}>{selectedCategorie ? selectedCategorie.NOM : "Selectionner"}</Text>
-                    <AntDesign name="caretdown" size={16} color="#777" />
-                </TouchableOpacity>
-
-
-
-
-                <ScrollView>
-                    {loadingMenus ?
-                        <View style={{ marginTop: 30 }}>
-                            <ActivityIndicator size={"large"} color="#777" />
+                <ScrollView style={styles.cardOrginal} stickyHeaderIndices={[1]}>
+                    <Text style={styles.titlePrincipal}></Text>
+                    <View>
+                        <View style={styles.quickFilters}>
+                            <View style={styles.filterCategoryShop}>
+                                <TouchableNativeFeedback useForeground
+                                    onPress={() => {
+                                        categoriesModalizeRef.current.open()
+                                        setIsOpen(true)
+                                    }}
+                                >
+                                    <View style={styles.quickFilterBtn}>
+                                        <View style={styles.quickFilterBtnHeader}>
+                                            <Entypo name="shopping-cart" size={20} color={COLORS.primary} />
+                                            <Text style={styles.quickFilterTitle}>
+                                                {selectedCategory ? selectedCategory.NOM : 'Catégories'}
+                                                <Entypo name="chevron-small-down" size={12} color="#777" />
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </TouchableNativeFeedback>
+                                <TouchableNativeFeedback useForeground onPress={() => {
+                                    restosModalizeRef.current.open()
+                                    setIsRestoOpen(true)
+                                }}>
+                                    <View style={[styles.quickFilterBtn, { marginLeft: 10 }]}>
+                                        <View style={styles.quickFilterBtnHeader}>
+                                            <Entypo name="shop" size={20} color={COLORS.primary} />
+                                            <Text style={styles.quickFilterTitle}>
+                                                Restaurants
+                                                <Entypo name="chevron-small-down" size={12} color="#777" />
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
+                            <View>
+                                <TouchableNativeFeedback useForeground>
+                                    <View style={styles.filterBtn}>
+                                        <SimpleLineIcons name="equalizer" size={24} color={COLORS.primary} style={{ fontWeight: 'bold', transform: [{ rotate: '-90deg' }] }} />
+                                    </View>
+                                </TouchableNativeFeedback>
+                            </View>
                         </View>
-                        : menus.length == 0 ? <View style={styles.notMenu}>
-                            <Text style={styles.textNotFound}>Aucun menu trouvez</Text>
+                    </View>
+                    {loadingProducts  ? <HomeMenuSkeletons wrap noTitle /> :
+                        products.length == 0 ? <View style={styles.emptyContainer}>
+                            <Image source={require('../../../assets/images/no-money.png')} style={styles.emptyImage} />
+                            <Text style={styles.emptyFeedback}>Aucun résultat trouvé</Text>
                         </View> :
                             <View style={styles.products}>
-                                {menus.map((menu, index) => {
+                                {products.map((product, index) => {
                                     return (
                                         <Menu
-                                            menu={menu}
+                                            menu={product}
                                             index={index}
-                                            totalLength={menus.length}
+                                            totalLength={products.length}
                                             key={index}
                                             fixMargins
                                         />
                                     )
                                 })}
                             </View>}
+
                 </ScrollView>
-
-
             </View>
-
-            <Modalize
-                ref={MenumodalizeRef}
-                adjustToContentHeight
-                handleStyle={{ marginTop: 10 }}
-                scrollViewProps={{
-                    keyboardShouldPersistTaps: "handled"
-                }}
-                onClosed={() => {
-                    setIsOpen(false)
-                    // handleChange('menu', "")
-                    // setLoadingForm(true)
-                }}
-            >
-                <Text style={{ marginBottom: 10, marginBottom: 30, fontWeight: 'bold', color: COLORS.ecommercePrimaryColor, fontSize: 18, paddingVertical: 10, textAlign: 'center', opacity: 0.7 }}>Les categories</Text>
-
-
-                <ScrollView>
-                    <View >
-                        {categories.map((categorie, index) => {
-                            return (
-                                <TouchableOpacity style={styles.modalItem} key={index} onPress={() => selectedMenu(categorie)}>
-                                    <View style={styles.categoryPhoto}>
-                                        <Image source={{ uri: categorie.IMAGE }} style={styles.DataImageCategorie} />
-                                    </View>
-                                    <View style={styles.cardName}>
-                                        <Text numberOfLines={1} style={{ fontWeight: 'bold', color: COLORS.ecommercePrimaryColor }}>{categorie.NOM}</Text>
-                                    </View>
-
-                                </TouchableOpacity>
-                            )
-                        })}
-                    </View>
-                </ScrollView>
-            </Modalize>
-
-
         </>
 
     )
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-
-
+        flex: 1
     },
-    modalItem: {
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        marginTop: 5,
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignContent: 'center'
-    },
-    categoryPhoto: {
-        backgroundColor: COLORS.skeleton,
-        width: 70,
-        height: 50,
-        borderRadius: 8,
-        padding: 3,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    cardName: {
-        marginLeft: 10
-    },
-    modelCard: {
-        justifyContent: "space-between",
-        flexDirection: "row",
-        marginHorizontal: 10,
-        marginTop: 10,
-        backgroundColor: "#fff",
-        padding: 9,
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#ddd"
-    },
-    inputText: {
-        fontSize: 17,
-        color: "#777"
+    headerBtn: {
+        padding: 10
     },
     cardHeader: {
         flexDirection: 'row',
@@ -217,25 +268,73 @@ const styles = StyleSheet.create({
         marginTop: StatusBar.currentHeight,
         height: 60
     },
-    products: {
-        flexDirection: 'row',
-        flexWrap: 'wrap'
-    },
-    DataImageCategorie: {
-        borderRadius: 10,
-        width: "65%",
-        height: "65%"
-
-    },
-    notMenu: {
-        padding: 5,
-        marginTop: 10,
+    titlePrincipal: {
+        fontSize: 0,
+        fontWeight: "bold",
+        marginBottom: 0,
+        color: COLORS.ecommercePrimaryColor,
         marginHorizontal: 10
     },
-    textNotFound: {
-        fontWeight: "bold",
-        fontSize: 18,
-        color: "#777"
-    }
+    quickFilters: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10,
+        marginBottom: 10
+    },
+    filterCategoryShop: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    quickFilterBtn: {
+        padding: 10,
+        borderRadius: 8,
+        borderWidth: 0.5,
+        borderColor: '#aaa',
+        minWidth: 120,
+        borderRadius: 8,
+        overflow: 'hidden'
+    },
+    quickFilterBtnHeader: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    quickFilterTitle: {
+        fontSize: 12,
+        marginLeft: 5,
+        color: '#777'
+    },
+    quickFilterValue: {
+        fontSize: 12
+    },
+    filterBtn: {
+        padding: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        borderWidth: 0.5,
+        borderColor: '#aaa',
+        overflow: 'hidden'
+    },
+    emptyContainer: {
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    emptyImage: {
+        width: 200,
+        height: 200
+    },
+    emptyFeedback: {
+        fontWeight: 'bold',
+        marginVertical: 10,
+        marginTop: 30,
+        fontSize: 16,
+        color: COLORS.ecommercePrimaryColor,
+        paddingHorizontal: 10
+    },
+    products: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingBottom: 10
+    },
 
 })
