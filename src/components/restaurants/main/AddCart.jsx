@@ -27,7 +27,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
 
         const onAddToCart = () => {
                 onClose()
-                dispatch(addProductAction(product, amount, selectedCombinaison))
+                dispatch(addMenuAction(menu, amount, selectedCombinaison))
         }
         const onDecrementOther = () => {
                 if (parseInt(amount) == 1) {
@@ -52,7 +52,7 @@ export default function AddCart({ menu, onClose, loadingForm }) {
         let isnum = /^\d+$/.test(amount);
 
         const isValid = useCallback(() => {
-                return isnum ? (parseInt(amount) > 0 && parseInt(amount) <= selectedCombinaison.QUANTITE) : false
+                return isnum ? (parseInt(amount) > 0 && parseInt(amount) <= 100) : false
         }, [selectedCombinaison, amount])
 
         const isValueSelected = useCallback(idValue => {
