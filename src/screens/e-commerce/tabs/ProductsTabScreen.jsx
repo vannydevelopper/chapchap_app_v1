@@ -9,10 +9,12 @@ import { useEffect } from "react";
 import fetchApi from "../../../helpers/fetchApi";
 import Product from "../../../components/ecommerce/main/Product";
 
-export default function ProductsTabScreen({ shop }) {
+export default function ProductsTabScreen({ shop, serviceResto, serviceEco }) {
+        console.log(shop)
         const [products, setProducts] = useState([])
         const [loading, setLoading] = useState(true)
         const navigation = useNavigation()
+
 
         const renderProducts = ({ item: product, index }) => {
                 return (
@@ -30,8 +32,15 @@ export default function ProductsTabScreen({ shop }) {
         useFocusEffect(useCallback(() => {
                 (async () => {
                         try {
-                                const res = await fetchApi(`/products?partenaireService=${shop.ID_PARTENAIRE_SERVICE}`)
-                                setProducts(res.result)
+                                if (serviceEco == shop.ID_SERVICE) {
+                                        var url = `/products?partenaireService=${shop.ID_PARTENAIRE_SERVICE}`
+                                        const produits = await fetchApi(url)
+                                        setProducts(produits.result)
+                                }else if(serviceResto==shop.ID_SERVICE){
+                                        var url = `/resto/menu?partenaireService=${shop.ID_PARTENAIRE_SERVICE}`
+                                        const produits = await fetchApi(url)
+                                        setProducts(produits.result)
+                                }
                         } catch (error) {
                                 console.log(error)
                         } finally {
@@ -39,7 +48,6 @@ export default function ProductsTabScreen({ shop }) {
                         }
                 })()
         }, []))
-
 
         return (
                 <>
@@ -91,5 +99,5 @@ const styles = StyleSheet.create({
                 flexDirection: 'row',
                 alignItems: 'center',
                 flexWrap: 'wrap'
-      }
+        }
 })

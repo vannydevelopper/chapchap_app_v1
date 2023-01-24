@@ -31,7 +31,7 @@ export default function DetailsShopTabScreen({ shop }) {
                                                 </View>
                                                 <View style={{ marginLeft: 20 }}>
                                                         <Text style={styles.titleName}>Categories</Text>
-                                                        <Text style={styles.titleDescr}>{shop.categories[0].NOM}</Text>
+                                                        {shop.categories ? <Text style={styles.titleDescr}>{shop.categories[0].NOM}</Text>: <Text>Restaurant</Text>}
                                                 </View>
                                         </View>
                                         <View style={styles.cardItem}>

@@ -10,6 +10,8 @@ import fetchApi from "../../helpers/fetchApi";
 import Product from "../../components/ecommerce/main/Product";
 import ProductsTabScreen from "./tabs/ProductsTabScreen";
 import DetailsShopTabScreen from "./tabs/DetailsShopTabScreen";
+import ServicesIDS from "../../constants/ServicesIDS"
+
 const TopTab = createMaterialTopTabNavigator()
 
 export default function ShopScreen() {
@@ -18,6 +20,10 @@ export default function ShopScreen() {
           const [products, setProducts] = useState([])
           const[loadingShopProducts,setLoadingShopProducts] = useState(true)
           const { shop } = route.params
+
+          var serviceResto = ServicesIDS.resto
+          var serviceEco = ServicesIDS.ecommerce
+
 
           const Header = () => {
                     return <ShopCollapsableHeader shop={shop} />
@@ -55,10 +61,12 @@ export default function ShopScreen() {
                               onIndexChange={index => setActiveIndex(index)}
                     >
                               <Tabs.Tab name="produits" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
-                                        <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#000' : "#777"}]}>Produits</Text>
+                                        {(shop.ID_SERVICE == ServicesIDS.resto && shop.ID_SERVICE != ServicesIDS.ecommerce) ?
+                                          <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#000' : "#777" }]} >Menus</Text> : 
+                                        <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#000' : "#777"}]}>Produits</Text>}
                               </View>}>
 
-                                 <ProductsTabScreen shop={shop}/>
+                                 <ProductsTabScreen shop={shop} serviceResto={serviceResto} serviceEco={serviceEco}/>
                               </Tabs.Tab>
                               <Tabs.Tab name="commandes" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
                                         <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#777' : "#000"}]}>Suivis</Text>

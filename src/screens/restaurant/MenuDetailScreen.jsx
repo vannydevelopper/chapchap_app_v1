@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback } from "react-native"
+import { Image, View, StyleSheet, Text, TouchableOpacity, TextInput, ScrollView, TouchableNativeFeedback, StatusBar, TouchableWithoutFeedback } from "react-native"
 import { Ionicons, AntDesign, Entypo, Foundation } from '@expo/vector-icons';
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS } from "../../styles/COLORS"
@@ -11,6 +11,18 @@ import ImageView from "react-native-image-viewing";
 import fetchApi from "../../helpers/fetchApi";
 import MenuPartenaire from "../../components/restaurants/main/MenuPartenaire";
 import Menu from "../../components/restaurants/main/Menu";
+import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
+import ProductImages from "../../components/ecommerce/details/ProductImages";
+import { Portal } from "react-native-portalize";
+import { Modalize } from "react-native-modalize";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useRef } from "react";
+import AddCart from "../../components/restaurants/main/AddCart";
+import useFetch from "../../hooks/useFetch"
+import {useForm} from "../../hooks/useForm"
+import HomeMenus from "../../components/restaurants/home/HomeMenus";
+import { HomeMenuSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
+import { TextField, FilledTextField, InputAdornment, OutlinedTextField } from 'rn-material-ui-textfield'
 
 export default function MenuDetailScreen() {
 
@@ -20,56 +32,59 @@ export default function MenuDetailScreen() {
     const [imageIndex, setImageIndex] = useState(0)
     const [showImageModal, setShowImageModal] = useState(false)
     const { product, menus } = route.params
-    console.log(product)
+    const [note, setNote] = useState(null)
     const [selectedRestaurant, setselectedRestaurant] = useState([])
-    const [selectedCategorieMenu, setselectedCategorieMenu] = useState([])
     const MenuInCart = useSelector(restaurantProductSelector(product.ID_RESTAURANT_MENU))
 
+    const [loadingShopProducts, shopProducts] = useFetch(`/resto/menu?partenaireService=${product.produit_partenaire.ID_PARTENAIRE_SERVICE}`)
+    const [loadingSimilarProducts, similarProducs] = useFetch(`/resto/menu?category=${product.categorie.ID_CATEGORIE_MENU}`)
+
+    const modalizeRef = useRef(null)
+    const [isOpen, setIsOpen] = useState(false)
+    const [loadingForm, setLoadingForm] = useState(true)
+
+
     const [amount, setAmount] = useState(1)
+
+    const [data,handleChange] = useForm({
+        commentaire: "",
+    })
+
+    const onSubmit = async () => {
+        try {
+                  const form = new FormData()
+                  form.append("COMMENTAIRE",data.commentaire)
+                  form.append("ID_PRODUIT",product.produit.ID_PRODUIT)
+                  form.append("NOTE",note)
+                  const Notes = await fetchApi('/products/note',{
+                            method: "POST",
+                            body: form
+                  })
+                  data.commentaire=""
+        } catch (error) {
+                  console.log(error)
+        } 
+}
+
     const menuPress = () => {
         navigation.navigate("MenuScreen", { onSelectecategorie: false })
 
     }
+
+    const onCloseAddToCart = () => {
+        modalizeRef.current?.close()
+    }
+
     if (MenuInCart) {
         const l = MenuInCart.QUANTITE
         useState(l => parseInt(l))
     }
-    const [isFocused, setIsFocused] = useState(false)
-    const onDecrement = () => {
-        if (parseInt(amount) == 1) {
-            return false
-        }
-        if (parseInt(amount) <= 0) {
-            return 1
-        }
-        setAmount(l => parseInt(l) - 1)
-    }
 
-    const onIncrement = () => {
-        if (amount == 10) {
-            return false
-        }
-        setAmount(l => parseInt(l) + 1)
-    }
-
-    const onChangeText = am => {
-        setAmount(am)
-    }
-    const checkAmount = () => {
-        setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
-    }
-    const add = () => {
-        navigation.navigate("RestaurantHomeScreen")
-    }
-    const onAddToCart = () => {
-        add()
-        dispatch(addMenuAction(product, amount))
-    }
 
     var IMAGES = [
-        product.IMAGE ? product.IMAGE : undefined,
-        product.IMAGE2 ? product.IMAGE2 : undefined,
-        product.IMAGE3 ? product.IMAGE3 : undefined,
+        product.produit_partenaire.IMAGE_1 ? product.produit_partenaire.IMAGE_1 : undefined,
+        product.produit_partenaire.IMAGE_2 ? product.produit_partenaire.IMAGE_2 : undefined,
+        product.produit_partenaire.IMAGE_3 ? product.produit_partenaire.IMAGE_3 : undefined,
     ]
     const [nombre, setNombre] = useState(0);
     const addNumber = async () => {
@@ -94,292 +109,283 @@ export default function MenuDetailScreen() {
     const isValid = () => {
         return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
     }
-    useEffect(() => {
-        (async () => {
-
-            try {
-                var url = `/resto/menu/restaurant/${product.ID_PARTENAIRE_SERVICE}`
-                const menuRestaurant = await fetchApi(url)
-                setselectedRestaurant(menuRestaurant.result)
-                console.log(selectedRestaurant)
-            } catch (error) {
-                console.log(error)
-            }
-
-
-        })()
-
-    }, [product.ID_PARTENAIRE_SERVICE])
-
-
-
-    useEffect(() => {
-        (async () => {
-
-            try {
-                const categorieMenu = await fetchApi(`/resto/menu?category=${product?.ID_CATEGORIE_MENU}`)
-
-                setselectedCategorieMenu(categorieMenu.result)
-                //console.log(selectedCategorieMenu)
-            } catch (error) {
-                console.log(error)
-            }
-
-
-        })()
-
-    }, [product.ID_CATEGORIE_MENU])
-
-    const menuSimilaire = () => {
-
-
-
-        navigation.navigate("MenuScreen", { onSelectecategorie: product })
-    }
-    const menuResto = () => {
-
-        navigation.navigate("MenuScreen", { onSelectecategorie: selectedRestaurant })
-    }
-
 
     return (
         <>
-            <ScrollView >
-                <View style={{ marginLeft: "5%", marginRight: "5%", marginTop: "5%", }}>
-                    <TouchableWithoutFeedback key={1} onPress={() => {
-                        setImageIndex(1)
-                        setShowImageModal(true)
-                    }}>
-                        <View style={{ width: '100%', maxHeight: "100%", marginTop: 10 }}>
-                            <  Image source={{ uri: product.IMAGE }} style={{ ...styles.imagePrincipal }} />
+            <View style={{ marginTop: 0, flex: 1 }}>
+                <View style={styles.cardHeader}>
+                    <TouchableNativeFeedback
+                        style={{}}
+                        onPress={() => navigation.goBack()}
+                        background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                        <View style={styles.headerBtn}>
+                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
                         </View>
-                    </TouchableWithoutFeedback>
-                    <View style={styles.cardBack}>
-                        <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()} >
-                            <Ionicons name="ios-arrow-back-outline" size={30} color={COLORS.ecommercePrimaryColor} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.cartBtn} >
-                            <>
-                                <AntDesign name="shoppingcart" size={24} color="#F29558" />
-                                {MenuInCart ? <View style={styles.badge}>
-                                    <Text style={styles.badgeText} numberOfLines={1}>{MenuInCart.QUANTITE}</Text>
-                                </View> : null}
-                            </>
-                        </TouchableOpacity>
+                    </TouchableNativeFeedback>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <TouchableNativeFeedback
+                            style={{}}
+                            background={TouchableNativeFeedback.Ripple('#c9c5c5', true)}>
+                            <View style={styles.headerBtn}>
+                                <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
+                            </View>
+                        </TouchableNativeFeedback>
+                        <EcommerceBadge />
                     </View>
-                    <View style={{ marginTop: 10 }} >
-                        <Text style={styles.text} numberOfLines={2}>{product.repas}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
-                        <View style={{ flexDirection: "row" }}>
-                            <AntDesign name="star" size={15} color="#EFC519" />
-                            <AntDesign name="star" size={15} color="#EFC519" />
-                            <AntDesign name="star" size={15} color="#EFC519" />
-                            <AntDesign name="staro" size={15} color="#EFC519" />
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <AntDesign name="clockcircleo" size={15} color="#797E9A" />
-                            <Text style={{ fontSize: 15, marginLeft: 10, color: "#797E9A" }}>30 Min</Text>
-                        </View>
-                        <View style={{ marginTop: -5 }}>
-                            <Text style={styles.textFbu}>{product.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
-                        </View>
-                    </View>
-                    <View style={{ marginTop: 10 }} >
-                        <Text style={styles.text1} numberOfLines={2}>{product.categorie}</Text>
-                    </View>
-                    <View style={{ marginTop: 10 }} >
-                        <Text style={styles.txtDisplay}>
-                            {product.DESCRIPTION ? product.DESCRIPTION : "Aucun description"}
-                        </Text>
-                    </View>
-
-                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal:5, marginTop: 10 }}>
+                </View>
+                <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled>
+                    <ProductImages images={IMAGES} />
+                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 10, marginTop: 10 }}>
                         <View>
                             <TouchableOpacity style={styles.category} >
                                 <Entypo name="shopping-cart" size={24} color={COLORS.primary} />
-
-
+                                <Text style={styles.categoryName} numberOfLines={2}>{product.categorie.NOM}</Text>
                             </TouchableOpacity>
                             <View style={styles.productNames}>
                                 <Text style={styles.productName}>
-                                    <Text>{product.NOM_CATEGORIE}</Text>
+                                    {product.produit.NOM}
                                 </Text>
                             </View>
-
                         </View>
                         <View style={styles.shareBtn}>
                             <AntDesign name="sharealt" size={20} color={COLORS.primary} />
                         </View>
                     </View>
-                    <View style={styles.shop}>
-                        <View style={styles.shopLeft}>
-                            <View style={styles.shopIcon}>
-                                {true ? <Entypo name="shop" size={24} color={COLORS.primary} /> :
-                                    <FontAwesome name="user" size={24} color={COLORS.primary} />}
-                            </View>
-
-                            <TouchableOpacity >
+                    <View style={{ paddingHorizontal: 10, marginTop: 5 }}>
+                        <Text style={styles.productDescription}>{product.produit_partenaire.DESCRIPTION}</Text>
+                    </View>
+                    <TouchableNativeFeedback
+                    // onPress={() => navigation.navigate('ProductShopsScreen', { id: product.produit_partenaire.ID_PARTENAIRE_SERVICE })}
+                    >
+                        <View style={styles.shop}>
+                            <View style={styles.shopLeft}>
+                                <View style={styles.shopIcon}>
+                                    {true ? <Entypo name="shop" size={24} color={COLORS.primary} /> :
+                                        <FontAwesome name="user" size={24} color={COLORS.primary} />}
+                                </View>
                                 <View style={styles.shopOwner}>
-
                                     <Text style={styles.productSeller}>
-                                        <Text>{product.NOM_ORGANISATION}</Text>
-
+                                        {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`}
+                                        {/* <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} /> */}
                                     </Text>
-
                                     <Text style={styles.shopAdress}>
-
+                                        {product.partenaire.ADRESSE_COMPLETE ? product.partenaire.ADRESSE_COMPLETE : "Particulier"}
                                     </Text>
                                 </View>
-                            </TouchableOpacity>
-                            
+                            </View>
                         </View>
+                    </TouchableNativeFeedback>
+                    <View>
+                        <Text style={styles.plusText}>Notes et Revus</Text>
                     </View>
-
-                    <TouchableOpacity onPress={menuSimilaire}>
-                        <View style={{ ...styles.plus, marginBottom: 1 }}>
-                            <Text style={styles.plusText}>Similaires</Text>
-                            <View style={{ marginLeft: 100 }}>
-                                <View>
-                                    <AntDesign name="arrowright" size={24} color="black" />
-                                </View>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <ScrollView
-                        style={styles.shops}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        {selectedCategorieMenu.map((menu, index) => {
+                    <View style={styles.notes}>
+                        {new Array(5).fill(0).map((_, index) => {
                             return (
-                                <Menu
-                                    menu={menu}
-                                    menus={menus}
-                                    index={index}
-                                    totalLength={selectedCategorieMenu.length}
-                                    key={index}
-                                    fixMargins
-                                />
+
+                                <TouchableOpacity onPress={() => setNote(index + 1)} style={styles.etoiles} >
+                                    {note < index + 1 ? <AntDesign name="staro" size={25} color="black" /> :
+                                    <AntDesign name="star" size={25} color="black" />}
+                                </TouchableOpacity>
                             )
                         })}
-                    </ScrollView>
+                    </View>
+                    {note ?
+                        <View>
+                            <View style={styles.selectControl}>
+                                <OutlinedTextField
+                                    label={"Commentaire"}
+                                    fontSize={13}
+                                    value={data.commentaire}
+                                    onChangeText={e => handleChange("commentaire", e)}
 
-
-                    <TouchableOpacity onPress={menuResto} >
-                        <View style={{ ...styles.plus, marginBottom: 1 }}>
-                            <Text style={styles.plusText}>Dans ce restaurant</Text>
-                            <View style={{ marginLeft: 100 }}>
-                                <View>
-                                    <AntDesign name="arrowright" size={24} color="black" />
-                                </View>
+                                    lineWidth={0.5}
+                                    activeLineWidth={0.5}
+                                    baseColor={COLORS.smallBrown}
+                                    tintColor={COLORS.primary}
+                                    containerStyle={{ flex: 1, marginTop: 15, }}
+                                    inputContainerStyle={{ borderRadius: 10 }}
+                                    multiline
+                                />
+                            </View>
+                            <View style={styles.actionContainer}>
+                                <TouchableOpacity onPress={onSubmit} style={[styles.addBtn]}>
+                                    <Text style={[styles.addBtnText]}>Enregister Commentaire</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </TouchableOpacity>
+                        : null
+                    }
 
-                    <ScrollView
-                        style={styles.shops}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        {selectedRestaurant.map((menu, index) => {
-                            return (
-                                <Menu
-                                    menu={menu}
-                                    menus={menus}
-                                    index={index}
-                                    totalLength={selectedRestaurant.length}
-                                    key={index}
-                                    fixMargins
-                                />
-                            )
-                        })}
-                    </ScrollView>
+                    {loadingSimilarProducts ? <HomeMenuSkeletons /> : <HomeMenus
+                        menus={similarProducs.result}
+                        title="Similaires"
+                        categorie={product.categorie}
+                    />}
 
+                    {loadingShopProducts ? <HomeMenuSkeletons /> : <HomeMenus
+                        menus={shopProducts.result}
+                        title={`Plus à ${product.partenaire.NOM_ORGANISATION}`}
+                        categorie={product.categorie}
+                        shop={product.produit_partenaire}
+                    />}
 
-                </View>
-                {showImageModal &&
-                    <ImageView
-                        images={IMAGES.map(img => ({ uri: img }))}
-                        imageIndex={imageIndex}
-                        visible={showImageModal}
-                        onRequestClose={() => setShowImageModal(false)}
-                        swipeToCloseEnabled
-                        keyExtractor={(_, index) => index.toString()}
-                    />
-                }
-            </ScrollView >
-            <View style={{ marginLeft: 30, marginHorizontal: 20 }}>
-                {/* <View style={{ marginTop: 10 }}>
-                    <Text style={{ fontSize: 15, fontWeight: "bold" }}>Nombre de plat</Text>
-                </View> */}
-                <View style={styles.moreDetails}>
-                    {/* <View style={styles.amountContainer}>
-                        <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                            <Text style={styles.amountChangerText}>-</Text>
-                        </TouchableOpacity>
-                        <TextInput
-                            style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                            value={amount.toString()}
-                            onChangeText={onChangeText}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => {
-                                setIsFocused(false)
-                                checkAmount()
-                            }}
-                            keyboardType="decimal-pad"
+                    {showImageModal &&
+                        <ImageView
+                            images={IMAGES.map(img => ({ uri: img }))}
+                            imageIndex={imageIndex}
+                            visible={showImageModal}
+                            onRequestClose={() => setShowImageModal(false)}
+                            swipeToCloseEnabled
+                            keyExtractor={(_, index) => index.toString()}
                         />
-                        <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                            <Text style={styles.amountChangerText}>+</Text>
-                        </TouchableOpacity>
-                    </View> */}
+                    }
 
-                </View>
-                <View>
-                    <View style={styles.productFooter}>
-                        <Text style={styles.productPrice}>{product.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
-
-                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} disabled={!isValid()} onPress={onAddToCart}>
-                            <>
-                                <View>
-                                    <Ionicons name="cart" size={24} color="#fff" />
-                                </View>
-                                <Text style={styles.addCartBtnTitle}>
-                                    Ajouter au panier
-                                </Text>
-                                {/* <View style={styles.badge}>
-                                    <Text style={styles.badgeText} numberOfLines={1}></Text>
-                                </View>  */}
-                            </>
-                        </TouchableOpacity>
-
-                    </View>
-                </View>
+                </ScrollView>
             </View>
+            <View style={styles.productFooter}>
+                {product.produit_partenaire.PRIX ? <Text style={styles.productPrice}>{product.produit_partenaire.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
+                <TouchableOpacity style={[styles.addCartBtn]} >
+                    <>
+                        <View>
+                            <Ionicons name="cart" size={24} color="#fff" />
+                        </View>
+                        <Text style={styles.addCartBtnTitle}>
+                            Ajouter au panier
+                        </Text>
+
+                    </>
+                </TouchableOpacity>
+            </View>
+
+            <Portal>
+                <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
+                    <Modalize
+                        ref={modalizeRef}
+                        adjustToContentHeight
+                        handlePosition='inside'
+                        modalStyle={{
+                            borderTopRightRadius: 10,
+                            borderTopLeftRadius: 10,
+                            paddingVertical: 20
+                        }}
+                        handleStyle={{ marginTop: 10 }}
+                        scrollViewProps={{
+                            keyboardShouldPersistTaps: "handled"
+                        }}
+                        onClosed={() => {
+                            setIsOpen(false)
+                            setLoadingForm(true)
+                        }}
+                    >
+                        <AddCart product={product} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                    </Modalize>
+                </GestureHandlerRootView>
+            </Portal>
         </>
 
 
     )
 }
 const styles = StyleSheet.create({
-    imagePrincipal:
-    {
-        width: '120%',
-        height: 280,
-        alignSelf: 'center',
-        //borderBottomLeftRadius: 60,
-        //borderBottomRightRadius: 60,
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        marginTop: StatusBar.currentHeight,
+        height: 60,
+        backgroundColor: '#F1F1F1',
+    },
+    category: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 15,
+    },
+    points: {
+        marginTop: 25,
+        marginLeft: 10
+    },
+    userImage: {
+        width: "120%",
+        height: "120%",
+        borderRadius: 50,
+        // alignItems:"center",
+        // justifyContent:"center"
+    },
+    Cardnote: {
+        padding: 15,
+        height: 20,
+        width: 20,
+        color: "#1D8585",
+        backgroundColor: '#D7D9E4',
+        borderRadius: 50,
+
+    },
+    etoiles: {
+
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        fontSize: 60,
+        paddingHorizontal: 10,
+
+
+    },
+    inputCard: {
+        marginHorizontal: 20,
+        marginTop: 10,
+        multiline: true
+
+
+    },
+    notes: {
+        flexDirection: 'row',
+        justifyContent: "space-between"
+        //marginTop: 7
+
+    },
+    etoiles: {
+        marginLeft: 5,
+        display: "flex",
+
+    },
+    actionContainer: {
+        paddingHorizontal: 10
+    },
+    addBtn: {
+        paddingVertical: 10,
+        width: "100%",
+        alignSelf: "center",
+        backgroundColor: COLORS.ecommercePrimaryColor,
+        borderRadius: 10,
+        paddingVertical: 15,
+        marginBottom: 10,
+        marginTop: 10
+    },
+    addBtnText: {
+        color: '#FFF',
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    categoryName: {
+        fontWeight: "bold",
+        fontSize: 13,
+        color: COLORS.primary,
+        marginLeft: 5
+    },
+    productNames: {
+        marginTop: 5
+    },
+    productName: {
+        fontWeight: "bold",
+        fontSize: 18,
+        color: COLORS.ecommercePrimaryColor
     },
     shop: {
         flexDirection: "row",
         alignItems: 'center',
         justifyContent: "space-between",
-        marginVertical: 10,
         paddingVertical: 10,
         paddingHorizontal: 10,
-        marginBottom: -5,
-        marginTop:17,
-        paddingHorizontal:5
     },
     shopLeft: {
         flexDirection: "row",
@@ -391,100 +397,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#F1F1F1',
         borderRadius: 10,
         justifyContent: 'center',
-        alignItems: "center",
-        marginTop: -40
+        alignItems: "center"
 
+    },
+    shopOwner: {
+        marginLeft: 10,
     },
     productSeller: {
         fontWeight: "bold",
         color: COLORS.ecommercePrimaryColor,
         fontSize: 14,
-        marginLeft: 15,
-        marginTop:-10
     },
     shopAdress: {
         color: '#777',
         fontSize: 13
     },
-    shareBtn: {
-        padding: 15,
-        height: 50,
-        width: 50,
-        color: "#1D8585",
-        backgroundColor: '#D7D9E4',
-        borderRadius: 100
-    },
-    productNames: {
-        marginTop: 5
-    },
-    productName: {
-        fontWeight: "bold",
-        fontSize: 18,
-        color: COLORS.ecommercePrimaryColor
-    },
-    plus: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingVertical: 10,
-        // marginTop: "-5%",
-        paddingHorizontal: 10,
-        marginBottom: "5%",
-
-        // backgroundColor:"red"
-    },
-    shops: {
-        paddingHorizontal: 10,
-    },
-    plusText: {
-        color: COLORS.ecommercePrimaryColor,
-        fontSize: 20,
-        fontWeight: "bold",
-        marginTop: 1
-    },
-    addCartBtnTitle: {
-        textAlign: 'center',
-        color: '#fff',
-        fontWeight: 'bold'
-    },
     text: {
-        color: '#242F68',
-        fontWeight: "bold",
+        color: '#646B95',
         fontSize: 20
-    },
-    addCartBtnTitle: {
-        textAlign: 'center',
-        color: '#fff',
-        fontWeight: 'bold',
-        marginTop: -25,
-        fontSize: 15
-    },
-    text1: {
-        color: '#242F68',
-        fontWeight: "bold",
-        fontSize: 16
-    },
-    textFbu: {
-        color: 'black',
-        fontWeight: "bold",
-        fontSize: 25
-    },
-    badge: {
-        minWidth: 25,
-        minHeight: 20,
-        borderRadius: 20,
-        backgroundColor: COLORS.ecommerceRed,
-        position: 'absolute',
-        top: 20,
-        right: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    badgeText: {
-        textAlign: 'center',
-        fontSize: 10,
-        color: '#FFF',
-        fontWeight: "bold"
     },
     carre1: {
         padding: 15,
@@ -508,153 +438,66 @@ const styles = StyleSheet.create({
         padding: 10,
         height: 50,
         width: 200,
-        backgroundColor: COLORS.ecommerceOrange,
+        backgroundColor: '#EE7526',
         borderWidth: 2,
         borderColor: '#D8D8D8',
         borderRadius: 10,
-
+        // marginTop: 1,
     },
-    back: {
-        padding: 10,
-        height: 50,
-        width: 50,
-        backgroundColor: '#D7D9E4',
-        // backgroundColor: COLORS.ecommercePrimaryColor,
-        borderRadius: 50,
-
-    },
-    cardBack: {
-        width: "100%",
-        position: 'absolute',
-        // marginRight: 10,
-        borderRadius: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: "row",
-        justifyContent: "space-between",
-        top: "1%",
-
-    },
-    cartBtn: {
-        marginTop: 10,
-        width: 45,
-        height: 45,
-        backgroundColor: "#FBD5DA",
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    badge: {
-        minWidth: 25,
-        minHeight: 20,
-        paddingHorizontal: 5,
-        borderRadius: 20,
-        backgroundColor: COLORS.ecommerceRed,
-        position: 'absolute',
-        top: -5,
-        right: -10,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    badgeText: {
-        textAlign: 'center',
-        fontSize: 10,
-        color: '#FFF',
-        fontWeight: "bold"
-    },
-    carre: {
+    shareBtn: {
         padding: 15,
         height: 50,
         width: 50,
         color: "#1D8585",
         backgroundColor: '#D7D9E4',
-        borderRadius: 10,
-        // marginTop: 1,
+        borderRadius: 100
     },
-    moreDetails: {
-        marginTop: 10
-    },
-    input: {
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        flex: 1,
-        height: "100%",
-        marginHorizontal: 10,
-        textAlign: 'center',
-        color: COLORS.ecommercePrimaryColor,
-        fontWeight: 'bold'
-    },
-    addCartBtn: {
-        marginTop: 15,
-        borderRadius: 5,
-        backgroundColor: COLORS.ecommerceOrange,
-        paddingVertical: 15,
-    },
-    amountContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: 50
-    },
-    amountChanger: {
-        width: 50,
-        height: 50,
-        backgroundColor: COLORS.ecommercePrimaryColor,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    amountChangerText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 20
-    },
-    addCartBtn: {
-        marginTop: 15,
-        borderRadius: 5,
-        backgroundColor: COLORS.ecommerceOrange,
-        paddingVertical: 15,
-    },
-
-    txtDisplay: {
-        color: '#191970',
+    productDescription: {
+        color: '#777',
         fontSize: 15,
-        fontWeight: 'bold',
-        opacity: 0.4
+        lineHeight: 22
     },
     txtDispla: {
         color: '#646B94',
         fontSize: 15,
         fontWeight: 'bold',
-        marginTop: 30
-
     },
-
-    icon1: {
-        width: 50,
-        top: 30,
-        marginLeft: 10,
-        left: 250,
-        position: 'absolute',
-        // backgroundColor: '#fff',
-        borderRadius: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
+    image: {
+        height: "30%",
+        width: "30%",
+        borderRadius: 8,
+        resizeMode: 'contain'
     },
-    cardOK: {
-        width: 10,
-        height: 10,
-        backgroundColor: 'red',
-        borderRadius: 9,
+    productsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 2,
-
-        top: 30,
-        marginLeft: 8,
-        left: 270,
-        position: 'absolute',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+    },
+    title: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 14,
+    },
+    productImage: {
+        width: "100%",
+        height: "100%",
+        resizeMode: "contain",
+        borderRadius: 10
+    },
+    products: {
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    productFooter: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 10,
+    },
+    productPrice: {
+        fontWeight: "bold",
+        fontSize: 22
     },
     addCartBtn: {
         borderRadius: 30,
@@ -664,10 +507,55 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center"
     },
+    buttonText: {
+        color: "#fff",
+        fontWeight: "bold",
+        // textTransform:"uppercase",
+        fontSize: 16,
+        textAlign: "center"
+    },
+    button: {
+        marginTop: 10,
+        borderRadius: 8,
+        paddingVertical: 14,
+        paddingHorizontal: 10,
+        backgroundColor: COLORS.primaryPicker,
+        marginHorizontal: 20
+    },
     addCartBtnTitle: {
         textAlign: 'center',
         color: '#fff',
         fontWeight: 'bold'
+    },
+    Cardnote: {
+        padding: 15,
+        height: 40,
+        width: 40,
+        color: "#1D8585",
+        backgroundColor: '#D7D9E4',
+        borderRadius: 100
+    },
+    rateHeader: {
+        marginLeft: 10,
+        flex: 1
+    },
+    rateTitles: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: 'space-between'
+    },
+    notecard: {
+        marginLeft: 10,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    notecards: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginLeft: 40,
+        marginTop: 7
+
+
     },
     badge: {
         minWidth: 25,
@@ -687,14 +575,16 @@ const styles = StyleSheet.create({
         color: '#FFF',
         fontWeight: "bold"
     },
-    productFooter: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: 10,
-    },
-    productPrice: {
+    plusText: {
+        color: COLORS.ecommercePrimaryColor,
+        fontSize: 17,
         fontWeight: "bold",
-        fontSize: 22
+        paddingHorizontal: 10,
+        marginTop: 5,
+
+
     },
+    headerBtn: {
+        padding: 10
+    }
 })

@@ -89,7 +89,6 @@ export default function RestaurantHomeScreen() {
                 setOffset(0)
                 const menus = await getMenus(0)
                 setMenus(menus.result)
-                console.log(menus.result)
             } catch (error) {
                 console.log(error)
             } finally {
@@ -104,12 +103,6 @@ export default function RestaurantHomeScreen() {
         fecthCategories()
     }, []))
 
-    const onCategoryPress = (categorie) => {
-        navigation.navigate("MenuScreen", { onSelectecategorie: categorie })
-    }
-
-
-
 
     var location
     useEffect(() => {
@@ -117,24 +110,13 @@ export default function RestaurantHomeScreen() {
             try {
 
                 if (lat && long) {
-                    if (data.resto) {
-                        return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}&resto=${data.resto}`)
-                    }
-                    else {
                         return await fetchApi(`/partenaire/service/resto?lat=${lat}&long=${long}`)
-                    }
-                }
-                if (data.resto) {
-                    return await fetchApi(`/partenaire/service/resto?&resto=${data.resto}`)
-
-                }
-                else {
+                }else{
                     return await fetchApi('/partenaire/service/resto')
-
                 }
             }
             catch (error) {
-                throw error
+                console.log(error)
             } finally {
                 setLoadingResto(false)
             }
@@ -147,7 +129,6 @@ export default function RestaurantHomeScreen() {
                 const restaurants = await fecthRestos()
                 setLoadingResto(false)
                 setRestaurants(restaurants.result)
-                console.log()
                 return;
             }
             location = await Location.getCurrentPositionAsync({});
@@ -157,7 +138,7 @@ export default function RestaurantHomeScreen() {
         }
         askLocationFetchRestos()
 
-    }, [data.resto, location])
+    }, [ location])
 
     return (
         <View style={styles.container}>

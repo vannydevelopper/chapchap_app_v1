@@ -21,7 +21,7 @@ export default function Restaurant({ note, restaurant, restaurants, index, total
     return (a + '').charAt(0).toUpperCase() + a.substr(1);
   }
   return (
-    <TouchableNativeFeedback onPress={() => navigation.navigate('MenusRestaurantScreen', { restaurant: restaurant, restaurants: restaurants })}>
+    <TouchableNativeFeedback onPress={() => navigation.navigate('ShopScreen', { id: restaurant.ID_PARTENAIRE_SERVICE, shop: restaurant })}>
       <View key={index} style={[styles.shop, additionStyles]}>
         <View style={styles.imageCard}>
           <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
