@@ -153,7 +153,10 @@ export default function Menu({ menu, index, totalLength, fixMargins = false, onR
                                 setLoadingForm(true)
                             }}
                         >
-                            <AddCart menu={menu} loadingForm={loadingForm} onClose={onCloseAddToCart} />
+                            <AddCart 
+                                menu={menu} 
+                                loadingForm={loadingForm} 
+                                onClose={onCloseAddToCart} />
                         </Modalize>
                     </GestureHandlerRootView>
                 </Portal>
