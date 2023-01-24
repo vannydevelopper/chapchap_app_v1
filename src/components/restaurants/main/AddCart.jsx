@@ -8,12 +8,11 @@ import { addMenuAction } from "../../../store/actions/restaurantCartActions";
 
 
 export default function AddCart({ menu, onClose, loadingForm }) {
-        console.log(menu)
 
         const [amount, setAmount] = useState(1)
         const [isFocused, setIsFocused] = useState(false)
         const dispatch = useDispatch()
-        // const [loadingVariants, variants] = useFetch(`/products/variants/${product.produit.ID_PRODUIT}`)
+        const [loadingVariants, variants] = useFetch(`/resto/menu/variants/${menu.produit.ID_RESTAURANT_MENU}`)
         const [selectedCombinaison, setSelectedCombinaison] = useState(null)
         const [selectedSize, setSelectedSize] = useState(null)
 
@@ -27,15 +26,93 @@ export default function AddCart({ menu, onClose, loadingForm }) {
         }
 
         const onAddToCart = () => {
-                // onClose()
-                // dispatch(addProductAction(product, amount, selectedCombinaison))
+                onClose()
+                dispatch(addProductAction(product, amount, selectedCombinaison))
         }
+        const onDecrementOther = () => {
+                if (parseInt(amount) == 1) {
+                        return false
+                }
+                if (parseInt(amount) <= 0) {
+                        return 1
+                }
+                setAmount(l => parseInt(l) - 1)
+        }
+
         const onIncrementOther = () => {
-                // if (amount == selectedCombinaison.QUANTITE) {
-                //           return false
-                // }
-                // setAmount(l => parseInt(l) + 1)
+                if (amount == selectedCombinaison.QUANTITE) {
+                        return false
+                }
+                setAmount(l => parseInt(l) + 1)
         }
+        const checkAmount = useCallback(() => {
+                setAmount(parseInt(amount) ? (parseInt(amount) >= selectedCombinaison.QUANTITE ? selectedCombinaison.QUANTITE : parseInt(amount)) : 1)
+        }, [selectedCombinaison])
+
+        let isnum = /^\d+$/.test(amount);
+
+        const isValid = useCallback(() => {
+                return isnum ? (parseInt(amount) > 0 && parseInt(amount) <= selectedCombinaison.QUANTITE) : false
+        }, [selectedCombinaison, amount])
+
+        const isValueSelected = useCallback(idValue => {
+                if (selectedValues.length > 0) {
+                        const isThere = selectedValues.find(v => v.ID_VALUE == idValue)
+                        return isThere ? true : false
+                }
+                return false
+        }, [selectedValues])
+
+        const handleValuePress = value => {
+                if (isValueSelected(value.ID_VALUE)) return false
+                const isVariantSelected = selectedValues.find(v => v.ID_VARIANT == value.ID_VARIANT)
+                if (isVariantSelected) {
+                        const removedVariant = selectedValues.filter(v => v.ID_VALUE != isVariantSelected.ID_VALUE)
+                        setSelectedValues([...removedVariant, value])
+                } else {
+                        setSelectedValues(c => [...c, value])
+                }
+        }
+
+        const getPrice = useCallback(() => {
+                if (selectedCombinaison) {
+                        return selectedCombinaison.PRIX
+                }
+                return menu.produit_partenaire.PRIX
+        }, [selectedCombinaison])
+
+        useEffect(() => {
+                if (!loadingVariants) {
+                        const combinaisons = variants.result.combinaisons
+                        if (combinaisons && selectedValues.length > 0) {
+                                const combinaison = combinaisons.find(comb => {
+                                        const valueIds = comb.values.map(value => value.ID_VALUE);
+                                        const selectedValuesIds = selectedValues.map(value => value.ID_VALUE)
+                                        return valueIds.sort().toString() === selectedValuesIds.sort().toString();
+                                })
+                                setSelectedCombinaison(combinaison || null)
+                        }
+                }
+        }, [loadingVariants, variants, selectedValues])
+        useEffect(() => {
+                if (!loadingVariants) {
+                        const combinaisons = variants.result.combinaisons
+                        if (combinaisons) {
+                                const defaultCombinaison = combinaisons[0]
+                                if (defaultCombinaison.values && defaultCombinaison.values.length > 0) {
+                                        const variantsValues = [].concat(...variants.result.variants.map(variant => variant.values));
+                                        const values = defaultCombinaison.values.map(value => {
+                                                const otherKeys = variantsValues.find(v => v.ID_VALUE == value.ID_VALUE)
+                                                return {
+                                                        ...value,
+                                                        ...otherKeys
+                                                }
+                                        })
+                                        setSelectedValues(values)
+                                }
+                        }
+                }
+        }, [variants, loadingVariants])
 
 
 
@@ -50,63 +127,87 @@ export default function AddCart({ menu, onClose, loadingForm }) {
                         <View style={styles.container}>
                                 <View style={styles.product}>
                                         <View style={styles.productImage}>
-                                                {/* <Image source={{ uri: product.produit.IMAGE }} style={styles.image} /> */}
+                                                <Image source={{ uri: menu.produit.IMAGE }} style={styles.image} />
                                         </View>
                                         <View style={styles.productDetails}>
                                                 <Text numberOfLines={3} style={styles.productName}>
-                                                        jbjbj
-                                                        {/* {product.produit.NOM} */}
+                                                        {menu.produit.NOM}
                                                 </Text>
                                                 <Text style={styles.productSeller}>
-                                                        jjjj
-                                                        {/* {product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}`} */}
+                                                        {menu.partenaire.NOM_ORGANISATION ? menu.partenaire.NOM_ORGANISATION : `${menu.partenaire.NOM} ${menu.partenaire.PRENOM}`}
                                                 </Text>
                                                 <Text style={styles.price}>
-                                                        {/* { getPrice().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} FBU */}
-                                                        jjj
+                                                        {getPrice().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} FBU
                                                 </Text>
                                         </View>
                                 </View>
+                                {
+                                        loadingVariants ? <View style={styles.loadingBlock}>
+                                                <Text style={styles.loadingText}>Chargement</Text>
+                                                <ActivityIndicator animating={true} size="small" style={{ marginLeft: 10 }} color='#777' />
+                                        </View> :
+                                                <>
+                                                        <View style={styles.variantsSection}>
+                                                                {variants.result.variants.length > 0 ? <View style={styles.variants}>
+                                                                        {variants.result.variants.map((variant, index) => {
+                                                                                return (
+                                                                                        <View style={styles.variant} key={index}>
+                                                                                                <Text style={styles.variantName}>{variant.VARIANT_NAME}</Text>
+                                                                                                {variant.values && variant.values.length > 0 ? <View style={styles.variantValues}>
+                                                                                                        {variant.values.map((value, index) => {
+                                                                                                                return (
+                                                                                                                        <TouchableOpacity
+                                                                                                                                disabled={isValueSelected(value.ID_VALUE)}
+                                                                                                                                key={index}
+                                                                                                                                style={[styles.variantValue, index == 0 && { marginLeft: 0 }, isValueSelected(value.ID_VALUE) && { borderColor: 'blue' }]}
+                                                                                                                                onPress={() => handleValuePress(value)}>
+                                                                                                                                <Text style={styles.variantValueText}>{value.VALUE_NAME}</Text>
+                                                                                                                        </TouchableOpacity>
+                                                                                                                )
+                                                                                                        })}
+                                                                                                </View> : null}
+                                                                                        </View>
+                                                                                )
+                                                                        })}
+                                                                </View> : null}
+                                                        </View>
 
-                                {/* <View style={styles.loadingBlock}>
-                                        <Text style={styles.loadingText}>Chargement</Text>
-                                        <ActivityIndicator animating={true} size="small" style={{ marginLeft: 10 }} color='#777' />
-                                </View>  */}
-                                <>
+                                                        {!selectedCombinaison ? <Text style={styles.noProductFeeback}>
+                                                                Produit non disponible en stock pour le moment
+                                                        </Text> :
 
-                                        <Text style={styles.noProductFeeback}>
-                                                Produit non disponible en stock pour le moment
-                                        </Text>
-                                        <View style={styles.moreDetails}>
-                                                <Text style={styles.avalaibleFeedback}>
-                                                        Disponible en stock
-                                                </Text>
-                                                <View style={styles.amountContainer}>
-                                                        <TouchableOpacity style={[styles.amountChanger]}>
-                                                                <Text style={styles.amountChangerText}>-</Text>
-                                                        </TouchableOpacity>
-                                                        <TextInput
-                                                                style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                                                                value={amount.toString()}
-                                                                onChangeText={onChangeText}
-                                                                onFocus={() => setIsFocused(true)}
-                                                                onBlur={() => {
-                                                                        setIsFocused(false)
-                                                                        checkAmount()
-                                                                }}
-                                                                keyboardType="decimal-pad"
-                                                        />
-                                                        <TouchableOpacity
-                                                                style={[styles.amountChanger]}
-                                                                onPress={onIncrementOther}>
-                                                                <Text style={styles.amountChangerText}>+</Text>
-                                                        </TouchableOpacity>
-                                                </View>
-                                                <TouchableOpacity style={[styles.addCartBtn]} onPress={onAddToCart}>
-                                                        <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
-                                                </TouchableOpacity>
-                                        </View>
-                                </>
+                                                                <View style={styles.moreDetails}>
+                                                                        <Text style={styles.avalaibleFeedback}>
+                                                                                Disponible en stock: {selectedCombinaison.QUANTITE} pièce{selectedCombinaison.QUANTITE > 1 && 's'}
+                                                                        </Text>
+                                                                        <View style={styles.amountContainer}>
+                                                                                <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrementOther} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                                                        <Text style={styles.amountChangerText}>-</Text>
+                                                                                </TouchableOpacity>
+                                                                                <TextInput
+                                                                                        style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
+                                                                                        value={amount.toString()}
+                                                                                        onChangeText={onChangeText}
+                                                                                        onFocus={() => setIsFocused(true)}
+                                                                                        onBlur={() => {
+                                                                                                setIsFocused(false)
+                                                                                                checkAmount()
+                                                                                        }}
+                                                                                        keyboardType="decimal-pad"
+                                                                                />
+                                                                                <TouchableOpacity
+                                                                                        style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= selectedCombinaison.QUANTITE) && { opacity: 0.5 }]}
+                                                                                        onPress={onIncrementOther}
+                                                                                        disabled={(!/^\d+$/.test(amount) || amount >= selectedCombinaison.QUANTITE)
+                                                                                        }>
+                                                                                        <Text style={styles.amountChangerText}>+</Text>
+                                                                                </TouchableOpacity>
+                                                                        </View>
+                                                                        <TouchableOpacity style={[styles.addCartBtn, { opacity: !isValid() ? 0.5 : 1 }]} onPress={onAddToCart} disabled={!isValid()}>
+                                                                                <Text style={styles.addCartBtnTitle}>Ajouter au panier</Text>
+                                                                        </TouchableOpacity>
+                                                                </View>}
+                                                </>}
                         </View>
         )
 }
