@@ -42,8 +42,6 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                         headers: { "Content-Type": "application/json" },
                               })
                               setPartenaires(partenaire.result)
-
-
                     }
                     catch (error) {
                               console.log(error)
@@ -101,7 +99,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                   </View>
                                         </TouchableNativeFeedback>
                                         <TouchableNativeFeedback useForeground background={TouchableNativeFeedback.Ripple('#EFEFEF')} onPress={onCommandeToggle}>
-                                                  <View style={[{ borderRadius: 10, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+                                                  <View style={[{ borderRadius: 10, overflow: "hidden", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }, (state.index == 0) && { backgroundColor: COLORS.handleColor }]}>
                                                             <View style={styles.drawerItem}>
                                                                       <Feather name="shopping-cart" size={24} color="#777" />
                                                                       <Text style={[styles.drawerItemLabel, (state.index == 0 || state.index == 1 || state.index == 2) && { color: '#000' }]}>Commandes</Text>
@@ -113,7 +111,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                         {showServiceCommands && <View style={styles.services}>
 
                                                   <TouchableOpacity index={1} onPress={() => navigation.navigate("CommandeEmiseScreen")} style={{ borderRadius: 10 }}>
-                                                            <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+                                                            <View style={[styles.service, (state.index == 0) && { backgroundColor: COLORS.handleColor }]}>
                                                                       <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                                                                                 Achats des produit
                                                                       </Text>
@@ -126,7 +124,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                             </View>
                                                   </TouchableOpacity>
                                                   <TouchableOpacity index={2} onPress={() => navigation.navigate("RestaurantEmiseScreen")} style={{ borderRadius: 10 }}>
-                                                            <View style={[styles.service, (state.index == 2) && { backgroundColor: COLORS.handleColor }]}>
+                                                            <View style={[styles.service, (state.index == 0) && { backgroundColor: COLORS.handleColor }]}>
                                                                       <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                                                                                 Restaurant
                                                                       </Text>
