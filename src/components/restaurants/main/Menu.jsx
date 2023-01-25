@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Image, StyleSheet, ImageBackground, Text, TouchableOpacity, useWindowDimensions, View, TouchableNativeFeedback } from 'react-native'
+import { Image, StyleSheet, ImageBackground, Text, TouchableOpacity, useWindowDimensions, TouchableWithoutFeedback, View, TouchableNativeFeedback } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { Portal } from 'react-native-portalize';
@@ -105,7 +105,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false, onR
         }
     }, [isOpen])
     return (
-        <TouchableNativeFeedback onPress={() => navigation.push('MenuDetailScreen', { product: menu })}>
+        <TouchableWithoutFeedback onPress={() => navigation.push('MenuDetailScreen', { product: menu })}>
             <View key={index} style={[styles.product, additionStyles]}>
                 <View style={styles.imageCard}>
                     <Image source={{ uri: menu.produit.IMAGE }} style={styles.image} />
@@ -161,17 +161,7 @@ export default function Menu({ menu, index, totalLength, fixMargins = false, onR
                     </GestureHandlerRootView>
                 </Portal>
             </View>
-        </TouchableNativeFeedback>
-
-        // <View >
-
-        //     </TouchableOpacity>
-        //     <View style={{ flexDirection: "row",marginLeft:5 }}>
-
-        //     </View>
-
-        // </View>
-
+        </TouchableWithoutFeedback>
     )
 }
 

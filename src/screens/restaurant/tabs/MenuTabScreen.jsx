@@ -8,8 +8,9 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { useEffect } from "react";
 import fetchApi from "../../../helpers/fetchApi";
 import Product from "../../../components/ecommerce/main/Product";
+import Menu from "../../../components/restaurants/main/Menu";
 
-export default function ProductsTabScreen({ shop, serviceResto, serviceEco }) {
+export default function MenuTabScreen({ shop, serviceResto, serviceEco }) {
         const [products, setProducts] = useState([])
         const [loading, setLoading] = useState(true)
         const navigation = useNavigation()
@@ -17,21 +18,21 @@ export default function ProductsTabScreen({ shop, serviceResto, serviceEco }) {
 
         const renderProducts = ({ item: product, index }) => {
                 return (
-                        <Product
-                                product={product}
+                        <Menu
+                                menu={product}
                                 index={index}
                                 totalLength={products.length}
                                 key={index}
                                 fixMargins
-                        // IsLoadingMore={IsLoadingMore}
                         />
+
                 )
         }
 
         useFocusEffect(useCallback(() => {
                 (async () => {
                         try {
-                                var url = `/products?partenaireService=${shop.ID_PARTENAIRE_SERVICE}`
+                                var url = `/resto/menu?partenaireService=${shop.ID_PARTENAIRE_SERVICE}`
                                 const produits = await fetchApi(url)
                                 setProducts(produits.result)
                         } catch (error) {
@@ -57,7 +58,7 @@ export default function ProductsTabScreen({ shop, serviceResto, serviceEco }) {
                                                         <View style={styles.emptyContainer}>
                                                                 <Feather name="check-square" size={24} color="#777" />
                                                                 <Text style={styles.emptyFeedback}>
-                                                                        Pas de produits dans ce boutique
+                                                                        Pas de menu dans ce restaurant
                                                                 </Text>
                                                         </View>
                                                 </View>

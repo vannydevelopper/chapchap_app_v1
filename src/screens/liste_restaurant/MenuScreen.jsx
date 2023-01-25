@@ -13,7 +13,6 @@ import CategoriesModalizeResto from "../../components/restaurants/AllMenu/Catego
 import { HomeMenuSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import * as Location from 'expo-location';
 import RestosModalize from "../../components/restaurants/AllMenu/RestosModalize";
-import { Portal } from "react-native-portalize";
 
 /**
  * composant pour afficher les menus avec filtres de categories ou filtre des restaurants
@@ -145,31 +144,29 @@ export default function MenuScreen() {
 
     return (
         <>
-            <Portal>
-                <CategoriesModalizeResto
-                    categoriesModalizeRef={categoriesModalizeRef}
-                    categories={categories}
-                    selectedCategory={selectedCategory}
-                    setSelectedCategory={setSelectedCategory}
-                    loadingForm={loadingForm}
-                    setLoadingForm={setLoadingForm}
-                    loadingCategories={loadingCategories}
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                />
-                
-                <RestosModalize
-                    restosModalizeRef={restosModalizeRef}
-                    restos={restos}
-                    // selectedResto={selectedResto}
-                    // setSelectedResto={setSelectedResto}
-                    loadingForm={loadingForm}
-                    setLoadingForm={setLoadingForm}
-                    loadingRestos={loadingRestos}
-                    isRestoOpen={isRestoOpen}
-                    setIsRestoOpen={setIsRestoOpen}
-                />
-            </Portal>
+            <CategoriesModalizeResto
+                categoriesModalizeRef={categoriesModalizeRef}
+                categories={categories}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                loadingForm={loadingForm}
+                setLoadingForm={setLoadingForm}
+                loadingCategories={loadingCategories}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+            />
+
+            <RestosModalize
+                restosModalizeRef={restosModalizeRef}
+                restos={restos}
+                // selectedResto={selectedResto}
+                // setSelectedResto={setSelectedResto}
+                loadingForm={loadingForm}
+                setLoadingForm={setLoadingForm}
+                loadingRestos={loadingRestos}
+                isRestoOpen={isRestoOpen}
+                setIsRestoOpen={setIsRestoOpen}
+            />
 
 
             <View style={styles.container}>

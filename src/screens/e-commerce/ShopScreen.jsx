@@ -11,6 +11,7 @@ import Product from "../../components/ecommerce/main/Product";
 import ProductsTabScreen from "./tabs/ProductsTabScreen";
 import DetailsShopTabScreen from "./tabs/DetailsShopTabScreen";
 import ServicesIDS from "../../constants/ServicesIDS"
+import MenuTabScreen from "../restaurant/tabs/MenuTabScreen";
 
 const TopTab = createMaterialTopTabNavigator()
 
@@ -66,7 +67,10 @@ export default function ShopScreen() {
                                         <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#000' : "#777"}]}>Produits</Text>}
                               </View>}>
 
-                                 <ProductsTabScreen shop={shop} serviceResto={serviceResto} serviceEco={serviceEco}/>
+                                 {(shop.ID_SERVICE == ServicesIDS.resto && shop.ID_SERVICE != ServicesIDS.ecommerce) ?
+                                  <MenuTabScreen shop={shop} serviceResto={serviceResto} serviceEco={serviceEco}/>:
+                                 <ProductsTabScreen shop={shop} serviceResto={serviceResto} serviceEco={serviceEco}/>}
+                                 
                               </Tabs.Tab>
                               <Tabs.Tab name="commandes" label={<View style={{ flexDirection: 'row', alignItems: "center"}}>
                                         <Text style={[{ fontWeight: "bold" }, { color: activeIndex == 0 ? '#777' : "#000"}]}>Suivis</Text>

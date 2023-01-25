@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, Text, TouchableNativeFeedback, useWindowDimensions, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableNativeFeedback, useWindowDimensions,TouchableWithoutFeedback, View } from 'react-native'
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { useNavigation } from '@react-navigation/native';
@@ -29,7 +29,7 @@ export default function Restaurant({ note, restaurant, restaurants, index, total
     return (a + '').charAt(0).toUpperCase() + a.substr(1);
   }
   return (
-    <TouchableNativeFeedback onPress={() => navigation.navigate('ShopScreen', { id: restaurant.ID_PARTENAIRE_SERVICE, shop: restaurant })}>
+    <TouchableWithoutFeedback onPress={() => navigation.navigate('ShopScreen', { id: restaurant.ID_PARTENAIRE_SERVICE, shop: restaurant })}>
       <View key={index} style={[styles.shop, additionStyles]}>
         <View style={styles.imageCard}>
           <Image source={{ uri: restaurant.LOGO }} style={styles.image} />
@@ -54,7 +54,7 @@ export default function Restaurant({ note, restaurant, restaurants, index, total
           <Text style={{ fontSize: 17, marginLeft: 10, color: "#797E9A", right: 15 }}>à {restaurant.DISTANCE ? restaurant.DISTANCE.toFixed(1) : null} Km</Text>
         </View>
       </View>
-    </TouchableNativeFeedback>
+    </TouchableWithoutFeedback>
   )
 }
 const styles = StyleSheet.create({
