@@ -16,9 +16,10 @@ import { unsetUserAction } from "../../store/actions/userActions";
 
 
 export default function DrawerContent({ state, navigation, descriptors }) {
-
           const [partenaires, setPartenaires] = useState([])
           const [commandes, setCommandes] = useState([])
+          const[restoCommandes, setRestoCommandes] = useState([])
+          console.log(restoCommandes)
 
 
           const user = useSelector(userSelector)
@@ -37,8 +38,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
           }
           const fectPartenaires = async () => {
                     try {
-                              const partenaire = await fetchApi("/partenaire", {
-                                        method: "GET",
+                              const partenaire = await fetchApi("/partenaire", {ethod: "GET",
                                         headers: { "Content-Type": "application/json" },
                               })
                               setPartenaires(partenaire.result)
@@ -53,9 +53,23 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                     dispacth(unsetUserAction())
           }
 
+          const commandesResto = async ()=> {
+                try{
+                        const rep = await fetchApi("/commandes/restaurant/count",{
+                                method: "GET",
+                                headers: { "Content-Type": "application/json" },
+                        })
+                        setRestoCommandes(rep.result)
+                }
+                catch(error){
+                        console.log(error)
+                }
+          }
+
 
           useFocusEffect(useCallback(() => {
                     fectPartenaires()
+                    commandesResto()
           }, []))
 
           useFocusEffect(useCallback(() => {
@@ -74,6 +88,7 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                               // }
                     })()
           }, []))
+
 
           return (
                     <View style={styles.drawerContent}>
@@ -128,6 +143,12 @@ export default function DrawerContent({ state, navigation, descriptors }) {
                                                                       <Text style={[styles.serviceName, (state.index == 2) && { color: '#000' }]}>
                                                                                 Restaurant
                                                                       </Text>
+                                                                      {restoCommandes.length > 0 ? <View style={styles.actionBadge}>
+                                                                                <View></View>
+                                                                                <Text style={styles.actionBadgeText}>
+                                                                                          {restoCommandes[0].NBRE}
+                                                                                </Text>
+                                                                      </View> : null}
                                                             </View>
                                                   </TouchableOpacity>
 

@@ -4,6 +4,14 @@ import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../../styles/COLORS';
 import { useNavigation } from '@react-navigation/native';
 
+/**
+ * composant pour afficher tous les menus
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @date 24/1/2023
+ * @param {*} param0 
+ * @returns 
+ */
+
 export default function Restaurant({ note, restaurant, restaurants, index, totalLength }) {
   const navigation = useNavigation()
   const { width } = useWindowDimensions()

@@ -7,6 +7,13 @@ import Menu from "../../components/restaurants/main/Menu";
 import EcommerceBadge from "../../components/ecommerce/main/EcommerceBadge";
 import fetchApi from "../../helpers/fetchApi";
 
+/**
+ * les screens pour afficher tous les categories details
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @author 24/1/2023
+ * @returns 
+ */
+
 export default function CategorieMenuScreen() {
 
     const navigation = useNavigation()

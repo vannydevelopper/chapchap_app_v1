@@ -8,6 +8,14 @@ import { useAnimatedGestureHandler } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from "../../../styles/COLORS";
 
+/**
+ * composant pour afficher tous les restaurants
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @date 24/1/2023
+ * @param {*} param0 
+ * @returns 
+ */
+
 export default function Restaurants({ lat, long, restaurants }) {
     const navigation = useNavigation()
     return (

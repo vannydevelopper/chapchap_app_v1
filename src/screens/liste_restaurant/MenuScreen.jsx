@@ -13,6 +13,14 @@ import CategoriesModalizeResto from "../../components/restaurants/AllMenu/Catego
 import { HomeMenuSkeletons } from "../../components/ecommerce/skeletons/Skeletons";
 import * as Location from 'expo-location';
 import RestosModalize from "../../components/restaurants/AllMenu/RestosModalize";
+import { Portal } from "react-native-portalize";
+
+/**
+ * composant pour afficher les menus avec filtres de categories ou filtre des restaurants
+ * @author Vanny Boy <vanny@mediabox.bi>
+ * @date 24/1/2023
+ * @returns 
+ */
 
 export default function MenuScreen() {
     const navigation = useNavigation()
@@ -41,6 +49,7 @@ export default function MenuScreen() {
 
 
 
+
     const fecthProduits = async () => {
         try {
             const response = await fetchApi("/resto/menu/categories", {
@@ -60,21 +69,21 @@ export default function MenuScreen() {
         fecthProduits()
     }, []))
 
-    useEffect(()=>{
-        (async()=>{
-            try{
+    useEffect(() => {
+        (async () => {
+            try {
                 var url = "/resto/menu"
-                if(selectedCategory){
+                if (selectedCategory) {
                     var url = `/resto/menu?category=${selectedCategory.ID_CATEGORIE_MENU}`
                 }
                 const reponse = await fetchApi(url)
                 setProducts(reponse.result)
             }
-            catch(error){
+            catch (error) {
                 console.log(error)
             }
         })()
-    },[selectedCategory])
+    }, [selectedCategory])
 
     useEffect(() => {
         if (isOpen) {
@@ -136,28 +145,32 @@ export default function MenuScreen() {
 
     return (
         <>
-            <CategoriesModalizeResto
-                categoriesModalizeRef={categoriesModalizeRef}
-                categories={categories}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-                loadingForm={loadingForm}
-                setLoadingForm={setLoadingForm}
-                loadingCategories={loadingCategories}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-            />
-            <RestosModalize
-                restosModalizeRef={restosModalizeRef}
-                restos={restos}
-                // selectedResto={selectedResto}
-                // setSelectedResto={setSelectedResto}
-                loadingForm={loadingForm}
-                setLoadingForm={setLoadingForm}
-                loadingRestos={loadingRestos}
-                isRestoOpen={isRestoOpen}
-                setIsRestoOpen={setIsRestoOpen}
-            />
+            <Portal>
+                <CategoriesModalizeResto
+                    categoriesModalizeRef={categoriesModalizeRef}
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                    loadingForm={loadingForm}
+                    setLoadingForm={setLoadingForm}
+                    loadingCategories={loadingCategories}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                />
+                
+                <RestosModalize
+                    restosModalizeRef={restosModalizeRef}
+                    restos={restos}
+                    // selectedResto={selectedResto}
+                    // setSelectedResto={setSelectedResto}
+                    loadingForm={loadingForm}
+                    setLoadingForm={setLoadingForm}
+                    loadingRestos={loadingRestos}
+                    isRestoOpen={isRestoOpen}
+                    setIsRestoOpen={setIsRestoOpen}
+                />
+            </Portal>
+
 
             <View style={styles.container}>
                 <View style={styles.cardHeader}>
@@ -228,7 +241,7 @@ export default function MenuScreen() {
                             </View>
                         </View>
                     </View>
-                    {loadingProducts  ? <HomeMenuSkeletons wrap noTitle /> :
+                    {loadingProducts ? <HomeMenuSkeletons wrap noTitle /> :
                         products.length == 0 ? <View style={styles.emptyContainer}>
                             <Image source={require('../../../assets/images/no-money.png')} style={styles.emptyImage} />
                             <Text style={styles.emptyFeedback}>Aucun résultat trouvé</Text>

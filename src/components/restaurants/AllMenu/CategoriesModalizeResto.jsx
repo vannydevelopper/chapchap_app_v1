@@ -2,9 +2,12 @@ import React from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, TouchableNativeFeedback, TouchableOpacity, View } from "react-native";
 import { Modalize } from "react-native-modalize";
 import { SimpleLineIcons, AntDesign, Ionicons, EvilIcons, Entypo } from '@expo/vector-icons';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-export default function CategoriesModalizeResto({ categories, categoriesModalizeRef, selectedCategory, setSelectedCategory, loadingForm, setLoadingForm, loadingCategories, setIsOpen }) {
+export default function CategoriesModalizeResto({ categories, categoriesModalizeRef, selectedCategory, setSelectedCategory, loadingForm, setLoadingForm, loadingCategories, setIsOpen, isOpen }) {
         return (
+                <>
+                <GestureHandlerRootView style={{ height: isOpen ? '100%' : 0, opacity: isOpen ? 1 : 0, backgroundColor: 'rgba(0, 0, 0, 0)', position: 'absolute', width: '100%', zIndex: 1 }}>
                 <Modalize
                         ref={categoriesModalizeRef}
                         adjustToContentHeight
@@ -60,6 +63,8 @@ export default function CategoriesModalizeResto({ categories, categoriesModalize
                                 </View>}
 
                 </Modalize>
+                </GestureHandlerRootView>
+                </>
         )
 }
 
