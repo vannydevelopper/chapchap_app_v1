@@ -42,6 +42,10 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                               products.forEach(product => {
                                         total += product.combinaison ? product.combinaison.PRIX * product.QUANTITE : product.produit_partenaire.PRIX * product.QUANTITE
                               })
+                    } else if(service == ServicesIDS.resto){
+                        restaurants.forEach(restaurant => {
+                                total += restaurant.combinaison ? restaurant.combinaison.PRIX * restaurant.QUANTITE : restaurant.produit_partenaire.PRIX * restaurant.QUANTITE
+                            })
                     }
                     return total
           }
@@ -75,13 +79,22 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                                                                       PRENOM: shipping_info.prenom,
                                                                       ADRESSE: shipping_info.address,
                                                             },
-                                                            service: service,
+                                                            service: ServicesIDS.ecommerce,
                                                             commandes: orders
                                                   }),
                                                   headers: { "Content-Type": "application/json" },
                                         })
                                         onFInish(commande.result)
                               } else if (service == ServicesIDS.resto) {
+                                        const orders = restaurants.map(restaurant => {
+                                                return {
+                                                        QUANTITE: restaurant.QUANTITE,
+                                                        PRIX: restaurant.combinaison.PRIX,
+                                                        ID_COMBINATION: restaurant.combinaison.ID_COMBINATION,
+                                                        ID_RESTAURANT_MENU: restaurant.produit.ID_RESTAURANT_MENU,
+                                                        ID_PARTENAIRE_SERVICE: restaurant.produit_partenaire.ID_PARTENAIRE_SERVICE
+                                                }
+                                        })
                                         const commande = await fetchApi('/commandes/clients/restaurant', {
                                                   method: "POST",
                                                   body: JSON.stringify({
@@ -92,8 +105,8 @@ export default function EcocashModalize({ info, loadingForm, onClose, shipping_i
                                                                       PRENOM: shipping_info.prenom,
                                                                       ADRESSE: shipping_info.address,
                                                             },
-                                                            service: service,
-                                                            // resto
+                                                            service: ServicesIDS.resto,
+                                                            commandes: orders
                                                   }),
                                                   headers: { "Content-Type": "application/json" },
                                         })
