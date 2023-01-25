@@ -1,10 +1,10 @@
 import { ADD_MENU_ACTION, REMOVE_MENU_ACTION, RESET_CART_ACTION } from "../reducers/restaurantCartReducer"
 
 
-export const addMenuAction = (menu, count) => {
+export const addMenuAction = (menu, count, combinaison) => {
           return {
                     type: ADD_MENU_ACTION,
-                    payload: { ...menu, QUANTITE: count },       
+                    payload: { ...menu, QUANTITE: count, combinaison },       
                     
           }
           

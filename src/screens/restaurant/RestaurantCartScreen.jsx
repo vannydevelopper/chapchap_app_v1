@@ -3,7 +3,7 @@ import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableNativeFeedback
 import { useSelector } from "react-redux";
 import ProductCart from "../../components/ecommerce/main/ProductCart";
 import { ecommerceCartSelector } from "../../store/selectors/ecommerceCartSelectors";
-import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { COLORS } from "../../styles/COLORS";
 import { useNavigation } from "@react-navigation/native";
 import { useCallback } from "react";
@@ -16,33 +16,21 @@ import { HomeProductsSkeletons } from "../../components/ecommerce/skeletons/Skel
 import { restaurantCartSelector } from "../../store/selectors/restaurantCartSelectors";
 import MenuCart from "../../components/restaurants/main/MenuCart";
 import Menu from "../../components/restaurants/main/Menu";
+import ServicesIDS from "../../constants/ServicesIDS"
 
 export default function RestaurantCartScreen() {
-    const menus = useSelector(restaurantCartSelector)
-    var menuParPartenaire = {}
-    const partenaireMenus = []
-    menus.forEach(menu => {
-        if (menuParPartenaire[menu.ID_PARTENAIRE_SERVICE]) {
-            menuParPartenaire[menu.ID_PARTENAIRE_SERVICE].push(menu)
-        }
-        else {
-            menuParPartenaire[menu.ID_PARTENAIRE_SERVICE] = [menu]
-        }
-    })
-    for (let key in menuParPartenaire) {
-        const MENUS = menuParPartenaire[key]
-        partenaireMenus.push({
-            MENUS
-        })
-    }
+    const products = useSelector(ecommerceCartSelector)
     const navigation = useNavigation()
+
     const [recommndations, setRecomandations] = useState([])
     const [loadingProducts, setLoadingProducts] = useState(false)
+
+    const menus = useSelector(restaurantCartSelector)
 
     const getAmount = useCallback(() => {
         var total = 0
         menus.forEach(menu => {
-            total += parseInt(menu.PRIX) * menu.QUANTITE
+            total += parseInt(menu.combinaison.PRIX)
         })
         return total
     }, [menus])
@@ -54,14 +42,15 @@ export default function RestaurantCartScreen() {
         })
         return elements
     }, [menus])
+
     useEffect(() => {
         (async () => {
             if (menus.length == 0) {
                 try {
                     setLoadingProducts(true)
                     var url = "/resto/menu"
-                    const menus = await fetchApi(url)
-                    setRecomandations(menus.result)
+                    const produits = await fetchApi(url)
+                    setRecomandations(produits.result)
                 } catch (error) {
                     console.log(error)
                 } finally {
@@ -70,16 +59,21 @@ export default function RestaurantCartScreen() {
             }
         })()
     }, [menus])
+
     if (menus.length == 0) {
         return (
             <View style={[styles.container, { backgroundColor: '#fff' }]}>
                 <View style={styles.cardHeader}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{}} onPress={() => navigation.navigate('EcommerceCartScreen')}>
-                        <AntDesign name="search1" size={24} color={COLORS.ecommercePrimaryColor} />
-                    </TouchableOpacity>
+                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#c9c5c5', true)} onPress={() => navigation.goBack()}>
+                        <View style={styles.headerBtn}>
+                            <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                        </View>
+                    </TouchableNativeFeedback>
+                    <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#c9c5c5', true)} onPress={() => navigation.navigate('EcommerceCartScreen')}>
+                        <View style={styles.headerBtn}>
+                            <Feather name="more-horizontal" size={24} color="black" />
+                        </View>
+                    </TouchableNativeFeedback>
                 </View>
                 <ScrollView>
                     <LottieView style={{ width: 200, height: 200, alignSelf: "center" }} source={require('../../../assets/lotties/empty-cart.json')} autoPlay loop={false} />
@@ -89,6 +83,7 @@ export default function RestaurantCartScreen() {
                             <TouchableNativeFeedback
                                 accessibilityRole="button"
                                 background={TouchableNativeFeedback.Ripple('#c9c5c5')}
+                                disabled
                             >
                                 <View style={styles.productsHeader}>
                                     <Text style={[styles.title, { fontSize: 16 }]}>Recommandés pour vous</Text>
@@ -112,20 +107,25 @@ export default function RestaurantCartScreen() {
             </View>
         )
     }
+
     return (
         <View style={styles.container}>
             <View style={styles.cardHeader}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back-sharp" size={24} color="black" />
-                </TouchableOpacity>
+                <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#c9c5c5', true)} onPress={() => navigation.goBack()}>
+                    <View style={styles.headerBtn}>
+                        <Ionicons name="arrow-back-sharp" size={24} color="black" />
+                    </View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback background={TouchableNativeFeedback.Ripple('#c9c5c5', true)} onPress={() => navigation.navigate('EcommerceCartScreen')}>
+                    <View style={styles.headerBtn}>
+                        <Feather name="more-horizontal" size={24} color="black" />
+                    </View>
+                </TouchableNativeFeedback>
+            </View>
+            <Text style={styles.titlePrincipal}>Mon panier</Text>
 
-            </View>
-            <View style={{ marginHorizontal: 10 }}>
-                <Text style={styles.titlePrincipal}>Mon panier</Text>
-            </View>
-            <ScrollView>
             <View style={styles.products}>
-             
+                <ScrollView>
                     {menus.map((menu, index) => {
                         return (
                             <MenuCart
@@ -135,21 +135,29 @@ export default function RestaurantCartScreen() {
                             />
                         )
                     })}
-                
+                </ScrollView>
             </View>
-            </ScrollView>
+
             <View style={styles.cartFooter}>
-                <View style={{marginVertical:20}}>
-                    <Text style={{
-                        textAlign: 'center', color: COLORS.ecommercePrimaryColor,
-                        fontWeight: 'bold', fontSize: 15
-                    }}>Total : {getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+                <View style={styles.cartFooterTotals}>
+                    <View style={styles.imageAmount}>
+                        <View style={styles.cartImage}>
+                            <Image source={require('../../../assets/images/carts.png')} style={styles.image} />
+                        </View>
+                        <View style={styles.cartAmount}>
+                            <Text style={styles.amountTitle}>Panier</Text>
+                            <Text style={styles.amount}>{getElements()} élément{getElements() > 1 && 's'}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.prices}>
+                        <Text style={styles.amountTitle}>{getAmount().toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} FBU</Text>
+                        <Text style={[styles.amount, { textAlign: "right" }]}>Total</Text>
+                    </View>
                 </View>
                 <TouchableOpacity style={styles.checkoutBtn} onPress={() => {
-                    navigation.navigate("ShippingInfoScreen", { service: 2 })
-                }}
-                >
-                    <Text style={styles.checkoutBtnTitle}>Payer la commande </Text>
+                    navigation.navigate("ShippingInfoScreen", { service: ServicesIDS.resto })
+                }}>
+                    <Text style={styles.checkoutBtnTitle}>CONTINUER</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -158,7 +166,7 @@ export default function RestaurantCartScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
+        backgroundColor: '#F1F1F1',
         flex: 1
     },
     title: {
@@ -170,20 +178,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     },
     products: {
-        paddingHorizontal: 10,
-        marginHorizontal: 10,
-        borderRadius: 0,
-        padding: 1,
-        marginBottom:70
+        paddingHorizontal: 10
     },
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         marginTop: StatusBar.currentHeight,
         height: 60,
-        marginBottom: -10
+    },
+    headerBtn: {
+        padding: 10
     },
     titlePrincipal: {
         fontSize: 20,
@@ -244,16 +250,14 @@ const styles = StyleSheet.create({
     },
     checkoutBtn: {
         paddingVertical: 15,
-        backgroundColor: COLORS.ecommerceRed,
+        backgroundColor: COLORS.ecommerceOrange,
         borderRadius: 5,
-        marginTop: 20,
-        marginHorizontal: 30
+        marginTop: 10
     },
     checkoutBtnTitle: {
         textAlign: "center",
         color: '#fff',
-        fontWeight: "bold",
-        fontSize: 11
+        fontWeight: "bold"
     },
     emptyFeedback: {
         textAlign: "center",

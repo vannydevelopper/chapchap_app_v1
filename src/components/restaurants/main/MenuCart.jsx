@@ -1,15 +1,16 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useState } from 'react'
-import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground } from 'react-native'
+import { Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useDispatch } from 'react-redux'
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { useCallback } from 'react'
 import { addMenuAction, removeMenuAction } from '../../../store/actions/restaurantCartActions'
-
 import { COLORS } from '../../../styles/COLORS'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 export default function MenuCart({ menu, index }) {
-    const totalPrice = menu.PRIX * menu.QUANTITE
+    const totalPrice = menu.combinaison.PRIX * menu.QUANTITE
     const [amount, setAmount] = useState(menu.QUANTITE)
     const [isFocused, setIsFocused] = useState(false)
 
@@ -26,7 +27,7 @@ export default function MenuCart({ menu, index }) {
     }
 
     const onIncrement = () => {
-        if (amount == 10) {
+        if (amount == menu.stock.QUANTITE_RESTANTE) {
             return false
         }
         setAmount(l => parseInt(l) + 1)
@@ -36,16 +37,16 @@ export default function MenuCart({ menu, index }) {
         setAmount(am)
     }
     const checkAmount = () => {
-        setAmount(parseInt(amount) ? (parseInt(amount) >= 10 ? 10 : parseInt(amount)) : 1)
+        setAmount(parseInt(amount) ? (parseInt(amount) >= menu.combinaison.QUANTITE ? menu.combinaison.QUANTITE : parseInt(amount)) : 1)
     }
 
     let isnum = /^\d+$/.test(amount);
-    const isValid = () => {
-        return isnum ? (parseInt(amount) >= 1 && parseInt(amount) <= 10) : false
-    }
+    const isValid = useCallback(() => {
+        return isnum ? (parseInt(amount) > 0 && parseInt(amount) <= menu.combinaison.QUANTITE) : false
+    }, [amount])
 
     const onRemoveProduct = () => {
-        Alert.alert("Enlever le menu", "Voulez-vous vraiment enlever ce menu du panier ?",
+        Alert.alert("Enlever le menu", "Voulez-vous vraiment enlever ce produit du panier ?",
             [
                 {
                     text: "Annuler",
@@ -53,7 +54,7 @@ export default function MenuCart({ menu, index }) {
                 },
                 {
                     text: "Oui", onPress: async () => {
-                        dispatch(removeMenuAction(menu.ID_RESTAURANT_MENU))
+                        dispatch(removeMenuAction(menu.produit.ID_PRODUIT))
                     }
                 }
             ])
@@ -61,53 +62,56 @@ export default function MenuCart({ menu, index }) {
 
     useEffect(() => {
         if (isValid()) {
-            dispatch(addMenuAction(menu, amount))
+            dispatch(addMenuAction(menu, amount, menu.combinaison))
         }
     }, [amount])
+
     return (
-        <View style={[styles.product, index == 0 && { marginTop: -2 }]}>
-            <ImageBackground source={{ uri: menu.IMAGE }} style={[styles.serviceBackgound]} marginLeft={5} marginTop={2} mag borderRadius={15} imageStyle={{ opacity: 0.8 }}/>
-            <View style={styles.productDetails}>
-                <View style={styles.detailsHeader}>
-                    <View style={styles.productNames}>
-                    <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
-                <MaterialCommunityIcons name="delete" size={24} color= {COLORS.ecommerceRed} />
-            </TouchableOpacity>
-                        <Text style={styles.productName}>
-                            {menu.repas}
-                        </Text>
-                        <Text style={styles.productPrix}>{menu.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text>
+        <View style={[styles.product, index == 0 && { marginTop: 10 }]}>
+                              <View style={styles.productImage}>
+                                        <Image source={{ uri: menu.produit.IMAGE }} style={styles.image} />
+                              </View>
+                              <View style={styles.productDetails}>
+                                        <View style={styles.detailsHeader}>
+                                                  <View style={styles.productNames}>
+                                                            <Text numberOfLines={2} style={styles.productName}>
+                                                                      {menu.produit.NOM}
+                                                            </Text>
+                                                            <TouchableOpacity style={styles.reomoveBtn} onPress={onRemoveProduct}>
+                                                                      <MaterialCommunityIcons name="delete" size={24} color="#777" />
+                                                            </TouchableOpacity>
+                                                  </View>
+                                                  {/* <Text style={styles.unitPrice}>
+                                                            { product.partenaire.NOM_ORGANISATION ? product.partenaire.NOM_ORGANISATION : `${product.partenaire.NOM} ${product.partenaire.PRENOM}` }
+                                                            <FontAwesome5 name="building" size={10} color={COLORS.primary} style={{ marginLeft: 10 }} />
+                                                  </Text> */}
+                                                  {menu.combinaison.PRIX ? <Text style={styles.unitPrice}>{menu.combinaison.PRIX.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } FBU</Text> : null}
+                                        </View>
+                                        <View style={styles.detailsFooter}>
+                                                  <Text numberOfLines={1} style={styles.productPrice}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") } FBU</Text>
+                                                  <View style={styles.amountContainer}>
+                                                            <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
+                                                                      <Text style={styles.amountChangerText}>-</Text>
+                                                            </TouchableOpacity>
+                                                            <TextInput
+                                                                      style={[styles.input]}
+                                                                      value={amount.toString()}
+                                                                      onChangeText={onChangeText}
+                                                                      onFocus={() => setIsFocused(true)}
+                                                                      onBlur={() => {
+                                                                                setIsFocused(false)
+                                                                                checkAmount()
+                                                                      }}
+                                                                      keyboardType="decimal-pad"
+                                                                      editable={false}
+                                                            />
+                                                            <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= menu.combinaison.QUANTITE) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 100)}>
+                                                                      <Text style={styles.amountChangerText}>+</Text>
+                                                            </TouchableOpacity>
+                                                  </View>
+                                        </View>
+                              </View>
                     </View>
-                    {menu.MONTANT ? <Text style={styles.unitPrice}>{menu.MONTANT.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
-                </View>
-                <View style={styles.detailsFooter}>
-                    {menu.MONTANT ? <Text numberOfLines={1} style={styles.productPrice}>{totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")} Fbu</Text> : null}
-                    <View style={styles.amountContainer}>
-                        
-                    </View>
-                </View>
-            </View>
-            <View style={styles.amountContainer}>
-                <TouchableOpacity style={[styles.amountChanger, (amount <= 1 || !/^\d+$/.test(amount)) && { opacity: 0.5 }]} onPress={onDecrement} disabled={amount <= 1 || !/^\d+$/.test(amount)}>
-                    <Text style={styles.amountChangerText}>-</Text>
-                </TouchableOpacity>
-                <TextInput
-                    style={[styles.input, isFocused && { borderColor: COLORS.primary }]}
-                    value={amount.toString()}
-                    onChangeText={onChangeText}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => {
-                        setIsFocused(false)
-                        checkAmount()
-                    }}
-                    keyboardType="decimal-pad"
-                />
-                <TouchableOpacity style={[styles.amountChanger, (!/^\d+$/.test(amount) || amount >= 10) && { opacity: 0.5 }]} onPress={onIncrement} disabled={(!/^\d+$/.test(amount) || amount >= 10)}>
-                    <Text style={styles.amountChangerText}>+</Text>
-                </TouchableOpacity>
-            </View>
-           
-        </View>
     )
 }
 
@@ -115,64 +119,43 @@ export default function MenuCart({ menu, index }) {
 const styles = StyleSheet.create({
     product: {
         flexDirection: 'row',
-        backgroundColor: '#F1F1F1',
-        borderRadius: 9,
-        padding: 5,
-        alignItems: "center",
-        height: 90,
+        height: 120,
         marginTop: 10,
-
+        backgroundColor: '#FFF',
+        padding: 10,
+        borderRadius: 8
     },
     productImage: {
-        height: "70%",
-        width: "20%",
+        height: "100%",
+        width: "30%",
         borderRadius: 10,
-        marginHorizontal: 10,
-
         backgroundColor: '#F1F1F1'
     },
     image: {
         height: "100%",
         width: "100%",
-        opacity: 10,
         borderRadius: 10,
+        resizeMode: 'contain'
     },
     productDetails: {
-        marginLeft: -63,
+        marginLeft: 10,
         justifyContent: 'space-between',
-        flex: 1,
-        marginTop: -8
+        flex: 1
     },
     productNames: {
-        marginVertical: 30
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     productName: {
         color: COLORS.ecommercePrimaryColor,
-        fontWeight: 'bold',
-        fontSize: 11
-    },
-    productName1: {
-        textAlign: 'center',
-        color: '#fff',
-        fontWeight: 'bold',
-        fontSize: 10
-    },
-    serviceBackgound: {
-        width: "50%",
-        height: "95%",
-        justifyContent: 'space-between',
-    },
-    productPrix: {
-        color: COLORS.ecommerceRed,
         fontWeight: 'bold'
     },
     reomoveBtn: {
-        // width: 30,
-        // height: 30,
-        // backgroundColor: '#F1F1F1',
+        width: 30,
+        height: 30,
+        backgroundColor: '#F1F1F1',
         borderRadius: 5,
-        marginTop:-8,
-        marginRight:"-170%",
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -195,36 +178,35 @@ const styles = StyleSheet.create({
         maxWidth: "55%"
     },
     amountContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 1,
-        // marginHorizontal: 10,
         flexDirection: 'row',
-        marginTop: 40
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 30,
+        marginLeft: 10,
+        width: "45%"
     },
     input: {
-        // borderRadius: 5,
+        borderRadius: 5,
         borderWidth: 1,
-        fontSize: 10,
-        borderColor: '#fff',
-        // flex: 1,
-        height: "0%",
-        // marginHorizontal: 15,
+        borderColor: '#ddd',
+        flex: 1,
+        height: "100%",
+        marginHorizontal: 5,
         textAlign: 'center',
         color: COLORS.ecommercePrimaryColor,
         fontWeight: 'bold'
     },
     amountChanger: {
-        width: 20,
-        // height: "100%",
-        // backgroundColor: COLORS.ecommercePrimaryColor,
+        width: 30,
+        height: "100%",
+        backgroundColor: COLORS.ecommercePrimaryColor,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
     },
     amountChangerText: {
-        color: COLORS.ecommerceRed,
+        color: '#fff',
         fontWeight: 'bold',
-        fontSize: 10
+        fontSize: 16
     },
 })

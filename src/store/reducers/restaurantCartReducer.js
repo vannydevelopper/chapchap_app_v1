@@ -9,7 +9,7 @@ export function restaurantCartReducer(menus = [], action) {
                               if(menu) {
                                         const newCommands = menus.map(commande => {
                                                   if(commande.ID_RESTAURANT_MENU == menu.ID_RESTAURANT_MENU) {
-                                                            return {...commande, QUANTITE: action.payload.QUANTITE}
+                                                            return {...commande, QUANTITE: action.payload.QUANTITE, combinaison: action.payload.combinaison}
                                                   }
                                                   return commande
                                         })
