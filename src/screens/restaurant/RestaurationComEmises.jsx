@@ -36,7 +36,7 @@ export default function RestaurationComEmises() {
           }
 
           const handleCommandePress = commande => {
-  navigation.navigate('DetailCommandeMenuscreen', { commande })
+          navigation.navigate('DetailCommandeMenuscreen', { commande })
 
                     // navigation.navigate('NoHeaderSearchLivreurScreen', { commande })
           }
@@ -45,7 +45,6 @@ export default function RestaurationComEmises() {
                               try {
                                         const response = await getCommandes()
                                         setCommandes(response.result)
-                                        console.log(response)
                               } catch (error) {
                                         console.log(error)
                               } finally {
